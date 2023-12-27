@@ -1,0 +1,22 @@
+Name: [Globals], GlobalElementType [PresentationStyle], Name: [Select]
+|- -&gt; Properties: Name
+
+</faultstring><detail><ManagementServiceError xmlns="http://schemas.datacontract.org/2004/07/.Studio.Server.Services.External.WCF" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><Message>Validation Errors:
+Element validation reports:
+Name: [Projectviewer_Widget], GlobalElementType [PresentationStyle], Name: [Select]
+|- -&gt; Properties: Name
+
+Name: [Globals], GlobalElementType [Present2022-02-25 21:16:02.012 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'PS_ExportProfile': com.pub.plugin.profileexport.service.ProfileExportService@16d7af23
+2022-02-25 21:16:02.012 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'PS_File_To_Base64_String': com.solutions.plugin.fileutils.services.base64.FileToBase64StringService@5e7c305f
+2022-02-25 21:16:02.013 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'PS_File_Move': com.solutions.plugin.fileutils.services.filemove.FileMoveService@35e27de3
+2022-02-25 21:16:02.014 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'PS_File_Move_Out': com.solutions.plugin.fileutils.services.filemove.FileMoveOutService@4a80e5eb
+2022-02-25 21:16:02.014 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'AQ_File_Copy': com.solutions.plugin.fileutils.services.filecopy.FileCopyService@8d9d7d9
+2022-02-25 21:16:02.015 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'GenerateGUID': nl..plugin.generateguid.service.GenerateGuidService@77709237
+2022-02-25 21:16:02.016 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'ClearErrors': nl..plugin.clearerrors.service.ClearErrorsService@6287ca55
+2022-02-25 21:16:02.016 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'RemoveFirstValueFromMultivaluedAttribute': nl..plugin.attribute.service.RemoveFirstValueFromMultivaluedAttributeService@14216fbe
+2022-02-25 21:16:02.017 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'GenerateRandomNumber': nl..plugin.randomnumbergenerator.service.RandomNumberService@f505253
+2022-02-25 21:16:02.018 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'UpdateSystemUser': nl..plugin.systemuser.service.UpdateSystemUserService@36c224a0
+2022-02-25 21:16:02.019 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'MailWithAttachment_V2': nl..plugin.mailattachment.v2.MailWithAttachmentServiceV2@1d0d6536
+2022-02-25 21:16:02.019 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'ImportAggregate': nl..plugin.distribution.service.ImportAggregateService@4903fe50
+2022-02-25 21:16:02.020 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'ExportAggregate': nl..plugin.distribution.service.ExportAggregateService@4e0e5fce
+2022-02-25 21:16:02.021 DEBUG      c.a.w.c.a.f.AnnotatedServiceFactory userId="SeniorFem" projectName="" projectVersion="" - Registering implementation for 'GetEnvironmentVariables': nl..plugin.environmentvariables.service.GetEnvironmentVariablesService@6d100d9f
