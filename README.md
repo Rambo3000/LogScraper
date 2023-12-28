@@ -8,6 +8,9 @@
 |-----------------------------------------------------------------------------------------------------------------------|
 | [![LogScraper](https://img.shields.io/badge/master-latest-green.svg)](https://github.com/Rambo3000/LogScraper/releases/latest) |
 
+## Wiki
+Please read the wiki for more detailed information: [link](https://github.com/Rambo3000/LogScraper/wiki)
+
 ## Features
 - Provides downloading logs from a direct URL, Kubernetes and your local file system
 - Concatinates several downloads into one consistant log. Useful when reading log tails
