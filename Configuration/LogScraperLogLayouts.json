@@ -1,0 +1,210 @@
+{
+  "layouts": [
+    {
+      "description": "Blueriq default",
+      "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+      "removeMetaDataCriteria": {
+        "startPosition": 23,
+        "beforePhrase": " ",
+        "afterPhrase": " -"
+      },
+      "logMetadataProperties": [
+        {
+          "description": "Log level",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ",
+            "afterPhrase": " "
+          }
+        },
+        {
+          "description": "Project",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "projectName=\"",
+            "afterPhrase": "\""
+          }
+        },
+        {
+          "description": "Gebruiker",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "userId=\"",
+            "afterPhrase": "\""
+          }
+        },
+        {
+          "description": "Branch",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "projectVersion=\"",
+            "afterPhrase": "\""
+          }
+        },
+        {
+          "description": "Pagina",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "currentPageName=\"",
+            "afterPhrase": "\""
+          }
+        }
+      ],
+      "logContentBeginEndFilters": [
+        {
+          "description": "Begin flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Starting flow: "
+          }
+        },
+        {
+          "description": "Einde flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Completed flow: "
+          }
+        },
+        {
+          "description": "Composed path",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Composed path "
+          }
+        },
+        {
+          "description": "Errors",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ERROR",
+            "endPhrase": " "
+          }
+        }
+      ]
+    },
+    {
+      "description": "Blueriq productie",
+      "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+      "removeMetaDataCriteria": {
+        "startPosition": 23,
+        "beforePhrase": " ",
+        "afterPhrase": " -"
+      },
+      "logMetadataProperties": [
+        {
+          "description": "Log level",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ",
+            "afterPhrase": " "
+          }
+        },
+        {
+          "description": "Project",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "projectName=\"",
+            "afterPhrase": "\""
+          }
+        }
+      ],
+      "logContentBeginEndFilters": [
+        {
+          "description": "Begin flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Starting flow: "
+          }
+        },
+        {
+          "description": "Einde flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Completed flow: "
+          }
+        },
+        {
+          "description": "Composed path",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Composed path "
+          }
+        },
+        {
+          "description": "Errors",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ERROR",
+            "endPhrase": " "
+          }
+        }
+      ]
+    },
+    {
+      "description": "Blueriq productie met trace",
+      "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+      "removeMetaDataCriteria": {
+        "startPosition": 23,
+        "beforePhrase": " ",
+        "afterPhrase": " -"
+      },
+      "logMetadataProperties": [
+        {
+          "description": "Log level",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ",
+            "afterPhrase": " "
+          }
+        },
+        {
+          "description": "Project",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "projectName=\"",
+            "afterPhrase": "\""
+          }
+        },
+        {
+          "description": "Trace id",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "trace=",
+            "afterPhrase": ","
+          }
+        }
+      ],
+      "logContentBeginEndFilters": [
+        {
+          "description": "Begin flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Starting flow: "
+          }
+        },
+        {
+          "description": "Einde flow",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Completed flow: "
+          }
+        },
+        {
+          "description": "Composed path",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": "Composed path "
+          }
+        },
+        {
+          "description": "Errors",
+          "criteria": {
+            "startPosition": 23,
+            "beforePhrase": " ERROR",
+            "endPhrase": " "
+          }
+        }
+      ]
+    }
+  ]
+}

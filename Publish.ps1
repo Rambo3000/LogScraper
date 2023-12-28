@@ -30,6 +30,8 @@ dotnet publish -r win-x64 -c Release --nologo --self-contained
 
 Write-Host "----- Moving configuration file -----" 
 Move-Item -Path ".\bin\Release\net8.0-windows\win-x64\publish\Configuration\LogScraperConfig.json" -Destination ".\bin\Release\net8.0-windows\win-x64\publish\LogScraperConfig.json" -Force
+Move-Item -Path ".\bin\Release\net8.0-windows\win-x64\publish\Configuration\LogScraperLogLayouts.json" -Destination ".\bin\Release\net8.0-windows\win-x64\publish\LogScraperLogLayouts.json" -Force
+Move-Item -Path ".\bin\Release\net8.0-windows\win-x64\publish\Configuration\LogScraperLogProviders.json" -Destination ".\bin\Release\net8.0-windows\win-x64\publish\LogScraperLogProviders.json" -Force
 Remove-item ".\bin\Release\net8.0-windows\win-x64\publish\Configuration" -Force
 
 Write-Host "----- Cleaning publish folder -----" 

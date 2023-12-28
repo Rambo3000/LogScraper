@@ -1,4 +1,5 @@
 ﻿using LogScraper.Configuration;
+using LogScraper.Configuration.LogProviderConfig;
 using LogScraper.Export;
 using LogScraper.Extensions;
 using LogScraper.Log;
@@ -40,6 +41,15 @@ namespace LogScraper
         {
             InitializeComponent();
 
+            string version = Application.ProductVersion;
+            const string versionSeperator = "+";
+            if (version.Contains(versionSeperator))
+            {
+                version = version[..version.IndexOf(versionSeperator)];
+            }
+
+            lblVersion.Text = "v" + version;
+
             timerMemoryUsage.Interval = 1000;
             timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
             timerMemoryUsage.Start();
@@ -62,14 +72,15 @@ namespace LogScraper
         {
             try
             {
-                usrKubernetes.UpdateClusters(ConfigurationManager.Config.KubernetesConfig.Clusters);
-                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.Config.RuntimeConfig.Instances);
+                usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
 
+                PopulateLogLayouts();
                 PopulateLogProviderControls();
 
-                txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.Config.ExportFileName;
+                txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
 
-                if (ConfigurationManager.Config.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.Config.EditorName;
+                if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
 
@@ -78,22 +89,30 @@ namespace LogScraper
         }
         private void PopulateLogProviderControls()
         {
-            if (ConfigurationManager.Config.FileConfig != null)
+            if (ConfigurationManager.LogProvidersConfig.FileConfig != null)
             {
-                cboLogProvider.Items.Add(ConfigurationManager.Config.FileConfig);
-                if (ConfigurationManager.Config.LogProviderTypeDefault == LogProviderType.File) cboLogProvider.SelectedItem = ConfigurationManager.Config.FileConfig;
+                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.FileConfig);
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.File) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig;
             }
 
-            if (ConfigurationManager.Config.RuntimeConfig != null)
+            if (ConfigurationManager.LogProvidersConfig.RuntimeConfig != null)
             {
-                cboLogProvider.Items.Add(ConfigurationManager.Config.RuntimeConfig);
-                if (ConfigurationManager.Config.LogProviderTypeDefault == LogProviderType.Runtime) cboLogProvider.SelectedItem = ConfigurationManager.Config.RuntimeConfig;
+                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
             }
 
-            if (ConfigurationManager.Config.KubernetesConfig != null)
+            if (ConfigurationManager.LogProvidersConfig.KubernetesConfig != null)
             {
-                cboLogProvider.Items.Add(ConfigurationManager.Config.KubernetesConfig);
-                if (ConfigurationManager.Config.LogProviderTypeDefault == LogProviderType.Kubernetes) cboLogProvider.SelectedItem = ConfigurationManager.Config.KubernetesConfig;
+                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
+            }
+        }
+        private void PopulateLogLayouts()
+        {
+            if (ConfigurationManager.LogLayouts != null)
+            {
+                cboLogLayout.Items.AddRange(ConfigurationManager.LogLayouts.ToArray());
+                if (cboLogLayout.Items.Count > 0) cboLogLayout.SelectedIndex = 0;
             }
         }
         #endregion
@@ -111,7 +130,7 @@ namespace LogScraper
                 }
                 Application.DoEvents();
 
-                LogProviderType logProviderType = ((LogProviderGenericConfig)cboLogProvider.SelectedItem).LogProviderType;
+                LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
                 ISourceAdapter logProvider = logProviderType switch
                 {
                     LogProviderType.Runtime => usrRuntime.GetSourceAdapter(),
@@ -124,7 +143,7 @@ namespace LogScraper
                 sourceProcessingWorker.DownloadCompleted += ProcessNewLogStringArray;
                 sourceProcessingWorker.StatusUpdate += HandleLogProviderStatusUpdate;
                 sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
-                logProviderManager.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds, ((LogProviderGenericConfig)cboLogProvider.SelectedItem).DateTimeFormat);
+                logProviderManager.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds, ((LogLayout)cboLogLayout.SelectedItem).DateTimeFormat);
             }
             catch (Exception ex)
             {
@@ -133,16 +152,16 @@ namespace LogScraper
         }
         private void ProcessNewLogStringArray(string[] rawLog)
         {
-            LogProviderGenericConfig logProviderGenericConfig = ((LogProviderGenericConfig)cboLogProvider.SelectedItem);
+            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             try
             {
-                LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logProviderGenericConfig.DateTimeFormat);
+                LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout.DateTimeFormat);
 
-                LogLineClassifier.ClassifyLogLineMetadataProperties(logProviderGenericConfig.LogMetadataProperties, LogCollection.Instance);
+                LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout.LogMetadataProperties, LogCollection.Instance);
 
-                LogLineClassifier.ClassifyLogLineContentProperties(logProviderGenericConfig.LogContentBeginEndFilters, LogCollection.Instance);
+                LogLineClassifier.ClassifyLogLineContentProperties(logLayout.LogContentBeginEndFilters, LogCollection.Instance);
 
-                List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(LogCollection.Instance.LogLines, logProviderGenericConfig.LogMetadataProperties);
+                List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(LogCollection.Instance.LogLines, logLayout.LogMetadataProperties);
                 UpdateFilterControls(logMetadataPropertyAndValues);
                 FilterLoglines();
                 UpdateStatisticsLogCollection();
@@ -244,7 +263,7 @@ namespace LogScraper
                 LogExportSettingsMetadata = usrControlMetadataFormating.LogExportSettingsMetadata
             };
 
-            logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogProviderGenericConfig)cboLogProvider.SelectedItem).RemoveMetaDataCriteria;
+            logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogLayout)cboLogLayout.SelectedItem).RemoveMetaDataCriteria;
 
             LogExportData logExportData = LogExportDataCreator.CreateLogExportData(logMetadataFilterResult, logExportSettings, true);
             txtLogLines.Text = logExportData.ExportRaw;
@@ -253,7 +272,7 @@ namespace LogScraper
             {
                 if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Yellow, Color.Black);
                 // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
-                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow , Color.Black); ;
+                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
             }
 
             LblBeginDateTime.Text = logExportData.DateTimeFirstLine.Year < 1000 ? "-" : logExportData.DateTimeFirstLine.ToString("yyyy-MM-dd HH:mm:ss");
@@ -472,19 +491,27 @@ namespace LogScraper
         {
             FilterLoglines();
         }
+        private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Reset();
+        }
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LogProviderGenericConfig logProviderGenericConfig = (LogProviderGenericConfig)cboLogProvider.SelectedItem;
-            usrRuntime.Visible = logProviderGenericConfig.LogProviderType == LogProviderType.Runtime;
-            usrKubernetes.Visible = logProviderGenericConfig.LogProviderType == LogProviderType.Kubernetes;
-            usrFileLogProvider.Visible = logProviderGenericConfig.LogProviderType == LogProviderType.File;
+            ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
+            usrRuntime.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
+            usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
+            usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
-            UsrLogContentBegin.UpdateFilterTypes(logProviderGenericConfig.LogContentBeginEndFilters);
-            UsrLogContentEnd.UpdateFilterTypes(logProviderGenericConfig.LogContentBeginEndFilters);
-            usrControlMetadataFormating.UpdateLogMetadataProperties(logProviderGenericConfig.LogMetadataProperties);
+            if (logProviderConfig.DefaultLogLayout != null) cboLogLayout.SelectedItem = logProviderConfig.DefaultLogLayout;
+
+            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
+            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
+            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
+            usrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();
         }
         #endregion
+
     }
 }

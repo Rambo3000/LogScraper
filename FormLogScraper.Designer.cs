@@ -55,6 +55,7 @@
             lblStatusWrite = new System.Windows.Forms.Label();
             txtWriteToFilePath = new System.Windows.Forms.TextBox();
             btnOpenWithEditor = new System.Windows.Forms.Button();
+            cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
             LblBeginEndFilteringValues = new System.Windows.Forms.Label();
@@ -82,6 +83,8 @@
             grpLogProviders = new System.Windows.Forms.GroupBox();
             pnlLogProviders = new System.Windows.Forms.Panel();
             usrFileLogProvider = new LogProviders.File.UserControlFileLogProvider();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            lblVersion = new System.Windows.Forms.Label();
             groupBox3.SuspendLayout();
             grpWriteLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -103,6 +106,7 @@
             splitContainer1.SuspendLayout();
             grpLogProviders.SuspendLayout();
             pnlLogProviders.SuspendLayout();
+            groupBox4.SuspendLayout();
             SuspendLayout();
             // 
             // btnReadFromUrl
@@ -131,7 +135,7 @@
             FlowPanelFilters.BackColor = System.Drawing.SystemColors.Window;
             FlowPanelFilters.Location = new System.Drawing.Point(0, 1);
             FlowPanelFilters.Name = "FlowPanelFilters";
-            FlowPanelFilters.Size = new System.Drawing.Size(166, 396);
+            FlowPanelFilters.Size = new System.Drawing.Size(196, 396);
             FlowPanelFilters.TabIndex = 9;
             FlowPanelFilters.SizeChanged += FlowPanelFilters_SizeChanged;
             // 
@@ -322,9 +326,9 @@
             grpWriteLog.Controls.Add(lblStatusWrite);
             grpWriteLog.Controls.Add(txtWriteToFilePath);
             grpWriteLog.Controls.Add(btnOpenWithEditor);
-            grpWriteLog.Location = new System.Drawing.Point(689, 5);
+            grpWriteLog.Location = new System.Drawing.Point(881, 5);
             grpWriteLog.Name = "grpWriteLog";
-            grpWriteLog.Size = new System.Drawing.Size(466, 147);
+            grpWriteLog.Size = new System.Drawing.Size(274, 147);
             grpWriteLog.TabIndex = 23;
             grpWriteLog.TabStop = false;
             grpWriteLog.Text = "Log wegschrijven";
@@ -337,7 +341,7 @@
             txtStatusWrite.Multiline = true;
             txtStatusWrite.Name = "txtStatusWrite";
             txtStatusWrite.ReadOnly = true;
-            txtStatusWrite.Size = new System.Drawing.Size(278, 90);
+            txtStatusWrite.Size = new System.Drawing.Size(86, 90);
             txtStatusWrite.TabIndex = 34;
             // 
             // label6
@@ -363,19 +367,29 @@
             txtWriteToFilePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtWriteToFilePath.Location = new System.Drawing.Point(57, 21);
             txtWriteToFilePath.Name = "txtWriteToFilePath";
-            txtWriteToFilePath.Size = new System.Drawing.Size(278, 23);
+            txtWriteToFilePath.Size = new System.Drawing.Size(86, 23);
             txtWriteToFilePath.TabIndex = 0;
             // 
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnOpenWithEditor.Location = new System.Drawing.Point(340, 21);
+            btnOpenWithEditor.Location = new System.Drawing.Point(148, 21);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(119, 43);
             btnOpenWithEditor.TabIndex = 11;
             btnOpenWithEditor.Text = "Open";
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
+            // 
+            // cboLogLayout
+            // 
+            cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cboLogLayout.FormattingEnabled = true;
+            cboLogLayout.Location = new System.Drawing.Point(6, 21);
+            cboLogLayout.Name = "cboLogLayout";
+            cboLogLayout.Size = new System.Drawing.Size(174, 23);
+            cboLogLayout.TabIndex = 23;
+            cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
             // splitContainer2
             // 
@@ -546,6 +560,7 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(lblVersion);
             tabPage1.Controls.Add(UsrLogContentBegin);
             tabPage1.Location = new System.Drawing.Point(4, 24);
             tabPage1.Name = "tabPage1";
@@ -571,7 +586,7 @@
             tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(240, 397);
+            tabPage2.Size = new System.Drawing.Size(232, 397);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Tonen tot";
             tabPage2.UseVisualStyleBackColor = true;
@@ -583,7 +598,7 @@
             UsrLogContentEnd.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrLogContentEnd.Location = new System.Drawing.Point(3, 3);
             UsrLogContentEnd.Name = "UsrLogContentEnd";
-            UsrLogContentEnd.Size = new System.Drawing.Size(234, 391);
+            UsrLogContentEnd.Size = new System.Drawing.Size(226, 391);
             UsrLogContentEnd.TabIndex = 0;
             // 
             // groupBox1
@@ -614,7 +629,7 @@
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(167, 397);
+            tabPage3.Size = new System.Drawing.Size(197, 397);
             tabPage3.TabIndex = 0;
             tabPage3.Text = "Filteren";
             tabPage3.UseVisualStyleBackColor = true;
@@ -688,11 +703,33 @@
             usrFileLogProvider.Size = new System.Drawing.Size(366, 93);
             usrFileLogProvider.TabIndex = 9;
             // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(cboLogLayout);
+            groupBox4.Location = new System.Drawing.Point(689, 5);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new System.Drawing.Size(186, 147);
+            groupBox4.TabIndex = 25;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Layout van het log";
+            // 
+            // lblVersion
+            // 
+            lblVersion.BackColor = System.Drawing.SystemColors.Window;
+            lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            lblVersion.Location = new System.Drawing.Point(186, 379);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new System.Drawing.Size(46, 15);
+            lblVersion.TabIndex = 23;
+            lblVersion.Text = "2.00.00";
+            lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1160, 610);
+            Controls.Add(groupBox4);
             Controls.Add(grpLogProviders);
             Controls.Add(grpWriteLog);
             Controls.Add(splitContainer1);
@@ -726,6 +763,7 @@
             grpLogProviders.ResumeLayout(false);
             grpLogProviders.PerformLayout();
             pnlLogProviders.ResumeLayout(false);
+            groupBox4.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -784,5 +822,8 @@
         private System.Windows.Forms.Label lblMemoryUsageValue;
         private System.Windows.Forms.Label lblMemoryUsage;
         private Log.Metadata.UserControlMetadataFormating usrControlMetadataFormating;
+        private System.Windows.Forms.ComboBox cboLogLayout;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label lblVersion;
     }
 }

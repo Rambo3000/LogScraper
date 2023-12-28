@@ -9,8 +9,8 @@
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2023 Robert de Volder</Copyright>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.15</FileVersion>
-    <Version>2.0.15</Version>
+    <FileVersion>2.0.16</FileVersion>
+    <Version>2.0.16</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -54,7 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Configuration\LogScraperConfig.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Configuration\LogScraperLogLayouts.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Configuration\LogScraperLogProviders.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Stubs\Inverted log.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -76,6 +82,6 @@
     </None>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="move &quot;$(TargetDir)Configuration\LogScraperConfig.json&quot; &quot;$(TargetDir)LogScraperConfig.json&quot;&#xD;&#xA;rmdir /s /q &quot;$(TargetDir)Configuration&quot;" />
+    <Exec Command="move &quot;$(TargetDir)Configuration\LogScraperConfig.json&quot; &quot;$(TargetDir)LogScraperConfig.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\LogScraperLogLayouts.json&quot; &quot;$(TargetDir)LogScraperLogLayouts.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\LogScraperLogProviders.json&quot; &quot;$(TargetDir)LogScraperLogProviders.json&quot;&#xD;&#xA;rmdir /s /q &quot;$(TargetDir)Configuration&quot;" />
   </Target>
 </Project>

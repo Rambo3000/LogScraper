@@ -56,7 +56,7 @@ namespace LogScraper.Export
             {
                 try
                 {
-                    Process.Start(ConfigurationManager.Config.EditorFileName, "\"" + fileName + "\"");
+                    Process.Start(ConfigurationManager.GenericConfig.EditorFileName, "\"" + fileName + "\"");
                 }
                 catch (Exception ex)
                 {

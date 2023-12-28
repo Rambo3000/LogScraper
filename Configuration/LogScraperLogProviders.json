@@ -1,0 +1,49 @@
+{
+  "fileConfig": {
+    "DefaultLogLayoutDescription": "Blueriq default"
+  },
+  "RuntimeConfig": {
+    "DefaultLogLayoutDescription": "Blueriq default",
+    "instances": [
+      {
+        "description": "Example",
+        "urlRuntimeLog": "http://localhost/log.txt"
+      }
+    ]
+  },
+  "kubernetesConfig": {
+    "DefaultLogLayoutDescription": "Blueriq default",
+    "clusters": [
+      {
+        "description": "Ontwikkel",
+        "baseUrl": "https://localhost/k8s",
+        "clusterId": "12345-o",
+        "namespaces": [
+          {
+            "description": "ABC",
+            "name": "ns-abc-o-001"
+          },
+          {
+            "description": "DEF",
+            "name": "ns-def-o-001"
+          }
+        ]
+      },
+      {
+        "description": "Test",
+        "baseUrl": "https://localhost/k8s",
+        "clusterId": "12345-t",
+        "namespaces": [
+          {
+            "description": "ABC",
+            "name": "ns-abc-t-001"
+          },
+          {
+            "description": "DEF",
+            "name": "ns-def-t-001"
+          }
+        ]
+      }
+    ]
+  }
+}

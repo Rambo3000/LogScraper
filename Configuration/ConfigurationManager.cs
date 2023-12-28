@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using LogScraper.Configuration.LogProviderConfig;
+using LogScraper.Log;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -9,20 +12,40 @@ namespace LogScraper.Configuration
     {
         private static ConfigurationManager instance;
         private static readonly object lockObject = new();
-        private readonly LogScraperConfig config;
+        private readonly LogScraperConfig genericConfig;
+        private readonly LogLayoutsConfig logLayouts;
+        private readonly LogProvidersConfig logProvidersConfig;
 
         private ConfigurationManager()
         {
             // Load configuration from file during initialization
-            config = LoadFromFile("LogScraperConfig.json");
+            genericConfig = LoadFromFile<LogScraperConfig>("LogScraperConfig.json");
+            logLayouts = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
+            logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
+
+            SetDefaultLogLayoutsForLogProvider(logProvidersConfig.FileConfig);
+            SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
+            SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);
         }
 
-        private static LogScraperConfig LoadFromFile(string filePath)
+        private void SetDefaultLogLayoutsForLogProvider(ILogProviderConfig logProviderConfig)
+        {
+            foreach (var loglayout in logLayouts.layouts)
+            {
+                if (loglayout.Description == logProviderConfig.DefaultLogLayoutDescription)
+                {
+                    logProviderConfig.DefaultLogLayout = loglayout;
+                    break;
+                }
+            }
+        }
+
+        private static T LoadFromFile<T>(string filePath)
         {
             string jsonContent = File.ReadAllText(filePath, Encoding.UTF8);
 
             // Deserialize JSON content using the custom contract resolver
-            return JsonConvert.DeserializeObject<LogScraperConfig>(
+            return JsonConvert.DeserializeObject<T>(
                 jsonContent,
                 new JsonSerializerSettings
                 {
@@ -31,7 +54,7 @@ namespace LogScraper.Configuration
             );
         }
 
-        public static LogScraperConfig Config
+        public static LogScraperConfig GenericConfig
         {
             get
             {
@@ -44,7 +67,39 @@ namespace LogScraper.Configuration
                         instance ??= new ConfigurationManager();
                     }
                 }
-                return instance.config;
+                return instance.genericConfig;
+            }
+        }
+        public static List<LogLayout> LogLayouts
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (lockObject)
+                    {
+                        instance ??= new ConfigurationManager();
+                    }
+                }
+                return instance.logLayouts.layouts;
+            }
+        }
+        public static LogProvidersConfig LogProvidersConfig
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (lockObject)
+                    {
+                        instance ??= new ConfigurationManager();
+                    }
+                }
+                return instance?.logProvidersConfig;
             }
         }
 
