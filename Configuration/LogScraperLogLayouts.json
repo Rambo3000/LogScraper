@@ -1,7 +1,7 @@
 {
   "layouts": [
     {
-      "description": "Blueriq default",
+      "description": "Blueriq",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
       "removeMetaDataCriteria": {
         "startPosition": 23,
@@ -83,8 +83,17 @@
       ]
     },
     {
-      "description": "Blueriq productie",
+      "description": "Blueriq vanuit splunk in JSON",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+      "Transformers": [
+        {
+          "type": "ReverseOrder"
+        },
+        {
+          "type": "ExtractJsonPathFromEachLine",
+          "jsonPath": "$.log"
+        }
+      ],
       "removeMetaDataCriteria": {
         "startPosition": 23,
         "beforePhrase": " ",
@@ -121,13 +130,6 @@
           "criteria": {
             "startPosition": 23,
             "beforePhrase": "Completed flow: "
-          }
-        },
-        {
-          "description": "Composed path",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Composed path "
           }
         },
         {
@@ -141,12 +143,12 @@
       ]
     },
     {
-      "description": "Blueriq productie met trace",
+      "description": "Blueriq ORM",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
       "removeMetaDataCriteria": {
         "startPosition": 23,
         "beforePhrase": " ",
-        "afterPhrase": " -"
+        "afterPhrase": "]"
       },
       "logMetadataProperties": [
         {
@@ -156,46 +158,9 @@
             "beforePhrase": " ",
             "afterPhrase": " "
           }
-        },
-        {
-          "description": "Project",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "projectName=\"",
-            "afterPhrase": "\""
-          }
-        },
-        {
-          "description": "Trace id",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "trace=",
-            "afterPhrase": ","
-          }
         }
       ],
       "logContentBeginEndFilters": [
-        {
-          "description": "Begin flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Starting flow: "
-          }
-        },
-        {
-          "description": "Einde flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Completed flow: "
-          }
-        },
-        {
-          "description": "Composed path",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Composed path "
-          }
-        },
         {
           "description": "Errors",
           "criteria": {

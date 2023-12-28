@@ -54,6 +54,7 @@ namespace LogScraper.LogProviders.Runtime
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub1", UrlRuntimeLog = "Stubs/Runtime1.txt" });
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub2", UrlRuntimeLog = "Stubs/Runtime2.txt" });
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub3", UrlRuntimeLog = "Stubs/Runtime3.txt" });
+                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "JSONInvertedExample", UrlRuntimeLog = "Stubs/JSONInvertedExample.log" });
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "BasicTest", UrlRuntimeLog = "http://localhost/runtime1.txt" });
             }
             else

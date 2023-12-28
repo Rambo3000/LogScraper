@@ -1,5 +1,6 @@
 ﻿using LogScraper.Configuration.LogProviderConfig;
 using LogScraper.Log;
+using LogScraper.LogTransformers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
@@ -13,15 +14,17 @@ namespace LogScraper.Configuration
         private static ConfigurationManager instance;
         private static readonly object lockObject = new();
         private readonly LogScraperConfig genericConfig;
-        private readonly LogLayoutsConfig logLayouts;
+        private readonly LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
 
         private ConfigurationManager()
         {
             // Load configuration from file during initialization
             genericConfig = LoadFromFile<LogScraperConfig>("LogScraperConfig.json");
-            logLayouts = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
+            logLayoutsConfig = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
             logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
+
+            SetAllLayoutsTransformers();
 
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.FileConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
@@ -30,13 +33,31 @@ namespace LogScraper.Configuration
 
         private void SetDefaultLogLayoutsForLogProvider(ILogProviderConfig logProviderConfig)
         {
-            foreach (var loglayout in logLayouts.layouts)
+            foreach (var loglayout in logLayoutsConfig.layouts)
             {
                 if (loglayout.Description == logProviderConfig.DefaultLogLayoutDescription)
                 {
                     logProviderConfig.DefaultLogLayout = loglayout;
                     break;
                 }
+            }
+        }
+
+        private void SetAllLayoutsTransformers()
+        {
+            foreach (var logLayout in logLayoutsConfig.layouts)
+            {
+                SetLayoutTransformers(logLayout);
+            }
+        }
+        private void SetLayoutTransformers(LogLayout logLayout)
+        {
+            if (logLayout.LogTransformersConfig == null) return;
+
+            logLayout.LogTransformers = [];
+            foreach (var logTransformerConfig in logLayout.LogTransformersConfig)
+            {
+                logLayout.LogTransformers.Add(LogTransformerHelper.CreateTransformerFromConfig(logTransformerConfig));
             }
         }
 
@@ -83,7 +104,7 @@ namespace LogScraper.Configuration
                         instance ??= new ConfigurationManager();
                     }
                 }
-                return instance.logLayouts.layouts;
+                return instance.logLayoutsConfig.layouts;
             }
         }
         public static LogProvidersConfig LogProvidersConfig

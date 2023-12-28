@@ -1,9 +1,9 @@
 {
   "fileConfig": {
-    "DefaultLogLayoutDescription": "Blueriq default"
+    "DefaultLogLayoutDescription": "Blueriq vanuit splunk in JSON"
   },
   "RuntimeConfig": {
-    "DefaultLogLayoutDescription": "Blueriq default",
+    "DefaultLogLayoutDescription": "Blueriq",
     "instances": [
       {
         "description": "Example",
@@ -12,7 +12,7 @@
     ]
   },
   "kubernetesConfig": {
-    "DefaultLogLayoutDescription": "Blueriq default",
+    "DefaultLogLayoutDescription": "Blueriq",
     "clusters": [
       {
         "description": "Ontwikkel",

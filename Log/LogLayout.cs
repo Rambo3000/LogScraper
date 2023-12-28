@@ -2,6 +2,8 @@
 using LogScraper.Log.Metadata;
 using System.Collections.Generic;
 using System;
+using LogScraper.LogTransformers;
+using Newtonsoft.Json;
 
 namespace LogScraper.Log
 {
@@ -12,6 +14,9 @@ namespace LogScraper.Log
         public List<LogMetadataProperty> LogMetadataProperties { get; set; }
         public List<LogContentProperty> LogContentBeginEndFilters { get; set; }
         public FilterCriteria RemoveMetaDataCriteria { get; set; }
+        public List<ILogTransformer> LogTransformers { get; set; }
+        [JsonProperty("transformers")]
+        public List<LogTransformerConfig> LogTransformersConfig{ get; set; }
 
         public bool Equals(LogLayout other)
         {

@@ -12,7 +12,7 @@ namespace LogScraper.SourceProcessing
         public event Action<string[]> DownloadCompleted;
         public event Action<int, int> ProgressUpdate;
 
-        public async Task DoWorkAsync(ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds, string dateTimeFormat, CancellationToken cancellationToken)
+        public async Task DoWorkAsync(ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds, CancellationToken cancellationToken)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace LogScraper.SourceProcessing
                 {
                     OnProgressUpdate(0, durationInSeconds);
 
-                    await GetLogFromSourceAdapter(sourceAdapter, dateTimeFormat);
+                    await GetLogFromSourceAdapter(sourceAdapter);
                 }
                 else
                 {
@@ -31,7 +31,7 @@ namespace LogScraper.SourceProcessing
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
-                        await GetLogFromSourceAdapter(sourceAdapter, dateTimeFormat);
+                        await GetLogFromSourceAdapter(sourceAdapter);
 
                         await Task.Delay(intervalInSeconds * 1000, CancellationToken.None);
 
@@ -46,30 +46,13 @@ namespace LogScraper.SourceProcessing
             }
         }
 
-        private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter, string dateTimeFormat)
+        private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter)
         {
             string rawLog = await sourceAdapter.GetLogAsync();
             string[] rawLogArray = rawLog.Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.None);
 
-            InvertRawLogWhenNeeded(rawLogArray, dateTimeFormat);
-
             OnDownloadCompleted(rawLogArray);
         }
-
-        private static void InvertRawLogWhenNeeded(string[] rawLogArray, string dateTimeFormat)
-        {
-            if (string.IsNullOrEmpty(dateTimeFormat) || rawLogArray == null || rawLogArray.Length == 0) return;
-
-            DateTime dateTimeFirstElement = LogReader.GetDateTimeFromRawLogLine(rawLogArray[0], dateTimeFormat);
-            DateTime dateTimeLastElement = LogReader.GetDateTimeFromRawLogLine(rawLogArray[^1], dateTimeFormat);
-
-            // For now do not invert when you cannot read the first or last element
-            if (dateTimeFirstElement.Year < 1000 || dateTimeLastElement.Year < 1000) return;
-            if (dateTimeFirstElement <= dateTimeLastElement) return;
-
-            Array.Reverse(rawLogArray);
-        }
-
         protected virtual void OnExceptionOccurred(string message, bool isSucces)
         {
             // Raise the event on the UI thread

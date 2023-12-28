@@ -7,7 +7,7 @@ namespace LogScraper.Log.Collection
 {
     public class LogLine(string line, DateTime timestamp) : IEquatable<LogLine>
     {
-        public string Line { get; private set; } = line.Trim();
+        public string Line { get; set; } = line.Trim();
         public DateTime TimeStamp { get; set; } = timestamp;
         public List<string> AdditionalLogLines { get; set; }
         private int HashCodeCache { get; set; } = line.GetHashCode();

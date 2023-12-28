@@ -143,7 +143,7 @@ namespace LogScraper
                 sourceProcessingWorker.DownloadCompleted += ProcessNewLogStringArray;
                 sourceProcessingWorker.StatusUpdate += HandleLogProviderStatusUpdate;
                 sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
-                logProviderManager.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds, ((LogLayout)cboLogLayout.SelectedItem).DateTimeFormat);
+                logProviderManager.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
             }
             catch (Exception ex)
             {
@@ -155,7 +155,7 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             try
             {
-                LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout.DateTimeFormat);
+                LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout);
 
                 LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout.LogMetadataProperties, LogCollection.Instance);
 
@@ -493,6 +493,11 @@ namespace LogScraper
         }
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
+            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
+            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
+            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
+            usrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
+
             Reset();
         }
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
@@ -503,11 +508,6 @@ namespace LogScraper
             usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
             if (logProviderConfig.DefaultLogLayout != null) cboLogLayout.SelectedItem = logProviderConfig.DefaultLogLayout;
-
-            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
-            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
-            usrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();
         }

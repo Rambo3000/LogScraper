@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using LogScraper.LogTransformers;
 using LogScraper.SourceAdapters;
 namespace LogScraper.SourceProcessing
 {
     internal class SourceProcessingManager
     {
-        private readonly Queue<(SourceProcessingWorker, ISourceAdapter, int, int, string, CancellationTokenSource)> workerQueue = new();
+        private readonly Queue<(SourceProcessingWorker, ISourceAdapter, int, int, CancellationTokenSource)> workerQueue = new();
         private bool isProcessingQueue = false;
         public event Action<int> QueueLengthUpdate;
         private CancellationTokenSource currentWorkercancellationTokenSource;
 
-        public void AddWorker(SourceProcessingWorker logExporterWorker, ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds, string dateTimeFormat)
+        public void AddWorker(SourceProcessingWorker logExporterWorker, ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds)
         {
             var cancellationTokenSource = new CancellationTokenSource();
-            workerQueue.Enqueue((logExporterWorker, sourceAdapter, intervalInSeconds, durationInSeconds, dateTimeFormat, cancellationTokenSource));
+            workerQueue.Enqueue((logExporterWorker, sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource));
 
             if (!isProcessingQueue)
             {
@@ -31,9 +32,9 @@ namespace LogScraper.SourceProcessing
             }
 
             isProcessingQueue = true;
-            var (worker, sourceAdapter, intervalInSeconds, durationInSeconds, dateTimeFormat, cancellationTokenSource) = workerQueue.Dequeue();
+            var (worker, sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource) = workerQueue.Dequeue();
             currentWorkercancellationTokenSource = cancellationTokenSource;
-            await worker.DoWorkAsync(sourceAdapter, intervalInSeconds, durationInSeconds, dateTimeFormat, cancellationTokenSource.Token);
+            await worker.DoWorkAsync(sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource.Token);
             currentWorkercancellationTokenSource = null;
 
             // Start the next worker when the current one finishes
@@ -41,7 +42,7 @@ namespace LogScraper.SourceProcessing
         }
         public void CancelAllWorkers()
         {
-            foreach (var (_, _, _, _, _, cancellationTokenSource) in workerQueue)
+            foreach (var (_, _, _, _, cancellationTokenSource) in workerQueue)
             {
                 cancellationTokenSource.Cancel();
             }
