@@ -79,6 +79,7 @@ namespace LogScraper
             int selectionStart = txtLogLines.SelectionStart;
             int selectionLenght = txtLogLines.SelectionLength;
 
+            txtLogLines.SuspendDrawing();
             usrSearch.Enabled = false;
             Application.DoEvents();
             try
@@ -89,6 +90,7 @@ namespace LogScraper
                     Application.DoEvents();
                 }
                 txtLogLines.ClearHighlighting();
+                HighlightBeginAndEndFilterLines();
                 txtLogLines.Select(scrollPosition, 0);
                 txtLogLines.ScrollToCaret();
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
@@ -104,6 +106,7 @@ namespace LogScraper
                 Application.DoEvents();
                 usrSearch.Enabled = true;
                 usrSearch.Focus();
+                txtLogLines.ResumeDrawing();
             }
         }
 
@@ -319,12 +322,7 @@ namespace LogScraper
             lblNumberOfLogLinesFiltered.Text = lineCount;
             txtLogLines.Text = logExportData.ExportRaw;
 
-            if (txtLogLines.Lines.Length > 0)
-            {
-                if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Orange, Color.Black);
-                // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
-                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
-            }
+            HighlightBeginAndEndFilterLines();
 
             UpdateVisibilityControls();
 
@@ -332,6 +330,17 @@ namespace LogScraper
             logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
             logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
         }
+
+        private void HighlightBeginAndEndFilterLines()
+        {
+            if (txtLogLines.Lines.Length > 0)
+            {
+                if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Orange, Color.Black);
+                // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
+                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
+            }
+        }
+
         private static string ParseBeginEndFilteringValue(UserControlBeginEndFilter userControlEventsInLog)
         {
             string value = "-";
@@ -376,7 +385,7 @@ namespace LogScraper
 
             currentLogMetadataFilterResult = null;
 
-            foreach (Control control in FlowPanelFilters.Controls)
+            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
             {
                 UserControlLogMetadataFilter userControlLogMetadataFilter = (UserControlLogMetadataFilter)control;
                 userControlLogMetadataFilter.FilterChanged -= UserControlLogFilter_FilterChanged;
@@ -430,14 +439,14 @@ namespace LogScraper
         private void FlowPanelFilters_SizeChanged(object sender, EventArgs e)
         {
             int totalHeightControls = 0;
-            foreach (Control control in FlowPanelFilters.Controls)
+            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
             {
                 totalHeightControls += control.Height;
             }
             FlowPanelFilters.VerticalScroll.Visible = totalHeightControls + 15 > FlowPanelFilters.Height;
             FlowPanelFilters.HorizontalScroll.Enabled = false;
             FlowPanelFilters.HorizontalScroll.Visible = false;
-            foreach (Control control in FlowPanelFilters.Controls)
+            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
             {
                 control.Width = FlowPanelFilters.Width - (FlowPanelFilters.VerticalScroll.Visible ? 20 : 0);
             }
