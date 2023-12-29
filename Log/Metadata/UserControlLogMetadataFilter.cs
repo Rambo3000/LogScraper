@@ -176,10 +176,7 @@ namespace LogScraper
             if (LstFilterValues.FocusedItem != null) LstFilterValues.FocusedItem.Focused = false;
             if (!e.Item.Selected) return;
 
-            // TODO make lines checked on click
-            // Using the line below causes a not completely correct check. The becomes undone when you move your curser away with large datasets
             e.Item.Checked = !e.Item.Checked;
-            e.Item.Selected = false;
         }
 
         private void BtnOpenOrCollapse_Click(object sender, EventArgs e)
@@ -189,9 +186,9 @@ namespace LogScraper
             ResizeVertically();
             OnCollapseChanged(EventArgs.Empty);
         }
-
         private void LstFilterValues_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
+
             if (LstFilterValues.FocusedItem != null) LstFilterValues.FocusedItem.Focused = false;
             if (e.Item.Selected) e.Item.Selected = false;
 
@@ -219,6 +216,31 @@ namespace LogScraper
         protected virtual void OnCollapseChanged(EventArgs e)
         {
             CollapseChanged?.Invoke(this, e);
+        }
+
+        private void LstFilterValues_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            ListView listview = sender as ListView;
+            ListViewItem item = listview.Items[e.Index];
+            item.Selected = false;
+
+            //Store the datetime if none is set and continue as normal
+            if (string.IsNullOrEmpty(item.ToolTipText))
+            {
+                item.ToolTipText = DateTime.Now.ToString();
+                return;
+            } 
+            if (Convert.ToDateTime(item.ToolTipText) > DateTime.Now.AddMilliseconds(-1000))
+            {
+                //Within a small amount of time the item is checked again. Ignore this.
+                //When moving the mouse when clicking the object this is sometimes registered as dragging and the 
+                // checkbox checking is undone. It seems to have something to do with the DragItem event.
+                //Disable updating the value. Also the user cannot do this within this timespan
+                e.NewValue = e.CurrentValue;
+                return;
+            }
+
+            item.ToolTipText = DateTime.Now.ToString();
         }
     }
 }

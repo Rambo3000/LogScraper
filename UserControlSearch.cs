@@ -6,7 +6,6 @@ namespace LogScraper
     public partial class UserControlSearch : UserControl
     {
         public event Action<string, SearchDirectionUserControl, bool, bool> Search;
-        public event Action<bool> ShowAllLog;
         public enum SearchDirectionUserControl
         {
             Forward,

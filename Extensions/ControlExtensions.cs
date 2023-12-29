@@ -4,10 +4,11 @@ using System.Windows.Forms;
 
 namespace LogScraper.Extensions
 {
-    public static class ControlExtensions
+    public static partial class ControlExtensions
     {
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool LockWindowUpdate(IntPtr hWndLock);
+        [LibraryImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool LockWindowUpdate(IntPtr hWndLock);
 
         public static void SuspendDrawing(this Control control)
         {

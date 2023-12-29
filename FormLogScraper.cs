@@ -89,12 +89,19 @@ namespace LogScraper
                     chkShowAllLogLines.Checked = true;
                     Application.DoEvents();
                 }
+                
+                //Clean the logline background and reinster begin and end filters
                 txtLogLines.ClearHighlighting();
                 HighlightBeginAndEndFilterLines();
+
+                //Return the scrolling to its original position
                 txtLogLines.Select(scrollPosition, 0);
                 txtLogLines.ScrollToCaret();
+                txtLogLines.Select(selectionStart, selectionLenght);
+
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-                bool found = txtLogLines.Find(searchQuery.Trim(), selectionStart, selectionLenght, searchDirection, wholeWord, caseSensitive);
+                bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive);
+                
                 usrSearch.SetResultsFound(found);
             }
             catch (Exception ex)
@@ -482,9 +489,11 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdateEnd(object sender, EventArgs e)
         {
+            usrControlMetadataFormating.SuspendDrawing();
             HandleLogContentFilterUpdate(sender, e);
             txtLogLines.SelectionStart = txtLogLines.Text.Length;
             txtLogLines.ScrollToCaret();
+            usrControlMetadataFormating.ResumeDrawing();
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)

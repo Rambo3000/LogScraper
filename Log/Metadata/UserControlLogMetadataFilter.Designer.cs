@@ -62,6 +62,7 @@
             LstFilterValues.CheckBoxes = true;
             LstFilterValues.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             LstFilterValues.HideSelection = true;
+            LstFilterValues.ImeMode = System.Windows.Forms.ImeMode.Off;
             LstFilterValues.Location = new System.Drawing.Point(3, 21);
             LstFilterValues.MultiSelect = false;
             LstFilterValues.Name = "LstFilterValues";
@@ -71,6 +72,7 @@
             LstFilterValues.TabIndex = 10;
             LstFilterValues.UseCompatibleStateImageBehavior = false;
             LstFilterValues.View = System.Windows.Forms.View.Details;
+            LstFilterValues.ItemCheck += LstFilterValues_ItemCheck;
             LstFilterValues.ItemChecked += LstFilterValues_ItemChecked;
             LstFilterValues.ItemSelectionChanged += LstFilterValues_ItemSelectionChanged;
             LstFilterValues.Resize += LstFilterValues_Resize;

@@ -536,9 +536,10 @@
             // 
             // lblVersion
             // 
+            lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             lblVersion.BackColor = System.Drawing.SystemColors.Window;
             lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            lblVersion.Location = new System.Drawing.Point(185, 273);
+            lblVersion.Location = new System.Drawing.Point(185, 294);
             lblVersion.Name = "lblVersion";
             lblVersion.Size = new System.Drawing.Size(46, 15);
             lblVersion.TabIndex = 23;

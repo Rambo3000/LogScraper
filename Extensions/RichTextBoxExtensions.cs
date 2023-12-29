@@ -53,15 +53,15 @@ namespace LogScraper.Extensions
             Backward
         }
 
-        public static bool Find(this RichTextBox richTextBox, string searchText, int initialSelectionStartIndex, int initialSelectionLength, SearchDirection direction, bool wholeWord, bool caseSensitive)
+        public static bool Find(this RichTextBox richTextBox, string searchText, SearchDirection direction, bool wholeWord, bool caseSensitive)
         {
-            int currentIndex = initialSelectionStartIndex;
+            int currentIndex = richTextBox.SelectionStart;
             //int initialSelectionLength = richTextBox.SelectionLength;
             if (currentIndex == -1) currentIndex = 0;
 
             StringComparison stringComparison = caseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
 
-            int nextIndex = FindIndexRichTextBox(richTextBox, direction, searchText, currentIndex, initialSelectionLength, stringComparison, wholeWord);
+            int nextIndex = FindIndexRichTextBox(richTextBox, direction, searchText, currentIndex, stringComparison, wholeWord);
 
             if (nextIndex < 0) return false;
 
@@ -70,14 +70,14 @@ namespace LogScraper.Extensions
             return true;
         }
 
-        private static int FindIndexRichTextBox(RichTextBox richTextBox, SearchDirection direction, string searchText, int currentIndex, int initialSelectionLength, StringComparison stringComparison, bool wholeWord, bool isStartedFromBegining = false)
+        private static int FindIndexRichTextBox(RichTextBox richTextBox, SearchDirection direction, string searchText, int currentIndex, StringComparison stringComparison, bool wholeWord, bool isStartedFromBegining = false)
         {
             int nextIndex;
 
             if (direction == SearchDirection.Backward)
             {
                 nextIndex = richTextBox.Text.LastIndexOf(searchText, currentIndex, stringComparison);
-                if (nextIndex == currentIndex && initialSelectionLength == searchText.Length)
+                if (nextIndex == currentIndex && richTextBox.SelectionLength == searchText.Length)
                 {
                     if (currentIndex - 1 >= 0) nextIndex = richTextBox.Text.LastIndexOf(searchText, currentIndex - 1, stringComparison);
                 }
@@ -91,7 +91,7 @@ namespace LogScraper.Extensions
             else // SearchDirection.Forward
             {
                 nextIndex = richTextBox.Text.IndexOf(searchText, currentIndex, stringComparison);
-                if (nextIndex == currentIndex && initialSelectionLength == searchText.Length)
+                if (nextIndex == currentIndex && richTextBox.SelectionLength == searchText.Length)
                 {
                     if (richTextBox.Text.Length > currentIndex + 1) nextIndex = richTextBox.Text.IndexOf(searchText, currentIndex + 1, stringComparison);
                 }
@@ -110,7 +110,7 @@ namespace LogScraper.Extensions
                 {
                     int newSearchIndex = direction == SearchDirection.Forward ? nextIndex + searchText.Length : nextIndex - searchText.Length;
                     // If not a whole word, continue searching
-                    return FindIndexRichTextBox(richTextBox, direction, searchText, newSearchIndex, initialSelectionLength, stringComparison, wholeWord, isStartedFromBegining);
+                    return FindIndexRichTextBox(richTextBox, direction, searchText, newSearchIndex, stringComparison, wholeWord, isStartedFromBegining);
                 }
             }
 

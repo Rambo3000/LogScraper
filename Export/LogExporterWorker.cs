@@ -6,15 +6,10 @@ using System.Threading.Tasks;
 
 namespace LogScraper.Export
 {
-    internal class LogExporterWorker
+    internal class LogExporterWorker(string logFilePath)
     {
-        private readonly string logFilePath;
+        private readonly string logFilePath = logFilePath;
         public event Action<string, bool> StatusUpdate;
-
-        public LogExporterWorker(string logFilePath)
-        {
-            this.logFilePath = logFilePath;
-        }
 
         public async Task DoWorkAsync(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
         {
