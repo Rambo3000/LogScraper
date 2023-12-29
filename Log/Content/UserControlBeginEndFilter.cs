@@ -164,7 +164,7 @@ namespace LogScraper
 
         private void ChkShowExtraLines_CheckedChanged(object sender, EventArgs e)
         {
-            TxtExtraLines.Enabled = ChkShowExtraLines.Checked;
+            TxtExtraLines.Visible = ChkShowExtraLines.Checked;
             OnFilterChanged(EventArgs.Empty);
         }
 

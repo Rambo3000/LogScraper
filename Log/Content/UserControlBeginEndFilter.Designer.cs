@@ -88,12 +88,12 @@
             // TxtExtraLines
             // 
             TxtExtraLines.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            TxtExtraLines.Enabled = false;
             TxtExtraLines.Location = new System.Drawing.Point(126, 159);
             TxtExtraLines.Name = "TxtExtraLines";
             TxtExtraLines.Size = new System.Drawing.Size(53, 23);
             TxtExtraLines.TabIndex = 4;
             TxtExtraLines.Text = "20";
+            TxtExtraLines.Visible = false;
             TxtExtraLines.TextChanged += TxtExtraLines_TextChanged;
             // 
             // chkShowErrors
