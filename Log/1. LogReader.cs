@@ -56,6 +56,10 @@ namespace LogScraper
                 logLineIsAdded = true;
                 lastLogLine = newLine;
             }
+            if (logLines.Length > 0 && logCollection.LogLines.Count == 0)
+            {
+                throw new Exception("No lines could be interpreted, probably because the timestamp at the beginning of each line is not parsed correctly. Make sure you have the correct log layout selected or create a new log layout.");
+            }
         }
 
         private static void GetLastLogLineAndNewBeginningIndex(string[] logLines, LogCollection logCollection, out LogLine lastLogLine, out int logLinesStartIndex)
