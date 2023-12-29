@@ -58,19 +58,12 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
-            LblBeginEndFilteringValues = new System.Windows.Forms.Label();
-            LblFilteredMetadataValues = new System.Windows.Forms.Label();
-            LblFilteredMetadata = new System.Windows.Forms.Label();
             txtStatusRead = new System.Windows.Forms.TextBox();
-            LblBeginEndFiltering = new System.Windows.Forms.Label();
-            LblEndDateTime = new System.Windows.Forms.Label();
-            LblBeginDateTime = new System.Windows.Forms.Label();
-            LblEnd = new System.Windows.Forms.Label();
-            LblBegin = new System.Windows.Forms.Label();
             txtLogLines = new System.Windows.Forms.RichTextBox();
             groupBox6 = new System.Windows.Forms.GroupBox();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
+            lblVersion = new System.Windows.Forms.Label();
             UsrLogContentBegin = new UserControlBeginEndFilter();
             tabPage2 = new System.Windows.Forms.TabPage();
             UsrLogContentEnd = new UserControlBeginEndFilter();
@@ -84,7 +77,6 @@
             pnlLogProviders = new System.Windows.Forms.Panel();
             usrFileLogProvider = new LogProviders.File.UserControlFileLogProvider();
             groupBox4 = new System.Windows.Forms.GroupBox();
-            lblVersion = new System.Windows.Forms.Label();
             groupBox3.SuspendLayout();
             grpWriteLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -410,15 +402,7 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(LblBeginEndFilteringValues);
-            groupBox2.Controls.Add(LblFilteredMetadataValues);
-            groupBox2.Controls.Add(LblFilteredMetadata);
             groupBox2.Controls.Add(txtStatusRead);
-            groupBox2.Controls.Add(LblBeginEndFiltering);
-            groupBox2.Controls.Add(LblEndDateTime);
-            groupBox2.Controls.Add(LblBeginDateTime);
-            groupBox2.Controls.Add(LblEnd);
-            groupBox2.Controls.Add(LblBegin);
             groupBox2.Controls.Add(txtLogLines);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(0, 0);
@@ -427,36 +411,6 @@
             groupBox2.TabIndex = 4;
             groupBox2.TabStop = false;
             groupBox2.Text = "Log";
-            // 
-            // LblBeginEndFilteringValues
-            // 
-            LblBeginEndFilteringValues.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblBeginEndFilteringValues.AutoSize = true;
-            LblBeginEndFilteringValues.Location = new System.Drawing.Point(281, 425);
-            LblBeginEndFilteringValues.Name = "LblBeginEndFilteringValues";
-            LblBeginEndFilteringValues.Size = new System.Drawing.Size(12, 15);
-            LblBeginEndFilteringValues.TabIndex = 7;
-            LblBeginEndFilteringValues.Text = "-";
-            // 
-            // LblFilteredMetadataValues
-            // 
-            LblFilteredMetadataValues.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblFilteredMetadataValues.AutoSize = true;
-            LblFilteredMetadataValues.Location = new System.Drawing.Point(281, 406);
-            LblFilteredMetadataValues.Name = "LblFilteredMetadataValues";
-            LblFilteredMetadataValues.Size = new System.Drawing.Size(12, 15);
-            LblFilteredMetadataValues.TabIndex = 7;
-            LblFilteredMetadataValues.Text = "-";
-            // 
-            // LblFilteredMetadata
-            // 
-            LblFilteredMetadata.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblFilteredMetadata.AutoSize = true;
-            LblFilteredMetadata.Location = new System.Drawing.Point(188, 406);
-            LblFilteredMetadata.Name = "LblFilteredMetadata";
-            LblFilteredMetadata.Size = new System.Drawing.Size(57, 15);
-            LblFilteredMetadata.TabIndex = 7;
-            LblFilteredMetadata.Text = "Metadata";
             // 
             // txtStatusRead
             // 
@@ -472,56 +426,6 @@
             txtStatusRead.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             txtStatusRead.Visible = false;
             // 
-            // LblBeginEndFiltering
-            // 
-            LblBeginEndFiltering.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblBeginEndFiltering.AutoSize = true;
-            LblBeginEndFiltering.Location = new System.Drawing.Point(188, 425);
-            LblBeginEndFiltering.Name = "LblBeginEndFiltering";
-            LblBeginEndFiltering.Size = new System.Drawing.Size(71, 15);
-            LblBeginEndFiltering.TabIndex = 7;
-            LblBeginEndFiltering.Text = "Begin/einde";
-            // 
-            // LblEndDateTime
-            // 
-            LblEndDateTime.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblEndDateTime.AutoSize = true;
-            LblEndDateTime.Location = new System.Drawing.Point(72, 425);
-            LblEndDateTime.Name = "LblEndDateTime";
-            LblEndDateTime.Size = new System.Drawing.Size(12, 15);
-            LblEndDateTime.TabIndex = 6;
-            LblEndDateTime.Text = "-";
-            // 
-            // LblBeginDateTime
-            // 
-            LblBeginDateTime.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblBeginDateTime.AutoSize = true;
-            LblBeginDateTime.Location = new System.Drawing.Point(72, 406);
-            LblBeginDateTime.Name = "LblBeginDateTime";
-            LblBeginDateTime.Size = new System.Drawing.Size(12, 15);
-            LblBeginDateTime.TabIndex = 6;
-            LblBeginDateTime.Text = "-";
-            // 
-            // LblEnd
-            // 
-            LblEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblEnd.AutoSize = true;
-            LblEnd.Location = new System.Drawing.Point(6, 425);
-            LblEnd.Name = "LblEnd";
-            LblEnd.Size = new System.Drawing.Size(59, 15);
-            LblEnd.TabIndex = 5;
-            LblEnd.Text = "Log einde";
-            // 
-            // LblBegin
-            // 
-            LblBegin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblBegin.AutoSize = true;
-            LblBegin.Location = new System.Drawing.Point(6, 406);
-            LblBegin.Name = "LblBegin";
-            LblBegin.Size = new System.Drawing.Size(60, 15);
-            LblBegin.TabIndex = 4;
-            LblBegin.Text = "Log begin";
-            // 
             // txtLogLines
             // 
             txtLogLines.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -531,7 +435,7 @@
             txtLogLines.Location = new System.Drawing.Point(6, 15);
             txtLogLines.Name = "txtLogLines";
             txtLogLines.ReadOnly = true;
-            txtLogLines.Size = new System.Drawing.Size(673, 387);
+            txtLogLines.Size = new System.Drawing.Size(673, 422);
             txtLogLines.TabIndex = 3;
             txtLogLines.Text = "";
             txtLogLines.WordWrap = false;
@@ -569,6 +473,17 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tonen vanaf";
             tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lblVersion
+            // 
+            lblVersion.BackColor = System.Drawing.SystemColors.Window;
+            lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            lblVersion.Location = new System.Drawing.Point(186, 379);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new System.Drawing.Size(46, 15);
+            lblVersion.TabIndex = 23;
+            lblVersion.Text = "2.00.00";
+            lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // UsrLogContentBegin
             // 
@@ -713,17 +628,6 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "Layout van het log";
             // 
-            // lblVersion
-            // 
-            lblVersion.BackColor = System.Drawing.SystemColors.Window;
-            lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            lblVersion.Location = new System.Drawing.Point(186, 379);
-            lblVersion.Name = "lblVersion";
-            lblVersion.Size = new System.Drawing.Size(46, 15);
-            lblVersion.TabIndex = 23;
-            lblVersion.Text = "2.00.00";
-            lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -799,14 +703,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.Label LblBegin;
-        private System.Windows.Forms.Label LblEnd;
-        private System.Windows.Forms.Label LblEndDateTime;
-        private System.Windows.Forms.Label LblBeginDateTime;
-        private System.Windows.Forms.Label LblBeginEndFilteringValues;
-        private System.Windows.Forms.Label LblFilteredMetadataValues;
-        private System.Windows.Forms.Label LblFilteredMetadata;
-        private System.Windows.Forms.Label LblBeginEndFiltering;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;

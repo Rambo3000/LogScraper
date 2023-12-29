@@ -218,8 +218,6 @@ namespace LogScraper
             UsrLogContentBegin.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
             UsrLogContentEnd.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
 
-            LblFilteredMetadataValues.Text = CreateMetadataExampleFilterString(currentLogMetadataFilterResult.LogMetadataPropertyAndValuesList);
-
             UpdateVisibilityControls();
 
             UpdateAndWriteExport(currentLogMetadataFilterResult);
@@ -275,10 +273,6 @@ namespace LogScraper
                 if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
             }
 
-            LblBeginDateTime.Text = logExportData.DateTimeFirstLine.Year < 1000 ? "-" : logExportData.DateTimeFirstLine.ToString("yyyy-MM-dd HH:mm:ss");
-            LblEndDateTime.Text = logExportData.DateTimeLastLine.Year < 1000 ? "-" : logExportData.DateTimeLastLine.ToString("yyyy-MM-dd HH:mm:ss");
-
-            LblBeginEndFilteringValues.Text = ParseBeginEndFilteringValue(UsrLogContentBegin) + "/" + ParseBeginEndFilteringValue(UsrLogContentEnd);
             lblNumberOfLogLinesFiltered.Text = logExportData.LineCount.ToString();
             UpdateVisibilityControls();
 
