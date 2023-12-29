@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper
 {
@@ -19,7 +18,7 @@ namespace LogScraper
         public UserControlBeginEndFilter()
         {
             InitializeComponent();
-            SelectedItemBackColor = Brushes.Yellow;
+            SelectedItemBackColor = Brushes.Orange;
         }
 
         public Brush SelectedItemBackColor { get; set; }
@@ -63,7 +62,7 @@ namespace LogScraper
 
             int topIndex = LstLogContent.TopIndex;
 
-            List<LogLineWithToStringOverride> logLineWithToStringOverrides = new();
+            List<LogLineWithToStringOverride> logLineWithToStringOverrides = [];
 
             foreach (LogLine logLine in LogLinesLatestVersion)
             {

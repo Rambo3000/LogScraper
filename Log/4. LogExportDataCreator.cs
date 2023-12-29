@@ -62,7 +62,7 @@ namespace LogScraper.Log
         private static string GetLogLinesAsString(LogMetadataFilterResult filterResult, bool reduceNumberOfLinesForDisplaying, int startIndex, int endIndex, LogExportSettings logExportSettings)
         {
             StringBuilder stringBuilder = new();
-            const int maxNrOfRecordsShown = 500;
+            const int maxNrOfRecordsShown = 1000;
             bool dottedLinesAdded = false;
             for (int i = startIndex; i < endIndex; i++)
             {

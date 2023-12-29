@@ -58,8 +58,13 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            chkShowAllLogLines = new System.Windows.Forms.CheckBox();
+            lblNumberOfLogLinesShown = new System.Windows.Forms.Label();
+            label1 = new System.Windows.Forms.Label();
             txtStatusRead = new System.Windows.Forms.TextBox();
             txtLogLines = new System.Windows.Forms.RichTextBox();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            usrSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
@@ -84,6 +89,7 @@
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
             groupBox2.SuspendLayout();
+            groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -395,6 +401,7 @@
             // 
             // splitContainer2.Panel2
             // 
+            splitContainer2.Panel2.Controls.Add(groupBox5);
             splitContainer2.Panel2.Controls.Add(groupBox6);
             splitContainer2.Size = new System.Drawing.Size(935, 447);
             splitContainer2.SplitterDistance = 685;
@@ -402,6 +409,9 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(chkShowAllLogLines);
+            groupBox2.Controls.Add(lblNumberOfLogLinesShown);
+            groupBox2.Controls.Add(label1);
             groupBox2.Controls.Add(txtStatusRead);
             groupBox2.Controls.Add(txtLogLines);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -411,6 +421,37 @@
             groupBox2.TabIndex = 4;
             groupBox2.TabStop = false;
             groupBox2.Text = "Log";
+            // 
+            // chkShowAllLogLines
+            // 
+            chkShowAllLogLines.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            chkShowAllLogLines.AutoSize = true;
+            chkShowAllLogLines.Location = new System.Drawing.Point(172, 426);
+            chkShowAllLogLines.Name = "chkShowAllLogLines";
+            chkShowAllLogLines.Size = new System.Drawing.Size(180, 19);
+            chkShowAllLogLines.TabIndex = 35;
+            chkShowAllLogLines.Text = "Alle regels tonen (langzamer)";
+            chkShowAllLogLines.UseVisualStyleBackColor = true;
+            chkShowAllLogLines.CheckedChanged += ChkShowAllLogLines_CheckedChanged;
+            // 
+            // lblNumberOfLogLinesShown
+            // 
+            lblNumberOfLogLinesShown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            lblNumberOfLogLinesShown.Location = new System.Drawing.Point(96, 427);
+            lblNumberOfLogLinesShown.Name = "lblNumberOfLogLinesShown";
+            lblNumberOfLogLinesShown.Size = new System.Drawing.Size(80, 15);
+            lblNumberOfLogLinesShown.TabIndex = 34;
+            lblNumberOfLogLinesShown.Text = "-";
+            // 
+            // label1
+            // 
+            label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(6, 427);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(92, 15);
+            label1.TabIndex = 33;
+            label1.Text = "Regels getoond:";
             // 
             // txtStatusRead
             // 
@@ -435,18 +476,37 @@
             txtLogLines.Location = new System.Drawing.Point(6, 15);
             txtLogLines.Name = "txtLogLines";
             txtLogLines.ReadOnly = true;
-            txtLogLines.Size = new System.Drawing.Size(673, 422);
+            txtLogLines.Size = new System.Drawing.Size(673, 409);
             txtLogLines.TabIndex = 3;
             txtLogLines.Text = "";
             txtLogLines.WordWrap = false;
             // 
+            // groupBox5
+            // 
+            groupBox5.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox5.Controls.Add(usrSearch);
+            groupBox5.Location = new System.Drawing.Point(3, 3);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new System.Drawing.Size(243, 79);
+            groupBox5.TabIndex = 2;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Zoeken";
+            // 
+            // usrSearch
+            // 
+            usrSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            usrSearch.Location = new System.Drawing.Point(3, 19);
+            usrSearch.Name = "usrSearch";
+            usrSearch.Size = new System.Drawing.Size(237, 57);
+            usrSearch.TabIndex = 33;
+            // 
             // groupBox6
             // 
+            groupBox6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox6.Controls.Add(tabControl1);
-            groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox6.Location = new System.Drawing.Point(0, 0);
+            groupBox6.Location = new System.Drawing.Point(0, 85);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(246, 447);
+            groupBox6.Size = new System.Drawing.Size(246, 362);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
             groupBox6.Text = "Kies begin en einde";
@@ -459,7 +519,7 @@
             tabControl1.Location = new System.Drawing.Point(3, 19);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(240, 425);
+            tabControl1.Size = new System.Drawing.Size(240, 340);
             tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -469,7 +529,7 @@
             tabPage1.Location = new System.Drawing.Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(232, 397);
+            tabPage1.Size = new System.Drawing.Size(232, 312);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tonen vanaf";
             tabPage1.UseVisualStyleBackColor = true;
@@ -478,7 +538,7 @@
             // 
             lblVersion.BackColor = System.Drawing.SystemColors.Window;
             lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            lblVersion.Location = new System.Drawing.Point(186, 379);
+            lblVersion.Location = new System.Drawing.Point(185, 273);
             lblVersion.Name = "lblVersion";
             lblVersion.Size = new System.Drawing.Size(46, 15);
             lblVersion.TabIndex = 23;
@@ -492,7 +552,7 @@
             UsrLogContentBegin.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrLogContentBegin.Location = new System.Drawing.Point(3, 3);
             UsrLogContentBegin.Name = "UsrLogContentBegin";
-            UsrLogContentBegin.Size = new System.Drawing.Size(226, 391);
+            UsrLogContentBegin.Size = new System.Drawing.Size(226, 306);
             UsrLogContentBegin.TabIndex = 0;
             // 
             // tabPage2
@@ -501,7 +561,7 @@
             tabPage2.Location = new System.Drawing.Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(232, 397);
+            tabPage2.Size = new System.Drawing.Size(232, 312);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Tonen tot";
             tabPage2.UseVisualStyleBackColor = true;
@@ -513,7 +573,7 @@
             UsrLogContentEnd.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrLogContentEnd.Location = new System.Drawing.Point(3, 3);
             UsrLogContentEnd.Name = "UsrLogContentEnd";
-            UsrLogContentEnd.Size = new System.Drawing.Size(226, 391);
+            UsrLogContentEnd.Size = new System.Drawing.Size(226, 306);
             UsrLogContentEnd.TabIndex = 0;
             // 
             // groupBox1
@@ -652,6 +712,7 @@
             splitContainer2.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            groupBox5.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
@@ -721,5 +782,10 @@
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label lblVersion;
+        private UserControlSearch usrSearch;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label lblNumberOfLogLinesShown;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkShowAllLogLines;
     }
 }

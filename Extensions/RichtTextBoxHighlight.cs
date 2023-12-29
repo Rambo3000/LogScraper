@@ -47,42 +47,90 @@ namespace LogScraper.Extensions
                 }
             }
         }
-
-        public static void FindNext(this RichTextBox richTextBox, string searchText, ref int currentIndex)
+        public enum SearchDirection
         {
-            if (currentIndex == -1)
-                currentIndex = 0;
-
-            int nextIndex = richTextBox.Text.IndexOf(searchText, currentIndex, StringComparison.CurrentCultureIgnoreCase);
-            if (nextIndex >= 0)
-            {
-                richTextBox.Select(nextIndex, searchText.Length);
-                richTextBox.SelectionBackColor = Color.Yellow;
-                currentIndex = nextIndex + 1;
-            }
-            else
-            {
-                MessageBox.Show("No more matches found.");
-                currentIndex = -1;
-            }
+            Forward,
+            Backward
         }
-        public static void FindPrevious(this RichTextBox richTextBox, string searchText, ref int currentIndex)
-        {
-            if (currentIndex == -1)
-                currentIndex = richTextBox.Text.Length;
 
-            int prevIndex = richTextBox.Text.LastIndexOf(searchText, currentIndex - 1, StringComparison.CurrentCultureIgnoreCase);
-            if (prevIndex >= 0)
+        public static bool Find(this RichTextBox richTextBox, string searchText, int initialSelectionStartIndex, int initialSelectionLength, SearchDirection direction, bool wholeWord, bool caseSensitive)
+        {
+            int currentIndex = initialSelectionStartIndex;
+            //int initialSelectionLength = richTextBox.SelectionLength;
+            if (currentIndex == -1) currentIndex = 0;
+
+            StringComparison stringComparison = caseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
+
+            int nextIndex = FindIndexRichTextBox(richTextBox, direction, searchText, currentIndex, initialSelectionLength, stringComparison, wholeWord);
+
+            if (nextIndex < 0) return false;
+
+            richTextBox.Select(nextIndex, searchText.Length);
+            richTextBox.SelectionBackColor = Color.Yellow;
+            return true;
+        }
+
+        private static int FindIndexRichTextBox(RichTextBox richTextBox, SearchDirection direction, string searchText, int currentIndex, int initialSelectionLength, StringComparison stringComparison, bool wholeWord, bool isStartedFromBegining = false)
+        {
+            int nextIndex;
+
+            if (direction == SearchDirection.Backward)
             {
-                richTextBox.Select(prevIndex, searchText.Length);
-                richTextBox.SelectionBackColor = Color.Yellow;
-                currentIndex = prevIndex - 1;
+                nextIndex = richTextBox.Text.LastIndexOf(searchText, currentIndex, stringComparison);
+                if (nextIndex == currentIndex && initialSelectionLength == searchText.Length)
+                {
+                    if (currentIndex - 1 >= 0) nextIndex = richTextBox.Text.LastIndexOf(searchText, currentIndex - 1, stringComparison);
+                }
+                // Start from the end if nothing is found:
+                if (nextIndex == -1 && isStartedFromBegining == false)
+                {
+                    if (richTextBox.Text.Length - 1 >= 0) nextIndex = richTextBox.Text.LastIndexOf(searchText, richTextBox.Text.Length - 1, stringComparison);
+                    isStartedFromBegining = true;
+                }
             }
-            else
+            else // SearchDirection.Forward
             {
-                MessageBox.Show("No previous matches found.");
-                currentIndex = -1;
+                nextIndex = richTextBox.Text.IndexOf(searchText, currentIndex, stringComparison);
+                if (nextIndex == currentIndex && initialSelectionLength == searchText.Length)
+                {
+                    if (richTextBox.Text.Length > currentIndex + 1) nextIndex = richTextBox.Text.IndexOf(searchText, currentIndex + 1, stringComparison);
+                }
+                // Start from the beginning if nothing is found:
+                if (nextIndex == -1 && isStartedFromBegining == false)
+                {
+                    if (richTextBox.Text.Length > currentIndex + searchText.Length) nextIndex = richTextBox.Text.IndexOf(searchText, 0, currentIndex + searchText.Length, stringComparison);
+                    isStartedFromBegining = true;
+                }
             }
+
+            if (wholeWord && nextIndex >= 0)
+            {
+                bool isWholeWord = IsWholeWord(richTextBox.Text, nextIndex, searchText.Length);
+                if (!isWholeWord)
+                {
+                    int newSearchIndex = direction == SearchDirection.Forward ? nextIndex + searchText.Length : nextIndex - searchText.Length;
+                    // If not a whole word, continue searching
+                    return FindIndexRichTextBox(richTextBox, direction, searchText, newSearchIndex, initialSelectionLength, stringComparison, wholeWord, isStartedFromBegining);
+                }
+            }
+
+            return nextIndex;
+        }
+
+        private static bool IsWholeWord(string text, int startIndex, int length)
+        {
+            if (startIndex > 0 && char.IsLetterOrDigit(text[startIndex - 1]))
+            {
+                return false;
+            }
+
+            int endIndex = startIndex + length - 1;
+            if (endIndex < text.Length - 1 && char.IsLetterOrDigit(text[endIndex + 1]))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

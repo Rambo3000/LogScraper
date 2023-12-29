@@ -15,6 +15,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static LogScraper.Extensions.RichTextBoxExtensions;
+using static LogScraper.UserControlSearch;
 
 namespace LogScraper
 {
@@ -66,8 +68,45 @@ namespace LogScraper
             UsrLogContentEnd.SelectedItemBackColor = Brushes.GreenYellow;
             usrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
+            usrSearch.Search += UsrSearch_Search;
+
             logProviderManager.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
         }
+
+        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord)
+        {
+            int scrollPosition = txtLogLines.GetCharIndexFromPosition(new Point(0, 0));
+            int selectionStart = txtLogLines.SelectionStart;
+            int selectionLenght = txtLogLines.SelectionLength;
+
+            usrSearch.Enabled = false;
+            Application.DoEvents();
+            try
+            {
+                if (!chkShowAllLogLines.Checked)
+                {
+                    chkShowAllLogLines.Checked = true;
+                    Application.DoEvents();
+                }
+                txtLogLines.ClearHighlighting();
+                txtLogLines.Select(scrollPosition, 0);
+                txtLogLines.ScrollToCaret();
+                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
+                bool found = txtLogLines.Find(searchQuery.Trim(), selectionStart, selectionLenght, searchDirection, wholeWord, caseSensitive);
+                usrSearch.SetResultsFound(found);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
+            }
+            finally
+            {
+                Application.DoEvents();
+                usrSearch.Enabled = true;
+                usrSearch.Focus();
+            }
+        }
+
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
             try
@@ -263,17 +302,30 @@ namespace LogScraper
 
             logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogLayout)cboLogLayout.SelectedItem).RemoveMetaDataCriteria;
 
-            LogExportData logExportData = LogExportDataCreator.CreateLogExportData(logMetadataFilterResult, logExportSettings, true);
+            LogExportData logExportData = LogExportDataCreator.CreateLogExportData(logMetadataFilterResult, logExportSettings, !chkShowAllLogLines.Checked);
+            string lineCount = logExportData.LineCount.ToString();
+
+            if (chkShowAllLogLines.Checked)
+            {
+                lblNumberOfLogLinesShown.Text = lineCount + " (alle)";
+                lblNumberOfLogLinesShown.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblNumberOfLogLinesShown.Text = "2000/" + lineCount;
+                lblNumberOfLogLinesShown.ForeColor = Color.DarkRed;
+            }
+
+            lblNumberOfLogLinesFiltered.Text = lineCount;
             txtLogLines.Text = logExportData.ExportRaw;
 
             if (txtLogLines.Lines.Length > 0)
             {
-                if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Yellow, Color.Black);
+                if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Orange, Color.Black);
                 // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
                 if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
             }
 
-            lblNumberOfLogLinesFiltered.Text = logExportData.LineCount.ToString();
             UpdateVisibilityControls();
 
             LogExporterWorker logExporter = new(txtWriteToFilePath.Text);
@@ -485,6 +537,10 @@ namespace LogScraper
         {
             FilterLoglines();
         }
+        private void ChkShowAllLogLines_CheckedChanged(object sender, EventArgs e)
+        {
+            HandleLogContentFilterUpdate(sender, e);
+        }
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
@@ -506,6 +562,5 @@ namespace LogScraper
             Reset();
         }
         #endregion
-
     }
 }
