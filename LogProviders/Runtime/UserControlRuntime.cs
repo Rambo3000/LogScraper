@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using LogScraper.Credentials;
-using LogScraper.SourceAdapters;
-using LogScraper.SourceAdapters.Http;
+using LogScraper.Sources.Adapters;
+using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.LogProviders.Runtime
 {

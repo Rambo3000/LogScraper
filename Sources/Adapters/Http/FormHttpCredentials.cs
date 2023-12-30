@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using LogScraper.Log.Collection;
-using LogScraper.SourceAdapters.Http;
+using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.SourceAdapters
 {

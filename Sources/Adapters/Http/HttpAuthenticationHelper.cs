@@ -2,7 +2,7 @@
 using System;
 using System.Net;
 
-namespace LogScraper.SourceAdapters.Http
+namespace LogScraper.Sources.Adapters.Http
 {
     internal class HttpAuthenticationHelper
     {

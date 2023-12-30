@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using LogScraper.LogTransformers;
-using LogScraper.SourceAdapters;
-namespace LogScraper.SourceProcessing
+using LogScraper.Sources.Adapters;
+
+namespace LogScraper.Sources.Workers
 {
     internal class SourceProcessingManager
     {

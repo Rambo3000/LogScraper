@@ -1,5 +1,5 @@
 ﻿using System;
-using LogScraper.SourceAdapters;
+using LogScraper.Sources.Adapters;
 
 namespace LogScraper.LogProviders
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-using LogScraper.SourceAdapters;
+using LogScraper.Sources.Adapters;
 
 namespace LogScraper.LogProviders.File
 {

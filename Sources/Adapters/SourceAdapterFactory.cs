@@ -1,7 +1,7 @@
-﻿using LogScraper.SourceAdapters.File;
-using LogScraper.SourceAdapters.Http;
+﻿using LogScraper.Sources.Adapters.File;
+using LogScraper.Sources.Adapters.Http;
 
-namespace LogScraper.SourceAdapters
+namespace LogScraper.Sources.Adapters
 {
     class SourceAdapterFactory
     {

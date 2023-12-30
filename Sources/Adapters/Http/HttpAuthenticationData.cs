@@ -1,4 +1,4 @@
-﻿namespace LogScraper.SourceAdapters.Http
+﻿namespace LogScraper.Sources.Adapters.Http
 {
     public class HttpAuthenticationData
     {

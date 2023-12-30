@@ -1,13 +1,14 @@
 ﻿using LogScraper.Configuration;
 using LogScraper.Configuration.LogProviderConfig;
 using LogScraper.Export;
+using LogScraper.Export.Workers;
 using LogScraper.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Collection;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
-using LogScraper.SourceAdapters;
-using LogScraper.SourceProcessing;
+using LogScraper.Sources.Adapters;
+using LogScraper.Sources.Workers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

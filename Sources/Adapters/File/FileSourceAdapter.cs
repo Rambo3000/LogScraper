@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using LogScraper.Sources.Adapters;
 
-namespace LogScraper.SourceAdapters.File
+namespace LogScraper.Sources.Adapters.File
 {
     class FileSourceAdapter(string filePath) : ISourceAdapter
     {

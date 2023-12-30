@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using LogScraper.SourceAdapters;
+using LogScraper.Sources.Adapters;
 
-namespace LogScraper.SourceProcessing
+namespace LogScraper.Sources.Workers
 {
     internal class SourceProcessingWorker
     {

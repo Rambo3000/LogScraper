@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace LogScraper.SourceAdapters
+namespace LogScraper.Sources.Adapters
 {
     public interface ISourceAdapter
     {

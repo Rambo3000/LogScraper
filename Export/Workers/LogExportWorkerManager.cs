@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-namespace LogScraper.Export
+namespace LogScraper.Export.Workers
 {
     internal class LogExportWorkerManager
     {
@@ -33,7 +33,7 @@ namespace LogScraper.Export
             }
 
             isProcessingQueue = true;
-            
+
             // Dequeue and discard all workers except the last one
             while (workerQueue.Count > 1)
             {

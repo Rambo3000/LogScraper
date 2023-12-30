@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace LogScraper.Export
+namespace LogScraper.Export.Workers
 {
     internal class LogExporterWorker(string logFilePath)
     {

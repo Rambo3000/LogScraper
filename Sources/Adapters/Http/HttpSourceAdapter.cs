@@ -3,8 +3,10 @@ using System.Net.Http;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using LogScraper.Sources.Adapters;
+using LogScraper.SourceAdapters;
 
-namespace LogScraper.SourceAdapters.Http
+namespace LogScraper.Sources.Adapters.Http
 {
     internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri) : ISourceAdapter
     {
