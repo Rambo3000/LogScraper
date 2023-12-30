@@ -96,7 +96,15 @@ namespace LogScraper
             {
                 if (logLineStringOverride.OriginalLogLine == selectedLogLine.OriginalLogLine)
                 {
-                    LstLogContent.SelectedItem = logLineStringOverride;
+                    try
+                    {
+                        ignoreSelectedItemChanged = true;
+                        LstLogContent.SelectedItem = logLineStringOverride;
+                    }
+                    finally
+                    {
+                        ignoreSelectedItemChanged = false;
+                    }
                     break;
                 }
             }
@@ -151,9 +159,10 @@ namespace LogScraper
             FilterChanged?.Invoke(this, e);
         }
 
+        private bool ignoreSelectedItemChanged = false;
         private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            OnFilterChanged(EventArgs.Empty);
+            if (ignoreSelectedItemChanged == false) OnFilterChanged(EventArgs.Empty);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)

@@ -314,23 +314,28 @@ namespace LogScraper
             logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogLayout)cboLogLayout.SelectedItem).RemoveMetaDataCriteria;
 
             LogExportData logExportData = LogExportDataCreator.CreateLogExportData(logMetadataFilterResult, logExportSettings, !chkShowAllLogLines.Checked);
-            string lineCount = logExportData.LineCount.ToString();
 
-            if (chkShowAllLogLines.Checked)
+            if (chkShowAllLogLines.Checked || logExportData.LineCount < 2000)
             {
-                lblNumberOfLogLinesShown.Text = lineCount + " (alle)";
+                lblNumberOfLogLinesShown.Text = logExportData.LineCount.ToString() + " (alle)";
                 lblNumberOfLogLinesShown.ForeColor = Color.Black;
             }
             else
             {
-                lblNumberOfLogLinesShown.Text = "2000/" + lineCount;
+                lblNumberOfLogLinesShown.Text = "2000/" + logExportData.LineCount.ToString();
                 lblNumberOfLogLinesShown.ForeColor = Color.DarkRed;
             }
 
-            lblNumberOfLogLinesFiltered.Text = lineCount;
-            txtLogLines.Text = logExportData.ExportRaw;
+            lblNumberOfLogLinesFiltered.Text = logExportData.LineCount.ToString();
 
+            int initialSelectionStart = txtLogLines.SelectionStart;
+            int initialSelectionLength = txtLogLines.SelectionLength;
+
+            txtLogLines.SuspendDrawing();
+            txtLogLines.Text = logExportData.ExportRaw;
             HighlightBeginAndEndFilterLines();
+            txtLogLines.Select(initialSelectionStart, initialSelectionLength);
+            txtLogLines.ResumeDrawing();
 
             UpdateVisibilityControls();
 
@@ -345,7 +350,7 @@ namespace LogScraper
             {
                 if (UsrLogContentBegin.SelectedItem != null) txtLogLines.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Orange, Color.Black);
                 // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
-                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black); ;
+                if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black);
             }
         }
 
@@ -447,17 +452,19 @@ namespace LogScraper
         private void FlowPanelFilters_SizeChanged(object sender, EventArgs e)
         {
             int totalHeightControls = 0;
-            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
+            FlowPanelFilters.SuspendDrawing();
+            foreach (Control control in FlowPanelFilters.Controls)
             {
                 totalHeightControls += control.Height;
             }
             FlowPanelFilters.VerticalScroll.Visible = totalHeightControls + 15 > FlowPanelFilters.Height;
             FlowPanelFilters.HorizontalScroll.Enabled = false;
             FlowPanelFilters.HorizontalScroll.Visible = false;
-            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
+            foreach (Control control in FlowPanelFilters.Controls)
             {
                 control.Width = FlowPanelFilters.Width - (FlowPanelFilters.VerticalScroll.Visible ? 20 : 0);
             }
+            FlowPanelFilters.ResumeDrawing();
         }
         #endregion
 

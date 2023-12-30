@@ -21,9 +21,6 @@ namespace LogScraper.Extensions
             richTextBox.Select(start, length);
             richTextBox.SelectionBackColor = backColor;
             richTextBox.SelectionColor = foreColor;
-
-            // Clear the selection to avoid further typing in highlighted style
-            richTextBox.SelectionLength = 0;
         }
         public static void ClearHighlighting(this RichTextBox richTextBox)
         {
