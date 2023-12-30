@@ -73,51 +73,6 @@ namespace LogScraper
 
             logProviderManager.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
         }
-
-        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord)
-        {
-            int scrollPosition = txtLogLines.GetCharIndexFromPosition(new Point(0, 0));
-            int selectionStart = txtLogLines.SelectionStart;
-            int selectionLenght = txtLogLines.SelectionLength;
-
-            txtLogLines.SuspendDrawing();
-            usrSearch.Enabled = false;
-            Application.DoEvents();
-            try
-            {
-                if (!chkShowAllLogLines.Checked)
-                {
-                    chkShowAllLogLines.Checked = true;
-                    Application.DoEvents();
-                }
-
-                //Clean the logline background and reinster begin and end filters
-                txtLogLines.ClearHighlighting();
-                HighlightBeginAndEndFilterLines();
-
-                //Return the scrolling to its original position
-                txtLogLines.Select(scrollPosition, 0);
-                txtLogLines.ScrollToCaret();
-                txtLogLines.Select(selectionStart, selectionLenght);
-
-                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-                bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive);
-
-                usrSearch.SetResultsFound(found);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
-            }
-            finally
-            {
-                Application.DoEvents();
-                usrSearch.Enabled = true;
-                usrSearch.Focus();
-                txtLogLines.ResumeDrawing();
-            }
-        }
-
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
             try
@@ -378,6 +333,52 @@ namespace LogScraper
         }
         #endregion
 
+        #region Search
+        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord)
+        {
+            int scrollPosition = txtLogLines.GetCharIndexFromPosition(new Point(0, 0));
+            int selectionStart = txtLogLines.SelectionStart;
+            int selectionLenght = txtLogLines.SelectionLength;
+
+            txtLogLines.SuspendDrawing();
+            usrSearch.Enabled = false;
+            Application.DoEvents();
+            try
+            {
+                if (!chkShowAllLogLines.Checked)
+                {
+                    chkShowAllLogLines.Checked = true;
+                    Application.DoEvents();
+                }
+
+                //Clean the logline background and reinster begin and end filters
+                txtLogLines.ClearHighlighting();
+                HighlightBeginAndEndFilterLines();
+
+                //Return the scrolling to its original position
+                txtLogLines.Select(scrollPosition, 0);
+                txtLogLines.ScrollToCaret();
+                txtLogLines.Select(selectionStart, selectionLenght);
+
+                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
+                bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive);
+
+                usrSearch.SetResultsFound(found);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
+            }
+            finally
+            {
+                Application.DoEvents();
+                usrSearch.Enabled = true;
+                usrSearch.Focus();
+                txtLogLines.ResumeDrawing();
+            }
+        }
+        #endregion
+
         #region Reset and Clear
         private void ClearLog()
         {
@@ -487,6 +488,9 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
+            lblBeginFilterEnabled.Visible = UsrLogContentBegin.FilterIsEnabled;
+            lblEndFilterEnabled.Visible=UsrLogContentEnd.FilterIsEnabled;
+
             if (currentLogMetadataFilterResult != null) UpdateAndWriteExport(currentLogMetadataFilterResult);
         }
         private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)

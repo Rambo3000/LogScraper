@@ -58,6 +58,8 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            lblEndFilterEnabled = new System.Windows.Forms.Label();
+            lblBeginFilterEnabled = new System.Windows.Forms.Label();
             chkShowAllLogLines = new System.Windows.Forms.CheckBox();
             lblNumberOfLogLinesShown = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
@@ -409,6 +411,8 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(lblEndFilterEnabled);
+            groupBox2.Controls.Add(lblBeginFilterEnabled);
             groupBox2.Controls.Add(chkShowAllLogLines);
             groupBox2.Controls.Add(lblNumberOfLogLinesShown);
             groupBox2.Controls.Add(label1);
@@ -421,6 +425,30 @@
             groupBox2.TabIndex = 4;
             groupBox2.TabStop = false;
             groupBox2.Text = "Log";
+            // 
+            // lblEndFilterEnabled
+            // 
+            lblEndFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            lblEndFilterEnabled.AutoSize = true;
+            lblEndFilterEnabled.BackColor = System.Drawing.Color.GreenYellow;
+            lblEndFilterEnabled.Location = new System.Drawing.Point(593, 427);
+            lblEndFilterEnabled.Name = "lblEndFilterEnabled";
+            lblEndFilterEnabled.Size = new System.Drawing.Size(86, 15);
+            lblEndFilterEnabled.TabIndex = 37;
+            lblEndFilterEnabled.Text = "Eindfilter actief";
+            lblEndFilterEnabled.Visible = false;
+            // 
+            // lblBeginFilterEnabled
+            // 
+            lblBeginFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            lblBeginFilterEnabled.AutoSize = true;
+            lblBeginFilterEnabled.BackColor = System.Drawing.Color.Orange;
+            lblBeginFilterEnabled.Location = new System.Drawing.Point(498, 427);
+            lblBeginFilterEnabled.Name = "lblBeginFilterEnabled";
+            lblBeginFilterEnabled.Size = new System.Drawing.Size(93, 15);
+            lblBeginFilterEnabled.TabIndex = 36;
+            lblBeginFilterEnabled.Text = "Beginfilter actief";
+            lblBeginFilterEnabled.Visible = false;
             // 
             // chkShowAllLogLines
             // 
@@ -790,5 +818,7 @@
         private System.Windows.Forms.Label lblNumberOfLogLinesShown;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox chkShowAllLogLines;
+        private System.Windows.Forms.Label lblEndFilterEnabled;
+        private System.Windows.Forms.Label lblBeginFilterEnabled;
     }
 }

@@ -153,6 +153,9 @@ namespace LogScraper
                 return 0;
             }
         }
+
+        public bool FilterIsEnabled { get { return LstLogContent.SelectedIndex != -1; } }
+
         // Method to raise the custom FilterChanged event.
         protected virtual void OnFilterChanged(EventArgs e)
         {
@@ -160,6 +163,7 @@ namespace LogScraper
         }
 
         private bool ignoreSelectedItemChanged = false;
+
         private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ignoreSelectedItemChanged == false) OnFilterChanged(EventArgs.Empty);
