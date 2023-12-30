@@ -440,7 +440,7 @@
             // 
             // lblBeginFilterEnabled
             // 
-            lblBeginFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            lblBeginFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             lblBeginFilterEnabled.AutoSize = true;
             lblBeginFilterEnabled.BackColor = System.Drawing.Color.Orange;
             lblBeginFilterEnabled.Location = new System.Drawing.Point(498, 427);
