@@ -194,15 +194,6 @@ namespace LogScraper
 
             if (LstFilterValues.Items.Count == 0) return;
 
-            if (LstFilterValues.Items.Cast<ListViewItem>().Where(item => item != null && item.Checked).Any())
-            {
-                LblLogFilterDescription.Font = new Font(LblLogFilterDescription.Font.FontFamily, LblLogFilterDescription.Font.Size, FontStyle.Bold);
-            }
-            else
-            {
-                LblLogFilterDescription.Font = new Font(LblLogFilterDescription.Font.FontFamily, LblLogFilterDescription.Font.Size, FontStyle.Regular);
-            }
-
             OnFilterChanged(EventArgs.Empty);
         }
 

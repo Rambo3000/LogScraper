@@ -36,9 +36,10 @@
             // LblLogFilterDescription
             // 
             LblLogFilterDescription.AutoSize = true;
-            LblLogFilterDescription.Location = new System.Drawing.Point(26, 3);
+            LblLogFilterDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            LblLogFilterDescription.Location = new System.Drawing.Point(20, 3);
             LblLogFilterDescription.Name = "LblLogFilterDescription";
-            LblLogFilterDescription.Size = new System.Drawing.Size(74, 15);
+            LblLogFilterDescription.Size = new System.Drawing.Size(77, 15);
             LblLogFilterDescription.TabIndex = 8;
             LblLogFilterDescription.Text = "Projectnaam";
             // 
@@ -48,6 +49,7 @@
             BtnOpenOrCollapse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             BtnOpenOrCollapse.Image = Properties.Resources.chevron_down;
             BtnOpenOrCollapse.Location = new System.Drawing.Point(3, 0);
+            BtnOpenOrCollapse.Margin = new System.Windows.Forms.Padding(0);
             BtnOpenOrCollapse.Name = "BtnOpenOrCollapse";
             BtnOpenOrCollapse.Size = new System.Drawing.Size(18, 21);
             BtnOpenOrCollapse.TabIndex = 9;

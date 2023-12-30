@@ -41,29 +41,30 @@
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(3, 3);
+            txtSearch.Location = new System.Drawing.Point(0, 0);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(154, 23);
+            txtSearch.Size = new System.Drawing.Size(181, 23);
             txtSearch.TabIndex = 0;
             txtSearch.KeyDown += TxtSearch_KeyDown;
             // 
             // btnSearchNext
             // 
             btnSearchNext.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnSearchNext.BackgroundImage = Properties.Resources.arrow_right;
+            btnSearchNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             btnSearchNext.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            btnSearchNext.Location = new System.Drawing.Point(193, 3);
+            btnSearchNext.Location = new System.Drawing.Point(213, -1);
             btnSearchNext.Name = "btnSearchNext";
-            btnSearchNext.Size = new System.Drawing.Size(30, 23);
+            btnSearchNext.Size = new System.Drawing.Size(31, 25);
             btnSearchNext.TabIndex = 1;
-            btnSearchNext.Text = ">";
             btnSearchNext.UseVisualStyleBackColor = true;
             btnSearchNext.Click += BtnSearchNext_Click;
             // 
             // chkCaseSensitive
             // 
             chkCaseSensitive.Appearance = System.Windows.Forms.Appearance.Button;
-            chkCaseSensitive.AutoSize = true;
-            chkCaseSensitive.Location = new System.Drawing.Point(3, 28);
+            chkCaseSensitive.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            chkCaseSensitive.Location = new System.Drawing.Point(3, 27);
             chkCaseSensitive.Name = "chkCaseSensitive";
             chkCaseSensitive.Size = new System.Drawing.Size(31, 25);
             chkCaseSensitive.TabIndex = 3;
@@ -74,24 +75,25 @@
             // btnSearchPrevious
             // 
             btnSearchPrevious.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnSearchPrevious.BackgroundImage = Properties.Resources.arrow_left;
+            btnSearchPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             btnSearchPrevious.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            btnSearchPrevious.Location = new System.Drawing.Point(163, 3);
+            btnSearchPrevious.Location = new System.Drawing.Point(183, -1);
             btnSearchPrevious.Name = "btnSearchPrevious";
-            btnSearchPrevious.Size = new System.Drawing.Size(30, 23);
+            btnSearchPrevious.Size = new System.Drawing.Size(31, 25);
             btnSearchPrevious.TabIndex = 4;
-            btnSearchPrevious.Text = "<";
             btnSearchPrevious.UseVisualStyleBackColor = true;
             btnSearchPrevious.Click += BtnSearchPrevious_Click;
             // 
             // chkWholeWordsOnly
             // 
             chkWholeWordsOnly.Appearance = System.Windows.Forms.Appearance.Button;
-            chkWholeWordsOnly.AutoSize = true;
-            chkWholeWordsOnly.Location = new System.Drawing.Point(34, 28);
+            chkWholeWordsOnly.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            chkWholeWordsOnly.Location = new System.Drawing.Point(36, 27);
             chkWholeWordsOnly.Name = "chkWholeWordsOnly";
-            chkWholeWordsOnly.Size = new System.Drawing.Size(44, 25);
+            chkWholeWordsOnly.Size = new System.Drawing.Size(38, 25);
             chkWholeWordsOnly.TabIndex = 5;
-            chkWholeWordsOnly.Text = "|Abc|";
+            chkWholeWordsOnly.Text = "|Ab|";
             chkWholeWordsOnly.UseVisualStyleBackColor = true;
             chkWholeWordsOnly.CheckedChanged += ChkWholeWordsOnly_CheckedChanged;
             // 
@@ -99,25 +101,25 @@
             // 
             lblNoResults.AutoSize = true;
             lblNoResults.ForeColor = System.Drawing.Color.FromArgb(192, 0, 0);
-            lblNoResults.Location = new System.Drawing.Point(84, 33);
+            lblNoResults.Location = new System.Drawing.Point(80, 32);
             lblNoResults.Name = "lblNoResults";
-            lblNoResults.Size = new System.Drawing.Size(89, 15);
+            lblNoResults.Size = new System.Drawing.Size(145, 15);
             lblNoResults.TabIndex = 6;
-            lblNoResults.Text = "Geen resultaten";
+            lblNoResults.Text = "Geen resultaten gevonden";
             lblNoResults.Visible = false;
             // 
             // UserControlSearch
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(btnSearchNext);
+            Controls.Add(btnSearchPrevious);
             Controls.Add(lblNoResults);
             Controls.Add(chkWholeWordsOnly);
-            Controls.Add(btnSearchPrevious);
             Controls.Add(chkCaseSensitive);
-            Controls.Add(btnSearchNext);
             Controls.Add(txtSearch);
             Name = "UserControlSearch";
-            Size = new System.Drawing.Size(223, 59);
+            Size = new System.Drawing.Size(244, 52);
             ResumeLayout(false);
             PerformLayout();
         }

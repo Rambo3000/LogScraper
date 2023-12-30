@@ -90,7 +90,7 @@ namespace LogScraper
                     chkShowAllLogLines.Checked = true;
                     Application.DoEvents();
                 }
-                
+
                 //Clean the logline background and reinster begin and end filters
                 txtLogLines.ClearHighlighting();
                 HighlightBeginAndEndFilterLines();
@@ -102,7 +102,7 @@ namespace LogScraper
 
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
                 bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive);
-                
+
                 usrSearch.SetResultsFound(found);
             }
             catch (Exception ex)
@@ -579,6 +579,21 @@ namespace LogScraper
             if (logProviderConfig.DefaultLogLayout != null) cboLogLayout.SelectedItem = logProviderConfig.DefaultLogLayout;
 
             Reset();
+        }
+        #endregion
+
+        #region Form key shortcuts
+        private void FormLogScraper_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check for Ctrl+F key combination
+            if (e.Control && e.KeyCode == Keys.F)
+            {
+                // Set focus to the search TextBox
+                usrSearch.Focus();
+
+                // Suppress the key event to prevent further processing
+                e.SuppressKeyPress = true;
+            }
         }
         #endregion
     }

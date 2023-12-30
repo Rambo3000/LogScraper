@@ -700,9 +700,11 @@
             Controls.Add(splitContainer1);
             Controls.Add(groupBox3);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
             Name = "FormLogScraper";
             Text = "Log Scraper - GEBRUIK OP EIGEN RISICO - NIET GEBRUIKEN OP PRODUCTIE OMGEVINGEN";
             Load += FormLogScraper_Load;
+            KeyDown += FormLogScraper_KeyDown;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             grpWriteLog.ResumeLayout(false);
