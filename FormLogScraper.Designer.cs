@@ -490,7 +490,7 @@
             txtStatusRead.Multiline = true;
             txtStatusRead.Name = "txtStatusRead";
             txtStatusRead.ReadOnly = true;
-            txtStatusRead.Size = new System.Drawing.Size(497, 50);
+            txtStatusRead.Size = new System.Drawing.Size(497, 59);
             txtStatusRead.TabIndex = 32;
             txtStatusRead.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             txtStatusRead.Visible = false;

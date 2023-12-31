@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -34,7 +34,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
+    <None Remove="CODE_OF_CONDUCT.md" />
+    <None Remove="LICENSE" />
     <None Remove="README.md" />
+    <None Remove="SECURITY.md" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Resources.Designer.cs">

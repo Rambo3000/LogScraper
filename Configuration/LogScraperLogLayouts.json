@@ -85,7 +85,7 @@
     {
       "description": "Blueriq vanuit splunk in JSON",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
-      "Transformers": [
+      "transformers": [
         {
           "type": "ReverseOrder"
         },
