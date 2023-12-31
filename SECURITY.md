@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-This tool is not supposed to be used on production environments and (therefore) does not get securty support. A security issue can be reported and will be handled like a normal issue.
+This tool is not intended for use in production environments and, as such, does not receive security support. Security issues can be reported and will be handled similarly to normal issues.
 
 ## Reporting a Vulnerability
 
-Please report a vulerability through the Issues section of Github, as can be found here: https://github.com/Rambo3000/LogScraper/issues
+If you discover a vulnerability, please report it through the GitHub Issues section [here](https://github.com/Rambo3000/LogScraper/issues).
