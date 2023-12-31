@@ -36,6 +36,7 @@
     <None Remove=".gitignore" />
     <None Remove="CODE_OF_CONDUCT.md" />
     <None Remove="LICENSE" />
+    <None Remove="PULL_REQUEST_TEMPLATE.md" />
     <None Remove="README.md" />
     <None Remove="SECURITY.md" />
   </ItemGroup>
