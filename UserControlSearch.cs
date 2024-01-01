@@ -5,7 +5,7 @@ namespace LogScraper
 {
     public partial class UserControlSearch : UserControl
     {
-        public event Action<string, SearchDirectionUserControl, bool, bool> Search;
+        public event Action<string, SearchDirectionUserControl, bool, bool, bool> Search;
         public enum SearchDirectionUserControl
         {
             Forward,
@@ -17,6 +17,7 @@ namespace LogScraper
             InitializeComponent();
             ToolTip.SetToolTip(chkWholeWordsOnly, "Alleen hele woorden zoeken");
             ToolTip.SetToolTip(chkCaseSensitive, "Hoofdletter gevoelig zoeken");
+            ToolTip.SetToolTip(chkWrapAround, "Zoek verder vanaf het begin");
             ToolTip.SetToolTip(btnSearchNext, "Volgende zoeken");
             ToolTip.SetToolTip(btnSearchPrevious, "Vorige zoeken");
         }
@@ -29,13 +30,13 @@ namespace LogScraper
         private void BtnSearchNext_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtSearch.Text.Trim())) return;
-            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Forward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Forward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
         }
 
         private void BtnSearchPrevious_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtSearch.Text)) return;
-            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Backward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Backward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
         }
 
         private void TxtSearch_KeyDown(object sender, KeyEventArgs e)

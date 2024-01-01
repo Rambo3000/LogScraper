@@ -36,6 +36,7 @@
             chkWholeWordsOnly = new System.Windows.Forms.CheckBox();
             ToolTip = new System.Windows.Forms.ToolTip(components);
             lblNoResults = new System.Windows.Forms.Label();
+            chkWrapAround = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // txtSearch
@@ -89,7 +90,7 @@
             // 
             chkWholeWordsOnly.Appearance = System.Windows.Forms.Appearance.Button;
             chkWholeWordsOnly.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            chkWholeWordsOnly.Location = new System.Drawing.Point(36, 27);
+            chkWholeWordsOnly.Location = new System.Drawing.Point(35, 27);
             chkWholeWordsOnly.Name = "chkWholeWordsOnly";
             chkWholeWordsOnly.Size = new System.Drawing.Size(38, 25);
             chkWholeWordsOnly.TabIndex = 5;
@@ -101,17 +102,32 @@
             // 
             lblNoResults.AutoSize = true;
             lblNoResults.ForeColor = System.Drawing.Color.FromArgb(192, 0, 0);
-            lblNoResults.Location = new System.Drawing.Point(80, 32);
+            lblNoResults.Location = new System.Drawing.Point(110, 32);
             lblNoResults.Name = "lblNoResults";
-            lblNoResults.Size = new System.Drawing.Size(145, 15);
+            lblNoResults.Size = new System.Drawing.Size(89, 15);
             lblNoResults.TabIndex = 6;
-            lblNoResults.Text = "Geen resultaten gevonden";
+            lblNoResults.Text = "Geen resultaten";
             lblNoResults.Visible = false;
+            // 
+            // chkWrapAround
+            // 
+            chkWrapAround.Appearance = System.Windows.Forms.Appearance.Button;
+            chkWrapAround.BackgroundImage = Properties.Resources.arrow_wraparound;
+            chkWrapAround.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            chkWrapAround.Checked = true;
+            chkWrapAround.CheckState = System.Windows.Forms.CheckState.Checked;
+            chkWrapAround.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            chkWrapAround.Location = new System.Drawing.Point(74, 27);
+            chkWrapAround.Name = "chkWrapAround";
+            chkWrapAround.Size = new System.Drawing.Size(30, 25);
+            chkWrapAround.TabIndex = 7;
+            chkWrapAround.UseVisualStyleBackColor = true;
             // 
             // UserControlSearch
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(chkWrapAround);
             Controls.Add(btnSearchNext);
             Controls.Add(btnSearchPrevious);
             Controls.Add(lblNoResults);
@@ -133,5 +149,6 @@
         private System.Windows.Forms.CheckBox chkWholeWordsOnly;
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label lblNoResults;
+        private System.Windows.Forms.CheckBox chkWrapAround;
     }
 }

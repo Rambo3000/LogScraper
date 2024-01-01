@@ -334,7 +334,7 @@ namespace LogScraper
         #endregion
 
         #region Search
-        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord)
+        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
         {
             int scrollPosition = txtLogLines.GetCharIndexFromPosition(new Point(0, 0));
             int selectionStart = txtLogLines.SelectionStart;
@@ -361,7 +361,7 @@ namespace LogScraper
                 txtLogLines.Select(selectionStart, selectionLenght);
 
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-                bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive);
+                bool found = txtLogLines.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
 
                 usrSearch.SetResultsFound(found);
             }
