@@ -16,7 +16,7 @@ namespace LogScraper.LogProviders.File
             InitializeComponent();
             if (Debugger.IsAttached)
             {
-                txtFilePath.Text = "Stubs/Inverted log.txt";
+                txtFilePath.Text = "Stubs/JSONInvertedExample.log";
             }
         }
 
