@@ -34,6 +34,7 @@
             ChkShowExtraLines = new System.Windows.Forms.CheckBox();
             TxtExtraLines = new System.Windows.Forms.TextBox();
             chkShowErrors = new System.Windows.Forms.CheckBox();
+            txtSearch = new System.Windows.Forms.TextBox();
             SuspendLayout();
             // 
             // LstLogContent
@@ -43,10 +44,9 @@
             LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             LstLogContent.FormattingEnabled = true;
             LstLogContent.IntegralHeight = false;
-            LstLogContent.ItemHeight = 15;
-            LstLogContent.Location = new System.Drawing.Point(0, 33);
+            LstLogContent.Location = new System.Drawing.Point(0, 62);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(216, 97);
+            LstLogContent.Size = new System.Drawing.Size(216, 68);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -110,12 +110,25 @@
             chkShowErrors.UseVisualStyleBackColor = true;
             chkShowErrors.CheckedChanged += ChkShowErrors_CheckedChanged;
             // 
+            // txtSearch
+            // 
+            txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtSearch.Location = new System.Drawing.Point(0, 33);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new System.Drawing.Size(213, 23);
+            txtSearch.TabIndex = 7;
+            txtSearch.TextChanged += TxtSearch_TextChanged;
+            txtSearch.Enter += TxtSearch_Enter;
+            txtSearch.KeyDown += TxtSearch_KeyDown;
+            txtSearch.Leave += TxtSearch_Leave;
+            // 
             // UserControlBeginEndFilter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
+            Controls.Add(txtSearch);
             Controls.Add(chkShowErrors);
             Controls.Add(TxtExtraLines);
             Controls.Add(ChkShowExtraLines);
@@ -136,5 +149,6 @@
         private System.Windows.Forms.CheckBox ChkShowExtraLines;
         private System.Windows.Forms.TextBox TxtExtraLines;
         private System.Windows.Forms.CheckBox chkShowErrors;
+        private System.Windows.Forms.TextBox txtSearch;
     }
 }

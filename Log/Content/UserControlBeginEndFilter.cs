@@ -1,4 +1,5 @@
-﻿using LogScraper.Log.Collection;
+﻿using LogScraper.Extensions;
+using LogScraper.Log.Collection;
 using LogScraper.Log.Content;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace LogScraper
 {
     internal partial class UserControlBeginEndFilter : UserControl
     {
+        private const string DefaulSearchtText = "Filteren...";
+
         public event EventHandler FilterChanged;
         /// <summary>
         ///     Used for showing the error lines for non-error LogContentProperties
@@ -19,6 +22,8 @@ namespace LogScraper
         {
             InitializeComponent();
             SelectedItemBackColor = Brushes.Orange;
+            //Preset the default search text
+            TxtSearch_Leave(null, null);
         }
 
         public Brush SelectedItemBackColor { get; set; }
@@ -64,6 +69,9 @@ namespace LogScraper
 
             List<LogLineWithToStringOverride> logLineWithToStringOverrides = [];
 
+            string filter = txtSearch.Text.Trim();
+            if (filter == DefaulSearchtText) filter = null;
+
             foreach (LogLine logLine in LogLinesLatestVersion)
             {
                 if (logLine.LogContentProperties == null) continue;
@@ -75,6 +83,12 @@ namespace LogScraper
                     if (content == null) continue;
                     isError = true;
                 }
+
+                if (!isError && !string.IsNullOrEmpty(filter))
+                {
+                    if (!content.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
+                }
+
                 LogLineWithToStringOverride logLineWithToStringOverride = new()
                 {
                     OriginalLogLine = logLine,
@@ -84,13 +98,16 @@ namespace LogScraper
                 logLineWithToStringOverrides.Add(logLineWithToStringOverride);
             }
 
-            LstLogContent.BeginUpdate();
+            LstLogContent.SuspendDrawing();
             LstLogContent.Items.Clear();
             LstLogContent.Items.AddRange(logLineWithToStringOverrides.ToArray());
             LstLogContent.TopIndex = topIndex > LstLogContent.Items.Count - 1 ? LstLogContent.Items.Count - 1 : topIndex;
-            LstLogContent.EndUpdate();
 
-            if (selectedLogLine == null) return;
+            if (selectedLogLine == null)
+            {
+                LstLogContent.ResumeDrawing();
+                return;
+            }
 
             foreach (LogLineWithToStringOverride logLineStringOverride in logLineWithToStringOverrides)
             {
@@ -108,6 +125,7 @@ namespace LogScraper
                     break;
                 }
             }
+            LstLogContent.ResumeDrawing();
         }
 
         private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
@@ -207,17 +225,81 @@ namespace LogScraper
                     // Set the text color to dark red for items with IsError = true
                     e.Graphics.FillRectangle(SelectedItemBackColor, e.Bounds);
                 }
+                // Truncate the text to fit within the width of the ListBox
+                string truncatedText = TruncateTextToFit(item.ToString(), e.Graphics, e.Bounds.Width);
+
                 // Check if the item is not null and IsError is true
                 if (item != null && item.IsError)
                 {
                     // Use the default text color for other items
-                    e.Graphics.DrawString(item.ToString(), LstLogContent.Font, Brushes.DarkRed, e.Bounds);
+                    e.Graphics.DrawString(truncatedText, LstLogContent.Font, Brushes.DarkRed, e.Bounds);
                 }
                 else
                 {
+
                     // Use the default text color for other items
-                    e.Graphics.DrawString(item.ToString(), LstLogContent.Font, SystemBrushes.ControlText, e.Bounds);
+                    e.Graphics.DrawString(truncatedText, LstLogContent.Font, SystemBrushes.ControlText, e.Bounds);
                 }
+            }
+        }
+        private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
+        {
+            string truncatedText = text;
+            int ellipsisWidth = TextRenderer.MeasureText(graphics, ".....", LstLogContent.Font).Width;
+
+            while (TextRenderer.MeasureText(graphics, truncatedText, LstLogContent.Font).Width + ellipsisWidth > maxWidth)
+            {
+                truncatedText = truncatedText[..^1];
+            }
+
+            if (truncatedText.Length < text.Length)
+            {
+                truncatedText += "...";
+            }
+
+            return truncatedText;
+        }
+
+        private void TxtSearch_Enter(object sender, EventArgs e)
+        {
+            if (txtSearch.Text == DefaulSearchtText)
+            {
+                txtSearch.Text = "";
+                txtSearch.ForeColor = SystemColors.ControlText;
+            }
+        }
+
+        private void TxtSearch_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                txtSearch.Text = DefaulSearchtText;
+                txtSearch.ForeColor = Color.DarkGray;
+            }
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                PerformSearch();
+            }
+        }
+
+        private void TxtSearch_TextChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
+        }
+
+        private string lastSearch = "";
+        private void PerformSearch()
+        {
+            string searchString = txtSearch.Text.Trim();
+            if (searchString == DefaulSearchtText) return;
+            if (searchString != lastSearch)
+            {
+                UpdateLogContentList();
+                lastSearch = searchString;
             }
         }
     }
