@@ -42,11 +42,13 @@
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(0, 0);
+            txtSearch.Location = new System.Drawing.Point(3, 0);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(181, 23);
+            txtSearch.Size = new System.Drawing.Size(178, 23);
             txtSearch.TabIndex = 0;
+            txtSearch.Enter += TxtSearch_Enter;
             txtSearch.KeyDown += TxtSearch_KeyDown;
+            txtSearch.Leave += TxtSearch_Leave;
             // 
             // btnSearchNext
             // 
@@ -54,9 +56,9 @@
             btnSearchNext.BackgroundImage = Properties.Resources.arrow_right;
             btnSearchNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             btnSearchNext.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            btnSearchNext.Location = new System.Drawing.Point(213, -1);
+            btnSearchNext.Location = new System.Drawing.Point(212, -1);
             btnSearchNext.Name = "btnSearchNext";
-            btnSearchNext.Size = new System.Drawing.Size(31, 25);
+            btnSearchNext.Size = new System.Drawing.Size(30, 25);
             btnSearchNext.TabIndex = 1;
             btnSearchNext.UseVisualStyleBackColor = true;
             btnSearchNext.Click += BtnSearchNext_Click;
@@ -81,7 +83,7 @@
             btnSearchPrevious.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             btnSearchPrevious.Location = new System.Drawing.Point(183, -1);
             btnSearchPrevious.Name = "btnSearchPrevious";
-            btnSearchPrevious.Size = new System.Drawing.Size(31, 25);
+            btnSearchPrevious.Size = new System.Drawing.Size(30, 25);
             btnSearchPrevious.TabIndex = 4;
             btnSearchPrevious.UseVisualStyleBackColor = true;
             btnSearchPrevious.Click += BtnSearchPrevious_Click;
