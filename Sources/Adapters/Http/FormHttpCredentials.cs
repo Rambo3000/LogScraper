@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using LogScraper.Log.Collection;
 using LogScraper.Sources.Adapters.Http;
+using System.ComponentModel;
 
 namespace LogScraper.SourceAdapters
 {
@@ -46,6 +47,7 @@ namespace LogScraper.SourceAdapters
             cboAuthenticationType.Items.Add(new AuthenticationTypeWithDescription(HttpAuthenticationType.BearerToken));
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public HttpAuthenticationData HttpAuthenticationData
         {
             get
@@ -74,6 +76,7 @@ namespace LogScraper.SourceAdapters
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Url
         {
             get
@@ -86,6 +89,7 @@ namespace LogScraper.SourceAdapters
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DialogResult CustomDialogResult { get; private set; } // Define DialogResult property
 
         private void BtnOK_Click(object sender, EventArgs e)

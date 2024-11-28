@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>LogScraper.Program</StartupObject>
     <ApplicationIcon>Icons\Scraper transparant.ico</ApplicationIcon>
@@ -9,8 +9,8 @@
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2023 Robert de Volder</Copyright>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.1.1</FileVersion>
-    <Version>2.1.1</Version>
+    <FileVersion>2.1.2</FileVersion>
+    <Version>2.1.2</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

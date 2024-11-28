@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace LogScraper
 {
     public partial class UserControlLogMetadataFilter : UserControl
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Collapsed { get; set; }
 
         // Define a custom event that will be triggered when a checkbox item is changed.
@@ -86,7 +88,7 @@ namespace LogScraper
             // Clear the ListView and add the new items
             LstFilterValues.BeginUpdate();
             LstFilterValues.Items.Clear();
-            LstFilterValues.Items.AddRange(newItems.ToArray());
+            LstFilterValues.Items.AddRange([.. newItems]);
             LstFilterValues.EndUpdate();
 
             LogMetadataPropertyAndValues = logMetadataPropertyAndValues;

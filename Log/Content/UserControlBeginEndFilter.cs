@@ -3,6 +3,7 @@ using LogScraper.Log.Collection;
 using LogScraper.Log.Content;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -26,6 +27,7 @@ namespace LogScraper
             TxtSearch_Leave(null, null);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Brush SelectedItemBackColor { get; set; }
 
         private List<LogLine> LogLinesLatestVersion;
@@ -34,7 +36,7 @@ namespace LogScraper
         {
             CboLogContentType.Items.Clear();
             if (logContentProperties == null || logContentProperties.Count == 0) return;
-            CboLogContentType.Items.AddRange(logContentProperties.ToArray());
+            CboLogContentType.Items.AddRange([.. logContentProperties]);
             foreach (LogContentProperty logContentProperty in logContentProperties)
             {
                 if (logContentProperty.Description == "Errors")
@@ -100,7 +102,7 @@ namespace LogScraper
 
             LstLogContent.SuspendDrawing();
             LstLogContent.Items.Clear();
-            LstLogContent.Items.AddRange(logLineWithToStringOverrides.ToArray());
+            LstLogContent.Items.AddRange([.. logLineWithToStringOverrides]);
             LstLogContent.TopIndex = topIndex > LstLogContent.Items.Count - 1 ? LstLogContent.Items.Count - 1 : topIndex;
 
             if (selectedLogLine == null)

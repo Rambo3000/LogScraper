@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using static LogScraper.Extensions.RichTextBoxExtensions;
@@ -308,18 +307,6 @@ namespace LogScraper
                 if (UsrLogContentEnd.SelectedItem != null) txtLogLines.HighlightLine(txtLogLines.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black);
             }
         }
-
-        private static string ParseBeginEndFilteringValue(UserControlBeginEndFilter userControlEventsInLog)
-        {
-            string value = "-";
-
-            if (userControlEventsInLog.SelectedItem == null) return value;
-
-            value = userControlEventsInLog.SelectedItem[9..];
-            if (userControlEventsInLog.ExtraLineCount > 0) value += userControlEventsInLog.ExtraLineCount;
-
-            return value;
-        }
         private void UpdateStatisticsLogCollection()
         {
             lblLogLinesTotalValue.Text = LogCollection.Instance.LogLines.Count.ToString();
@@ -514,12 +501,7 @@ namespace LogScraper
         }
         private void HandleExceptionWhenReadingLog(Exception ex)
         {
-            try
-            {
-                File.WriteAllText(AppContext.BaseDirectory + "StackTrace.log", ex.Message + Environment.NewLine + ex.StackTrace);
-            }
-            catch { }
-
+            ex.LogStackTraceToFile();
             HandleLogProviderStatusUpdate(ex.Message, false);
         }
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int duration)
