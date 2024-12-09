@@ -18,7 +18,9 @@ namespace LogScraper.Sources.Adapters.Http
         {
             HttpResponseMessage httpResponseMessage = GetLogWithHttpStatus();
             if (httpResponseMessage == null) return null;
-            if (httpResponseMessage.StatusCode != HttpStatusCode.Unauthorized) return httpResponseMessage;
+            // Only in case of aunauthorized and forbidden ask for new credentials.
+            // Not that the forbidden status sometimes occurs in cases of automatic single sign on
+            if (httpResponseMessage.StatusCode != HttpStatusCode.Unauthorized && httpResponseMessage.StatusCode != HttpStatusCode.Forbidden) return httpResponseMessage;
 
             //We are now in the position where we are unauthorized, all other conditions are returned.
             FormHttpCredentials formHttpCredentials = new()
@@ -27,7 +29,7 @@ namespace LogScraper.Sources.Adapters.Http
                 Url = apiUrl
             };
 
-            while (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            while (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized || httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
             {
                 formHttpCredentials.ShowDialog();
                 if (formHttpCredentials.CustomDialogResult != System.Windows.Forms.DialogResult.OK) break;
