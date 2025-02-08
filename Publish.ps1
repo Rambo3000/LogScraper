@@ -37,10 +37,10 @@ Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration" -For
 Write-Host "----- Cleaning publish folder -----" 
 Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Stubs" -Recurse -Force
 Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraper.pdb" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\D3DCompiler_47_cor3.dll" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\PenImc_cor3.dll" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\vcruntime140_cor3.dll" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\wpfgfx_cor3.dll" -Force
+#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\D3DCompiler_47_cor3.dll" -Force
+#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\PenImc_cor3.dll" -Force
+#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\vcruntime140_cor3.dll" -Force
+#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\wpfgfx_cor3.dll" -Force
 
 Write-Host "----- Packing -----" 
 $source = ".\bin\Release\net9.0-windows7.0\win-x64\publish\"

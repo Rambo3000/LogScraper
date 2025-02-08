@@ -13,6 +13,7 @@ namespace LogScraper.Configuration
         public string EditorName { get; set; }
         public string ExportFileName { get; set; }
         public string LogLayout { get; set; }
+        public int HttpCLientTimeOUtSeconds { get; set; } = 30;
     }
 
     internal class EnumStringConverter<T> : JsonConverter<T> where T : struct, Enum

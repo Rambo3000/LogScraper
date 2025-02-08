@@ -2,5 +2,6 @@
   "logProviderTypeDefault": "Runtime",
   "exportFileName": "R:\\Log scraper.log",
   "editorFileName": "C:\\Program Files\\Notepad++\\notepad++.exe",
-  "editorName": "Notepad++"
+  "editorName": "Notepad++",
+  "httpCLientTimeOUtSeconds" : 30
 }

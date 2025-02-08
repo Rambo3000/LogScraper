@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
+using LogScraper.Configuration;
 using LogScraper.Credentials;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
@@ -41,7 +42,7 @@ namespace LogScraper.LogProviders.Runtime
             }
             else
             {
-                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description));
+                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds);
             }
             return sourceAdapter;
         }

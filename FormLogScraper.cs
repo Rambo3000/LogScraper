@@ -121,7 +121,7 @@ namespace LogScraper
         }
         #endregion
 
-        #region Log provider wrok
+        #region Log provider work
         private void StartLogProviderAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
             try
