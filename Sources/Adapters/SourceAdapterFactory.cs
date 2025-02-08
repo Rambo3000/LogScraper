@@ -5,9 +5,9 @@ namespace LogScraper.Sources.Adapters
 {
     class SourceAdapterFactory
     {
-        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri)
+        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds)
         {
-            return new HttpSourceAdapter(apiUrl, credentialManagerUri);
+            return new HttpSourceAdapter(apiUrl, credentialManagerUri, timeoutSeconds);
         }
         public static ISourceAdapter CreateFileSourceAdapter(string filePath)
         {

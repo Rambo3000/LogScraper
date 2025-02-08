@@ -8,10 +8,11 @@ using LogScraper.SourceAdapters;
 
 namespace LogScraper.Sources.Adapters.Http
 {
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds) : ISourceAdapter
     {
         private readonly string apiUrl = apiUrl;
         private readonly string credentialManagerUri = credentialManagerUri;
+        private readonly int timeoutSeconds = timeoutSeconds;
         public HttpAuthenticationData AuthenticationData { get; private set; }
 
         public HttpResponseMessage TestConnectionAndAskForAuthorisation()
@@ -70,7 +71,7 @@ namespace LogScraper.Sources.Adapters.Http
 
                 using var client = new HttpClient();
 
-                client.Timeout = TimeSpan.FromSeconds(10); // Set a timeout for the entire request
+                client.Timeout = TimeSpan.FromSeconds(timeoutSeconds); // Set a timeout for the entire request
 
                 CreateAuthenticationHeader(client, AuthenticationData);
 
@@ -101,7 +102,7 @@ namespace LogScraper.Sources.Adapters.Http
 
                 using var client = new HttpClient();
 
-                client.Timeout = TimeSpan.FromSeconds(10); // Set a timeout for the entire request
+                client.Timeout = TimeSpan.FromSeconds(timeoutSeconds); // Set a timeout for the entire request
 
                 CreateAuthenticationHeader(client, AuthenticationData);
 
