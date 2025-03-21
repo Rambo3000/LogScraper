@@ -437,22 +437,28 @@ namespace LogScraper
 
             Application.DoEvents();
         }
+        bool FlowPanelFiltersUpdating = false;
         private void FlowPanelFilters_SizeChanged(object sender, EventArgs e)
         {
+            if (FlowPanelFiltersUpdating == true) return;
+
+            FlowPanelFiltersUpdating = true;
             int totalHeightControls = 0;
-            FlowPanelFilters.SuspendDrawing();
             foreach (Control control in FlowPanelFilters.Controls)
             {
                 totalHeightControls += control.Height;
             }
-            FlowPanelFilters.VerticalScroll.Visible = totalHeightControls + 15 > FlowPanelFilters.Height;
-            FlowPanelFilters.HorizontalScroll.Enabled = false;
-            FlowPanelFilters.HorizontalScroll.Visible = false;
+            bool verticalScrollVisible = totalHeightControls + 15 > FlowPanelFilters.ClientSize.Height;
+
+            FlowPanelFilters.SuspendDrawing();
             foreach (Control control in FlowPanelFilters.Controls)
             {
-                control.Width = FlowPanelFilters.Width - (FlowPanelFilters.VerticalScroll.Visible ? 20 : 0);
+                control.Width = FlowPanelFilters.ClientSize.Width; // - (verticalScrollVisible ? 20 : 0);
             }
+
             FlowPanelFilters.ResumeDrawing();
+
+            FlowPanelFiltersUpdating = false;
         }
         #endregion
 
