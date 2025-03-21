@@ -47,8 +47,8 @@
             btnDowloadLogLongTime = new System.Windows.Forms.Button();
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
-            usrRuntime = new LogProviders.Runtime.UserControlRuntimeLogProvider();
-            usrKubernetes = new LogProviders.Kubernetes.UserControlKubernetesLogProvider();
+            usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
+            usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
             grpWriteLog = new System.Windows.Forms.GroupBox();
             txtStatusWrite = new System.Windows.Forms.TextBox();
             label6 = new System.Windows.Forms.Label();
@@ -78,11 +78,11 @@
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
             tabPage4 = new System.Windows.Forms.TabPage();
-            usrControlMetadataFormating = new Log.Metadata.UserControlMetadataFormating();
+            usrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             grpLogProviders = new System.Windows.Forms.GroupBox();
             pnlLogProviders = new System.Windows.Forms.Panel();
-            usrFileLogProvider = new LogProviders.File.UserControlFileLogProvider();
+            usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
             groupBox4 = new System.Windows.Forms.GroupBox();
             groupBox3.SuspendLayout();
             grpWriteLog.SuspendLayout();
@@ -132,11 +132,14 @@
             // FlowPanelFilters
             // 
             FlowPanelFilters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            FlowPanelFilters.AutoScroll = true;
             FlowPanelFilters.BackColor = System.Drawing.SystemColors.Window;
-            FlowPanelFilters.Location = new System.Drawing.Point(0, 1);
+            FlowPanelFilters.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            FlowPanelFilters.Location = new System.Drawing.Point(3, 3);
             FlowPanelFilters.Name = "FlowPanelFilters";
-            FlowPanelFilters.Size = new System.Drawing.Size(196, 396);
+            FlowPanelFilters.Size = new System.Drawing.Size(191, 391);
             FlowPanelFilters.TabIndex = 9;
+            FlowPanelFilters.WrapContents = false;
             FlowPanelFilters.SizeChanged += FlowPanelFilters_SizeChanged;
             // 
             // lblNumberOfLogLinesFiltered
