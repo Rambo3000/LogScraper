@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             btnReadFromUrl = new System.Windows.Forms.Button();
             lblLogLinesTotalValue = new System.Windows.Forms.Label();
-            FlowPanelFilters = new System.Windows.Forms.FlowLayoutPanel();
             lblNumberOfLogLinesFiltered = new System.Windows.Forms.Label();
             lblLogLinesFiltered = new System.Windows.Forms.Label();
             LbllogLinesTotal = new System.Windows.Forms.Label();
@@ -77,6 +76,7 @@
             groupBox1 = new System.Windows.Forms.GroupBox();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
+            PanelFilters = new System.Windows.Forms.Panel();
             tabPage4 = new System.Windows.Forms.TabPage();
             usrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -128,19 +128,6 @@
             lblLogLinesTotalValue.TabIndex = 7;
             lblLogLinesTotalValue.Text = "0";
             lblLogLinesTotalValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // FlowPanelFilters
-            // 
-            FlowPanelFilters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            FlowPanelFilters.AutoScroll = true;
-            FlowPanelFilters.BackColor = System.Drawing.SystemColors.Window;
-            FlowPanelFilters.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            FlowPanelFilters.Location = new System.Drawing.Point(3, 3);
-            FlowPanelFilters.Name = "FlowPanelFilters";
-            FlowPanelFilters.Size = new System.Drawing.Size(191, 391);
-            FlowPanelFilters.TabIndex = 9;
-            FlowPanelFilters.WrapContents = false;
-            FlowPanelFilters.SizeChanged += FlowPanelFilters_SizeChanged;
             // 
             // lblNumberOfLogLinesFiltered
             // 
@@ -632,7 +619,7 @@
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(FlowPanelFilters);
+            tabPage3.Controls.Add(PanelFilters);
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -640,6 +627,16 @@
             tabPage3.TabIndex = 0;
             tabPage3.Text = "Filteren";
             tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // PanelFilters
+            // 
+            PanelFilters.AutoScroll = true;
+            PanelFilters.Dock = System.Windows.Forms.DockStyle.Fill;
+            PanelFilters.Location = new System.Drawing.Point(3, 3);
+            PanelFilters.Name = "PanelFilters";
+            PanelFilters.Size = new System.Drawing.Size(191, 391);
+            PanelFilters.TabIndex = 0;
+            PanelFilters.Resize += PanelFilters_Resize;
             // 
             // tabPage4
             // 
@@ -785,7 +782,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtWriteToFilePath;
         private System.Windows.Forms.Button btnOpenWithEditor;
-        private System.Windows.Forms.FlowLayoutPanel FlowPanelFilters;
         private System.Windows.Forms.RichTextBox txtLogLines;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -823,5 +819,6 @@
         private System.Windows.Forms.CheckBox chkShowAllLogLines;
         private System.Windows.Forms.Label lblEndFilterEnabled;
         private System.Windows.Forms.Label lblBeginFilterEnabled;
+        private System.Windows.Forms.Panel PanelFilters;
     }
 }

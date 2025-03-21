@@ -115,7 +115,7 @@ namespace LogScraper
         {
             if (ConfigurationManager.LogLayouts != null)
             {
-                cboLogLayout.Items.AddRange(ConfigurationManager.LogLayouts.ToArray());
+                cboLogLayout.Items.AddRange([.. ConfigurationManager.LogLayouts]);
                 if (cboLogLayout.Items.Count > 0) cboLogLayout.SelectedIndex = 0;
             }
         }
@@ -181,19 +181,31 @@ namespace LogScraper
         #region Filter processing
         private void UpdateFilterControls(List<LogMetadataPropertyAndValues> filterProperties)
         {
+            UserControlLogMetadataFilter previousFilter = null;
+            PanelFilters.SuspendDrawing();
             foreach (LogMetadataPropertyAndValues filterProperty in filterProperties)
             {
                 if (!logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
                 {
                     // Create a new UserControlLogMetadataFilter and add it to the dictionary and the form's controls.
-                    userControlLogFilter = new UserControlLogMetadataFilter(filterProperty.LogMetadataProperty.Description);
-                    logMetadataPropertyControls[filterProperty] = userControlLogFilter;
-                    FlowPanelFilters.Controls.Add(userControlLogFilter);
+                    userControlLogFilter = new UserControlLogMetadataFilter(filterProperty.LogMetadataProperty.Description)
+                    {
+                        Width = PanelFilters.ClientSize.Width
+                    };
                     userControlLogFilter.FilterChanged += UserControlLogFilter_FilterChanged;
+
+                    PanelFilters.Controls.Add(userControlLogFilter);
+                    logMetadataPropertyControls[filterProperty] = userControlLogFilter;
                 }
                 userControlLogFilter.UpdateListView(filterProperty);
+
+                if (previousFilter != null)
+                {
+                    userControlLogFilter.Top = previousFilter.Bottom + 5;
+                }
+                previousFilter = userControlLogFilter;
             }
-            FlowPanelFilters_SizeChanged(null, null);
+            PanelFilters.ResumeDrawing();
         }
 
         private void UpdateFilterControlsCount(List<LogMetadataPropertyAndValues> filterProperties)
@@ -210,7 +222,7 @@ namespace LogScraper
         {
             // Get all the metadata properties and their values from all the user controls
             List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = [];
-            foreach (UserControlLogMetadataFilter userControlLogFilter in FlowPanelFilters.Controls)
+            foreach (UserControlLogMetadataFilter userControlLogFilter in PanelFilters.Controls)
             {
                 LogMetadataPropertyAndValuesList.Add(userControlLogFilter.GetCurrentLogMetadataPropertyAndValues());
             }
@@ -386,12 +398,12 @@ namespace LogScraper
 
             currentLogMetadataFilterResult = null;
 
-            foreach (System.Windows.Forms.Control control in FlowPanelFilters.Controls)
+            foreach (Control control in PanelFilters.Controls)
             {
                 UserControlLogMetadataFilter userControlLogMetadataFilter = (UserControlLogMetadataFilter)control;
                 userControlLogMetadataFilter.FilterChanged -= UserControlLogFilter_FilterChanged;
             }
-            FlowPanelFilters.Controls.Clear();
+            PanelFilters.Controls.Clear();
             logMetadataPropertyControls.Clear();
             txtStatusRead.Text = string.Empty;
             txtStatusRead.Visible = false;
@@ -437,29 +449,6 @@ namespace LogScraper
 
             Application.DoEvents();
         }
-        bool FlowPanelFiltersUpdating = false;
-        private void FlowPanelFilters_SizeChanged(object sender, EventArgs e)
-        {
-            if (FlowPanelFiltersUpdating == true) return;
-
-            FlowPanelFiltersUpdating = true;
-            int totalHeightControls = 0;
-            foreach (Control control in FlowPanelFilters.Controls)
-            {
-                totalHeightControls += control.Height;
-            }
-            bool verticalScrollVisible = totalHeightControls + 15 > FlowPanelFilters.ClientSize.Height;
-
-            FlowPanelFilters.SuspendDrawing();
-            foreach (Control control in FlowPanelFilters.Controls)
-            {
-                control.Width = FlowPanelFilters.ClientSize.Width; // - (verticalScrollVisible ? 20 : 0);
-            }
-
-            FlowPanelFilters.ResumeDrawing();
-
-            FlowPanelFiltersUpdating = false;
-        }
         #endregion
 
         #region User controls event handling
@@ -482,7 +471,7 @@ namespace LogScraper
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
             lblBeginFilterEnabled.Visible = UsrLogContentBegin.FilterIsEnabled;
-            lblEndFilterEnabled.Visible=UsrLogContentEnd.FilterIsEnabled;
+            lblEndFilterEnabled.Visible = UsrLogContentEnd.FilterIsEnabled;
 
             if (currentLogMetadataFilterResult != null) UpdateAndWriteExport(currentLogMetadataFilterResult);
         }
@@ -595,5 +584,24 @@ namespace LogScraper
             }
         }
         #endregion
+        int previousWidth = 0;
+        private void PanelFilters_Resize(object sender, EventArgs e)
+        {
+            int newWidth = PanelFilters.ClientSize.Width;
+            if (newWidth == previousWidth) return;
+
+            PanelFilters.SuspendDrawing();
+            PanelFilters.SuspendLayout();
+            foreach (Control ctrl in PanelFilters.Controls)
+            {
+                if (ctrl.Width != newWidth)
+                {
+                    ctrl.Width = newWidth;
+                }
+            }
+            PanelFilters.ResumeLayout();
+            PanelFilters.ResumeDrawing();
+            previousWidth = newWidth;
+        }
     }
 }
