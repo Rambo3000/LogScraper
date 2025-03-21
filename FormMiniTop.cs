@@ -33,9 +33,17 @@ namespace LogScraper
             LogScraperForm.BtnReadFromUrl_Click(sender, e);
         }
 
-        private void BtnOpen_Click(object sender, System.EventArgs e)
+        private void BtnBack_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnOpenWithEditor_Click(sender, e);
+            Hide();
+            LogScraperForm.WindowState = FormWindowState.Normal;
+        }
+
+        private void FormMiniTop_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Hide();
+            LogScraperForm.WindowState = FormWindowState.Normal;
+            e.Cancel = true;
         }
     }
 }

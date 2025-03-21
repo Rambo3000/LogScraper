@@ -9,8 +9,8 @@
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2023 Robert de Volder</Copyright>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.1.5</FileVersion>
-    <Version>2.1.5</Version>
+    <FileVersion>2.1.6</FileVersion>
+    <Version>2.1.6</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
