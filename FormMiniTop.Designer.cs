@@ -39,7 +39,7 @@
             btnReset = new System.Windows.Forms.Button();
             lblLogLinesFilteredWithErrorCount = new System.Windows.Forms.Label();
             lblError = new System.Windows.Forms.Label();
-            btnOpen = new System.Windows.Forms.Button();
+            btnBack = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // btnRead
@@ -137,15 +137,15 @@
             lblError.TabIndex = 12;
             lblError.Text = "Error";
             // 
-            // btnOpen
+            // btnBack
             // 
-            btnOpen.Location = new System.Drawing.Point(6, 74);
-            btnOpen.Name = "btnOpen";
-            btnOpen.Size = new System.Drawing.Size(88, 23);
-            btnOpen.TabIndex = 14;
-            btnOpen.Text = "Open";
-            btnOpen.UseVisualStyleBackColor = true;
-            btnOpen.Click += BtnOpen_Click;
+            btnBack.Location = new System.Drawing.Point(6, 74);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new System.Drawing.Size(88, 23);
+            btnBack.TabIndex = 14;
+            btnBack.Text = "Terug";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += BtnBack_Click;
             // 
             // FormMiniTop
             // 
@@ -153,7 +153,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new System.Drawing.Size(213, 99);
-            Controls.Add(btnOpen);
+            Controls.Add(btnBack);
             Controls.Add(lblLogLinesFilteredWithErrorCount);
             Controls.Add(lblError);
             Controls.Add(btnReset);
@@ -171,6 +171,7 @@
             Name = "FormMiniTop";
             Text = " Log Scraper";
             TopMost = true;
+            FormClosing += FormMiniTop_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -187,6 +188,6 @@
         public System.Windows.Forms.Button btnReset;
         public System.Windows.Forms.Label lblLogLinesFilteredWithErrorCount;
         public System.Windows.Forms.Label lblError;
-        public System.Windows.Forms.Button btnOpen;
+        public System.Windows.Forms.Button btnBack;
     }
 }

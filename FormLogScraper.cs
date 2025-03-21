@@ -534,6 +534,7 @@ namespace LogScraper
             }
             miniTopForm.Show();
             miniTopForm.Focus();
+            WindowState = FormWindowState.Minimized;
             UpdateVisibilityControls();
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
