@@ -7,13 +7,13 @@ using LogScraper.Log.Metadata;
 
 namespace LogScraper
 {
-    public partial class LogMetadataFilterItem : UserControl
+    public partial class UserControlLogMetadataFilterItem : UserControl
     {
         public event EventHandler CheckedChanged;
 
         private string DescriptionOriginalValue;
 
-        public LogMetadataFilterItem(string description, int count, bool isChecked)
+        public UserControlLogMetadataFilterItem(string description, int count, bool isChecked)
         {
             InitializeComponent();
             CheckBoxItem.Checked = isChecked;
@@ -30,8 +30,8 @@ namespace LogScraper
         {
             string originalText = DescriptionOriginalValue;
 
-            // Create a clickable area
-            if (string.IsNullOrEmpty(originalText)) originalText = "    ";
+            if (string.IsNullOrEmpty(originalText)) return;
+
             Font font = CheckBoxItem.Font;
             int maxWidth = Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 15;
 

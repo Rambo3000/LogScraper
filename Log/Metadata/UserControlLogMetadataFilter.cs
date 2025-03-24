@@ -33,7 +33,7 @@ namespace LogScraper
             UpdateListViewInProgres = true;
 
             Dictionary<string, bool> checkboxStates = [];
-            foreach (LogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
+            foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
             {
                 checkboxStates[item.Description] = item.IsChecked;
             }
@@ -49,7 +49,7 @@ namespace LogScraper
                 int count = logMetadataValue.Count;
                 string description = logMetadataValue.Value;
 
-                LogMetadataFilterItem item = new(description, count, logMetadataValue.IsFilterEnabled)
+                UserControlLogMetadataFilterItem item = new(description, count, logMetadataValue.IsFilterEnabled)
                 {
                     Tag = logMetadataValue,
                     ForeColor = count == 0 ? Color.Gray : Color.Black,
@@ -78,7 +78,7 @@ namespace LogScraper
 
         public void UpdateCountInListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
         {
-            foreach (LogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
+            foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
             {
                 LogMetadataValue logMetadataValue = (LogMetadataValue)item.Tag;
                 if (logMetadataValue != null)
@@ -98,7 +98,7 @@ namespace LogScraper
 
         public LogMetadataPropertyAndValues GetCurrentLogMetadataPropertyAndValues()
         {
-            foreach (LogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
+            foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
             {
                 ((LogMetadataValue)item.Tag).IsFilterEnabled = item.IsChecked;
             }

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace LogScraper
 {
-    public partial class LogMetadataFilterItem : UserControl
+    public partial class UserControlLogMetadataFilterItem : UserControl
     {
         private void InitializeComponent()
         {
@@ -14,10 +14,9 @@ namespace LogScraper
             // CheckBoxItem
             // 
             CheckBoxItem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            CheckBoxItem.AutoSize = true;
             CheckBoxItem.Location = new System.Drawing.Point(0, 0);
             CheckBoxItem.Name = "CheckBoxItem";
-            CheckBoxItem.Size = new System.Drawing.Size(47, 19);
+            CheckBoxItem.Size = new System.Drawing.Size(134, 19);
             CheckBoxItem.TabIndex = 0;
             CheckBoxItem.Text = "Text";
             CheckBoxItem.UseVisualStyleBackColor = true;
@@ -34,16 +33,15 @@ namespace LogScraper
             LabelCount.Text = "999999";
             LabelCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // LogMetadataFilterItem
+            // UserControlLogMetadataFilterItem
             // 
             Controls.Add(CheckBoxItem);
             Controls.Add(LabelCount);
             Margin = new Padding(0);
-            Name = "LogMetadataFilterItem";
+            Name = "UserControlLogMetadataFilterItem";
             Size = new System.Drawing.Size(170, 19);
             SizeChanged += LogMetadataFilterItem_SizeChanged;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         private System.Windows.Forms.CheckBox CheckBoxItem;
