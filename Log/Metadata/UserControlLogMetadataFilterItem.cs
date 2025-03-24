@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Globalization;
-using LogScraper.Log.Metadata;
 
 namespace LogScraper
 {
@@ -30,10 +29,16 @@ namespace LogScraper
         {
             string originalText = DescriptionOriginalValue;
 
-            if (string.IsNullOrEmpty(originalText)) return;
 
             Font font = CheckBoxItem.Font;
-            int maxWidth = Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 15;
+            int maxWidth = Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 20;
+            CheckBoxItem.Width = maxWidth + 20;
+
+            if (string.IsNullOrEmpty(originalText))
+            {
+                CheckBoxItem.Text = string.Empty;
+                return;
+            }
 
             // Measure the original text size
             Size textSize = TextRenderer.MeasureText(originalText, font);
@@ -88,6 +93,7 @@ namespace LogScraper
             get => int.Parse(LabelCount.Text, NumberStyles.AllowThousands);
             set { 
                 LabelCount.Text = value.ToString("N0");
+                LabelCount.Left = Width - LabelCount.Width + 4;
                 ForeColor = value == 0 ? Color.Gray : Color.Black;
             }
         }

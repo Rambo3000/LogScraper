@@ -42,65 +42,38 @@ namespace LogScraper.Log
             if (logMetadataPropertyAndValues == null || logMetadataPropertyAndValues.Count == 0) return allLogLines;
 
             // Create a dictionary containing only the properties and values where to search on
-            Dictionary<LogMetadataProperty, List<LogMetadataValue>> enabledFilterPropertiesAndValues = [];
+            Dictionary<LogMetadataProperty, HashSet<LogMetadataValue>> enabledFilterPropertiesAndValues = [];
             foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValue in logMetadataPropertyAndValues)
             {
                 if (!logMetadataPropertyAndValue.IsFilterEnabled) continue;
 
-                List<LogMetadataValue> logMetadataValues = [];
+                HashSet<LogMetadataValue> logMetadataValues = [];
                 foreach (KeyValuePair<LogMetadataValue, string> kvp in logMetadataPropertyAndValue.LogMetadataValues)
                 {
                     if (!kvp.Key.IsFilterEnabled) continue;
                     logMetadataValues.Add(kvp.Key);
                 }
-                enabledFilterPropertiesAndValues.Add(logMetadataPropertyAndValue.LogMetadataProperty, logMetadataValues);
+                enabledFilterPropertiesAndValues[logMetadataPropertyAndValue.LogMetadataProperty] = logMetadataValues;
             }
 
             if (enabledFilterPropertiesAndValues.Count == 0) return allLogLines;
 
             List<LogLine> filteredLogLines = allLogLines;
+
             // Check for each property on which you can filter
             // Filtering between properties is an AND operation, filtering within the values of a property is an OR operation
-            foreach (LogMetadataProperty logMetadataProperty in enabledFilterPropertiesAndValues.Keys)
+            foreach (var kvp in enabledFilterPropertiesAndValues)
             {
-                List<LogLine> newlyFilteredLogLines = [];
-                List<LogMetadataValue> logMetadataValues = enabledFilterPropertiesAndValues[logMetadataProperty];
-                foreach (LogLine logLine in filteredLogLines)
-                {
-                    // Check if the LogLine has all the specified LogMetadataPropertyAndValuesList and they match the criteria.
-                    if (FilterSingleLogLine(logLine, logMetadataProperty, logMetadataValues))
-                    {
-                        newlyFilteredLogLines.Add(logLine);
-                    }
-                }
+                LogMetadataProperty logMetadataProperty = kvp.Key;
+                HashSet<LogMetadataValue> logMetadataValues = kvp.Value;
 
-                // Feedback the newly filtered lines as a shortened list for the next property
-                filteredLogLines = newlyFilteredLogLines;
+                filteredLogLines = [.. filteredLogLines.Where(logLine =>
+                        logLine.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value) &&
+                        logMetadataValues.Any(logMetadataValue => logMetadataValue.Value == value)
+                    )];
             }
 
             return filteredLogLines;
-        }
-
-        /// <summary>
-        /// Checks if a single log line matches the specified metadata property and values.
-        /// </summary>
-        /// <param name="logLine">The log line to check.</param>
-        /// <param name="logMetadataProperty">The metadata property to check.</param>
-        /// <param name="logMetadataValues">The list of metadata values to check.</param>
-        /// <returns>True if the log line matches the criteria, otherwise false.</returns>
-        private static bool FilterSingleLogLine(LogLine logLine, LogMetadataProperty logMetadataProperty, List<LogMetadataValue> logMetadataValues)
-        {
-            if (!logLine.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value)) return false;
-
-            // Check if the value of the logline is included in the selected values of the user
-            foreach (LogMetadataValue logMetadataValue in logMetadataValues)
-            {
-                if (value == logMetadataValue.Value)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         /// <summary>
@@ -111,7 +84,7 @@ namespace LogScraper.Log
         private static void UpdateLogMetadataValuesCount(List<LogLine> logLinesFiltered, List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList)
         {
             // Get the (new) properties and values available for the filtered loglines
-            List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesNewCount = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(logLinesFiltered, logMetadataPropertyAndValuesList.Select(item => item.LogMetadataProperty).ToList());
+            List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesNewCount = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(logLinesFiltered, [.. logMetadataPropertyAndValuesList.Select(item => item.LogMetadataProperty)]);
 
             // Loop through all previously existing properties
             foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValues in logMetadataPropertyAndValuesList)
