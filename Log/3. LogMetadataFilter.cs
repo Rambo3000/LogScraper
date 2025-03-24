@@ -80,21 +80,24 @@ namespace LogScraper.Log
         }
         private static void UpdateLogMetadataValuesCount(List<LogLine> logLinesFiltered, List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList)
         {
+            // Get the (new) properties and values available for the filtered loglines
             List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesNewCount = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(logLinesFiltered, logMetadataPropertyAndValuesList.Select(item => item.LogMetadataProperty).ToList());
+
+            // Loop through all previously existing properties
             foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValues in logMetadataPropertyAndValuesList)
             {
-                LogMetadataPropertyAndValues propertyNewCount = null;
+                // Obtain the new property matching the existing one
+                LogMetadataPropertyAndValues propertyNewCount = LogMetadataPropertyAndValuesNewCount.FirstOrDefault(item => item.LogMetadataProperty == logMetadataPropertyAndValues.LogMetadataProperty, null);
 
-                if (LogMetadataPropertyAndValuesNewCount.Contains(logMetadataPropertyAndValues))
-                {
-                    propertyNewCount = LogMetadataPropertyAndValuesNewCount.Single(item => item.LogMetadataProperty == logMetadataPropertyAndValues.LogMetadataProperty);
-                }
+                // Loop through all values of the existing property
                 foreach (LogMetadataValue logMetadataValue in logMetadataPropertyAndValues.LogMetadataValues.Keys)
                 {
                     int count = 0;
-                    if (propertyNewCount != null && propertyNewCount.LogMetadataValues.Where(item => item.Key.Value == logMetadataValue.Value).Any())
+                    if (propertyNewCount != null)
                     {
-                        count = propertyNewCount.LogMetadataValues.Keys.Single(item => item.Value == logMetadataValue.Value).Count;
+                        LogMetadataValue value = propertyNewCount.LogMetadataValues.Keys.FirstOrDefault(item => item.Value == logMetadataValue.Value);
+
+                        if (value != null) count = value.Count;
                     }
                     logMetadataValue.Count = count;
                 }
