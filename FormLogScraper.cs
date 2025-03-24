@@ -234,8 +234,6 @@ namespace LogScraper
             UsrLogContentBegin.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
             UsrLogContentEnd.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
 
-            UpdateVisibilityControls();
-
             UpdateAndWriteExport(currentLogMetadataFilterResult);
         }
         public static string CreateMetadataExampleFilterString(List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList)
@@ -303,8 +301,6 @@ namespace LogScraper
             txtLogLines.Select(initialSelectionStart, initialSelectionLength);
             txtLogLines.ResumeDrawing();
 
-            UpdateVisibilityControls();
-
             LogExporterWorker logExporter = new(txtWriteToFilePath.Text);
             logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
             logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
@@ -328,7 +324,6 @@ namespace LogScraper
             lblNumberOfLogLinesFilteredWithError.Text = count.ToString();
             lblNumberOfLogLinesFilteredWithError.ForeColor = count > 0 ? Color.DarkRed : Color.Black;
             lblLogLinesFilteredWithError.ForeColor = lblNumberOfLogLinesFilteredWithError.ForeColor;
-            UpdateVisibilityControls();
         }
         #endregion
 
@@ -390,7 +385,7 @@ namespace LogScraper
 
             txtLogLines.Text = "";
             UpdateStatisticsLogCollection();
-            UpdateVisibilityControls();
+            UpdateDownloadControlsReadOnlyStatus();
         }
         private void Reset()
         {
@@ -420,7 +415,7 @@ namespace LogScraper
         {
             lblMemoryUsageValue.Text = (Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).ToString() + " MB";
         }
-        private void UpdateVisibilityControls()
+        private void UpdateDownloadControlsReadOnlyStatus()
         {
             bool downloadingInProgress = numberOfSourceProcessingWorkers > 0;
             btnReadFromUrl.Enabled = !downloadingInProgress;
@@ -446,8 +441,6 @@ namespace LogScraper
                 miniTopForm.btnReset.Enabled = BtnClearLog.Enabled;
                 miniTopForm.btnReset.Enabled = btnReadFromUrl.Enabled;
             }
-
-            Application.DoEvents();
         }
         #endregion
 
@@ -466,7 +459,7 @@ namespace LogScraper
         private void HandleLogProviderManagerQueueUpdate(int numberOfWorkers)
         {
             numberOfSourceProcessingWorkers = numberOfWorkers;
-            UpdateVisibilityControls();
+            UpdateDownloadControlsReadOnlyStatus();
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
@@ -535,7 +528,6 @@ namespace LogScraper
             miniTopForm.Show();
             miniTopForm.Focus();
             WindowState = FormWindowState.Minimized;
-            UpdateVisibilityControls();
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
