@@ -5,8 +5,17 @@ using System.Linq;
 
 namespace LogScraper.Log
 {
+    /// <summary>
+    /// Provides methods to filter log lines based on metadata properties and values.
+    /// </summary>
     internal static class LogMetadataFilter
     {
+        /// <summary>
+        /// Filters the log lines based on the provided metadata properties and values, and updates the count of each metadata value.
+        /// </summary>
+        /// <param name="allLogLines">The list of all log lines.</param>
+        /// <param name="logMetadataPropertyAndValuesList">The list of metadata properties and values to filter by.</param>
+        /// <returns>A result containing the filtered log lines and the updated metadata properties and values.</returns>
         public static LogMetadataFilterResult GetLogMetadataFilterResult(List<LogLine> allLogLines, List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList)
         {
             LogMetadataFilterResult logMetadataFilterResult = new()
@@ -19,6 +28,13 @@ namespace LogScraper.Log
 
             return logMetadataFilterResult;
         }
+
+        /// <summary>
+        /// Filters the log lines using the specified metadata properties and values.
+        /// </summary>
+        /// <param name="allLogLines">The list of all log lines.</param>
+        /// <param name="logMetadataPropertyAndValues">The list of metadata properties and values to filter by.</param>
+        /// <returns>The list of filtered log lines.</returns>
         private static List<LogLine> FilterLogLinesUsingMetadataProperties(List<LogLine> allLogLines, List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues)
         {
             if (allLogLines == null) return [];
@@ -29,12 +45,12 @@ namespace LogScraper.Log
             Dictionary<LogMetadataProperty, List<LogMetadataValue>> enabledFilterPropertiesAndValues = [];
             foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValue in logMetadataPropertyAndValues)
             {
-                if (logMetadataPropertyAndValue.IsFilterEnabled == false) continue;
+                if (!logMetadataPropertyAndValue.IsFilterEnabled) continue;
 
                 List<LogMetadataValue> logMetadataValues = [];
                 foreach (KeyValuePair<LogMetadataValue, string> kvp in logMetadataPropertyAndValue.LogMetadataValues)
                 {
-                    if (kvp.Key.IsFilterEnabled == false) continue;
+                    if (!kvp.Key.IsFilterEnabled) continue;
                     logMetadataValues.Add(kvp.Key);
                 }
                 enabledFilterPropertiesAndValues.Add(logMetadataPropertyAndValue.LogMetadataProperty, logMetadataValues);
@@ -64,6 +80,14 @@ namespace LogScraper.Log
 
             return filteredLogLines;
         }
+
+        /// <summary>
+        /// Checks if a single log line matches the specified metadata property and values.
+        /// </summary>
+        /// <param name="logLine">The log line to check.</param>
+        /// <param name="logMetadataProperty">The metadata property to check.</param>
+        /// <param name="logMetadataValues">The list of metadata values to check.</param>
+        /// <returns>True if the log line matches the criteria, otherwise false.</returns>
         private static bool FilterSingleLogLine(LogLine logLine, LogMetadataProperty logMetadataProperty, List<LogMetadataValue> logMetadataValues)
         {
             if (!logLine.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value)) return false;
@@ -78,6 +102,12 @@ namespace LogScraper.Log
             }
             return false;
         }
+
+        /// <summary>
+        /// Updates the count of each metadata value based on the filtered log lines.
+        /// </summary>
+        /// <param name="logLinesFiltered">The list of filtered log lines.</param>
+        /// <param name="logMetadataPropertyAndValuesList">The list of metadata properties and values to update.</param>
         private static void UpdateLogMetadataValuesCount(List<LogLine> logLinesFiltered, List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList)
         {
             // Get the (new) properties and values available for the filtered loglines
@@ -103,6 +133,5 @@ namespace LogScraper.Log
                 }
             }
         }
-
     }
 }
