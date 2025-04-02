@@ -30,7 +30,6 @@ namespace LogScraper.LogProviders.Kubernetes
 
             PopulateKubernetesClusters();
         }
-
         public ISourceAdapter GetSourceAdapter()
         {
             return GetSourceAdapter(null);
@@ -57,14 +56,14 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             cboKubernetesCluster.Items.Clear();
 
-            cboKubernetesCluster.Items.AddRange(KubernetesClusters.ToArray());
+            cboKubernetesCluster.Items.AddRange([.. KubernetesClusters]);
         }
         private void PopulateKubernetesNamespaces()
         {
             if (cboKubernetesCluster.SelectedItem != null)
             {
                 cboKubernetesNamespace.Items.Clear();
-                cboKubernetesNamespace.Items.AddRange(((KubernetesCluster)cboKubernetesCluster.SelectedItem).Namespaces.ToArray());
+                cboKubernetesNamespace.Items.AddRange([.. ((KubernetesCluster)cboKubernetesCluster.SelectedItem).Namespaces]);
                 if (cboKubernetesNamespace.Items.Count > 0)
                 {
                     cboKubernetesNamespace.SelectedIndex = 0;
@@ -112,7 +111,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
                     List<KubernetesPod> kubernetesPods = KubernetesHelper.ExtractPodsInfo(rawConfig);
 
-                    cboKubernetesPod.Items.AddRange(kubernetesPods.ToArray());
+                    cboKubernetesPod.Items.AddRange([.. kubernetesPods]);
                     if (selectedKubernetesPodImageName == null && cboKubernetesPod.Items.Count > 0)
                     {
                         cboKubernetesPod.SelectedIndex = 0;

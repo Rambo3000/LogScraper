@@ -87,14 +87,19 @@ namespace LogScraper
             }
         }
 
+        private int countValue;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Count
         {
-            get => int.Parse(LabelCount.Text, NumberStyles.AllowThousands);
-            set { 
+            get => countValue;
+            set {
+                // prevent flickering
+                if (countValue == value) return;
+
                 LabelCount.Text = value.ToString("N0");
                 LabelCount.Left = Width - LabelCount.Width + 4;
                 ForeColor = value == 0 ? Color.Gray : Color.Black;
+                countValue = value;
             }
         }
     }

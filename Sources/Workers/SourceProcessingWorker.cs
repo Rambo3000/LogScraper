@@ -31,6 +31,8 @@ namespace LogScraper.Sources.Workers
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
+
+
                         await GetLogFromSourceAdapter(sourceAdapter);
 
                         await Task.Delay(intervalInSeconds * 1000, CancellationToken.None);
@@ -49,7 +51,7 @@ namespace LogScraper.Sources.Workers
         private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter)
         {
             string rawLog = await sourceAdapter.GetLogAsync();
-            string[] rawLogArray = rawLog.Split(new string[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.None);
+            string[] rawLogArray = rawLog.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None);
 
             OnDownloadCompleted(rawLogArray);
         }
