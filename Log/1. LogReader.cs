@@ -1,11 +1,10 @@
-﻿using LogScraper.Log;
-using LogScraper.Log.Collection;
+﻿using LogScraper.Log.Collection;
 using LogScraper.LogTransformers;
 using System;
 using System.Globalization;
 using System.Linq;
 
-namespace LogScraper
+namespace LogScraper.Log
 {
     internal static class LogReader
     {

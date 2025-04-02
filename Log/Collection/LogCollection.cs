@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace LogScraper.Log.Collection
 {
     internal class LogCollection
     {
         private static LogCollection instance = null;
-        private static readonly object padlock = new();
+        private static readonly Lock padlock = new();
 
         public int ErrorCount { get; set; }
 
