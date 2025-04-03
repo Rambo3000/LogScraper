@@ -16,7 +16,7 @@ namespace LogScraper
         {
             InitializeComponent();
             CheckBoxItem.Checked = isChecked;
-            LabelCount.Text = count.ToString();
+            Count = count;
             Description = description;
         }
 
@@ -87,7 +87,7 @@ namespace LogScraper
             }
         }
 
-        private int countValue;
+        private int countValue = -1;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Count
         {
