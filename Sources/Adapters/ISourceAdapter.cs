@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace LogScraper.Sources.Adapters
 {
@@ -7,5 +8,6 @@ namespace LogScraper.Sources.Adapters
         string GetLog();
         Task<string> GetLogAsync();
         string ToString();
+        DateTime? GetLastTrailTime();
     }
 }

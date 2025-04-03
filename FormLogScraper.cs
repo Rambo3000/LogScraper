@@ -122,8 +122,12 @@ namespace LogScraper
         #endregion
 
         #region Log provider work
+
+        private DateTime? lastTrailTime = null;
         private void StartLogProviderAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
+            // In case we want to download for a given duration, first get the log and after that start the duration
+            if (durationInSeconds != -1) { StartLogProviderAsync(-1, -1); }
             try
             {
                 btnReadFromUrl.Enabled = false;
@@ -138,7 +142,7 @@ namespace LogScraper
                 ISourceAdapter logProvider = logProviderType switch
                 {
                     LogProviderType.Runtime => usrRuntime.GetSourceAdapter(),
-                    LogProviderType.Kubernetes => usrKubernetes.GetSourceAdapter(),
+                    LogProviderType.Kubernetes => usrKubernetes.GetSourceAdapter(null, lastTrailTime),
                     LogProviderType.File => usrFileLogProvider.GetSourceAdapter(),
                     _ => throw new NotImplementedException()
                 };
@@ -154,7 +158,7 @@ namespace LogScraper
                 HandleExceptionWhenReadingLog(ex);
             }
         }
-        private void ProcessNewLogStringArray(string[] rawLog)
+        private void ProcessNewLogStringArray(string[] rawLog, DateTime? updatedLastTrailTime)
         {
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             try
@@ -170,6 +174,7 @@ namespace LogScraper
                 FilterLoglines();
                 UpdateStatisticsLogCollection();
                 HandleLogProviderStatusUpdate("Ok (" + DateTime.Now.ToString("HH:mm:ss") + ")", true);
+                lastTrailTime = updatedLastTrailTime;
             }
             catch (Exception ex)
             {
@@ -386,6 +391,7 @@ namespace LogScraper
             txtLogLines.Text = "";
             UpdateStatisticsLogCollection();
             UpdateDownloadControlsReadOnlyStatus();
+            lastTrailTime = null;
         }
         private void Reset()
         {
