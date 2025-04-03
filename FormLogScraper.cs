@@ -132,10 +132,7 @@ namespace LogScraper
             {
                 btnReadFromUrl.Enabled = false;
 
-                if (miniTopForm != null && !miniTopForm.IsDisposed)
-                {
-                    miniTopForm.btnRead.Enabled = btnReadFromUrl.Enabled;
-                }
+                UpdateFormMiniControls();
                 Application.DoEvents();
 
                 LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
@@ -174,6 +171,7 @@ namespace LogScraper
                 FilterLoglines();
                 UpdateStatisticsLogCollection();
                 HandleLogProviderStatusUpdate("Ok (" + DateTime.Now.ToString("HH:mm:ss") + ")", true);
+                UpdateFormMiniControls();
                 lastTrailTime = updatedLastTrailTime;
             }
             catch (Exception ex)
@@ -433,6 +431,10 @@ namespace LogScraper
             usrRuntime.Enabled = !downloadingInProgress;
             usrKubernetes.Enabled = !downloadingInProgress;
 
+            UpdateFormMiniControls();
+        }
+        private void UpdateFormMiniControls()
+        {
             if (miniTopForm != null && !miniTopForm.IsDisposed)
             {
                 miniTopForm.lblLogLinesTotalCount.Text = lblLogLinesTotalValue.Text;
@@ -531,6 +533,7 @@ namespace LogScraper
             {
                 miniTopForm = new FormMiniTop(this);
             }
+            UpdateFormMiniControls();
             miniTopForm.Show();
             miniTopForm.Focus();
             WindowState = FormWindowState.Minimized;
