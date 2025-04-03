@@ -3,17 +3,24 @@ using System.Net.Http;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using LogScraper.Sources.Adapters;
 using LogScraper.SourceAdapters;
 
 namespace LogScraper.Sources.Adapters.Http
 {
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, TrailType trailType, DateTime? lastTrailTime = null) : ISourceAdapter
     {
         private readonly string apiUrl = apiUrl;
         private readonly string credentialManagerUri = credentialManagerUri;
         private readonly int timeoutSeconds = timeoutSeconds;
         public HttpAuthenticationData AuthenticationData { get; private set; }
+
+        private readonly TrailType trailType = trailType;
+        private DateTime? lastTrailTime = lastTrailTime;
+
+        public DateTime? GetLastTrailTime()
+        {
+            return lastTrailTime;
+        }
 
         public HttpResponseMessage TestConnectionAndAskForAuthorisation()
         {
@@ -75,12 +82,31 @@ namespace LogScraper.Sources.Adapters.Http
 
                 CreateAuthenticationHeader(client, AuthenticationData);
 
-                return await client.GetAsync(apiUrl);
+                return await client.GetAsync(apiUrl + GetTrailQuery());
             }
             catch (Exception e)
             {
                 throw new Exception("Connection failed with error: " + e.Message);
             }
+        }
+
+        private string GetTrailQuery()
+        {
+            if (trailType == TrailType.None) return string.Empty;
+
+            DateTime now = DateTime.Now;
+
+            int elapsedSeconds = lastTrailTime == null ? -1 : (int)(now - (DateTime)lastTrailTime).TotalSeconds + 1;
+
+            string query = string.Empty;
+            if (trailType == TrailType.Kubernetes)
+            {
+                query = elapsedSeconds == -1 ? string.Empty : "?sinceSeconds=" + elapsedSeconds;
+            }
+            // Update the time for the next call
+            lastTrailTime = now;
+
+            return query;
         }
 
         public string GetLog()
@@ -106,7 +132,7 @@ namespace LogScraper.Sources.Adapters.Http
 
                 CreateAuthenticationHeader(client, AuthenticationData);
 
-                return client.GetAsync(apiUrl).Result;
+                return client.GetAsync(apiUrl + GetTrailQuery()).Result;
             }
             catch (Exception e)
             {

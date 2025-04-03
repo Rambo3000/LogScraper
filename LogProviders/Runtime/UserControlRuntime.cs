@@ -42,7 +42,7 @@ namespace LogScraper.LogProviders.Runtime
             }
             else
             {
-                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds);
+                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.None);
             }
             return sourceAdapter;
         }
@@ -60,7 +60,7 @@ namespace LogScraper.LogProviders.Runtime
             }
             else
             {
-                cboRuntimeInstances.Items.AddRange(RuntimeInstances.ToArray());
+                cboRuntimeInstances.Items.AddRange([.. RuntimeInstances]);
             }
         }
 

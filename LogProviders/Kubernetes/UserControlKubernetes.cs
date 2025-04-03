@@ -34,7 +34,7 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             return GetSourceAdapter(null);
         }
-        public ISourceAdapter GetSourceAdapter(string url = null)
+        public ISourceAdapter GetSourceAdapter(string url = null, DateTime? lastTrailTime = null)
         {
             if (Debugger.IsAttached) return SourceAdapterFactory.CreateFileSourceAdapter("Stubs/KubernetesPodLog.txt");
 
@@ -49,7 +49,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 url = KubernetesHelper.GetUrlForPodLog(kubernetesCluster, kubernetesNamespace, kubernetesPod);
             }
 
-            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds );
+            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.Kubernetes, lastTrailTime);
         }
 
         private void PopulateKubernetesClusters()

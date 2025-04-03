@@ -9,7 +9,7 @@ namespace LogScraper.Sources.Workers
     internal class SourceProcessingWorker
     {
         public event Action<string, bool> StatusUpdate;
-        public event Action<string[]> DownloadCompleted;
+        public event Action<string[], DateTime?> DownloadCompleted;
         public event Action<int, int> ProgressUpdate;
 
         public async Task DoWorkAsync(ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds, CancellationToken cancellationToken)
@@ -53,17 +53,17 @@ namespace LogScraper.Sources.Workers
             string rawLog = await sourceAdapter.GetLogAsync();
             string[] rawLogArray = rawLog.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None);
 
-            OnDownloadCompleted(rawLogArray);
+            OnDownloadCompleted(rawLogArray, sourceAdapter.GetLastTrailTime());
         }
         protected virtual void OnExceptionOccurred(string message, bool isSucces)
         {
             // Raise the event on the UI thread
             StatusUpdate?.Invoke(message, isSucces);
         }
-        protected virtual void OnDownloadCompleted(string[] rawLog)
+        protected virtual void OnDownloadCompleted(string[] rawLog, DateTime? lastTrailTime)
         {
             // Raise the event on the UI thread
-            DownloadCompleted?.Invoke(rawLog);
+            DownloadCompleted?.Invoke(rawLog, lastTrailTime);
         }
         protected virtual void OnProgressUpdate(int secondsElapsed, int duration)
         {
