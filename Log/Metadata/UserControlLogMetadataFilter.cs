@@ -28,8 +28,22 @@ namespace LogScraper
 
         private bool UpdateListViewInProgres;
 
-        public void UpdateListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
+        public void UpdateListView(LogMetadataPropertyAndValues logMetadataPropertyAndValuesNew)
         {
+
+            if (LogMetadataPropertyAndValues != null)
+            {
+                bool keysAreEqual =
+                    logMetadataPropertyAndValuesNew.LogMetadataValues.Count == LogMetadataPropertyAndValues.LogMetadataValues.Count &&
+                    logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.All(LogMetadataPropertyAndValues.LogMetadataValues.ContainsKey);
+
+                if (keysAreEqual)
+                {
+                    UpdateCountInListView(logMetadataPropertyAndValuesNew);
+                    return;
+                }
+            }
+
             UpdateListViewInProgres = true;
 
             Dictionary<string, bool> checkboxStates = [];
@@ -42,7 +56,7 @@ namespace LogScraper
             FlowLayoutPanelItems.Controls.Clear();
 
             // Sort by Value property
-            List<LogMetadataValue> sortedValues = [.. logMetadataPropertyAndValues.LogMetadataValues.Keys.OrderBy(lmv => lmv.Value)];
+            List<LogMetadataValue> sortedValues = [.. logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.OrderBy(lmv => lmv.Value)];
 
             foreach (LogMetadataValue logMetadataValue in sortedValues)
             {
@@ -68,7 +82,7 @@ namespace LogScraper
                 FlowLayoutPanelItems.Controls.Add(item);
             }
 
-            LogMetadataPropertyAndValues = logMetadataPropertyAndValues;
+            LogMetadataPropertyAndValues = logMetadataPropertyAndValuesNew;
             UpdateListViewInProgres = false;
 
             ResizeVertically();
