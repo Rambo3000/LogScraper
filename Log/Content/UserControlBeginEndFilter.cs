@@ -55,30 +55,41 @@ namespace LogScraper
         }
         private void UpdateLogContentList()
         {
+            // Store the currently selected log line
             LogLineWithToStringOverride selectedLogLine = (LogLineWithToStringOverride)LstLogContent.SelectedItem;
 
+            // If there are no log lines, clear the list and return
             if (LogLinesLatestVersion == null)
             {
                 LstLogContent.Items.Clear();
                 return;
             }
 
+            // Get the selected log content property
             LogContentProperty logContentProperty = (LogContentProperty)CboLogContentType.SelectedItem;
 
+            // If no log content property is selected, return
             if (logContentProperty == null) return;
 
-            int topIndex = LstLogContent.TopIndex;
 
+            // Create a list to store the log lines with overridden ToString method
             List<LogLineWithToStringOverride> logLineWithToStringOverrides = [];
 
+            // Get the search filter text
             string filter = txtSearch.Text.Trim();
             if (filter == DefaulSearchtText) filter = null;
 
+            // Iterate through the latest version of log lines
             foreach (LogLine logLine in LogLinesLatestVersion)
             {
+                // If the log line has no content properties, continue to the next log line
                 if (logLine.LogContentProperties == null) continue;
+
+                // Try to get the content for the selected log content property
                 logLine.LogContentProperties.TryGetValue(logContentProperty, out string content);
                 bool isError = false;
+
+                // If the content is null, check for errors if the "Show Errors" checkbox is checked
                 if (content == null)
                 {
                     if (chkShowErrors.Checked) logLine.LogContentProperties.TryGetValue(LogContentPropertyError, out content);
@@ -86,11 +97,13 @@ namespace LogScraper
                     isError = true;
                 }
 
+                // If the content is not an error and a filter is applied, check if the content contains the filter text
                 if (!isError && !string.IsNullOrEmpty(filter))
                 {
                     if (!content.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
                 }
 
+                // Create a new LogLineWithToStringOverride object and add it to the list
                 LogLineWithToStringOverride logLineWithToStringOverride = new()
                 {
                     OriginalLogLine = logLine,
@@ -99,18 +112,43 @@ namespace LogScraper
                 };
                 logLineWithToStringOverrides.Add(logLineWithToStringOverride);
             }
+            
+            // Check if the new items are different from the current items
+            bool itemsAreEqual = logLineWithToStringOverrides.Count == LstLogContent.Items.Count;
+            if (itemsAreEqual)
+            {
+                // Check if all items because of filtering
+                for (int i = 0; i < logLineWithToStringOverrides.Count; i++)
+                {
+                    if (!logLineWithToStringOverrides[i].Content.Equals(((LogLineWithToStringOverride)LstLogContent.Items[i]).Content))
+                    {
+                        itemsAreEqual = false;
+                        break;
+                    }
+                }
+                // Do not update anything when all items are the same
+                if (itemsAreEqual) return;
+            }
 
+            // Store the current top index of the list
+            int topIndex = LstLogContent.TopIndex;
+
+            // Suspend drawing of the list to improve performance
             LstLogContent.SuspendDrawing();
+            // Clear the list and add the new log lines
             LstLogContent.Items.Clear();
             LstLogContent.Items.AddRange([.. logLineWithToStringOverrides]);
+            // Restore the top index of the list
             LstLogContent.TopIndex = topIndex > LstLogContent.Items.Count - 1 ? LstLogContent.Items.Count - 1 : topIndex;
 
+            // If no log line was previously selected, resume drawing and return
             if (selectedLogLine == null)
             {
                 LstLogContent.ResumeDrawing();
                 return;
             }
 
+            // Iterate through the new log lines and select the previously selected log line if it exists
             foreach (LogLineWithToStringOverride logLineStringOverride in logLineWithToStringOverrides)
             {
                 if (logLineStringOverride.OriginalLogLine == selectedLogLine.OriginalLogLine)
@@ -127,6 +165,7 @@ namespace LogScraper
                     break;
                 }
             }
+            // Resume drawing of the list
             LstLogContent.ResumeDrawing();
         }
 
