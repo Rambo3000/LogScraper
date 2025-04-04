@@ -92,6 +92,7 @@ namespace LogScraper
 
         public void UpdateCountInListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
         {
+            FlowLayoutPanelItems.SuspendDrawing();
             foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
             {
                 LogMetadataValue logMetadataValue = (LogMetadataValue)item.Tag;
@@ -108,6 +109,7 @@ namespace LogScraper
                     }
                 }
             }
+            FlowLayoutPanelItems.ResumeDrawing();
         }
 
         public LogMetadataPropertyAndValues GetCurrentLogMetadataPropertyAndValues()
