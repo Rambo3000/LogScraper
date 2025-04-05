@@ -13,6 +13,7 @@ namespace LogScraper.Configuration
     {
         private static ConfigurationManager instance;
         private static readonly object lockObject = new();
+        private static object LockObject => lockObject;
         private readonly LogScraperConfig genericConfig;
         private readonly LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
@@ -50,7 +51,7 @@ namespace LogScraper.Configuration
                 SetLayoutTransformers(logLayout);
             }
         }
-        private void SetLayoutTransformers(LogLayout logLayout)
+        private static void SetLayoutTransformers(LogLayout logLayout)
         {
             if (logLayout.LogTransformersConfig == null) return;
 
@@ -83,7 +84,7 @@ namespace LogScraper.Configuration
                 if (instance == null)
                 {
                     // Use a lock to ensure only one thread creates the instance
-                    lock (lockObject)
+                    lock (LockObject)
                     {
                         instance ??= new ConfigurationManager();
                     }
@@ -99,7 +100,7 @@ namespace LogScraper.Configuration
                 if (instance == null)
                 {
                     // Use a lock to ensure only one thread creates the instance
-                    lock (lockObject)
+                    lock (LockObject)
                     {
                         instance ??= new ConfigurationManager();
                     }
@@ -115,7 +116,7 @@ namespace LogScraper.Configuration
                 if (instance == null)
                 {
                     // Use a lock to ensure only one thread creates the instance
-                    lock (lockObject)
+                    lock (LockObject)
                     {
                         instance ??= new ConfigurationManager();
                     }
