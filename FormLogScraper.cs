@@ -166,8 +166,7 @@ namespace LogScraper
 
                 LogLineClassifier.ClassifyLogLineContentProperties(logLayout.LogContentBeginEndFilters, LogCollection.Instance);
 
-                List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(LogCollection.Instance.LogLines, logLayout.LogMetadataProperties);
-                UpdateFilterControls(logMetadataPropertyAndValues);
+                UpdateFilterControls();
                 FilterLoglines();
                 UpdateStatisticsLogCollection();
                 HandleLogProviderStatusUpdate("Ok (" + DateTime.Now.ToString("HH:mm:ss") + ")", true);
@@ -182,11 +181,13 @@ namespace LogScraper
         #endregion
 
         #region Filter processing
-        private void UpdateFilterControls(List<LogMetadataPropertyAndValues> filterProperties)
+        private void UpdateFilterControls()
         {
+            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
+            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues = LogLineClassifier.GetLogLinesListOfMetadataPropertyAndValues(LogCollection.Instance.LogLines, logLayout.LogMetadataProperties);
             UserControlLogMetadataFilter previousFilter = null;
             PanelFilters.SuspendDrawing();
-            foreach (LogMetadataPropertyAndValues filterProperty in filterProperties)
+            foreach (LogMetadataPropertyAndValues filterProperty in logMetadataPropertyAndValues)
             {
                 if (!logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
                 {
