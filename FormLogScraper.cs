@@ -606,5 +606,16 @@ namespace LogScraper
             PanelFilters.ResumeDrawing();
             previousWidth = newWidth;
         }
+
+        private void BtnConfig_Click(object sender, EventArgs e)
+        {
+            using FormConfiguration form = new();
+            DialogResult result = form.ShowDialog(this); // 'this' makes it modal to the main window
+
+            if (result == DialogResult.OK)
+            {
+                // Do something with the config, e.g. read properties
+            }
+        }
     }
 }
