@@ -1,4 +1,6 @@
-﻿namespace LogScraper.LogProviders.Kubernetes
+﻿using LogScraper.Extensions;
+
+namespace LogScraper.LogProviders.Kubernetes
 {
     partial class UserControlKubernetesConfig
     {
@@ -33,25 +35,28 @@
             BtnRemoveCluster = new System.Windows.Forms.Button();
             BtnClusterUp = new System.Windows.Forms.Button();
             BtnClusterDown = new System.Windows.Forms.Button();
-            TxtClusterDescription = new System.Windows.Forms.TextBox();
-            TxtClusterBaseUrl = new System.Windows.Forms.TextBox();
-            TxtClusterId = new System.Windows.Forms.TextBox();
+            TxtClusterDescription = new ValidatedTextBox();
+            TxtClusterBaseUrl = new ValidatedTextBox();
+            TxtClusterId = new ValidatedTextBox();
             GrpClusters = new System.Windows.Forms.GroupBox();
             GrpNamespaces = new System.Windows.Forms.GroupBox();
-            BtnAddNamespace = new System.Windows.Forms.Button();
+            grpNamespace = new System.Windows.Forms.GroupBox();
             LblNamespaceName = new System.Windows.Forms.Label();
-            BtnRemoveNamespace = new System.Windows.Forms.Button();
-            TxtNamespaceName = new System.Windows.Forms.TextBox();
-            LstNamespaces = new System.Windows.Forms.ListBox();
+            TxtNamespaceDescription = new ValidatedTextBox();
             LblNamespaceDescription = new System.Windows.Forms.Label();
-            BtnNamespaceUp = new System.Windows.Forms.Button();
-            TxtNamespaceDescription = new System.Windows.Forms.TextBox();
-            BtnNamespaceDown = new System.Windows.Forms.Button();
+            TxtNamespaceName = new ValidatedTextBox();
+            LblNamespaces = new System.Windows.Forms.Label();
+            BtnAddNamespace = new System.Windows.Forms.Button();
             LblClusterId = new System.Windows.Forms.Label();
             LblClusterBaseUrl = new System.Windows.Forms.Label();
             LblClusterDescription = new System.Windows.Forms.Label();
+            BtnRemoveNamespace = new System.Windows.Forms.Button();
+            LstNamespaces = new System.Windows.Forms.ListBox();
+            BtnNamespaceUp = new System.Windows.Forms.Button();
+            BtnNamespaceDown = new System.Windows.Forms.Button();
             GrpClusters.SuspendLayout();
             GrpNamespaces.SuspendLayout();
+            grpNamespace.SuspendLayout();
             SuspendLayout();
             // 
             // LstClusters
@@ -61,14 +66,14 @@
             LstClusters.IntegralHeight = false;
             LstClusters.Location = new System.Drawing.Point(6, 22);
             LstClusters.Name = "LstClusters";
-            LstClusters.Size = new System.Drawing.Size(277, 438);
+            LstClusters.Size = new System.Drawing.Size(277, 433);
             LstClusters.TabIndex = 0;
             LstClusters.SelectedIndexChanged += LstClusters_SelectedIndexChanged;
             // 
             // BtnAddCluster
             // 
             BtnAddCluster.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnAddCluster.Location = new System.Drawing.Point(6, 466);
+            BtnAddCluster.Location = new System.Drawing.Point(6, 461);
             BtnAddCluster.Name = "BtnAddCluster";
             BtnAddCluster.Size = new System.Drawing.Size(80, 23);
             BtnAddCluster.TabIndex = 1;
@@ -79,7 +84,7 @@
             // BtnRemoveCluster
             // 
             BtnRemoveCluster.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnRemoveCluster.Location = new System.Drawing.Point(92, 466);
+            BtnRemoveCluster.Location = new System.Drawing.Point(92, 461);
             BtnRemoveCluster.Name = "BtnRemoveCluster";
             BtnRemoveCluster.Size = new System.Drawing.Size(80, 23);
             BtnRemoveCluster.TabIndex = 2;
@@ -91,7 +96,7 @@
             // 
             BtnClusterUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnClusterUp.Image = Properties.Resources.up;
-            BtnClusterUp.Location = new System.Drawing.Point(233, 466);
+            BtnClusterUp.Location = new System.Drawing.Point(233, 461);
             BtnClusterUp.Name = "BtnClusterUp";
             BtnClusterUp.Size = new System.Drawing.Size(22, 23);
             BtnClusterUp.TabIndex = 3;
@@ -102,7 +107,7 @@
             // 
             BtnClusterDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnClusterDown.Image = Properties.Resources.down;
-            BtnClusterDown.Location = new System.Drawing.Point(261, 466);
+            BtnClusterDown.Location = new System.Drawing.Point(261, 461);
             BtnClusterDown.Name = "BtnClusterDown";
             BtnClusterDown.Size = new System.Drawing.Size(22, 23);
             BtnClusterDown.TabIndex = 4;
@@ -111,71 +116,137 @@
             // 
             // TxtClusterDescription
             // 
-            TxtClusterDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            TxtClusterDescription.Location = new System.Drawing.Point(304, 84);
+            TxtClusterDescription.IsRequired = true;
+            TxtClusterDescription.Location = new System.Drawing.Point(6, 125);
             TxtClusterDescription.Name = "TxtClusterDescription";
             TxtClusterDescription.Size = new System.Drawing.Size(239, 23);
             TxtClusterDescription.TabIndex = 5;
+            TxtClusterDescription.TextChanged += TxtClusterDescription_TextChanged;
             // 
             // TxtClusterBaseUrl
             // 
-            TxtClusterBaseUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            TxtClusterBaseUrl.Location = new System.Drawing.Point(304, 128);
+            TxtClusterBaseUrl.IsRequired = true;
+            TxtClusterBaseUrl.Location = new System.Drawing.Point(6, 37);
             TxtClusterBaseUrl.Name = "TxtClusterBaseUrl";
-            TxtClusterBaseUrl.Size = new System.Drawing.Size(239, 23);
+            TxtClusterBaseUrl.Size = new System.Drawing.Size(472, 23);
             TxtClusterBaseUrl.TabIndex = 6;
+            TxtClusterBaseUrl.TextChanged += TxtClusterBaseUrl_TextChanged;
             // 
             // TxtClusterId
             // 
-            TxtClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            TxtClusterId.Location = new System.Drawing.Point(304, 40);
+            TxtClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtClusterId.IsRequired = true;
+            TxtClusterId.Location = new System.Drawing.Point(6, 81);
             TxtClusterId.Name = "TxtClusterId";
-            TxtClusterId.Size = new System.Drawing.Size(463, 23);
+            TxtClusterId.Size = new System.Drawing.Size(239, 23);
             TxtClusterId.TabIndex = 7;
+            TxtClusterId.TextChanged += TxtClusterId_TextChanged;
             // 
             // GrpClusters
             // 
             GrpClusters.Controls.Add(GrpNamespaces);
-            GrpClusters.Controls.Add(LblClusterId);
-            GrpClusters.Controls.Add(LblClusterBaseUrl);
-            GrpClusters.Controls.Add(LblClusterDescription);
             GrpClusters.Controls.Add(LstClusters);
-            GrpClusters.Controls.Add(TxtClusterId);
             GrpClusters.Controls.Add(BtnAddCluster);
-            GrpClusters.Controls.Add(TxtClusterBaseUrl);
             GrpClusters.Controls.Add(BtnRemoveCluster);
-            GrpClusters.Controls.Add(TxtClusterDescription);
             GrpClusters.Controls.Add(BtnClusterUp);
             GrpClusters.Controls.Add(BtnClusterDown);
-            GrpClusters.Location = new System.Drawing.Point(3, 3);
+            GrpClusters.Dock = System.Windows.Forms.DockStyle.Fill;
+            GrpClusters.Location = new System.Drawing.Point(0, 0);
             GrpClusters.Name = "GrpClusters";
-            GrpClusters.Size = new System.Drawing.Size(779, 495);
+            GrpClusters.Size = new System.Drawing.Size(782, 490);
             GrpClusters.TabIndex = 8;
             GrpClusters.TabStop = false;
             GrpClusters.Text = "Clusters";
             // 
             // GrpNamespaces
             // 
+            GrpNamespaces.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpNamespaces.Controls.Add(grpNamespace);
+            GrpNamespaces.Controls.Add(LblNamespaces);
             GrpNamespaces.Controls.Add(BtnAddNamespace);
-            GrpNamespaces.Controls.Add(LblNamespaceName);
+            GrpNamespaces.Controls.Add(LblClusterId);
+            GrpNamespaces.Controls.Add(LblClusterBaseUrl);
+            GrpNamespaces.Controls.Add(LblClusterDescription);
             GrpNamespaces.Controls.Add(BtnRemoveNamespace);
-            GrpNamespaces.Controls.Add(TxtNamespaceName);
+            GrpNamespaces.Controls.Add(TxtClusterId);
             GrpNamespaces.Controls.Add(LstNamespaces);
-            GrpNamespaces.Controls.Add(LblNamespaceDescription);
+            GrpNamespaces.Controls.Add(TxtClusterBaseUrl);
             GrpNamespaces.Controls.Add(BtnNamespaceUp);
-            GrpNamespaces.Controls.Add(TxtNamespaceDescription);
+            GrpNamespaces.Controls.Add(TxtClusterDescription);
             GrpNamespaces.Controls.Add(BtnNamespaceDown);
-            GrpNamespaces.Location = new System.Drawing.Point(289, 157);
+            GrpNamespaces.Location = new System.Drawing.Point(289, 22);
             GrpNamespaces.Name = "GrpNamespaces";
-            GrpNamespaces.Size = new System.Drawing.Size(469, 315);
+            GrpNamespaces.Size = new System.Drawing.Size(484, 433);
             GrpNamespaces.TabIndex = 14;
             GrpNamespaces.TabStop = false;
-            GrpNamespaces.Text = "Namespaces";
+            GrpNamespaces.Text = "Cluster";
+            // 
+            // grpNamespace
+            // 
+            grpNamespace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpNamespace.Controls.Add(LblNamespaceName);
+            grpNamespace.Controls.Add(TxtNamespaceDescription);
+            grpNamespace.Controls.Add(LblNamespaceDescription);
+            grpNamespace.Controls.Add(TxtNamespaceName);
+            grpNamespace.Location = new System.Drawing.Point(251, 169);
+            grpNamespace.Name = "grpNamespace";
+            grpNamespace.Size = new System.Drawing.Size(227, 229);
+            grpNamespace.TabIndex = 20;
+            grpNamespace.TabStop = false;
+            grpNamespace.Text = "Namespace";
+            // 
+            // LblNamespaceName
+            // 
+            LblNamespaceName.AutoSize = true;
+            LblNamespaceName.Location = new System.Drawing.Point(6, 19);
+            LblNamespaceName.Name = "LblNamespaceName";
+            LblNamespaceName.Size = new System.Drawing.Size(102, 15);
+            LblNamespaceName.TabIndex = 13;
+            LblNamespaceName.Text = "Namespace naam";
+            // 
+            // TxtNamespaceDescription
+            // 
+            TxtNamespaceDescription.IsRequired = true;
+            TxtNamespaceDescription.Location = new System.Drawing.Point(6, 81);
+            TxtNamespaceDescription.Name = "TxtNamespaceDescription";
+            TxtNamespaceDescription.Size = new System.Drawing.Size(215, 23);
+            TxtNamespaceDescription.TabIndex = 10;
+            TxtNamespaceDescription.TextChanged += TxtNamespaceDescription_TextChanged;
+            // 
+            // LblNamespaceDescription
+            // 
+            LblNamespaceDescription.AutoSize = true;
+            LblNamespaceDescription.Location = new System.Drawing.Point(6, 63);
+            LblNamespaceDescription.Name = "LblNamespaceDescription";
+            LblNamespaceDescription.Size = new System.Drawing.Size(78, 15);
+            LblNamespaceDescription.TabIndex = 11;
+            LblNamespaceDescription.Text = "Omschrijving";
+            // 
+            // TxtNamespaceName
+            // 
+            TxtNamespaceName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            TxtNamespaceName.ForeColor = System.Drawing.Color.Red;
+            TxtNamespaceName.IsRequired = true;
+            TxtNamespaceName.Location = new System.Drawing.Point(6, 37);
+            TxtNamespaceName.Name = "TxtNamespaceName";
+            TxtNamespaceName.Size = new System.Drawing.Size(176, 23);
+            TxtNamespaceName.TabIndex = 12;
+            TxtNamespaceName.TextChanged += TxtNamespaceName_TextChanged;
+            // 
+            // LblNamespaces
+            // 
+            LblNamespaces.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblNamespaces.AutoSize = true;
+            LblNamespaces.Location = new System.Drawing.Point(6, 151);
+            LblNamespaces.Name = "LblNamespaces";
+            LblNamespaces.Size = new System.Drawing.Size(74, 15);
+            LblNamespaces.TabIndex = 19;
+            LblNamespaces.Text = "Namespaces";
             // 
             // BtnAddNamespace
             // 
             BtnAddNamespace.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnAddNamespace.Location = new System.Drawing.Point(6, 286);
+            BtnAddNamespace.Location = new System.Drawing.Point(6, 404);
             BtnAddNamespace.Name = "BtnAddNamespace";
             BtnAddNamespace.Size = new System.Drawing.Size(80, 23);
             BtnAddNamespace.TabIndex = 15;
@@ -183,87 +254,11 @@
             BtnAddNamespace.UseVisualStyleBackColor = true;
             BtnAddNamespace.Click += BtnAddNamespace_Click;
             // 
-            // LblNamespaceName
-            // 
-            LblNamespaceName.AutoSize = true;
-            LblNamespaceName.Location = new System.Drawing.Point(251, 19);
-            LblNamespaceName.Name = "LblNamespaceName";
-            LblNamespaceName.Size = new System.Drawing.Size(69, 15);
-            LblNamespaceName.TabIndex = 13;
-            LblNamespaceName.Text = "Namespace";
-            // 
-            // BtnRemoveNamespace
-            // 
-            BtnRemoveNamespace.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnRemoveNamespace.Location = new System.Drawing.Point(92, 286);
-            BtnRemoveNamespace.Name = "BtnRemoveNamespace";
-            BtnRemoveNamespace.Size = new System.Drawing.Size(80, 23);
-            BtnRemoveNamespace.TabIndex = 16;
-            BtnRemoveNamespace.Text = "Verwijderen";
-            BtnRemoveNamespace.UseVisualStyleBackColor = true;
-            BtnRemoveNamespace.Click += BtnRemoveNamespace_Click;
-            // 
-            // TxtNamespaceName
-            // 
-            TxtNamespaceName.Location = new System.Drawing.Point(251, 37);
-            TxtNamespaceName.Name = "TxtNamespaceName";
-            TxtNamespaceName.Size = new System.Drawing.Size(100, 23);
-            TxtNamespaceName.TabIndex = 12;
-            // 
-            // LstNamespaces
-            // 
-            LstNamespaces.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LstNamespaces.FormattingEnabled = true;
-            LstNamespaces.IntegralHeight = false;
-            LstNamespaces.Location = new System.Drawing.Point(6, 22);
-            LstNamespaces.Name = "LstNamespaces";
-            LstNamespaces.Size = new System.Drawing.Size(239, 258);
-            LstNamespaces.TabIndex = 15;
-            LstNamespaces.SelectedIndexChanged += LstNamespaces_SelectedIndexChanged;
-            // 
-            // LblNamespaceDescription
-            // 
-            LblNamespaceDescription.AutoSize = true;
-            LblNamespaceDescription.Location = new System.Drawing.Point(251, 63);
-            LblNamespaceDescription.Name = "LblNamespaceDescription";
-            LblNamespaceDescription.Size = new System.Drawing.Size(141, 15);
-            LblNamespaceDescription.TabIndex = 11;
-            LblNamespaceDescription.Text = "Namespace omschrijving";
-            // 
-            // BtnNamespaceUp
-            // 
-            BtnNamespaceUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnNamespaceUp.Image = Properties.Resources.up;
-            BtnNamespaceUp.Location = new System.Drawing.Point(195, 286);
-            BtnNamespaceUp.Name = "BtnNamespaceUp";
-            BtnNamespaceUp.Size = new System.Drawing.Size(22, 23);
-            BtnNamespaceUp.TabIndex = 17;
-            BtnNamespaceUp.UseVisualStyleBackColor = true;
-            BtnNamespaceUp.Click += BtnNamespaceUp_Click;
-            // 
-            // TxtNamespaceDescription
-            // 
-            TxtNamespaceDescription.Location = new System.Drawing.Point(251, 81);
-            TxtNamespaceDescription.Name = "TxtNamespaceDescription";
-            TxtNamespaceDescription.Size = new System.Drawing.Size(212, 23);
-            TxtNamespaceDescription.TabIndex = 10;
-            // 
-            // BtnNamespaceDown
-            // 
-            BtnNamespaceDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnNamespaceDown.Image = Properties.Resources.down;
-            BtnNamespaceDown.Location = new System.Drawing.Point(223, 286);
-            BtnNamespaceDown.Name = "BtnNamespaceDown";
-            BtnNamespaceDown.Size = new System.Drawing.Size(22, 23);
-            BtnNamespaceDown.TabIndex = 18;
-            BtnNamespaceDown.UseVisualStyleBackColor = true;
-            BtnNamespaceDown.Click += BtnNamespaceDown_Click;
-            // 
             // LblClusterId
             // 
-            LblClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterId.AutoSize = true;
-            LblClusterId.Location = new System.Drawing.Point(304, 66);
+            LblClusterId.Location = new System.Drawing.Point(6, 63);
             LblClusterId.Name = "LblClusterId";
             LblClusterId.Size = new System.Drawing.Size(57, 15);
             LblClusterId.TabIndex = 9;
@@ -271,9 +266,9 @@
             // 
             // LblClusterBaseUrl
             // 
-            LblClusterBaseUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblClusterBaseUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterBaseUrl.AutoSize = true;
-            LblClusterBaseUrl.Location = new System.Drawing.Point(304, 22);
+            LblClusterBaseUrl.Location = new System.Drawing.Point(6, 19);
             LblClusterBaseUrl.Name = "LblClusterBaseUrl";
             LblClusterBaseUrl.Size = new System.Drawing.Size(55, 15);
             LblClusterBaseUrl.TabIndex = 9;
@@ -281,13 +276,57 @@
             // 
             // LblClusterDescription
             // 
-            LblClusterDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblClusterDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterDescription.AutoSize = true;
-            LblClusterDescription.Location = new System.Drawing.Point(304, 110);
+            LblClusterDescription.Location = new System.Drawing.Point(6, 107);
             LblClusterDescription.Name = "LblClusterDescription";
             LblClusterDescription.Size = new System.Drawing.Size(78, 15);
             LblClusterDescription.TabIndex = 8;
             LblClusterDescription.Text = "Omschrijving";
+            // 
+            // BtnRemoveNamespace
+            // 
+            BtnRemoveNamespace.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnRemoveNamespace.Location = new System.Drawing.Point(92, 404);
+            BtnRemoveNamespace.Name = "BtnRemoveNamespace";
+            BtnRemoveNamespace.Size = new System.Drawing.Size(80, 23);
+            BtnRemoveNamespace.TabIndex = 16;
+            BtnRemoveNamespace.Text = "Verwijderen";
+            BtnRemoveNamespace.UseVisualStyleBackColor = true;
+            BtnRemoveNamespace.Click += BtnRemoveNamespace_Click;
+            // 
+            // LstNamespaces
+            // 
+            LstNamespaces.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            LstNamespaces.FormattingEnabled = true;
+            LstNamespaces.IntegralHeight = false;
+            LstNamespaces.Location = new System.Drawing.Point(6, 169);
+            LstNamespaces.Name = "LstNamespaces";
+            LstNamespaces.Size = new System.Drawing.Size(239, 229);
+            LstNamespaces.TabIndex = 15;
+            LstNamespaces.SelectedIndexChanged += LstNamespaces_SelectedIndexChanged;
+            // 
+            // BtnNamespaceUp
+            // 
+            BtnNamespaceUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnNamespaceUp.Image = Properties.Resources.up;
+            BtnNamespaceUp.Location = new System.Drawing.Point(195, 404);
+            BtnNamespaceUp.Name = "BtnNamespaceUp";
+            BtnNamespaceUp.Size = new System.Drawing.Size(22, 23);
+            BtnNamespaceUp.TabIndex = 17;
+            BtnNamespaceUp.UseVisualStyleBackColor = true;
+            BtnNamespaceUp.Click += BtnNamespaceUp_Click;
+            // 
+            // BtnNamespaceDown
+            // 
+            BtnNamespaceDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnNamespaceDown.Image = Properties.Resources.down;
+            BtnNamespaceDown.Location = new System.Drawing.Point(223, 404);
+            BtnNamespaceDown.Name = "BtnNamespaceDown";
+            BtnNamespaceDown.Size = new System.Drawing.Size(22, 23);
+            BtnNamespaceDown.TabIndex = 18;
+            BtnNamespaceDown.UseVisualStyleBackColor = true;
+            BtnNamespaceDown.Click += BtnNamespaceDown_Click;
             // 
             // UserControlKubernetesConfig
             // 
@@ -295,11 +334,12 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(GrpClusters);
             Name = "UserControlKubernetesConfig";
-            Size = new System.Drawing.Size(787, 504);
+            Size = new System.Drawing.Size(782, 490);
             GrpClusters.ResumeLayout(false);
-            GrpClusters.PerformLayout();
             GrpNamespaces.ResumeLayout(false);
             GrpNamespaces.PerformLayout();
+            grpNamespace.ResumeLayout(false);
+            grpNamespace.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -310,15 +350,15 @@
         private System.Windows.Forms.Button BtnRemoveCluster;
         private System.Windows.Forms.Button BtnClusterUp;
         private System.Windows.Forms.Button BtnClusterDown;
-        private System.Windows.Forms.TextBox TxtClusterDescription;
-        private System.Windows.Forms.TextBox TxtClusterBaseUrl;
-        private System.Windows.Forms.TextBox TxtClusterId;
+        private ValidatedTextBox TxtClusterDescription;
+        private ValidatedTextBox TxtClusterBaseUrl;
+        private ValidatedTextBox TxtClusterId;
         private System.Windows.Forms.GroupBox GrpClusters;
         private System.Windows.Forms.GroupBox GrpNamespaces;
         private System.Windows.Forms.Label LblNamespaceName;
-        private System.Windows.Forms.TextBox TxtNamespaceName;
+        private ValidatedTextBox TxtNamespaceName;
         private System.Windows.Forms.Label LblNamespaceDescription;
-        private System.Windows.Forms.TextBox TxtNamespaceDescription;
+        private ValidatedTextBox TxtNamespaceDescription;
         private System.Windows.Forms.Label LblClusterId;
         private System.Windows.Forms.Label LblClusterBaseUrl;
         private System.Windows.Forms.Label LblClusterDescription;
@@ -327,5 +367,7 @@
         private System.Windows.Forms.ListBox LstNamespaces;
         private System.Windows.Forms.Button BtnNamespaceUp;
         private System.Windows.Forms.Button BtnNamespaceDown;
+        private System.Windows.Forms.Label LblNamespaces;
+        private System.Windows.Forms.GroupBox grpNamespace;
     }
 }

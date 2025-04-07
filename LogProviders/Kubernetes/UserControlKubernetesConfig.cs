@@ -1,8 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
 using LogScraper.LogProviders.Kubernetes;
 
@@ -10,63 +11,24 @@ namespace LogScraper.LogProviders.Kubernetes
 {
     public partial class UserControlKubernetesConfig : UserControl
     {
-
-        private BindingList<KubernetesCluster> _clusters = new BindingList<KubernetesCluster>();
-        private BindingList<KubernetesNamespace> _namespaces = new BindingList<KubernetesNamespace>();
+        private readonly BindingList<KubernetesCluster> _clusters = [];
+        private BindingList<KubernetesNamespace> _namespaces = [];
 
         public UserControlKubernetesConfig()
         {
             InitializeComponent();
-            InitializeUI();
-        }
-
-        private void InitializeUI()
-        {
-            LstClusters.DataSource = _clusters;
-            LstClusters.DisplayMember = "Description";
-
-            LstNamespaces.DataSource = _namespaces;
-            LstNamespaces.DisplayMember = "Description";
-
-            TxtClusterDescription.TextChanged += (s, e) => UpdateSelectedCluster();
-            TxtClusterBaseUrl.TextChanged += (s, e) => UpdateSelectedCluster();
-            TxtClusterId.TextChanged += (s, e) => UpdateSelectedCluster();
-
-            TxtNamespaceDescription.TextChanged += (s, e) => UpdateSelectedNamespace();
-            TxtNamespaceName.TextChanged += (s, e) => UpdateSelectedNamespace();
-        }
-
-        private void UpdateSelectedCluster()
-        {
-            if (LstClusters.SelectedItem is KubernetesCluster selected)
-            {
-                selected.Description = TxtClusterDescription.Text;
-                selected.BaseUrl = TxtClusterBaseUrl.Text;
-                selected.ClusterId = TxtClusterId.Text;
-                LstClusters.DisplayMember = ""; // Force update
-                LstClusters.DisplayMember = "Description";
-            }
-        }
-
-        private void UpdateSelectedNamespace()
-        {
-            if (LstNamespaces.SelectedItem is KubernetesNamespace selected)
-            {
-                selected.Description = TxtNamespaceDescription.Text;
-                selected.Name = TxtNamespaceName.Text;
-                LstNamespaces.DisplayMember = "";
-                LstNamespaces.DisplayMember = "Description";
-            }
         }
 
         internal bool TryGetConfiguration(out KubernetesConfig config)
         {
             config = new KubernetesConfig
             {
-                Clusters = _clusters.ToList(),
+                Clusters = [.. _clusters],
                 DefaultLogLayoutDescription = "",
                 DefaultLogLayout = null
             };
+
+            List<string> errorMessages = [];
 
             foreach (KubernetesCluster cluster in config.Clusters)
             {
@@ -74,24 +36,29 @@ namespace LogScraper.LogProviders.Kubernetes
                     string.IsNullOrWhiteSpace(cluster.BaseUrl) ||
                     string.IsNullOrWhiteSpace(cluster.ClusterId))
                 {
-                    MessageBox.Show("Elke cluster moet een Description, BaseUrl en ClusterId hebben.", "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    errorMessages.Add($"Cluster '{cluster.Description}' moet een Description, BaseUrl en ClusterId hebben.");
                 }
 
                 if (cluster.Namespaces == null || cluster.Namespaces.Count == 0)
                 {
-                    MessageBox.Show($"Cluster '{cluster.Description}' bevat geen namespaces.", "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    errorMessages.Add($"Cluster '{cluster.Description}' bevat geen namespaces.");
                 }
-
-                foreach (KubernetesNamespace ns in cluster.Namespaces)
+                else
                 {
-                    if (string.IsNullOrWhiteSpace(ns.Description) || string.IsNullOrWhiteSpace(ns.Name))
+                    foreach (KubernetesNamespace ns in cluster.Namespaces)
                     {
-                        MessageBox.Show($"Elke namespace in cluster '{cluster.Description}' moet een naam en beschrijving hebben.", "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
+                        if (string.IsNullOrWhiteSpace(ns.Description) || string.IsNullOrWhiteSpace(ns.Name))
+                        {
+                            errorMessages.Add($"Namespace in cluster '{cluster.Description}' moet een naam en beschrijving hebben.");
+                        }
                     }
                 }
+            }
+
+            if (errorMessages.Count > 0)
+            {
+                MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
             return true;
@@ -99,16 +66,15 @@ namespace LogScraper.LogProviders.Kubernetes
 
         private void BtnAddCluster_Click(object sender, EventArgs e)
         {
-            KubernetesCluster cluster = new KubernetesCluster
+            KubernetesCluster cluster = new()
             {
                 Description = "Nieuwe cluster",
                 BaseUrl = string.Empty,
                 ClusterId = string.Empty,
-                Namespaces = new()
+                Namespaces = []
             };
             _clusters.Add(cluster);
             LstClusters.SelectedItem = cluster;
-
         }
 
         private void BtnRemoveCluster_Click(object sender, EventArgs e)
@@ -117,13 +83,11 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 _clusters.Remove(cluster);
             }
-
         }
 
         private void BtnClusterUp_Click(object sender, EventArgs e)
         {
-            KubernetesCluster selected = LstClusters.SelectedItem as KubernetesCluster;
-            if (selected == null) return;
+            if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
 
             int index = _clusters.IndexOf(selected);
             if (index > 0)
@@ -136,8 +100,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
         private void BtnClusterDown_Click(object sender, EventArgs e)
         {
-            KubernetesCluster selected = LstClusters.SelectedItem as KubernetesCluster;
-            if (selected == null) return;
+            if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
 
             int index = _clusters.IndexOf(selected);
             if (index < _clusters.Count - 1)
@@ -150,17 +113,19 @@ namespace LogScraper.LogProviders.Kubernetes
 
         private void BtnAddNamespace_Click(object sender, EventArgs e)
         {
+            KubernetesNamespace ns = new()
+            {
+                Description = "Nieuwe namespace",
+                Name = ""
+            };
+
+            _namespaces.Add(ns);
+
             if (LstClusters.SelectedItem is KubernetesCluster cluster)
             {
-                KubernetesNamespace ns = new KubernetesNamespace
-                {
-                    Description = "Nieuwe namespace",
-                    Name = ""
-                };
-                cluster.Namespaces.Add(ns);
-                _namespaces.ResetBindings();
-                LstNamespaces.SelectedItem = ns;
+                cluster.Namespaces = [.. _namespaces];
             }
+            LstNamespaces.SelectedItem = ns;
         }
 
         private void BtnRemoveNamespace_Click(object sender, EventArgs e)
@@ -168,13 +133,17 @@ namespace LogScraper.LogProviders.Kubernetes
             if (LstNamespaces.SelectedItem is KubernetesNamespace ns)
             {
                 _namespaces.Remove(ns);
+
+                if (LstClusters.SelectedItem is KubernetesCluster cluster)
+                {
+                    cluster.Namespaces = [.. _namespaces];
+                }
             }
         }
 
         private void BtnNamespaceUp_Click(object sender, EventArgs e)
         {
-            KubernetesNamespace selected = LstNamespaces.SelectedItem as KubernetesNamespace;
-            if (selected == null) return;
+            if (LstNamespaces.SelectedItem is not KubernetesNamespace selected) return;
 
             int index = _namespaces.IndexOf(selected);
             if (index > 0)
@@ -187,8 +156,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
         private void BtnNamespaceDown_Click(object sender, EventArgs e)
         {
-            KubernetesNamespace selected = LstNamespaces.SelectedItem as KubernetesNamespace;
-            if (selected == null) return;
+            if (LstNamespaces.SelectedItem is not KubernetesNamespace selected) return;
 
             int index = _namespaces.IndexOf(selected);
             if (index < _namespaces.Count - 1)
@@ -199,29 +167,100 @@ namespace LogScraper.LogProviders.Kubernetes
             }
         }
 
+        private bool UpdatingClusterInformation = false;
         private void LstClusters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KubernetesCluster selected = LstClusters.SelectedItem as KubernetesCluster;
-            if (selected != null)
+            if (LstClusters.SelectedItem is KubernetesCluster selected)
             {
+                UpdatingClusterInformation = true;
                 TxtClusterDescription.Text = selected.Description;
                 TxtClusterBaseUrl.Text = selected.BaseUrl;
                 TxtClusterId.Text = selected.ClusterId;
 
-                _namespaces = new BindingList<KubernetesNamespace>(selected.Namespaces ?? new List<KubernetesNamespace>());
+                _namespaces = [.. selected.Namespaces ?? []];
                 LstNamespaces.DataSource = _namespaces;
+                LstNamespaces.DisplayMember = "";
+                LstNamespaces.DisplayMember = "Description";
+                UpdatingClusterInformation = false;
             }
         }
 
+        private bool UpdatingNamespaceInformation = false;
         private void LstNamespaces_SelectedIndexChanged(object sender, EventArgs e)
         {
-            KubernetesNamespace selected = LstNamespaces.SelectedItem as KubernetesNamespace;
-            if (selected != null)
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected)
             {
+                UpdatingNamespaceInformation = true;
                 TxtNamespaceDescription.Text = selected.Description;
-                TxtNamespaceName.Text = selected.Name;
+                TxtNamespaceName.Text = selected.Name; ;
+                UpdatingNamespaceInformation = false;
             }
+        }
+        internal KubernetesConfig GetKubernetesConfig()
+        {
+            return new KubernetesConfig
+            {
+                Clusters = [.. _clusters],
+                DefaultLogLayoutDescription = "",
+                DefaultLogLayout = null
+            };
+        }
+
+        internal void SetKubernetesConfig(KubernetesConfig config)
+        {
+            _clusters.Clear();
+            LstClusters.SelectedIndex = -1;
+
+            // TODO copy clusters and namespace
+            if (config != null && config.Clusters != null)
+            {
+                foreach (var cluster in config.Clusters)
+                {
+                    _clusters.Add(cluster);
+                }
+                LstClusters.DataSource = _clusters;
+                LstClusters.DisplayMember = "";
+                LstClusters.DisplayMember = "Description";
+                if (config.Clusters.Count > 0) LstClusters.SelectedIndex = 0;
+            }
+        }
+
+        private void TxtClusterId_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation) return;
+
+            if (LstClusters.SelectedItem is KubernetesCluster selected) selected.ClusterId = TxtClusterId.Text;
+        }
+
+        private void TxtClusterDescription_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation) return;
+
+            if (LstClusters.SelectedItem is KubernetesCluster selected) selected.Description = TxtClusterDescription.Text;
+
+            LstClusters.DisplayMember = ""; // Force update
+            LstClusters.DisplayMember = "Description";
+        }
+
+        private void TxtClusterBaseUrl_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation) return;
+
+            if (LstClusters.SelectedItem is KubernetesCluster selected) selected.BaseUrl = TxtClusterBaseUrl.Text;
+        }
+
+        private void TxtNamespaceName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
+
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.Name = TxtNamespaceName.Text;
+        }
+
+        private void TxtNamespaceDescription_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
+
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.Description = TxtNamespaceDescription.Text;
         }
     }
 }
-

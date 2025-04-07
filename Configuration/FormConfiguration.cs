@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LogScraper.LogProviders.Kubernetes;
 
 namespace LogScraper.Configuration
 {
@@ -19,7 +20,7 @@ namespace LogScraper.Configuration
 
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
-
+            userControlKubernetesConfig1.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)

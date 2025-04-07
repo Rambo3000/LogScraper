@@ -35,11 +35,11 @@
         "clusterId": "12345-t",
         "namespaces": [
           {
-            "description": "ABC",
+            "description": "GHI",
             "name": "ns-abc-t-001"
           },
           {
-            "description": "DEF",
+            "description": "JKL",
             "name": "ns-def-t-001"
           }
         ]

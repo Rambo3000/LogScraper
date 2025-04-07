@@ -44,7 +44,7 @@
             TabControl.Location = new System.Drawing.Point(2, 0);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
-            TabControl.Size = new System.Drawing.Size(796, 409);
+            TabControl.Size = new System.Drawing.Size(873, 546);
             TabControl.TabIndex = 0;
             // 
             // tabKubernetes
@@ -53,7 +53,7 @@
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
             tabKubernetes.Padding = new System.Windows.Forms.Padding(3);
-            tabKubernetes.Size = new System.Drawing.Size(788, 381);
+            tabKubernetes.Size = new System.Drawing.Size(865, 518);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
@@ -63,13 +63,13 @@
             userControlKubernetesConfig1.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlKubernetesConfig1.Location = new System.Drawing.Point(3, 3);
             userControlKubernetesConfig1.Name = "userControlKubernetesConfig1";
-            userControlKubernetesConfig1.Size = new System.Drawing.Size(782, 375);
+            userControlKubernetesConfig1.Size = new System.Drawing.Size(859, 512);
             userControlKubernetesConfig1.TabIndex = 0;
             // 
             // btnOk
             // 
             btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnOk.Location = new System.Drawing.Point(713, 415);
+            btnOk.Location = new System.Drawing.Point(790, 552);
             btnOk.Name = "btnOk";
             btnOk.Size = new System.Drawing.Size(75, 23);
             btnOk.TabIndex = 1;
@@ -80,7 +80,7 @@
             // btnCancel
             // 
             btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnCancel.Location = new System.Drawing.Point(632, 415);
+            btnCancel.Location = new System.Drawing.Point(709, 552);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 23);
             btnCancel.TabIndex = 2;
@@ -92,7 +92,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            ClientSize = new System.Drawing.Size(877, 587);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
             Controls.Add(TabControl);
