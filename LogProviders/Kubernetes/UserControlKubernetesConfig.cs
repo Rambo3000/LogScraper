@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
+using LogScraper.Credentials;
 using LogScraper.Log;
+using LogScraper.Sources.Adapters.Http;
+using LogScraper.Sources.Adapters;
+using LogScraper.Configuration;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -146,6 +150,19 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnRemoveNamespace.Enabled = LstNamespaces.Items.Count > 1;
             BtnNamespaceUp.Enabled = LstNamespaces.SelectedIndex > 0;
             BtnNamespaceDown.Enabled = LstNamespaces.SelectedIndex != -1 && LstNamespaces.SelectedIndex < (LstNamespaces.Items.Count - 1);
+
+            BtnTest.Enabled = LstClusters.SelectedItem != null && LstNamespaces.SelectedItem != null
+                && !string.IsNullOrWhiteSpace(TxtNamespaceName.Text)
+                && !string.IsNullOrWhiteSpace(TxtClusterId.Text)
+                && !string.IsNullOrWhiteSpace(TxtClusterBaseUrl.Text);
+        }
+
+        private void UpdateButtonTest()
+        {
+            BtnTest.Enabled = LstClusters.SelectedItem != null && LstNamespaces.SelectedItem != null
+                && !string.IsNullOrWhiteSpace(TxtNamespaceName.Text)
+                && !string.IsNullOrWhiteSpace(TxtClusterId.Text)
+                && !string.IsNullOrWhiteSpace(TxtClusterBaseUrl.Text);
         }
 
         private void BtnClusterUp_Click(object sender, EventArgs e)
@@ -282,6 +299,7 @@ namespace LogScraper.LogProviders.Kubernetes
             if (UpdatingClusterInformation) return;
 
             if (LstClusters.SelectedItem is KubernetesCluster selected) selected.ClusterId = TxtClusterId.Text;
+            UpdateButtonTest();
         }
 
         private void TxtClusterDescription_TextChanged(object sender, EventArgs e)
@@ -299,6 +317,7 @@ namespace LogScraper.LogProviders.Kubernetes
             if (UpdatingClusterInformation) return;
 
             if (LstClusters.SelectedItem is KubernetesCluster selected) selected.BaseUrl = TxtClusterBaseUrl.Text;
+            UpdateButtonTest();
         }
 
         private void TxtNamespaceName_TextChanged(object sender, EventArgs e)
@@ -306,6 +325,7 @@ namespace LogScraper.LogProviders.Kubernetes
             if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
 
             if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.Name = TxtNamespaceName.Text;
+            UpdateButtonTest();
         }
 
         private void TxtNamespaceDescription_TextChanged(object sender, EventArgs e)
@@ -313,6 +333,35 @@ namespace LogScraper.LogProviders.Kubernetes
             if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
 
             if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.Description = TxtNamespaceDescription.Text;
+        }
+
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            string url = string.Empty;
+            try
+            {
+                BtnTest.Enabled = false;
+                KubernetesCluster kubernetesCluster = LstClusters.SelectedItem as KubernetesCluster;
+                KubernetesNamespace kubernetesNamespace = LstNamespaces.SelectedItem as KubernetesNamespace;
+                url = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, kubernetesNamespace);
+
+                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.Kubernetes, null);
+                sourceAdapter.GetLog();
+
+                TxtTestMessage.Text = "Succes";
+                TxtTestMessage.Text += Environment.NewLine + url;
+                TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
+            }
+            catch (Exception exception)
+            {
+                TxtTestMessage.Text = "Fout:" + exception.Message;
+                TxtTestMessage.Text += Environment.NewLine + url;
+                TxtTestMessage.ForeColor = System.Drawing.Color.DarkRed;
+            }
+            finally
+            {
+                BtnTest.Enabled = true;
+            }
         }
     }
 }

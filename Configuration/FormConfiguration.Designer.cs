@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormConfiguration));
             TabControl = new System.Windows.Forms.TabControl();
             tabKubernetes = new System.Windows.Forms.TabPage();
             userControlKubernetesConfig = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesConfig();
@@ -44,7 +45,7 @@
             TabControl.Location = new System.Drawing.Point(2, 0);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
-            TabControl.Size = new System.Drawing.Size(873, 546);
+            TabControl.Size = new System.Drawing.Size(808, 530);
             TabControl.TabIndex = 0;
             // 
             // tabKubernetes
@@ -53,23 +54,23 @@
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
             tabKubernetes.Padding = new System.Windows.Forms.Padding(3);
-            tabKubernetes.Size = new System.Drawing.Size(865, 518);
+            tabKubernetes.Size = new System.Drawing.Size(800, 502);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
             // 
-            // userControlKubernetesConfig1
+            // userControlKubernetesConfig
             // 
             userControlKubernetesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlKubernetesConfig.Location = new System.Drawing.Point(3, 3);
-            userControlKubernetesConfig.Name = "userControlKubernetesConfig1";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(859, 512);
+            userControlKubernetesConfig.Name = "userControlKubernetesConfig";
+            userControlKubernetesConfig.Size = new System.Drawing.Size(794, 496);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // btnOk
             // 
             btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnOk.Location = new System.Drawing.Point(790, 552);
+            btnOk.Location = new System.Drawing.Point(725, 536);
             btnOk.Name = "btnOk";
             btnOk.Size = new System.Drawing.Size(75, 23);
             btnOk.TabIndex = 1;
@@ -80,7 +81,7 @@
             // btnCancel
             // 
             btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnCancel.Location = new System.Drawing.Point(709, 552);
+            btnCancel.Location = new System.Drawing.Point(644, 536);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 23);
             btnCancel.TabIndex = 2;
@@ -92,12 +93,13 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(877, 587);
+            ClientSize = new System.Drawing.Size(812, 571);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
             Controls.Add(TabControl);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Name = "FormConfiguration";
-            Text = "Settings";
+            Text = "Logscraper instellingen";
             Load += FormConfiguration_Load;
             TabControl.ResumeLayout(false);
             tabKubernetes.ResumeLayout(false);

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Security.Policy;
 using System.Windows.Forms;
+using LogScraper.Credentials;
 using LogScraper.LogProviders.Kubernetes;
+using LogScraper.Sources.Adapters.Http;
+using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Configuration
 {
@@ -28,7 +32,7 @@ namespace LogScraper.Configuration
 
             ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;
             ConfigurationManager.Save();
-            
+
             DialogResult = DialogResult.OK;
             Close();
         }
