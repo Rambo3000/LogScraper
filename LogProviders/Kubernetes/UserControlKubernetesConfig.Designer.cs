@@ -98,7 +98,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnClusterUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnClusterUp.Image = Properties.Resources.up;
-            BtnClusterUp.Location = new System.Drawing.Point(233, 427);
+            BtnClusterUp.Location = new System.Drawing.Point(237, 427);
             BtnClusterUp.Name = "BtnClusterUp";
             BtnClusterUp.Size = new System.Drawing.Size(22, 23);
             BtnClusterUp.TabIndex = 3;
@@ -119,7 +119,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtClusterDescription
             // 
             TxtClusterDescription.IsRequired = true;
-            TxtClusterDescription.Location = new System.Drawing.Point(6, 125);
+            TxtClusterDescription.Location = new System.Drawing.Point(8, 37);
             TxtClusterDescription.Name = "TxtClusterDescription";
             TxtClusterDescription.Size = new System.Drawing.Size(239, 23);
             TxtClusterDescription.TabIndex = 5;
@@ -128,7 +128,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtClusterBaseUrl
             // 
             TxtClusterBaseUrl.IsRequired = true;
-            TxtClusterBaseUrl.Location = new System.Drawing.Point(6, 37);
+            TxtClusterBaseUrl.Location = new System.Drawing.Point(8, 125);
             TxtClusterBaseUrl.Name = "TxtClusterBaseUrl";
             TxtClusterBaseUrl.Size = new System.Drawing.Size(472, 23);
             TxtClusterBaseUrl.TabIndex = 6;
@@ -200,7 +200,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // LblNamespaceName
             // 
             LblNamespaceName.AutoSize = true;
-            LblNamespaceName.Location = new System.Drawing.Point(6, 19);
+            LblNamespaceName.Location = new System.Drawing.Point(6, 63);
             LblNamespaceName.Name = "LblNamespaceName";
             LblNamespaceName.Size = new System.Drawing.Size(102, 15);
             LblNamespaceName.TabIndex = 13;
@@ -209,7 +209,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtNamespaceDescription
             // 
             TxtNamespaceDescription.IsRequired = true;
-            TxtNamespaceDescription.Location = new System.Drawing.Point(6, 81);
+            TxtNamespaceDescription.Location = new System.Drawing.Point(6, 37);
             TxtNamespaceDescription.Name = "TxtNamespaceDescription";
             TxtNamespaceDescription.Size = new System.Drawing.Size(215, 23);
             TxtNamespaceDescription.TabIndex = 10;
@@ -218,7 +218,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // LblNamespaceDescription
             // 
             LblNamespaceDescription.AutoSize = true;
-            LblNamespaceDescription.Location = new System.Drawing.Point(6, 63);
+            LblNamespaceDescription.Location = new System.Drawing.Point(6, 19);
             LblNamespaceDescription.Name = "LblNamespaceDescription";
             LblNamespaceDescription.Size = new System.Drawing.Size(78, 15);
             LblNamespaceDescription.TabIndex = 11;
@@ -228,9 +228,9 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             TxtNamespaceName.ForeColor = System.Drawing.SystemColors.WindowText;
             TxtNamespaceName.IsRequired = true;
-            TxtNamespaceName.Location = new System.Drawing.Point(6, 37);
+            TxtNamespaceName.Location = new System.Drawing.Point(6, 81);
             TxtNamespaceName.Name = "TxtNamespaceName";
-            TxtNamespaceName.Size = new System.Drawing.Size(176, 23);
+            TxtNamespaceName.Size = new System.Drawing.Size(215, 23);
             TxtNamespaceName.TabIndex = 12;
             TxtNamespaceName.TextChanged += TxtNamespaceName_TextChanged;
             // 
@@ -259,7 +259,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             LblClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterId.AutoSize = true;
-            LblClusterId.Location = new System.Drawing.Point(6, 63);
+            LblClusterId.Location = new System.Drawing.Point(8, 63);
             LblClusterId.Name = "LblClusterId";
             LblClusterId.Size = new System.Drawing.Size(57, 15);
             LblClusterId.TabIndex = 9;
@@ -269,7 +269,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             LblClusterBaseUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterBaseUrl.AutoSize = true;
-            LblClusterBaseUrl.Location = new System.Drawing.Point(6, 19);
+            LblClusterBaseUrl.Location = new System.Drawing.Point(8, 107);
             LblClusterBaseUrl.Name = "LblClusterBaseUrl";
             LblClusterBaseUrl.Size = new System.Drawing.Size(55, 15);
             LblClusterBaseUrl.TabIndex = 9;
@@ -279,7 +279,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             LblClusterDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblClusterDescription.AutoSize = true;
-            LblClusterDescription.Location = new System.Drawing.Point(6, 107);
+            LblClusterDescription.Location = new System.Drawing.Point(8, 19);
             LblClusterDescription.Name = "LblClusterDescription";
             LblClusterDescription.Size = new System.Drawing.Size(78, 15);
             LblClusterDescription.TabIndex = 8;
@@ -311,7 +311,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnNamespaceUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnNamespaceUp.Image = Properties.Resources.up;
-            BtnNamespaceUp.Location = new System.Drawing.Point(195, 370);
+            BtnNamespaceUp.Location = new System.Drawing.Point(199, 370);
             BtnNamespaceUp.Name = "BtnNamespaceUp";
             BtnNamespaceUp.Size = new System.Drawing.Size(22, 23);
             BtnNamespaceUp.TabIndex = 17;
@@ -331,6 +331,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // CboLogLayout
             // 
+            CboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogLayout.FormattingEnabled = true;
             CboLogLayout.Location = new System.Drawing.Point(134, 5);
             CboLogLayout.Name = "CboLogLayout";

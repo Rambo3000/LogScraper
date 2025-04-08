@@ -123,6 +123,9 @@ namespace LogScraper.LogProviders.Kubernetes
             };
             _clusters.Add(cluster);
             LstClusters.SelectedItem = cluster;
+            BtnAddNamespace_Click(null, null);
+            LstNamespaces_SelectedIndexChanged(null, null);
+            UpdateButtons();
         }
 
         private void BtnRemoveCluster_Click(object sender, EventArgs e)
@@ -131,6 +134,18 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 _clusters.Remove(cluster);
             }
+            UpdateButtons();
+        }
+
+        private void UpdateButtons()
+        {
+            BtnRemoveCluster.Enabled = LstClusters.Items.Count > 1;
+            BtnClusterUp.Enabled = LstClusters.SelectedIndex > 0;
+            BtnClusterDown.Enabled = LstClusters.SelectedIndex != -1 && LstClusters.SelectedIndex < (LstClusters.Items.Count - 1);
+
+            BtnRemoveNamespace.Enabled = LstNamespaces.Items.Count > 1;
+            BtnNamespaceUp.Enabled = LstNamespaces.SelectedIndex > 0;
+            BtnNamespaceDown.Enabled = LstNamespaces.SelectedIndex != -1 && LstNamespaces.SelectedIndex < (LstNamespaces.Items.Count - 1);
         }
 
         private void BtnClusterUp_Click(object sender, EventArgs e)
@@ -144,6 +159,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 _clusters.Insert(index - 1, selected);
                 LstClusters.SelectedIndex = index - 1;
             }
+            UpdateButtons();
         }
 
         private void BtnClusterDown_Click(object sender, EventArgs e)
@@ -157,6 +173,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 _clusters.Insert(index + 1, selected);
                 LstClusters.SelectedIndex = index + 1;
             }
+            UpdateButtons();
         }
 
         private void BtnAddNamespace_Click(object sender, EventArgs e)
@@ -174,6 +191,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 cluster.Namespaces = [.. _namespaces];
             }
             LstNamespaces.SelectedItem = ns;
+            UpdateButtons();
         }
 
         private void BtnRemoveNamespace_Click(object sender, EventArgs e)
@@ -181,12 +199,12 @@ namespace LogScraper.LogProviders.Kubernetes
             if (LstNamespaces.SelectedItem is KubernetesNamespace ns)
             {
                 _namespaces.Remove(ns);
-
                 if (LstClusters.SelectedItem is KubernetesCluster cluster)
                 {
                     cluster.Namespaces = [.. _namespaces];
                 }
             }
+            UpdateButtons();
         }
 
         private void BtnNamespaceUp_Click(object sender, EventArgs e)
@@ -199,7 +217,13 @@ namespace LogScraper.LogProviders.Kubernetes
                 _namespaces.RemoveAt(index);
                 _namespaces.Insert(index - 1, selected);
                 LstNamespaces.SelectedIndex = index - 1;
+
+                if (LstClusters.SelectedItem is KubernetesCluster cluster)
+                {
+                    cluster.Namespaces = [.. _namespaces];
+                }
             }
+            UpdateButtons();
         }
 
         private void BtnNamespaceDown_Click(object sender, EventArgs e)
@@ -211,8 +235,14 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 _namespaces.RemoveAt(index);
                 _namespaces.Insert(index + 1, selected);
+
+                if (LstClusters.SelectedItem is KubernetesCluster cluster)
+                {
+                    cluster.Namespaces = [.. _namespaces];
+                }
                 LstNamespaces.SelectedIndex = index + 1;
             }
+            UpdateButtons();
         }
 
         private bool UpdatingClusterInformation = false;
@@ -231,6 +261,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 LstNamespaces.DisplayMember = "Description";
                 UpdatingClusterInformation = false;
             }
+            UpdateButtons();
         }
 
         private bool UpdatingNamespaceInformation = false;
@@ -243,6 +274,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtNamespaceName.Text = selected.Name; ;
                 UpdatingNamespaceInformation = false;
             }
+            UpdateButtons();
         }
 
         private void TxtClusterId_TextChanged(object sender, EventArgs e)
