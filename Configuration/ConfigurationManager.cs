@@ -31,6 +31,43 @@ namespace LogScraper.Configuration
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);
         }
+        public static void Save()
+        {
+            // Check if an instance already exists
+            if (instance == null)
+            {
+                // Use a lock to ensure only one thread creates the instance
+                lock (LockObject)
+                {
+                    instance ??= new ConfigurationManager();
+                }
+            }
+            SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
+            //SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
+            //SaveToFile("LogScraperConfig.json", instance.genericConfig);
+        }
+
+        private static void SaveToFile<T>(string filePath, T data)
+        {
+            string jsonContent = JsonConvert.SerializeObject(
+                data,
+                Formatting.Indented,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                }
+            );
+
+            if (File.Exists(filePath))
+            {
+                // Back up the existing file
+                string backupPath = filePath + ".bak";
+                File.Copy(filePath, backupPath, overwrite: true);
+            }
+
+            File.WriteAllText(filePath, jsonContent, Encoding.UTF8);
+        }
+
 
         private void SetDefaultLogLayoutsForLogProvider(ILogProviderConfig logProviderConfig)
         {
@@ -70,7 +107,7 @@ namespace LogScraper.Configuration
             return JsonConvert.DeserializeObject<T>(
                 jsonContent,
                 new JsonSerializerSettings
-                {
+            {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 }
             );

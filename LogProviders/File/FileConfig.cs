@@ -1,4 +1,5 @@
-﻿using LogScraper.Configuration.LogProviderConfig;
+﻿using Newtonsoft.Json;
+using LogScraper.Configuration.LogProviderConfig;
 using LogScraper.Log;
 
 namespace LogScraper.LogProviders.File
@@ -6,7 +7,10 @@ namespace LogScraper.LogProviders.File
     internal class FileConfig : ILogProviderConfig
     {
         public string DefaultLogLayoutDescription { get; set; }
+
+        [JsonIgnore]
         public LogLayout DefaultLogLayout { get; set; }
+        [JsonIgnore]
         public LogProviderType LogProviderType
         {
             get { return LogProviderType.File; }

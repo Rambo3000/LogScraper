@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Windows.Forms;
-using LogScraper.LogProviders.Kubernetes;
+using LogScraper.Log;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -18,19 +15,62 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             InitializeComponent();
         }
+        internal void SetKubernetesConfig(KubernetesConfig config, List<LogLayout> logLayouts)
+        {
+            CboLogLayout.Items.Clear();
+            foreach (var layout in logLayouts)
+            {
+                CboLogLayout.Items.Add(layout);
+                if (config.DefaultLogLayout != null && layout == config.DefaultLogLayout)
+                {
+                    CboLogLayout.SelectedItem = layout;
+                }
+            }
 
+            _clusters.Clear();
+            LstClusters.SelectedIndex = -1;
+
+            // Copy clusters and namespace so we dont mix them with the ones already in the config
+            if (config != null && config.Clusters != null)
+            {
+                foreach (var cluster in config.Clusters)
+                {
+                    List<KubernetesNamespace> namespaces = [];
+                    foreach (var ns in cluster.Namespaces)
+                    {
+                        KubernetesNamespace nsNew = new()
+                        {
+                            Description = ns.Description,
+                            Name = ns.Name
+                        };
+                        namespaces.Add(nsNew);
+                    }
+
+                    KubernetesCluster clusterNew = new()
+                    {
+                        Description = cluster.Description,
+                        BaseUrl = cluster.BaseUrl,
+                        ClusterId = cluster.ClusterId,
+                        Namespaces = namespaces
+                    };
+                    _clusters.Add(clusterNew);
+                }
+                LstClusters.DataSource = _clusters;
+                LstClusters.DisplayMember = "";
+                LstClusters.DisplayMember = "Description";
+                if (config.Clusters.Count > 0) LstClusters.SelectedIndex = 0;
+            }
+        }
         internal bool TryGetConfiguration(out KubernetesConfig config)
         {
-            config = new KubernetesConfig
-            {
-                Clusters = [.. _clusters],
-                DefaultLogLayoutDescription = "",
-                DefaultLogLayout = null
-            };
-
             List<string> errorMessages = [];
 
-            foreach (KubernetesCluster cluster in config.Clusters)
+            if (CboLogLayout.SelectedIndex == -1)
+            {
+                errorMessages.Add($"De standaard layout moet geselecteerd zijn.");
+            }
+
+            foreach (KubernetesCluster cluster in _clusters)
             {
                 if (string.IsNullOrWhiteSpace(cluster.Description) ||
                     string.IsNullOrWhiteSpace(cluster.BaseUrl) ||
@@ -55,11 +95,19 @@ namespace LogScraper.LogProviders.Kubernetes
                 }
             }
 
+            config = null;
             if (errorMessages.Count > 0)
             {
                 MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+
+            config = new KubernetesConfig
+            {
+                Clusters = [.. _clusters],
+                DefaultLogLayout = CboLogLayout.SelectedItem as LogLayout,
+                DefaultLogLayoutDescription = (CboLogLayout.SelectedItem as LogLayout).Description
+            };
 
             return true;
         }
@@ -194,34 +242,6 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtNamespaceDescription.Text = selected.Description;
                 TxtNamespaceName.Text = selected.Name; ;
                 UpdatingNamespaceInformation = false;
-            }
-        }
-        internal KubernetesConfig GetKubernetesConfig()
-        {
-            return new KubernetesConfig
-            {
-                Clusters = [.. _clusters],
-                DefaultLogLayoutDescription = "",
-                DefaultLogLayout = null
-            };
-        }
-
-        internal void SetKubernetesConfig(KubernetesConfig config)
-        {
-            _clusters.Clear();
-            LstClusters.SelectedIndex = -1;
-
-            // TODO copy clusters and namespace
-            if (config != null && config.Clusters != null)
-            {
-                foreach (var cluster in config.Clusters)
-                {
-                    _clusters.Add(cluster);
-                }
-                LstClusters.DataSource = _clusters;
-                LstClusters.DisplayMember = "";
-                LstClusters.DisplayMember = "Description";
-                if (config.Clusters.Count > 0) LstClusters.SelectedIndex = 0;
             }
         }
 

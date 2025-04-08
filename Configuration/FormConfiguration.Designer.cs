@@ -30,7 +30,7 @@
         {
             TabControl = new System.Windows.Forms.TabControl();
             tabKubernetes = new System.Windows.Forms.TabPage();
-            userControlKubernetesConfig1 = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesConfig();
+            userControlKubernetesConfig = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesConfig();
             btnOk = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
             TabControl.SuspendLayout();
@@ -49,7 +49,7 @@
             // 
             // tabKubernetes
             // 
-            tabKubernetes.Controls.Add(userControlKubernetesConfig1);
+            tabKubernetes.Controls.Add(userControlKubernetesConfig);
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
             tabKubernetes.Padding = new System.Windows.Forms.Padding(3);
@@ -60,11 +60,11 @@
             // 
             // userControlKubernetesConfig1
             // 
-            userControlKubernetesConfig1.Dock = System.Windows.Forms.DockStyle.Fill;
-            userControlKubernetesConfig1.Location = new System.Drawing.Point(3, 3);
-            userControlKubernetesConfig1.Name = "userControlKubernetesConfig1";
-            userControlKubernetesConfig1.Size = new System.Drawing.Size(859, 512);
-            userControlKubernetesConfig1.TabIndex = 0;
+            userControlKubernetesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlKubernetesConfig.Location = new System.Drawing.Point(3, 3);
+            userControlKubernetesConfig.Name = "userControlKubernetesConfig1";
+            userControlKubernetesConfig.Size = new System.Drawing.Size(859, 512);
+            userControlKubernetesConfig.TabIndex = 0;
             // 
             // btnOk
             // 
@@ -110,6 +110,6 @@
         private System.Windows.Forms.TabPage tabKubernetes;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
-        private LogProviders.Kubernetes.UserControlKubernetesConfig userControlKubernetesConfig1;
+        private LogProviders.Kubernetes.UserControlKubernetesConfig userControlKubernetesConfig;
     }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using LogScraper.LogProviders.Kubernetes;
 
@@ -20,7 +13,7 @@ namespace LogScraper.Configuration
 
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
-            userControlKubernetesConfig1.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+            userControlKubernetesConfig.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig, ConfigurationManager.LogLayouts);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
@@ -31,7 +24,11 @@ namespace LogScraper.Configuration
 
         private void BtnOk_Click(object sender, EventArgs e)
         {
+            if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
 
+            ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;
+            ConfigurationManager.Save();
+            
             DialogResult = DialogResult.OK;
             Close();
         }

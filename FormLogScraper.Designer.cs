@@ -185,11 +185,11 @@
             // 
             // btnConfig
             // 
-            btnConfig.Location = new System.Drawing.Point(135, 105);
+            btnConfig.Image = Properties.Resources.cog_outline_16px;
+            btnConfig.Location = new System.Drawing.Point(274, 85);
             btnConfig.Name = "btnConfig";
-            btnConfig.Size = new System.Drawing.Size(62, 35);
+            btnConfig.Size = new System.Drawing.Size(24, 24);
             btnConfig.TabIndex = 23;
-            btnConfig.Text = "Config";
             btnConfig.UseVisualStyleBackColor = true;
             btnConfig.Click += BtnConfig_Click;
             // 
