@@ -7,6 +7,7 @@ using LogScraper.Log;
 using LogScraper.Log.Collection;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
+using LogScraper.LogProviders.Kubernetes;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using System;
@@ -614,7 +615,10 @@ namespace LogScraper
 
             if (result == DialogResult.OK)
             {
-                // Do something with the config, e.g. read properties
+                usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                cboLogProvider.Items.Clear();
+                PopulateLogProviderControls();
+                CboLogProvider_SelectedIndexChanged(null, null);
             }
         }
     }
