@@ -41,7 +41,6 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpClusters = new System.Windows.Forms.GroupBox();
             GrpCluster = new System.Windows.Forms.GroupBox();
             grpNamespace = new System.Windows.Forms.GroupBox();
-            TxtTestMessage = new System.Windows.Forms.TextBox();
             BtnTest = new System.Windows.Forms.Button();
             LblNamespaceName = new System.Windows.Forms.Label();
             TxtNamespaceDescription = new ValidatedTextBox();
@@ -58,6 +57,7 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnNamespaceDown = new System.Windows.Forms.Button();
             CboLogLayout = new System.Windows.Forms.ComboBox();
             lblLogLayout = new System.Windows.Forms.Label();
+            TxtTestMessage = new System.Windows.Forms.TextBox();
             GrpClusters.SuspendLayout();
             GrpCluster.SuspendLayout();
             grpNamespace.SuspendLayout();

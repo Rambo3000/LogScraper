@@ -150,11 +150,8 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnRemoveNamespace.Enabled = LstNamespaces.Items.Count > 1;
             BtnNamespaceUp.Enabled = LstNamespaces.SelectedIndex > 0;
             BtnNamespaceDown.Enabled = LstNamespaces.SelectedIndex != -1 && LstNamespaces.SelectedIndex < (LstNamespaces.Items.Count - 1);
-
-            BtnTest.Enabled = LstClusters.SelectedItem != null && LstNamespaces.SelectedItem != null
-                && !string.IsNullOrWhiteSpace(TxtNamespaceName.Text)
-                && !string.IsNullOrWhiteSpace(TxtClusterId.Text)
-                && !string.IsNullOrWhiteSpace(TxtClusterBaseUrl.Text);
+            
+            UpdateButtonTest();
         }
 
         private void UpdateButtonTest()

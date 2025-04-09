@@ -5,6 +5,7 @@ using LogScraper.Credentials;
 using LogScraper.LogProviders.Kubernetes;
 using LogScraper.Sources.Adapters.Http;
 using LogScraper.Sources.Adapters;
+using LogScraper.LogProviders.Runtime;
 
 namespace LogScraper.Configuration
 {
@@ -18,6 +19,7 @@ namespace LogScraper.Configuration
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
             userControlKubernetesConfig.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig, ConfigurationManager.LogLayouts);
+            userControlRuntimeConfig1.SetRuntimeConfig(ConfigurationManager.LogProvidersConfig.RuntimeConfig, ConfigurationManager.LogLayouts);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
@@ -29,8 +31,10 @@ namespace LogScraper.Configuration
         private void BtnOk_Click(object sender, EventArgs e)
         {
             if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
+            if (!userControlRuntimeConfig1.TryGetConfiguration(out RuntimeConfig runtimeConfig)) return;
 
             ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;
+            ConfigurationManager.LogProvidersConfig.RuntimeConfig = runtimeConfig;
             ConfigurationManager.Save();
 
             DialogResult = DialogResult.OK;

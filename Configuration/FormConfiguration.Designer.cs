@@ -32,16 +32,20 @@
             TabControl = new System.Windows.Forms.TabControl();
             tabKubernetes = new System.Windows.Forms.TabPage();
             userControlKubernetesConfig = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesConfig();
+            tabUrl = new System.Windows.Forms.TabPage();
             btnOk = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
+            userControlRuntimeConfig1 = new LogScraper.LogProviders.Kubernetes.UserControlRuntimeConfig();
             TabControl.SuspendLayout();
             tabKubernetes.SuspendLayout();
+            tabUrl.SuspendLayout();
             SuspendLayout();
             // 
             // TabControl
             // 
             TabControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TabControl.Controls.Add(tabKubernetes);
+            TabControl.Controls.Add(tabUrl);
             TabControl.Location = new System.Drawing.Point(2, 0);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
@@ -67,6 +71,16 @@
             userControlKubernetesConfig.Size = new System.Drawing.Size(794, 496);
             userControlKubernetesConfig.TabIndex = 0;
             // 
+            // tabUrl
+            // 
+            tabUrl.Controls.Add(userControlRuntimeConfig1);
+            tabUrl.Location = new System.Drawing.Point(4, 24);
+            tabUrl.Name = "tabUrl";
+            tabUrl.Size = new System.Drawing.Size(800, 502);
+            tabUrl.TabIndex = 1;
+            tabUrl.Text = "Directe Url";
+            tabUrl.UseVisualStyleBackColor = true;
+            // 
             // btnOk
             // 
             btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
@@ -89,6 +103,14 @@
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += BtnCancel_Click;
             // 
+            // userControlRuntimeConfig1
+            // 
+            userControlRuntimeConfig1.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlRuntimeConfig1.Location = new System.Drawing.Point(0, 0);
+            userControlRuntimeConfig1.Name = "userControlRuntimeConfig1";
+            userControlRuntimeConfig1.Size = new System.Drawing.Size(800, 502);
+            userControlRuntimeConfig1.TabIndex = 0;
+            // 
             // FormConfiguration
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -103,6 +125,7 @@
             Load += FormConfiguration_Load;
             TabControl.ResumeLayout(false);
             tabKubernetes.ResumeLayout(false);
+            tabUrl.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -113,5 +136,7 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private LogProviders.Kubernetes.UserControlKubernetesConfig userControlKubernetesConfig;
+        private System.Windows.Forms.TabPage tabUrl;
+        private LogProviders.Kubernetes.UserControlRuntimeConfig userControlRuntimeConfig1;
     }
 }
