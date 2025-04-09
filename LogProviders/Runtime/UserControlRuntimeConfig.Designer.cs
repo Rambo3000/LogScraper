@@ -163,6 +163,7 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtTestMessage.Location = new System.Drawing.Point(8, 142);
             TxtTestMessage.Multiline = true;
             TxtTestMessage.Name = "TxtTestMessage";
+            TxtTestMessage.ReadOnly = true;
             TxtTestMessage.Size = new System.Drawing.Size(518, 206);
             TxtTestMessage.TabIndex = 35;
             TxtTestMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;

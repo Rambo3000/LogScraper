@@ -58,11 +58,17 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="LogProviders\File\UserControlFileConfig.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="LogProviders\File\UserControlFileConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="LogProviders\Runtime\UserControlRuntimeConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

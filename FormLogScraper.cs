@@ -568,8 +568,18 @@ namespace LogScraper
             usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
             usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
-            if (logProviderConfig.DefaultLogLayout != null) cboLogLayout.SelectedItem = logProviderConfig.DefaultLogLayout;
-
+            switch(logProviderConfig.LogProviderType)
+            {
+                case LogProviderType.Runtime:
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
+                    break;
+                case LogProviderType.Kubernetes:
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
+                    break;
+                case LogProviderType.File:
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
+                    break;
+            }
             Reset();
         }
         #endregion
@@ -616,8 +626,7 @@ namespace LogScraper
             if (result == DialogResult.OK)
             {
                 usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
-                cboLogProvider.Items.Clear();
-                PopulateLogProviderControls();
+                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
                 CboLogProvider_SelectedIndexChanged(null, null);
             }
         }

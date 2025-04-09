@@ -351,7 +351,7 @@ namespace LogScraper.LogProviders.Kubernetes
             }
             catch (Exception exception)
             {
-                TxtTestMessage.Text = "Fout:" + exception.Message;
+                TxtTestMessage.Text = exception.Message;
                 TxtTestMessage.Text += Environment.NewLine + url;
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkRed;
             }

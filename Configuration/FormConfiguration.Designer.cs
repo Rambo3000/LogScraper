@@ -29,28 +29,36 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormConfiguration));
-            TabControl = new System.Windows.Forms.TabControl();
+            TabLogProviders = new System.Windows.Forms.TabControl();
             tabKubernetes = new System.Windows.Forms.TabPage();
             userControlKubernetesConfig = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesConfig();
             tabUrl = new System.Windows.Forms.TabPage();
+            userControlRuntimeConfig = new LogScraper.LogProviders.Kubernetes.UserControlRuntimeConfig();
+            tabFile = new System.Windows.Forms.TabPage();
             btnOk = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
-            userControlRuntimeConfig1 = new LogScraper.LogProviders.Kubernetes.UserControlRuntimeConfig();
-            TabControl.SuspendLayout();
+            userControlFileConfig = new LogScraper.LogProviders.Kubernetes.UserControlFileConfig();
+            tabMain = new System.Windows.Forms.TabControl();
+            tabPageLogProviders = new System.Windows.Forms.TabPage();
+            TabLogProviders.SuspendLayout();
             tabKubernetes.SuspendLayout();
             tabUrl.SuspendLayout();
+            tabFile.SuspendLayout();
+            tabMain.SuspendLayout();
+            tabPageLogProviders.SuspendLayout();
             SuspendLayout();
             // 
-            // TabControl
+            // TabLogProviders
             // 
-            TabControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            TabControl.Controls.Add(tabKubernetes);
-            TabControl.Controls.Add(tabUrl);
-            TabControl.Location = new System.Drawing.Point(2, 0);
-            TabControl.Name = "TabControl";
-            TabControl.SelectedIndex = 0;
-            TabControl.Size = new System.Drawing.Size(808, 530);
-            TabControl.TabIndex = 0;
+            TabLogProviders.Controls.Add(tabKubernetes);
+            TabLogProviders.Controls.Add(tabUrl);
+            TabLogProviders.Controls.Add(tabFile);
+            TabLogProviders.Dock = System.Windows.Forms.DockStyle.Fill;
+            TabLogProviders.Location = new System.Drawing.Point(3, 3);
+            TabLogProviders.Name = "TabLogProviders";
+            TabLogProviders.SelectedIndex = 0;
+            TabLogProviders.Size = new System.Drawing.Size(793, 494);
+            TabLogProviders.TabIndex = 0;
             // 
             // tabKubernetes
             // 
@@ -73,13 +81,31 @@
             // 
             // tabUrl
             // 
-            tabUrl.Controls.Add(userControlRuntimeConfig1);
+            tabUrl.Controls.Add(userControlRuntimeConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
             tabUrl.Size = new System.Drawing.Size(800, 502);
             tabUrl.TabIndex = 1;
             tabUrl.Text = "Directe Url";
             tabUrl.UseVisualStyleBackColor = true;
+            // 
+            // userControlRuntimeConfig1
+            // 
+            userControlRuntimeConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
+            userControlRuntimeConfig.Name = "userControlRuntimeConfig1";
+            userControlRuntimeConfig.Size = new System.Drawing.Size(800, 502);
+            userControlRuntimeConfig.TabIndex = 0;
+            // 
+            // tabFile
+            // 
+            tabFile.Controls.Add(userControlFileConfig);
+            tabFile.Location = new System.Drawing.Point(4, 24);
+            tabFile.Name = "tabFile";
+            tabFile.Size = new System.Drawing.Size(785, 466);
+            tabFile.TabIndex = 2;
+            tabFile.Text = "Lokaal bestand";
+            tabFile.UseVisualStyleBackColor = true;
             // 
             // btnOk
             // 
@@ -103,40 +129,68 @@
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += BtnCancel_Click;
             // 
-            // userControlRuntimeConfig1
+            // userControlFileConfig
             // 
-            userControlRuntimeConfig1.Dock = System.Windows.Forms.DockStyle.Fill;
-            userControlRuntimeConfig1.Location = new System.Drawing.Point(0, 0);
-            userControlRuntimeConfig1.Name = "userControlRuntimeConfig1";
-            userControlRuntimeConfig1.Size = new System.Drawing.Size(800, 502);
-            userControlRuntimeConfig1.TabIndex = 0;
+            userControlFileConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlFileConfig.Location = new System.Drawing.Point(0, 0);
+            userControlFileConfig.Name = "userControlFileConfig";
+            userControlFileConfig.Size = new System.Drawing.Size(785, 466);
+            userControlFileConfig.TabIndex = 0;
+            // 
+            // tabMain
+            // 
+            tabMain.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tabMain.Controls.Add(tabPageLogProviders);
+            tabMain.Location = new System.Drawing.Point(2, 2);
+            tabMain.Name = "tabMain";
+            tabMain.SelectedIndex = 0;
+            tabMain.Size = new System.Drawing.Size(807, 528);
+            tabMain.TabIndex = 3;
+            // 
+            // tabPageLogProviders
+            // 
+            tabPageLogProviders.Controls.Add(TabLogProviders);
+            tabPageLogProviders.Location = new System.Drawing.Point(4, 24);
+            tabPageLogProviders.Name = "tabPageLogProviders";
+            tabPageLogProviders.Padding = new System.Windows.Forms.Padding(3);
+            tabPageLogProviders.Size = new System.Drawing.Size(799, 500);
+            tabPageLogProviders.TabIndex = 1;
+            tabPageLogProviders.Text = "Bron van logging";
+            tabPageLogProviders.UseVisualStyleBackColor = true;
             // 
             // FormConfiguration
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(812, 571);
+            Controls.Add(tabMain);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
-            Controls.Add(TabControl);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Name = "FormConfiguration";
             Text = "Logscraper instellingen";
             Load += FormConfiguration_Load;
-            TabControl.ResumeLayout(false);
+            TabLogProviders.ResumeLayout(false);
             tabKubernetes.ResumeLayout(false);
             tabUrl.ResumeLayout(false);
+            tabFile.ResumeLayout(false);
+            tabMain.ResumeLayout(false);
+            tabPageLogProviders.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl TabControl;
+        private System.Windows.Forms.TabControl TabLogProviders;
         private System.Windows.Forms.TabPage tabKubernetes;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private LogProviders.Kubernetes.UserControlKubernetesConfig userControlKubernetesConfig;
         private System.Windows.Forms.TabPage tabUrl;
-        private LogProviders.Kubernetes.UserControlRuntimeConfig userControlRuntimeConfig1;
+        private LogProviders.Kubernetes.UserControlRuntimeConfig userControlRuntimeConfig;
+        private System.Windows.Forms.TabPage tabFile;
+        private LogProviders.Kubernetes.UserControlFileConfig userControlFileConfig;
+        private System.Windows.Forms.TabControl tabMain;
+        private System.Windows.Forms.TabPage tabPageLogProviders;
     }
 }
