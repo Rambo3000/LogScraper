@@ -79,13 +79,10 @@ namespace LogScraper
             {
                 usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
                 usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-
+                grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
                 PopulateLogLayouts();
                 PopulateLogProviderControls();
-
-                txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
-
-                if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
+                UpdateExportControls();
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
 
@@ -239,7 +236,7 @@ namespace LogScraper
             UsrLogContentBegin.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
             UsrLogContentEnd.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
 
-            UpdateAndWriteExport(currentLogMetadataFilterResult);
+            if (ConfigurationManager.GenericConfig.ExportToFile) UpdateAndWriteExport(currentLogMetadataFilterResult);
         }
         public static string CreateMetadataExampleFilterString(List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList)
         {
@@ -269,6 +266,13 @@ namespace LogScraper
         #endregion
 
         #region Export
+        private void UpdateExportControls()
+        {
+            grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
+            txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+            if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
+        
+        }
         private void UpdateAndWriteExport(LogMetadataFilterResult logMetadataFilterResult)
         {
             LogExportSettings logExportSettings = new()
@@ -627,6 +631,7 @@ namespace LogScraper
             {
                 usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
                 usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                UpdateExportControls();
                 CboLogProvider_SelectedIndexChanged(null, null);
             }
         }

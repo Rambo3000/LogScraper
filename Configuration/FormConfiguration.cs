@@ -22,6 +22,7 @@ namespace LogScraper.Configuration
             userControlKubernetesConfig.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig, ConfigurationManager.LogLayouts);
             userControlRuntimeConfig.SetRuntimeConfig(ConfigurationManager.LogProvidersConfig.RuntimeConfig, ConfigurationManager.LogLayouts);
             userControlFileConfig.SetFileConfig(ConfigurationManager.LogProvidersConfig.FileConfig, ConfigurationManager.LogLayouts);
+            userControlGenericConfig.SetGenericConfig(ConfigurationManager.GenericConfig);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
@@ -35,10 +36,12 @@ namespace LogScraper.Configuration
             if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
             if (!userControlRuntimeConfig.TryGetConfiguration(out RuntimeConfig runtimeConfig)) return;
             if (!userControlFileConfig.TryGetConfiguration(out FileConfig fileConfig)) return;
+            if (!userControlGenericConfig.TryGetGenericConfig(out LogScraperConfig config)) return;
 
             ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;
             ConfigurationManager.LogProvidersConfig.RuntimeConfig = runtimeConfig;
             ConfigurationManager.LogProvidersConfig.FileConfig = fileConfig;
+            ConfigurationManager.GenericConfig = config;
             ConfigurationManager.Save();
 
             DialogResult = DialogResult.OK;

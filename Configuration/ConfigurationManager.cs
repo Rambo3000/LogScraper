@@ -14,7 +14,7 @@ namespace LogScraper.Configuration
         private static ConfigurationManager instance;
         private static readonly object lockObject = new();
         private static object LockObject => lockObject;
-        private readonly LogScraperConfig genericConfig;
+        private LogScraperConfig genericConfig;
         private readonly LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
 
@@ -44,7 +44,7 @@ namespace LogScraper.Configuration
             }
             SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
             //SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
-            //SaveToFile("LogScraperConfig.json", instance.genericConfig);
+            SaveToFile("LogScraperConfig.json", instance.genericConfig);
         }
 
         private static void SaveToFile<T>(string filePath, T data)
@@ -127,6 +127,14 @@ namespace LogScraper.Configuration
                     }
                 }
                 return instance.genericConfig;
+            }
+            set
+            {
+                // Use a lock to ensure only one thread creates the instance
+                lock (LockObject)
+                {
+                    instance.genericConfig = value;
+                }
             }
         }
         public static List<LogLayout> LogLayouts
