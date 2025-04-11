@@ -8,8 +8,10 @@ using LogScraper.Log.Collection;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
 using LogScraper.LogProviders.Kubernetes;
+using LogScraper.LogProviders.Runtime;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -624,16 +626,40 @@ namespace LogScraper
 
         private void BtnConfig_Click(object sender, EventArgs e)
         {
+            KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
+            RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
+
             using FormConfiguration form = new();
             DialogResult result = form.ShowDialog(this); // 'this' makes it modal to the main window
 
             if (result == DialogResult.OK)
             {
-                usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
-                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                UpdateExportControls();
+                bool kubernetesChanged = !AreEqual(oldKubernetesConfig, ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+                if (kubernetesChanged)
+                {
+                    usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                }
+                bool runtimeChanged = !AreEqual(oldRuntimeConfig, ConfigurationManager.LogProvidersConfig.RuntimeConfig);
+                if (runtimeChanged)
+                {
+                    usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                }
+                if (kubernetesChanged || runtimeChanged) UpdateExportControls();
                 CboLogProvider_SelectedIndexChanged(null, null);
             }
+        }
+        public static bool AreEqual(object obj1, object obj2)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.None,
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            string json1 = JsonConvert.SerializeObject(obj1, settings);
+            string json2 = JsonConvert.SerializeObject(obj2, settings);
+
+            return json1 == json2;
         }
     }
 }
