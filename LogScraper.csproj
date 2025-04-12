@@ -64,12 +64,18 @@
     <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Log\UserControlLogLayoutConfig.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="LogProviders\File\UserControlFileConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="LogProviders\Runtime\UserControlRuntimeConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Log\UserControlLogLayoutConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
