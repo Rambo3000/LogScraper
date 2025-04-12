@@ -273,7 +273,7 @@ namespace LogScraper
             grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
             txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
             if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
-        
+
         }
         private void UpdateAndWriteExport(LogMetadataFilterResult logMetadataFilterResult)
         {
@@ -574,7 +574,7 @@ namespace LogScraper
             usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
             usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
-            switch(logProviderConfig.LogProviderType)
+            switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
@@ -628,6 +628,7 @@ namespace LogScraper
         {
             KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
             RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
+            LogScraperConfig oldGenericConfig = ConfigurationManager.GenericConfig;
 
             using FormConfiguration form = new();
             DialogResult result = form.ShowDialog(this); // 'this' makes it modal to the main window
@@ -635,22 +636,30 @@ namespace LogScraper
             if (result == DialogResult.OK)
             {
                 bool kubernetesChanged = !AreEqual(oldKubernetesConfig, ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                if (kubernetesChanged)
-                {
-                    usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
-                }
                 bool runtimeChanged = !AreEqual(oldRuntimeConfig, ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-                if (runtimeChanged)
+
+                if (kubernetesChanged || runtimeChanged)
                 {
-                    usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                    if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        if (kubernetesChanged)
+                        {
+                            usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                        }
+                        if (runtimeChanged)
+                        {
+                            usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                        }
+                        CboLogProvider_SelectedIndexChanged(null, null);
+                    }
                 }
-                if (kubernetesChanged || runtimeChanged) UpdateExportControls();
-                CboLogProvider_SelectedIndexChanged(null, null);
+
+                if (!AreEqual(oldGenericConfig, ConfigurationManager.GenericConfig)) UpdateExportControls();
             }
         }
         public static bool AreEqual(object obj1, object obj2)
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings
+            JsonSerializerSettings settings = new()
             {
                 Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore
