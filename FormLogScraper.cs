@@ -635,8 +635,8 @@ namespace LogScraper
 
             if (result == DialogResult.OK)
             {
-                bool kubernetesChanged = !AreEqual(oldKubernetesConfig, ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                bool runtimeChanged = !AreEqual(oldRuntimeConfig, ConfigurationManager.LogProvidersConfig.RuntimeConfig);
+                bool kubernetesChanged = !oldKubernetesConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+                bool runtimeChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
 
                 if (kubernetesChanged || runtimeChanged)
                 {
@@ -654,21 +654,8 @@ namespace LogScraper
                     }
                 }
 
-                if (!AreEqual(oldGenericConfig, ConfigurationManager.GenericConfig)) UpdateExportControls();
+                if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig)) UpdateExportControls();
             }
-        }
-        public static bool AreEqual(object obj1, object obj2)
-        {
-            JsonSerializerSettings settings = new()
-            {
-                Formatting = Formatting.None,
-                NullValueHandling = NullValueHandling.Ignore
-            };
-
-            string json1 = JsonConvert.SerializeObject(obj1, settings);
-            string json2 = JsonConvert.SerializeObject(obj2, settings);
-
-            return json1 == json2;
         }
     }
 }
