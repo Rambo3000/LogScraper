@@ -91,9 +91,9 @@ namespace LogScraper.Log
             {
                 if (logExportSettingsMetadata.RemoveMetaDataCriteria != null)
                 {
-                    logLineMetadataFormatted = RemoveTextBasedOnCriteria(logLine.Line, logExportSettingsMetadata.RemoveMetaDataCriteria);
+                    logLineMetadataFormatted = RemoveTextBasedOnCriteria(logLine.Line, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
                 }
-                logLineMetadataFormatted = AddMetadata(logLineMetadataFormatted, logExportSettingsMetadata.RemoveMetaDataCriteria.StartPosition, logLine.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
+                logLineMetadataFormatted = AddMetadata(logLineMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logLine.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
             }
 
             stringbuilder.AppendLine(logLineMetadataFormatted);
@@ -128,9 +128,9 @@ namespace LogScraper.Log
             return logLine.Insert(startIndex, " " + string.Join(" | ", values));
         }
 
-        private static string RemoveTextBasedOnCriteria(string inputText, FilterCriteriaWithStartPosition criteria)
+        private static string RemoveTextBasedOnCriteria(string inputText, FilterCriteria criteria, int startPosition)
         {
-            int startIndex = criteria.StartPosition;
+            int startIndex = startPosition;
 
             if (string.IsNullOrEmpty(inputText) || criteria == null)
             {

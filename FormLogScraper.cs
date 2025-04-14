@@ -283,10 +283,11 @@ namespace LogScraper
                 ExtraLinesBegin = UsrLogContentBegin.ExtraLineCount,
                 LogLineEnd = UsrLogContentEnd.SelectedLogLine,
                 ExtraLinesEnd = UsrLogContentEnd.ExtraLineCount,
-                LogExportSettingsMetadata = usrControlMetadataFormating.LogExportSettingsMetadata
+                LogExportSettingsMetadata = usrControlMetadataFormating.LogExportSettingsMetadata,
             };
 
             logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogLayout)cboLogLayout.SelectedItem).RemoveMetaDataCriteria;
+            logExportSettings.LogExportSettingsMetadata.MetadataStartPosition = ((LogLayout)cboLogLayout.SelectedItem).StartPosition;
 
             LogExportData logExportData = LogExportDataCreator.CreateLogExportData(logMetadataFilterResult, logExportSettings, !chkShowAllLogLines.Checked);
 

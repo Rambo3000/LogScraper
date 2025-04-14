@@ -172,6 +172,5 @@ namespace LogScraper.Log
 
             if (LstLayouts.SelectedItem is RuntimeInstance selected) selected.UrlRuntimeLog = TxtDateTimeFormat.Text;
         }
-
     }
 }

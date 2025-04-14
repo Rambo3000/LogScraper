@@ -40,20 +40,18 @@ namespace LogScraper.Log
             TxtDescription = new ValidatedTextBox();
             TxtDateTimeFormat = new ValidatedTextBox();
             GrpLayouts = new System.Windows.Forms.GroupBox();
+            pictureBox7 = new System.Windows.Forms.PictureBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
-            pictureBox2 = new System.Windows.Forms.PictureBox();
-            GrpContent = new System.Windows.Forms.GroupBox();
-            LblLblContentAfterPhrase = new System.Windows.Forms.Label();
-            TxtLblContentAfterPhrase = new ValidatedTextBox();
-            LblContentBeforePhrase = new System.Windows.Forms.Label();
-            TxtContentBeforePhrase = new ValidatedTextBox();
-            LblContentDescription = new System.Windows.Forms.Label();
-            TxtContentDescription = new ValidatedTextBox();
-            LstContent = new System.Windows.Forms.ListBox();
-            BtnContentAdd = new System.Windows.Forms.Button();
-            BtnContentRemove = new System.Windows.Forms.Button();
-            BtnContentDown = new System.Windows.Forms.Button();
-            BtnContentUp = new System.Windows.Forms.Button();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            pictureBox13 = new System.Windows.Forms.PictureBox();
+            pictureBox11 = new System.Windows.Forms.PictureBox();
+            pictureBox12 = new System.Windows.Forms.PictureBox();
+            label1 = new System.Windows.Forms.Label();
+            validatedTextBox1 = new ValidatedTextBox();
+            label2 = new System.Windows.Forms.Label();
+            validatedTextBox2 = new ValidatedTextBox();
+            TabControl = new System.Windows.Forms.TabControl();
+            tabPageMetadata = new System.Windows.Forms.TabPage();
             grpMetadata = new System.Windows.Forms.GroupBox();
             pictureBox5 = new System.Windows.Forms.PictureBox();
             pictureBox4 = new System.Windows.Forms.PictureBox();
@@ -70,28 +68,48 @@ namespace LogScraper.Log
             BtnMetadataRemove = new System.Windows.Forms.Button();
             BtnMetadataDown = new System.Windows.Forms.Button();
             BtnMetadataUp = new System.Windows.Forms.Button();
-            LblDateTimeFormat = new System.Windows.Forms.Label();
-            LblDescription = new System.Windows.Forms.Label();
-            toolTip = new System.Windows.Forms.ToolTip(components);
-            pictureBox7 = new System.Windows.Forms.PictureBox();
-            pictureBox6 = new System.Windows.Forms.PictureBox();
+            tabPageContentFilters = new System.Windows.Forms.TabPage();
+            GrpContent = new System.Windows.Forms.GroupBox();
             pictureBox8 = new System.Windows.Forms.PictureBox();
             pictureBox9 = new System.Windows.Forms.PictureBox();
             pictureBox10 = new System.Windows.Forms.PictureBox();
+            pictureBox6 = new System.Windows.Forms.PictureBox();
+            LblLblContentAfterPhrase = new System.Windows.Forms.Label();
+            TxtLblContentAfterPhrase = new ValidatedTextBox();
+            LblContentBeforePhrase = new System.Windows.Forms.Label();
+            TxtContentBeforePhrase = new ValidatedTextBox();
+            LblContentDescription = new System.Windows.Forms.Label();
+            TxtContentDescription = new ValidatedTextBox();
+            LstContent = new System.Windows.Forms.ListBox();
+            BtnContentAdd = new System.Windows.Forms.Button();
+            BtnContentRemove = new System.Windows.Forms.Button();
+            BtnContentDown = new System.Windows.Forms.Button();
+            BtnContentUp = new System.Windows.Forms.Button();
+            pictureBox2 = new System.Windows.Forms.PictureBox();
+            LblDateTimeFormat = new System.Windows.Forms.Label();
+            LblDescription = new System.Windows.Forms.Label();
+            toolTip = new System.Windows.Forms.ToolTip(components);
             GrpLayouts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            GrpContent.SuspendLayout();
+            groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox13).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox11).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox12).BeginInit();
+            TabControl.SuspendLayout();
+            tabPageMetadata.SuspendLayout();
             grpMetadata.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            tabPageContentFilters.SuspendLayout();
+            GrpContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // LstLayouts
@@ -154,7 +172,7 @@ namespace LogScraper.Log
             TxtDescription.IsRequired = true;
             TxtDescription.Location = new System.Drawing.Point(8, 37);
             TxtDescription.Name = "TxtDescription";
-            TxtDescription.Size = new System.Drawing.Size(239, 23);
+            TxtDescription.Size = new System.Drawing.Size(279, 23);
             TxtDescription.TabIndex = 5;
             TxtDescription.TextChanged += TxtDescription_TextChanged;
             // 
@@ -163,7 +181,7 @@ namespace LogScraper.Log
             TxtDateTimeFormat.IsRequired = true;
             TxtDateTimeFormat.Location = new System.Drawing.Point(8, 81);
             TxtDateTimeFormat.Name = "TxtDateTimeFormat";
-            TxtDateTimeFormat.Size = new System.Drawing.Size(239, 23);
+            TxtDateTimeFormat.Size = new System.Drawing.Size(279, 23);
             TxtDateTimeFormat.TabIndex = 6;
             TxtDateTimeFormat.TextChanged += TxtUrl_TextChanged;
             // 
@@ -184,12 +202,22 @@ namespace LogScraper.Log
             GrpLayouts.TabStop = false;
             GrpLayouts.Text = "Log layouts";
             // 
+            // pictureBox7
+            // 
+            pictureBox7.Image = Properties.Resources.help;
+            pictureBox7.Location = new System.Drawing.Point(79, 0);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new System.Drawing.Size(16, 16);
+            pictureBox7.TabIndex = 22;
+            pictureBox7.TabStop = false;
+            toolTip.SetToolTip(pictureBox7, resources.GetString("pictureBox7.ToolTip"));
+            // 
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(groupBox1);
+            grpRuntime.Controls.Add(TabControl);
             grpRuntime.Controls.Add(pictureBox2);
-            grpRuntime.Controls.Add(GrpContent);
-            grpRuntime.Controls.Add(grpMetadata);
             grpRuntime.Controls.Add(LblDateTimeFormat);
             grpRuntime.Controls.Add(LblDescription);
             grpRuntime.Controls.Add(TxtDateTimeFormat);
@@ -201,143 +229,109 @@ namespace LogScraper.Log
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Log layout";
             // 
-            // pictureBox2
+            // groupBox1
             // 
-            pictureBox2.Image = Properties.Resources.help;
-            pictureBox2.Location = new System.Drawing.Point(231, 62);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new System.Drawing.Size(16, 16);
-            pictureBox2.TabIndex = 27;
-            pictureBox2.TabStop = false;
-            toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            groupBox1.Controls.Add(pictureBox13);
+            groupBox1.Controls.Add(pictureBox11);
+            groupBox1.Controls.Add(pictureBox12);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Controls.Add(validatedTextBox1);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(validatedTextBox2);
+            groupBox1.Location = new System.Drawing.Point(8, 110);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new System.Drawing.Size(288, 115);
+            groupBox1.TabIndex = 29;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Metadata begin en eind";
             // 
-            // GrpContent
+            // pictureBox13
             // 
-            GrpContent.Controls.Add(pictureBox8);
-            GrpContent.Controls.Add(pictureBox9);
-            GrpContent.Controls.Add(pictureBox10);
-            GrpContent.Controls.Add(pictureBox6);
-            GrpContent.Controls.Add(LblLblContentAfterPhrase);
-            GrpContent.Controls.Add(TxtLblContentAfterPhrase);
-            GrpContent.Controls.Add(LblContentBeforePhrase);
-            GrpContent.Controls.Add(TxtContentBeforePhrase);
-            GrpContent.Controls.Add(LblContentDescription);
-            GrpContent.Controls.Add(TxtContentDescription);
-            GrpContent.Controls.Add(LstContent);
-            GrpContent.Controls.Add(BtnContentAdd);
-            GrpContent.Controls.Add(BtnContentRemove);
-            GrpContent.Controls.Add(BtnContentDown);
-            GrpContent.Controls.Add(BtnContentUp);
-            GrpContent.Location = new System.Drawing.Point(6, 322);
-            GrpContent.Name = "GrpContent";
-            GrpContent.Size = new System.Drawing.Size(528, 206);
-            GrpContent.TabIndex = 20;
-            GrpContent.TabStop = false;
-            GrpContent.Text = "Content begin en eind filters";
+            pictureBox13.Image = Properties.Resources.help;
+            pictureBox13.Location = new System.Drawing.Point(263, 18);
+            pictureBox13.Name = "pictureBox13";
+            pictureBox13.Size = new System.Drawing.Size(16, 16);
+            pictureBox13.TabIndex = 33;
+            pictureBox13.TabStop = false;
+            toolTip.SetToolTip(pictureBox13, resources.GetString("pictureBox13.ToolTip"));
             // 
-            // LblLblContentAfterPhrase
+            // pictureBox11
             // 
-            LblLblContentAfterPhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblLblContentAfterPhrase.AutoSize = true;
-            LblLblContentAfterPhrase.Location = new System.Drawing.Point(241, 110);
-            LblLblContentAfterPhrase.Name = "LblLblContentAfterPhrase";
-            LblLblContentAfterPhrase.Size = new System.Drawing.Size(160, 15);
-            LblLblContentAfterPhrase.TabIndex = 24;
-            LblLblContentAfterPhrase.Text = "Tekst na de metadata waarde";
+            pictureBox11.Image = Properties.Resources.help;
+            pictureBox11.Location = new System.Drawing.Point(263, 62);
+            pictureBox11.Name = "pictureBox11";
+            pictureBox11.Size = new System.Drawing.Size(16, 16);
+            pictureBox11.TabIndex = 35;
+            pictureBox11.TabStop = false;
+            toolTip.SetToolTip(pictureBox11, "Geef de tekst die het einde van de metadata identficeerd.\r\n\r\nBijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst\r\nGebruik in dit voorbeeld: \" - \"");
             // 
-            // TxtLblContentAfterPhrase
+            // pictureBox12
             // 
-            TxtLblContentAfterPhrase.IsRequired = true;
-            TxtLblContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
-            TxtLblContentAfterPhrase.Name = "TxtLblContentAfterPhrase";
-            TxtLblContentAfterPhrase.Size = new System.Drawing.Size(273, 23);
-            TxtLblContentAfterPhrase.TabIndex = 23;
+            pictureBox12.Image = Properties.Resources.help;
+            pictureBox12.Location = new System.Drawing.Point(140, 0);
+            pictureBox12.Name = "pictureBox12";
+            pictureBox12.Size = new System.Drawing.Size(16, 16);
+            pictureBox12.TabIndex = 34;
+            pictureBox12.TabStop = false;
+            toolTip.SetToolTip(pictureBox12, "De begin en eind criteria van de metadata, deze wordt onder andere gebruik om de metadata te verwijderen uit de logregel om een meer leesbare logregel te tonen");
             // 
-            // LblContentBeforePhrase
+            // label1
             // 
-            LblContentBeforePhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblContentBeforePhrase.AutoSize = true;
-            LblContentBeforePhrase.Location = new System.Drawing.Point(241, 66);
-            LblContentBeforePhrase.Name = "LblContentBeforePhrase";
-            LblContentBeforePhrase.Size = new System.Drawing.Size(171, 15);
-            LblContentBeforePhrase.TabIndex = 22;
-            LblContentBeforePhrase.Text = "Tekst voor de metadata waarde";
+            label1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(6, 63);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(171, 15);
+            label1.TabIndex = 33;
+            label1.Text = "Tekst welke de metadata afsluit";
             // 
-            // TxtContentBeforePhrase
+            // validatedTextBox1
             // 
-            TxtContentBeforePhrase.IsRequired = true;
-            TxtContentBeforePhrase.Location = new System.Drawing.Point(241, 84);
-            TxtContentBeforePhrase.Name = "TxtContentBeforePhrase";
-            TxtContentBeforePhrase.Size = new System.Drawing.Size(273, 23);
-            TxtContentBeforePhrase.TabIndex = 21;
+            validatedTextBox1.IsRequired = true;
+            validatedTextBox1.Location = new System.Drawing.Point(6, 81);
+            validatedTextBox1.Name = "validatedTextBox1";
+            validatedTextBox1.Size = new System.Drawing.Size(273, 23);
+            validatedTextBox1.TabIndex = 32;
             // 
-            // LblContentDescription
+            // label2
             // 
-            LblContentDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblContentDescription.AutoSize = true;
-            LblContentDescription.Location = new System.Drawing.Point(241, 22);
-            LblContentDescription.Name = "LblContentDescription";
-            LblContentDescription.Size = new System.Drawing.Size(78, 15);
-            LblContentDescription.TabIndex = 20;
-            LblContentDescription.Text = "Omschrijving";
+            label2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(6, 19);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(130, 15);
+            label2.TabIndex = 31;
+            label2.Text = "Tekst voor de metadata";
             // 
-            // TxtContentDescription
+            // validatedTextBox2
             // 
-            TxtContentDescription.IsRequired = true;
-            TxtContentDescription.Location = new System.Drawing.Point(241, 40);
-            TxtContentDescription.Name = "TxtContentDescription";
-            TxtContentDescription.Size = new System.Drawing.Size(273, 23);
-            TxtContentDescription.TabIndex = 19;
+            validatedTextBox2.IsRequired = false;
+            validatedTextBox2.Location = new System.Drawing.Point(6, 37);
+            validatedTextBox2.Name = "validatedTextBox2";
+            validatedTextBox2.Size = new System.Drawing.Size(273, 23);
+            validatedTextBox2.TabIndex = 30;
             // 
-            // LstContent
+            // TabControl
             // 
-            LstContent.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LstContent.FormattingEnabled = true;
-            LstContent.IntegralHeight = false;
-            LstContent.Location = new System.Drawing.Point(6, 22);
-            LstContent.Name = "LstContent";
-            LstContent.Size = new System.Drawing.Size(220, 147);
-            LstContent.TabIndex = 10;
+            TabControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TabControl.Controls.Add(tabPageMetadata);
+            TabControl.Controls.Add(tabPageContentFilters);
+            TabControl.Location = new System.Drawing.Point(8, 231);
+            TabControl.Name = "TabControl";
+            TabControl.SelectedIndex = 0;
+            TabControl.Size = new System.Drawing.Size(713, 301);
+            TabControl.TabIndex = 28;
             // 
-            // BtnContentAdd
+            // tabPageMetadata
             // 
-            BtnContentAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentAdd.Location = new System.Drawing.Point(6, 175);
-            BtnContentAdd.Name = "BtnContentAdd";
-            BtnContentAdd.Size = new System.Drawing.Size(80, 23);
-            BtnContentAdd.TabIndex = 15;
-            BtnContentAdd.Text = "Toevoegen";
-            BtnContentAdd.UseVisualStyleBackColor = true;
-            // 
-            // BtnContentRemove
-            // 
-            BtnContentRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentRemove.Location = new System.Drawing.Point(92, 175);
-            BtnContentRemove.Name = "BtnContentRemove";
-            BtnContentRemove.Size = new System.Drawing.Size(80, 23);
-            BtnContentRemove.TabIndex = 16;
-            BtnContentRemove.Text = "Verwijderen";
-            BtnContentRemove.UseVisualStyleBackColor = true;
-            // 
-            // BtnContentDown
-            // 
-            BtnContentDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentDown.Image = Properties.Resources.down;
-            BtnContentDown.Location = new System.Drawing.Point(204, 175);
-            BtnContentDown.Name = "BtnContentDown";
-            BtnContentDown.Size = new System.Drawing.Size(22, 23);
-            BtnContentDown.TabIndex = 18;
-            BtnContentDown.UseVisualStyleBackColor = true;
-            // 
-            // BtnContentUp
-            // 
-            BtnContentUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentUp.Image = Properties.Resources.up;
-            BtnContentUp.Location = new System.Drawing.Point(180, 175);
-            BtnContentUp.Name = "BtnContentUp";
-            BtnContentUp.Size = new System.Drawing.Size(22, 23);
-            BtnContentUp.TabIndex = 17;
-            BtnContentUp.UseVisualStyleBackColor = true;
+            tabPageMetadata.Controls.Add(grpMetadata);
+            tabPageMetadata.Location = new System.Drawing.Point(4, 24);
+            tabPageMetadata.Name = "tabPageMetadata";
+            tabPageMetadata.Padding = new System.Windows.Forms.Padding(3);
+            tabPageMetadata.Size = new System.Drawing.Size(705, 273);
+            tabPageMetadata.TabIndex = 0;
+            tabPageMetadata.Text = "Metadata";
+            tabPageMetadata.UseVisualStyleBackColor = true;
             // 
             // grpMetadata
             // 
@@ -356,9 +350,10 @@ namespace LogScraper.Log
             grpMetadata.Controls.Add(BtnMetadataRemove);
             grpMetadata.Controls.Add(BtnMetadataDown);
             grpMetadata.Controls.Add(BtnMetadataUp);
-            grpMetadata.Location = new System.Drawing.Point(6, 110);
+            grpMetadata.Dock = System.Windows.Forms.DockStyle.Fill;
+            grpMetadata.Location = new System.Drawing.Point(3, 3);
             grpMetadata.Name = "grpMetadata";
-            grpMetadata.Size = new System.Drawing.Size(528, 206);
+            grpMetadata.Size = new System.Drawing.Size(699, 267);
             grpMetadata.TabIndex = 19;
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
@@ -464,13 +459,13 @@ namespace LogScraper.Log
             LstMetadata.IntegralHeight = false;
             LstMetadata.Location = new System.Drawing.Point(6, 22);
             LstMetadata.Name = "LstMetadata";
-            LstMetadata.Size = new System.Drawing.Size(220, 149);
+            LstMetadata.Size = new System.Drawing.Size(220, 210);
             LstMetadata.TabIndex = 10;
             // 
             // BtnMetadataAdd
             // 
             BtnMetadataAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataAdd.Location = new System.Drawing.Point(8, 177);
+            BtnMetadataAdd.Location = new System.Drawing.Point(6, 238);
             BtnMetadataAdd.Name = "BtnMetadataAdd";
             BtnMetadataAdd.Size = new System.Drawing.Size(80, 23);
             BtnMetadataAdd.TabIndex = 15;
@@ -480,7 +475,7 @@ namespace LogScraper.Log
             // BtnMetadataRemove
             // 
             BtnMetadataRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataRemove.Location = new System.Drawing.Point(94, 177);
+            BtnMetadataRemove.Location = new System.Drawing.Point(90, 238);
             BtnMetadataRemove.Name = "BtnMetadataRemove";
             BtnMetadataRemove.Size = new System.Drawing.Size(80, 23);
             BtnMetadataRemove.TabIndex = 16;
@@ -491,7 +486,7 @@ namespace LogScraper.Log
             // 
             BtnMetadataDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataDown.Image = Properties.Resources.down;
-            BtnMetadataDown.Location = new System.Drawing.Point(204, 177);
+            BtnMetadataDown.Location = new System.Drawing.Point(204, 238);
             BtnMetadataDown.Name = "BtnMetadataDown";
             BtnMetadataDown.Size = new System.Drawing.Size(22, 23);
             BtnMetadataDown.TabIndex = 18;
@@ -501,51 +496,47 @@ namespace LogScraper.Log
             // 
             BtnMetadataUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataUp.Image = Properties.Resources.up;
-            BtnMetadataUp.Location = new System.Drawing.Point(180, 177);
+            BtnMetadataUp.Location = new System.Drawing.Point(180, 238);
             BtnMetadataUp.Name = "BtnMetadataUp";
             BtnMetadataUp.Size = new System.Drawing.Size(22, 23);
             BtnMetadataUp.TabIndex = 17;
             BtnMetadataUp.UseVisualStyleBackColor = true;
             // 
-            // LblDateTimeFormat
+            // tabPageContentFilters
             // 
-            LblDateTimeFormat.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblDateTimeFormat.AutoSize = true;
-            LblDateTimeFormat.Location = new System.Drawing.Point(8, 63);
-            LblDateTimeFormat.Name = "LblDateTimeFormat";
-            LblDateTimeFormat.Size = new System.Drawing.Size(102, 15);
-            LblDateTimeFormat.TabIndex = 9;
-            LblDateTimeFormat.Text = "Datum tijd format";
+            tabPageContentFilters.Controls.Add(GrpContent);
+            tabPageContentFilters.Location = new System.Drawing.Point(4, 24);
+            tabPageContentFilters.Name = "tabPageContentFilters";
+            tabPageContentFilters.Padding = new System.Windows.Forms.Padding(3);
+            tabPageContentFilters.Size = new System.Drawing.Size(705, 273);
+            tabPageContentFilters.TabIndex = 1;
+            tabPageContentFilters.Text = "Content begin en eind filters";
+            tabPageContentFilters.UseVisualStyleBackColor = true;
             // 
-            // LblDescription
+            // GrpContent
             // 
-            LblDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblDescription.AutoSize = true;
-            LblDescription.Location = new System.Drawing.Point(8, 19);
-            LblDescription.Name = "LblDescription";
-            LblDescription.Size = new System.Drawing.Size(78, 15);
-            LblDescription.TabIndex = 8;
-            LblDescription.Text = "Omschrijving";
-            // 
-            // pictureBox7
-            // 
-            pictureBox7.Image = Properties.Resources.help;
-            pictureBox7.Location = new System.Drawing.Point(79, 0);
-            pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new System.Drawing.Size(16, 16);
-            pictureBox7.TabIndex = 22;
-            pictureBox7.TabStop = false;
-            toolTip.SetToolTip(pictureBox7, resources.GetString("pictureBox7.ToolTip"));
-            // 
-            // pictureBox6
-            // 
-            pictureBox6.Image = Properties.Resources.help;
-            pictureBox6.Location = new System.Drawing.Point(167, 0);
-            pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new System.Drawing.Size(16, 16);
-            pictureBox6.TabIndex = 27;
-            pictureBox6.TabStop = false;
-            toolTip.SetToolTip(pictureBox6, resources.GetString("pictureBox6.ToolTip"));
+            GrpContent.Controls.Add(pictureBox8);
+            GrpContent.Controls.Add(pictureBox9);
+            GrpContent.Controls.Add(pictureBox10);
+            GrpContent.Controls.Add(pictureBox6);
+            GrpContent.Controls.Add(LblLblContentAfterPhrase);
+            GrpContent.Controls.Add(TxtLblContentAfterPhrase);
+            GrpContent.Controls.Add(LblContentBeforePhrase);
+            GrpContent.Controls.Add(TxtContentBeforePhrase);
+            GrpContent.Controls.Add(LblContentDescription);
+            GrpContent.Controls.Add(TxtContentDescription);
+            GrpContent.Controls.Add(LstContent);
+            GrpContent.Controls.Add(BtnContentAdd);
+            GrpContent.Controls.Add(BtnContentRemove);
+            GrpContent.Controls.Add(BtnContentDown);
+            GrpContent.Controls.Add(BtnContentUp);
+            GrpContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            GrpContent.Location = new System.Drawing.Point(3, 3);
+            GrpContent.Name = "GrpContent";
+            GrpContent.Size = new System.Drawing.Size(699, 267);
+            GrpContent.TabIndex = 20;
+            GrpContent.TabStop = false;
+            GrpContent.Text = "Content begin en eind filters";
             // 
             // pictureBox8
             // 
@@ -577,6 +568,150 @@ namespace LogScraper.Log
             pictureBox10.TabStop = false;
             toolTip.SetToolTip(pictureBox10, "De omschrijving wordt getoond in de logscraper ");
             // 
+            // pictureBox6
+            // 
+            pictureBox6.Image = Properties.Resources.help;
+            pictureBox6.Location = new System.Drawing.Point(167, 0);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new System.Drawing.Size(16, 16);
+            pictureBox6.TabIndex = 27;
+            pictureBox6.TabStop = false;
+            toolTip.SetToolTip(pictureBox6, resources.GetString("pictureBox6.ToolTip"));
+            // 
+            // LblLblContentAfterPhrase
+            // 
+            LblLblContentAfterPhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblLblContentAfterPhrase.AutoSize = true;
+            LblLblContentAfterPhrase.Location = new System.Drawing.Point(241, 110);
+            LblLblContentAfterPhrase.Name = "LblLblContentAfterPhrase";
+            LblLblContentAfterPhrase.Size = new System.Drawing.Size(160, 15);
+            LblLblContentAfterPhrase.TabIndex = 24;
+            LblLblContentAfterPhrase.Text = "Tekst na de metadata waarde";
+            // 
+            // TxtLblContentAfterPhrase
+            // 
+            TxtLblContentAfterPhrase.IsRequired = false;
+            TxtLblContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
+            TxtLblContentAfterPhrase.Name = "TxtLblContentAfterPhrase";
+            TxtLblContentAfterPhrase.Size = new System.Drawing.Size(273, 23);
+            TxtLblContentAfterPhrase.TabIndex = 23;
+            // 
+            // LblContentBeforePhrase
+            // 
+            LblContentBeforePhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblContentBeforePhrase.AutoSize = true;
+            LblContentBeforePhrase.Location = new System.Drawing.Point(241, 66);
+            LblContentBeforePhrase.Name = "LblContentBeforePhrase";
+            LblContentBeforePhrase.Size = new System.Drawing.Size(171, 15);
+            LblContentBeforePhrase.TabIndex = 22;
+            LblContentBeforePhrase.Text = "Tekst voor de metadata waarde";
+            // 
+            // TxtContentBeforePhrase
+            // 
+            TxtContentBeforePhrase.IsRequired = true;
+            TxtContentBeforePhrase.Location = new System.Drawing.Point(241, 84);
+            TxtContentBeforePhrase.Name = "TxtContentBeforePhrase";
+            TxtContentBeforePhrase.Size = new System.Drawing.Size(273, 23);
+            TxtContentBeforePhrase.TabIndex = 21;
+            // 
+            // LblContentDescription
+            // 
+            LblContentDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblContentDescription.AutoSize = true;
+            LblContentDescription.Location = new System.Drawing.Point(241, 22);
+            LblContentDescription.Name = "LblContentDescription";
+            LblContentDescription.Size = new System.Drawing.Size(78, 15);
+            LblContentDescription.TabIndex = 20;
+            LblContentDescription.Text = "Omschrijving";
+            // 
+            // TxtContentDescription
+            // 
+            TxtContentDescription.IsRequired = true;
+            TxtContentDescription.Location = new System.Drawing.Point(241, 40);
+            TxtContentDescription.Name = "TxtContentDescription";
+            TxtContentDescription.Size = new System.Drawing.Size(273, 23);
+            TxtContentDescription.TabIndex = 19;
+            // 
+            // LstContent
+            // 
+            LstContent.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            LstContent.FormattingEnabled = true;
+            LstContent.IntegralHeight = false;
+            LstContent.Location = new System.Drawing.Point(6, 22);
+            LstContent.Name = "LstContent";
+            LstContent.Size = new System.Drawing.Size(220, 210);
+            LstContent.TabIndex = 10;
+            // 
+            // BtnContentAdd
+            // 
+            BtnContentAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentAdd.Location = new System.Drawing.Point(6, 238);
+            BtnContentAdd.Name = "BtnContentAdd";
+            BtnContentAdd.Size = new System.Drawing.Size(80, 23);
+            BtnContentAdd.TabIndex = 15;
+            BtnContentAdd.Text = "Toevoegen";
+            BtnContentAdd.UseVisualStyleBackColor = true;
+            // 
+            // BtnContentRemove
+            // 
+            BtnContentRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentRemove.Location = new System.Drawing.Point(90, 238);
+            BtnContentRemove.Name = "BtnContentRemove";
+            BtnContentRemove.Size = new System.Drawing.Size(80, 23);
+            BtnContentRemove.TabIndex = 16;
+            BtnContentRemove.Text = "Verwijderen";
+            BtnContentRemove.UseVisualStyleBackColor = true;
+            // 
+            // BtnContentDown
+            // 
+            BtnContentDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentDown.Image = Properties.Resources.down;
+            BtnContentDown.Location = new System.Drawing.Point(204, 238);
+            BtnContentDown.Name = "BtnContentDown";
+            BtnContentDown.Size = new System.Drawing.Size(22, 23);
+            BtnContentDown.TabIndex = 18;
+            BtnContentDown.UseVisualStyleBackColor = true;
+            // 
+            // BtnContentUp
+            // 
+            BtnContentUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentUp.Image = Properties.Resources.up;
+            BtnContentUp.Location = new System.Drawing.Point(180, 238);
+            BtnContentUp.Name = "BtnContentUp";
+            BtnContentUp.Size = new System.Drawing.Size(22, 23);
+            BtnContentUp.TabIndex = 17;
+            BtnContentUp.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = Properties.Resources.help;
+            pictureBox2.Location = new System.Drawing.Point(271, 62);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new System.Drawing.Size(16, 16);
+            pictureBox2.TabIndex = 27;
+            pictureBox2.TabStop = false;
+            toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
+            // LblDateTimeFormat
+            // 
+            LblDateTimeFormat.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblDateTimeFormat.AutoSize = true;
+            LblDateTimeFormat.Location = new System.Drawing.Point(8, 63);
+            LblDateTimeFormat.Name = "LblDateTimeFormat";
+            LblDateTimeFormat.Size = new System.Drawing.Size(102, 15);
+            LblDateTimeFormat.TabIndex = 9;
+            LblDateTimeFormat.Text = "Datum tijd format";
+            // 
+            // LblDescription
+            // 
+            LblDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblDescription.AutoSize = true;
+            LblDescription.Location = new System.Drawing.Point(8, 19);
+            LblDescription.Name = "LblDescription";
+            LblDescription.Size = new System.Drawing.Size(78, 15);
+            LblDescription.TabIndex = 8;
+            LblDescription.Text = "Omschrijving";
+            // 
             // UserControlLogLayoutConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -585,22 +720,30 @@ namespace LogScraper.Log
             Name = "UserControlLogLayoutConfig";
             Size = new System.Drawing.Size(977, 595);
             GrpLayouts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            GrpContent.ResumeLayout(false);
-            GrpContent.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox13).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox11).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox12).EndInit();
+            TabControl.ResumeLayout(false);
+            tabPageMetadata.ResumeLayout(false);
             grpMetadata.ResumeLayout(false);
             grpMetadata.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            tabPageContentFilters.ResumeLayout(false);
+            GrpContent.ResumeLayout(false);
+            GrpContent.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
@@ -652,5 +795,17 @@ namespace LogScraper.Log
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.PictureBox pictureBox10;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPageMetadata;
+        private System.Windows.Forms.TabPage tabPageContentFilters;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.PictureBox pictureBox11;
+        private System.Windows.Forms.PictureBox pictureBox12;
+        private System.Windows.Forms.Label label1;
+        private ValidatedTextBox validatedTextBox1;
+        private System.Windows.Forms.Label label2;
+        private ValidatedTextBox validatedTextBox2;
+        private System.Windows.Forms.PictureBox pictureBox13;
+        private System.Windows.Forms.TabControl TabControl;
     }
 }
