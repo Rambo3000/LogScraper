@@ -1,6 +1,6 @@
 ﻿using LogScraper.Extensions;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log
 {
     partial class UserControlLogLayoutConfig
     {
@@ -30,6 +30,8 @@ namespace LogScraper.LogProviders.Kubernetes
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogLayoutConfig));
             LstLayouts = new System.Windows.Forms.ListBox();
             BtnLayoutAdd = new System.Windows.Forms.Button();
             BtnLayoutRemove = new System.Windows.Forms.Button();
@@ -39,9 +41,8 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtDateTimeFormat = new ValidatedTextBox();
             GrpLayouts = new System.Windows.Forms.GroupBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
+            pictureBox2 = new System.Windows.Forms.PictureBox();
             GrpContent = new System.Windows.Forms.GroupBox();
-            LblContentStartPosition = new System.Windows.Forms.Label();
-            txtContentStartPosition = new ValidatedTextBox();
             LblLblContentAfterPhrase = new System.Windows.Forms.Label();
             TxtLblContentAfterPhrase = new ValidatedTextBox();
             LblContentBeforePhrase = new System.Windows.Forms.Label();
@@ -54,8 +55,10 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnContentDown = new System.Windows.Forms.Button();
             BtnContentUp = new System.Windows.Forms.Button();
             grpMetadata = new System.Windows.Forms.GroupBox();
-            LblMetadataStartPosition = new System.Windows.Forms.Label();
-            TxtMetadataStartPosition = new ValidatedTextBox();
+            pictureBox5 = new System.Windows.Forms.PictureBox();
+            pictureBox4 = new System.Windows.Forms.PictureBox();
+            pictureBox3 = new System.Windows.Forms.PictureBox();
+            pictureBox1 = new System.Windows.Forms.PictureBox();
             LblMetadataAfterPhrase = new System.Windows.Forms.Label();
             TxtMetadataAfterPhrase = new ValidatedTextBox();
             LblMetadataBeforePhrase = new System.Windows.Forms.Label();
@@ -69,10 +72,26 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnMetadataUp = new System.Windows.Forms.Button();
             LblDateTimeFormat = new System.Windows.Forms.Label();
             LblDescription = new System.Windows.Forms.Label();
+            toolTip = new System.Windows.Forms.ToolTip(components);
+            pictureBox7 = new System.Windows.Forms.PictureBox();
+            pictureBox6 = new System.Windows.Forms.PictureBox();
+            pictureBox8 = new System.Windows.Forms.PictureBox();
+            pictureBox9 = new System.Windows.Forms.PictureBox();
+            pictureBox10 = new System.Windows.Forms.PictureBox();
             GrpLayouts.SuspendLayout();
             grpRuntime.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             GrpContent.SuspendLayout();
             grpMetadata.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
             SuspendLayout();
             // 
             // LstLayouts
@@ -82,14 +101,14 @@ namespace LogScraper.LogProviders.Kubernetes
             LstLayouts.IntegralHeight = false;
             LstLayouts.Location = new System.Drawing.Point(6, 22);
             LstLayouts.Name = "LstLayouts";
-            LstLayouts.Size = new System.Drawing.Size(232, 537);
+            LstLayouts.Size = new System.Drawing.Size(232, 532);
             LstLayouts.TabIndex = 0;
             LstLayouts.SelectedIndexChanged += LstUrls_SelectedIndexChanged;
             // 
             // BtnLayoutAdd
             // 
             BtnLayoutAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnLayoutAdd.Location = new System.Drawing.Point(6, 565);
+            BtnLayoutAdd.Location = new System.Drawing.Point(6, 560);
             BtnLayoutAdd.Name = "BtnLayoutAdd";
             BtnLayoutAdd.Size = new System.Drawing.Size(80, 23);
             BtnLayoutAdd.TabIndex = 1;
@@ -100,7 +119,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // BtnLayoutRemove
             // 
             BtnLayoutRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnLayoutRemove.Location = new System.Drawing.Point(92, 565);
+            BtnLayoutRemove.Location = new System.Drawing.Point(92, 560);
             BtnLayoutRemove.Name = "BtnLayoutRemove";
             BtnLayoutRemove.Size = new System.Drawing.Size(80, 23);
             BtnLayoutRemove.TabIndex = 2;
@@ -112,7 +131,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnLayoutUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnLayoutUp.Image = Properties.Resources.up;
-            BtnLayoutUp.Location = new System.Drawing.Point(192, 565);
+            BtnLayoutUp.Location = new System.Drawing.Point(192, 560);
             BtnLayoutUp.Name = "BtnLayoutUp";
             BtnLayoutUp.Size = new System.Drawing.Size(22, 23);
             BtnLayoutUp.TabIndex = 3;
@@ -123,7 +142,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnLayoutDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnLayoutDown.Image = Properties.Resources.down;
-            BtnLayoutDown.Location = new System.Drawing.Point(216, 565);
+            BtnLayoutDown.Location = new System.Drawing.Point(216, 560);
             BtnLayoutDown.Name = "BtnLayoutDown";
             BtnLayoutDown.Size = new System.Drawing.Size(22, 23);
             BtnLayoutDown.TabIndex = 4;
@@ -141,26 +160,26 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // TxtDateTimeFormat
             // 
-            TxtDateTimeFormat.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtDateTimeFormat.IsRequired = true;
             TxtDateTimeFormat.Location = new System.Drawing.Point(8, 81);
             TxtDateTimeFormat.Name = "TxtDateTimeFormat";
-            TxtDateTimeFormat.Size = new System.Drawing.Size(273, 23);
+            TxtDateTimeFormat.Size = new System.Drawing.Size(239, 23);
             TxtDateTimeFormat.TabIndex = 6;
             TxtDateTimeFormat.TextChanged += TxtUrl_TextChanged;
             // 
             // GrpLayouts
             // 
             GrpLayouts.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpLayouts.Controls.Add(pictureBox7);
             GrpLayouts.Controls.Add(grpRuntime);
             GrpLayouts.Controls.Add(LstLayouts);
             GrpLayouts.Controls.Add(BtnLayoutAdd);
             GrpLayouts.Controls.Add(BtnLayoutRemove);
             GrpLayouts.Controls.Add(BtnLayoutUp);
             GrpLayouts.Controls.Add(BtnLayoutDown);
-            GrpLayouts.Location = new System.Drawing.Point(0, 23);
+            GrpLayouts.Location = new System.Drawing.Point(0, 3);
             GrpLayouts.Name = "GrpLayouts";
-            GrpLayouts.Size = new System.Drawing.Size(977, 594);
+            GrpLayouts.Size = new System.Drawing.Size(977, 589);
             GrpLayouts.TabIndex = 8;
             GrpLayouts.TabStop = false;
             GrpLayouts.Text = "Log layouts";
@@ -168,6 +187,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(pictureBox2);
             grpRuntime.Controls.Add(GrpContent);
             grpRuntime.Controls.Add(grpMetadata);
             grpRuntime.Controls.Add(LblDateTimeFormat);
@@ -176,15 +196,27 @@ namespace LogScraper.LogProviders.Kubernetes
             grpRuntime.Controls.Add(TxtDescription);
             grpRuntime.Location = new System.Drawing.Point(244, 16);
             grpRuntime.Name = "grpRuntime";
-            grpRuntime.Size = new System.Drawing.Size(727, 543);
+            grpRuntime.Size = new System.Drawing.Size(727, 538);
             grpRuntime.TabIndex = 14;
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Log layout";
             // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = Properties.Resources.help;
+            pictureBox2.Location = new System.Drawing.Point(231, 62);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new System.Drawing.Size(16, 16);
+            pictureBox2.TabIndex = 27;
+            pictureBox2.TabStop = false;
+            toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
             // GrpContent
             // 
-            GrpContent.Controls.Add(LblContentStartPosition);
-            GrpContent.Controls.Add(txtContentStartPosition);
+            GrpContent.Controls.Add(pictureBox8);
+            GrpContent.Controls.Add(pictureBox9);
+            GrpContent.Controls.Add(pictureBox10);
+            GrpContent.Controls.Add(pictureBox6);
             GrpContent.Controls.Add(LblLblContentAfterPhrase);
             GrpContent.Controls.Add(TxtLblContentAfterPhrase);
             GrpContent.Controls.Add(LblContentBeforePhrase);
@@ -202,24 +234,6 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
             GrpContent.Text = "Content begin en eind filters";
-            // 
-            // LblContentStartPosition
-            // 
-            LblContentStartPosition.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblContentStartPosition.AutoSize = true;
-            LblContentStartPosition.Location = new System.Drawing.Point(241, 154);
-            LblContentStartPosition.Name = "LblContentStartPosition";
-            LblContentStartPosition.Size = new System.Drawing.Size(66, 15);
-            LblContentStartPosition.TabIndex = 26;
-            LblContentStartPosition.Text = "Startpositie";
-            // 
-            // txtContentStartPosition
-            // 
-            txtContentStartPosition.IsRequired = true;
-            txtContentStartPosition.Location = new System.Drawing.Point(241, 172);
-            txtContentStartPosition.Name = "txtContentStartPosition";
-            txtContentStartPosition.Size = new System.Drawing.Size(44, 23);
-            txtContentStartPosition.TabIndex = 25;
             // 
             // LblLblContentAfterPhrase
             // 
@@ -327,8 +341,10 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // grpMetadata
             // 
-            grpMetadata.Controls.Add(LblMetadataStartPosition);
-            grpMetadata.Controls.Add(TxtMetadataStartPosition);
+            grpMetadata.Controls.Add(pictureBox5);
+            grpMetadata.Controls.Add(pictureBox4);
+            grpMetadata.Controls.Add(pictureBox3);
+            grpMetadata.Controls.Add(pictureBox1);
             grpMetadata.Controls.Add(LblMetadataAfterPhrase);
             grpMetadata.Controls.Add(TxtMetadataAfterPhrase);
             grpMetadata.Controls.Add(LblMetadataBeforePhrase);
@@ -347,23 +363,45 @@ namespace LogScraper.LogProviders.Kubernetes
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
             // 
-            // LblMetadataStartPosition
+            // pictureBox5
             // 
-            LblMetadataStartPosition.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblMetadataStartPosition.AutoSize = true;
-            LblMetadataStartPosition.Location = new System.Drawing.Point(241, 154);
-            LblMetadataStartPosition.Name = "LblMetadataStartPosition";
-            LblMetadataStartPosition.Size = new System.Drawing.Size(66, 15);
-            LblMetadataStartPosition.TabIndex = 26;
-            LblMetadataStartPosition.Text = "Startpositie";
+            pictureBox5.Image = Properties.Resources.help;
+            pictureBox5.Location = new System.Drawing.Point(498, 109);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new System.Drawing.Size(16, 16);
+            pictureBox5.TabIndex = 29;
+            pictureBox5.TabStop = false;
+            toolTip.SetToolTip(pictureBox5, "Geef de tekst die net na de metadata waarde staat.\r\nBijvoorbeeld ', indien in de logregel staat metadataX='waardeY',");
             // 
-            // TxtMetadataStartPosition
+            // pictureBox4
             // 
-            TxtMetadataStartPosition.IsRequired = true;
-            TxtMetadataStartPosition.Location = new System.Drawing.Point(241, 172);
-            TxtMetadataStartPosition.Name = "TxtMetadataStartPosition";
-            TxtMetadataStartPosition.Size = new System.Drawing.Size(44, 23);
-            TxtMetadataStartPosition.TabIndex = 25;
+            pictureBox4.Image = Properties.Resources.help;
+            pictureBox4.Location = new System.Drawing.Point(498, 65);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new System.Drawing.Size(16, 16);
+            pictureBox4.TabIndex = 28;
+            pictureBox4.TabStop = false;
+            toolTip.SetToolTip(pictureBox4, "Geef de tekst die net voor de metadata waarde staat, dit bevat meestal de omschrijving van de metadata.\r\nBijvoorbeeld metadataX=' indien in de logregel staat metadataX='waardeY',");
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = Properties.Resources.help;
+            pictureBox3.Location = new System.Drawing.Point(498, 21);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new System.Drawing.Size(16, 16);
+            pictureBox3.TabIndex = 27;
+            pictureBox3.TabStop = false;
+            toolTip.SetToolTip(pictureBox3, "De omschrijving wordt getoond in de logscraper ");
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.help;
+            pictureBox1.Location = new System.Drawing.Point(64, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new System.Drawing.Size(16, 16);
+            pictureBox1.TabIndex = 21;
+            pictureBox1.TabStop = false;
+            toolTip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
             // 
             // LblMetadataAfterPhrase
             // 
@@ -489,20 +527,80 @@ namespace LogScraper.LogProviders.Kubernetes
             LblDescription.TabIndex = 8;
             LblDescription.Text = "Omschrijving";
             // 
+            // pictureBox7
+            // 
+            pictureBox7.Image = Properties.Resources.help;
+            pictureBox7.Location = new System.Drawing.Point(79, 0);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new System.Drawing.Size(16, 16);
+            pictureBox7.TabIndex = 22;
+            pictureBox7.TabStop = false;
+            toolTip.SetToolTip(pictureBox7, resources.GetString("pictureBox7.ToolTip"));
+            // 
+            // pictureBox6
+            // 
+            pictureBox6.Image = Properties.Resources.help;
+            pictureBox6.Location = new System.Drawing.Point(167, 0);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new System.Drawing.Size(16, 16);
+            pictureBox6.TabIndex = 27;
+            pictureBox6.TabStop = false;
+            toolTip.SetToolTip(pictureBox6, resources.GetString("pictureBox6.ToolTip"));
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Image = Properties.Resources.help;
+            pictureBox8.Location = new System.Drawing.Point(498, 109);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new System.Drawing.Size(16, 16);
+            pictureBox8.TabIndex = 32;
+            pictureBox8.TabStop = false;
+            toolTip.SetToolTip(pictureBox8, "Geef de tekst die net na de content waarde staat.\r\nBijvoorbeeld ! indien in de logregel staat API call: X!\r\n\r\nLaat dit veld leeg indien er geen tekst na de content waarde staat\r\n");
+            // 
+            // pictureBox9
+            // 
+            pictureBox9.Image = Properties.Resources.help;
+            pictureBox9.Location = new System.Drawing.Point(498, 65);
+            pictureBox9.Name = "pictureBox9";
+            pictureBox9.Size = new System.Drawing.Size(16, 16);
+            pictureBox9.TabIndex = 31;
+            pictureBox9.TabStop = false;
+            toolTip.SetToolTip(pictureBox9, "Geef de tekst die net voor de content waarde staat\r\nBijvoorbeeld API call: indien in de logregel staat API call: X");
+            // 
+            // pictureBox10
+            // 
+            pictureBox10.Image = Properties.Resources.help;
+            pictureBox10.Location = new System.Drawing.Point(498, 21);
+            pictureBox10.Name = "pictureBox10";
+            pictureBox10.Size = new System.Drawing.Size(16, 16);
+            pictureBox10.TabIndex = 30;
+            pictureBox10.TabStop = false;
+            toolTip.SetToolTip(pictureBox10, "De omschrijving wordt getoond in de logscraper ");
+            // 
             // UserControlLogLayoutConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(GrpLayouts);
             Name = "UserControlLogLayoutConfig";
-            Size = new System.Drawing.Size(977, 620);
+            Size = new System.Drawing.Size(977, 595);
             GrpLayouts.ResumeLayout(false);
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             GrpContent.ResumeLayout(false);
             GrpContent.PerformLayout();
             grpMetadata.ResumeLayout(false);
             grpMetadata.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
             ResumeLayout(false);
         }
 
@@ -525,8 +623,6 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.Button BtnMetadataDown;
         private System.Windows.Forms.ListBox LstMetadata;
         private System.Windows.Forms.GroupBox grpMetadata;
-        private System.Windows.Forms.Label LblMetadataStartPosition;
-        private ValidatedTextBox TxtMetadataStartPosition;
         private System.Windows.Forms.Label LblMetadataAfterPhrase;
         private ValidatedTextBox TxtMetadataAfterPhrase;
         private System.Windows.Forms.Label LblMetadataBeforePhrase;
@@ -534,8 +630,6 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.Label LblMetadataDescription;
         private ValidatedTextBox TxtMetadataDescription;
         private System.Windows.Forms.GroupBox GrpContent;
-        private System.Windows.Forms.Label LblContentStartPosition;
-        private ValidatedTextBox txtContentStartPosition;
         private System.Windows.Forms.Label LblLblContentAfterPhrase;
         private ValidatedTextBox TxtLblContentAfterPhrase;
         private System.Windows.Forms.Label LblContentBeforePhrase;
@@ -547,5 +641,16 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.Button BtnContentRemove;
         private System.Windows.Forms.Button BtnContentDown;
         private System.Windows.Forms.Button BtnContentUp;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox7;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.PictureBox pictureBox9;
+        private System.Windows.Forms.PictureBox pictureBox10;
     }
 }

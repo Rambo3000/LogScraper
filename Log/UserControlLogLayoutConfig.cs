@@ -4,12 +4,11 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Credentials;
 using LogScraper.Log;
-using LogScraper.Sources.Adapters.Http;
-using LogScraper.Sources.Adapters;
+
 using LogScraper.Configuration;
 using LogScraper.LogProviders.Runtime;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log
 {
     public partial class UserControlLogLayoutConfig : UserControl
     {
