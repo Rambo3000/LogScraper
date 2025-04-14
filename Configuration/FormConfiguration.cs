@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Security.Policy;
 using System.Windows.Forms;
-using LogScraper.Credentials;
 using LogScraper.LogProviders.Kubernetes;
-using LogScraper.Sources.Adapters.Http;
-using LogScraper.Sources.Adapters;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.LogProviders.File;
 
@@ -23,6 +19,7 @@ namespace LogScraper.Configuration
             userControlRuntimeConfig.SetRuntimeConfig(ConfigurationManager.LogProvidersConfig.RuntimeConfig, ConfigurationManager.LogLayouts);
             userControlFileConfig.SetFileConfig(ConfigurationManager.LogProvidersConfig.FileConfig, ConfigurationManager.LogLayouts);
             userControlGenericConfig.SetGenericConfig(ConfigurationManager.GenericConfig);
+            userControlLogLayoutConfig1.SetLogLayoutsConfig(ConfigurationManager.LogLayouts);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)

@@ -18,13 +18,32 @@ namespace LogScraper.Extensions
             get { return _isRequired; }
             set { _isRequired = value; Invalidate(); }
         }
+        private bool _isWhiteSpaceAllowed = false;
+
+        [Category("Validation")]
+        [Description("Indicates whether whitespace is accepted as a valid value")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool IsWhiteSpaceAllowed
+        {
+            get { return _isWhiteSpaceAllowed; }
+            set { _isWhiteSpaceAllowed = value; Invalidate(); }
+        }
 
         public bool IsValid
         {
             get
             {
                 if (!IsRequired) return true;
-                return !string.IsNullOrWhiteSpace(Text);
+                if (IsWhiteSpaceAllowed)
+                {
+                    return !string.IsNullOrEmpty(Text);
+                }
+                else
+                {
+                    // Check if the text is not null or whitespace
+                    // and that it contains at least one non-whitespace character
+                    return !string.IsNullOrWhiteSpace(Text);
+                }
             }
         }
 

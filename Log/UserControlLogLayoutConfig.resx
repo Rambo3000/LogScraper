@@ -142,12 +142,13 @@ Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY
 Let op! De applicatie kan langzamer worden indien metadata wordt gebruikt die vaak wijzigd (bijvoorbeeld een trace-id). Probeer voor deze gevallen het in te lezen log klein te houden.</value>
   </data>
   <data name="pictureBox6.ToolTip" xml:space="preserve">
-    <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel.
+    <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
+In de applicatie verschijnt dit bij de begin en eind filters
 
 Bijvoorbeeld:
 2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
-Dan kan de tekst voor de metadata waarde zijn: API call: 
-De tekst na de metadata waarde mag leeg blijven.
+Dan kan de tekst voor de waarde zijn: API call: 
+De tekst na de waarde mag leeg blijven.
 
 Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
   </data>

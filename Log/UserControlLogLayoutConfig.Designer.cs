@@ -47,9 +47,9 @@ namespace LogScraper.Log
             pictureBox11 = new System.Windows.Forms.PictureBox();
             pictureBox12 = new System.Windows.Forms.PictureBox();
             label1 = new System.Windows.Forms.Label();
-            validatedTextBox1 = new ValidatedTextBox();
+            TxtMetadataEnd = new ValidatedTextBox();
             label2 = new System.Windows.Forms.Label();
-            validatedTextBox2 = new ValidatedTextBox();
+            TxtMetadataBegin = new ValidatedTextBox();
             TabControl = new System.Windows.Forms.TabControl();
             tabPageMetadata = new System.Windows.Forms.TabPage();
             grpMetadata = new System.Windows.Forms.GroupBox();
@@ -75,7 +75,7 @@ namespace LogScraper.Log
             pictureBox10 = new System.Windows.Forms.PictureBox();
             pictureBox6 = new System.Windows.Forms.PictureBox();
             LblLblContentAfterPhrase = new System.Windows.Forms.Label();
-            TxtLblContentAfterPhrase = new ValidatedTextBox();
+            TxtContentAfterPhrase = new ValidatedTextBox();
             LblContentBeforePhrase = new System.Windows.Forms.Label();
             TxtContentBeforePhrase = new ValidatedTextBox();
             LblContentDescription = new System.Windows.Forms.Label();
@@ -121,7 +121,7 @@ namespace LogScraper.Log
             LstLayouts.Name = "LstLayouts";
             LstLayouts.Size = new System.Drawing.Size(232, 532);
             LstLayouts.TabIndex = 0;
-            LstLayouts.SelectedIndexChanged += LstUrls_SelectedIndexChanged;
+            LstLayouts.SelectedIndexChanged += LstLogLayouts_SelectedIndexChanged;
             // 
             // BtnLayoutAdd
             // 
@@ -170,6 +170,7 @@ namespace LogScraper.Log
             // TxtDescription
             // 
             TxtDescription.IsRequired = true;
+            TxtDescription.IsWhiteSpaceAllowed = false;
             TxtDescription.Location = new System.Drawing.Point(8, 37);
             TxtDescription.Name = "TxtDescription";
             TxtDescription.Size = new System.Drawing.Size(279, 23);
@@ -179,11 +180,12 @@ namespace LogScraper.Log
             // TxtDateTimeFormat
             // 
             TxtDateTimeFormat.IsRequired = true;
+            TxtDateTimeFormat.IsWhiteSpaceAllowed = false;
             TxtDateTimeFormat.Location = new System.Drawing.Point(8, 81);
             TxtDateTimeFormat.Name = "TxtDateTimeFormat";
             TxtDateTimeFormat.Size = new System.Drawing.Size(279, 23);
             TxtDateTimeFormat.TabIndex = 6;
-            TxtDateTimeFormat.TextChanged += TxtUrl_TextChanged;
+            TxtDateTimeFormat.TextChanged += TxtDateTimeFormat_TextChanged;
             // 
             // GrpLayouts
             // 
@@ -235,9 +237,9 @@ namespace LogScraper.Log
             groupBox1.Controls.Add(pictureBox11);
             groupBox1.Controls.Add(pictureBox12);
             groupBox1.Controls.Add(label1);
-            groupBox1.Controls.Add(validatedTextBox1);
+            groupBox1.Controls.Add(TxtMetadataEnd);
             groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(validatedTextBox2);
+            groupBox1.Controls.Add(TxtMetadataBegin);
             groupBox1.Location = new System.Drawing.Point(8, 110);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(288, 115);
@@ -285,13 +287,15 @@ namespace LogScraper.Log
             label1.TabIndex = 33;
             label1.Text = "Tekst welke de metadata afsluit";
             // 
-            // validatedTextBox1
+            // TxtMetadataEnd
             // 
-            validatedTextBox1.IsRequired = true;
-            validatedTextBox1.Location = new System.Drawing.Point(6, 81);
-            validatedTextBox1.Name = "validatedTextBox1";
-            validatedTextBox1.Size = new System.Drawing.Size(273, 23);
-            validatedTextBox1.TabIndex = 32;
+            TxtMetadataEnd.IsRequired = true;
+            TxtMetadataEnd.IsWhiteSpaceAllowed = true;
+            TxtMetadataEnd.Location = new System.Drawing.Point(6, 81);
+            TxtMetadataEnd.Name = "TxtMetadataEnd";
+            TxtMetadataEnd.Size = new System.Drawing.Size(273, 23);
+            TxtMetadataEnd.TabIndex = 32;
+            TxtMetadataEnd.TextChanged += TxtMetadataEnd_TextChanged;
             // 
             // label2
             // 
@@ -303,13 +307,15 @@ namespace LogScraper.Log
             label2.TabIndex = 31;
             label2.Text = "Tekst voor de metadata";
             // 
-            // validatedTextBox2
+            // TxtMetadataBegin
             // 
-            validatedTextBox2.IsRequired = false;
-            validatedTextBox2.Location = new System.Drawing.Point(6, 37);
-            validatedTextBox2.Name = "validatedTextBox2";
-            validatedTextBox2.Size = new System.Drawing.Size(273, 23);
-            validatedTextBox2.TabIndex = 30;
+            TxtMetadataBegin.IsRequired = false;
+            TxtMetadataBegin.IsWhiteSpaceAllowed = true;
+            TxtMetadataBegin.Location = new System.Drawing.Point(6, 37);
+            TxtMetadataBegin.Name = "TxtMetadataBegin";
+            TxtMetadataBegin.Size = new System.Drawing.Size(273, 23);
+            TxtMetadataBegin.TabIndex = 30;
+            TxtMetadataBegin.TextChanged += TxtMetadataBegin_TextChanged;
             // 
             // TabControl
             // 
@@ -411,10 +417,12 @@ namespace LogScraper.Log
             // TxtMetadataAfterPhrase
             // 
             TxtMetadataAfterPhrase.IsRequired = true;
+            TxtMetadataAfterPhrase.IsWhiteSpaceAllowed = true;
             TxtMetadataAfterPhrase.Location = new System.Drawing.Point(241, 128);
             TxtMetadataAfterPhrase.Name = "TxtMetadataAfterPhrase";
             TxtMetadataAfterPhrase.Size = new System.Drawing.Size(273, 23);
             TxtMetadataAfterPhrase.TabIndex = 23;
+            TxtMetadataAfterPhrase.TextChanged += TxtMetadataAfterPhrase_TextChanged;
             // 
             // LblMetadataBeforePhrase
             // 
@@ -429,10 +437,12 @@ namespace LogScraper.Log
             // TxtMetadataBeforePhrase
             // 
             TxtMetadataBeforePhrase.IsRequired = true;
+            TxtMetadataBeforePhrase.IsWhiteSpaceAllowed = true;
             TxtMetadataBeforePhrase.Location = new System.Drawing.Point(241, 84);
             TxtMetadataBeforePhrase.Name = "TxtMetadataBeforePhrase";
             TxtMetadataBeforePhrase.Size = new System.Drawing.Size(273, 23);
             TxtMetadataBeforePhrase.TabIndex = 21;
+            TxtMetadataBeforePhrase.TextChanged += TxtMetadataBeforePhrase_TextChanged;
             // 
             // LblMetadataDescription
             // 
@@ -447,10 +457,12 @@ namespace LogScraper.Log
             // TxtMetadataDescription
             // 
             TxtMetadataDescription.IsRequired = true;
+            TxtMetadataDescription.IsWhiteSpaceAllowed = false;
             TxtMetadataDescription.Location = new System.Drawing.Point(241, 40);
             TxtMetadataDescription.Name = "TxtMetadataDescription";
             TxtMetadataDescription.Size = new System.Drawing.Size(273, 23);
             TxtMetadataDescription.TabIndex = 19;
+            TxtMetadataDescription.TextChanged += TxtMetadataDescription_TextChanged;
             // 
             // LstMetadata
             // 
@@ -461,6 +473,7 @@ namespace LogScraper.Log
             LstMetadata.Name = "LstMetadata";
             LstMetadata.Size = new System.Drawing.Size(220, 210);
             LstMetadata.TabIndex = 10;
+            LstMetadata.SelectedIndexChanged += LstMetadata_SelectedIndexChanged;
             // 
             // BtnMetadataAdd
             // 
@@ -471,6 +484,7 @@ namespace LogScraper.Log
             BtnMetadataAdd.TabIndex = 15;
             BtnMetadataAdd.Text = "Toevoegen";
             BtnMetadataAdd.UseVisualStyleBackColor = true;
+            BtnMetadataAdd.Click += BtnMetadataAdd_Click;
             // 
             // BtnMetadataRemove
             // 
@@ -481,6 +495,7 @@ namespace LogScraper.Log
             BtnMetadataRemove.TabIndex = 16;
             BtnMetadataRemove.Text = "Verwijderen";
             BtnMetadataRemove.UseVisualStyleBackColor = true;
+            BtnMetadataRemove.Click += BtnMetadataRemove_Click;
             // 
             // BtnMetadataDown
             // 
@@ -491,6 +506,7 @@ namespace LogScraper.Log
             BtnMetadataDown.Size = new System.Drawing.Size(22, 23);
             BtnMetadataDown.TabIndex = 18;
             BtnMetadataDown.UseVisualStyleBackColor = true;
+            BtnMetadataDown.Click += BtnMetadataDown_Click;
             // 
             // BtnMetadataUp
             // 
@@ -501,6 +517,7 @@ namespace LogScraper.Log
             BtnMetadataUp.Size = new System.Drawing.Size(22, 23);
             BtnMetadataUp.TabIndex = 17;
             BtnMetadataUp.UseVisualStyleBackColor = true;
+            BtnMetadataUp.Click += BtnMetadataUp_Click;
             // 
             // tabPageContentFilters
             // 
@@ -520,7 +537,7 @@ namespace LogScraper.Log
             GrpContent.Controls.Add(pictureBox10);
             GrpContent.Controls.Add(pictureBox6);
             GrpContent.Controls.Add(LblLblContentAfterPhrase);
-            GrpContent.Controls.Add(TxtLblContentAfterPhrase);
+            GrpContent.Controls.Add(TxtContentAfterPhrase);
             GrpContent.Controls.Add(LblContentBeforePhrase);
             GrpContent.Controls.Add(TxtContentBeforePhrase);
             GrpContent.Controls.Add(LblContentDescription);
@@ -584,17 +601,19 @@ namespace LogScraper.Log
             LblLblContentAfterPhrase.AutoSize = true;
             LblLblContentAfterPhrase.Location = new System.Drawing.Point(241, 110);
             LblLblContentAfterPhrase.Name = "LblLblContentAfterPhrase";
-            LblLblContentAfterPhrase.Size = new System.Drawing.Size(160, 15);
+            LblLblContentAfterPhrase.Size = new System.Drawing.Size(107, 15);
             LblLblContentAfterPhrase.TabIndex = 24;
-            LblLblContentAfterPhrase.Text = "Tekst na de metadata waarde";
+            LblLblContentAfterPhrase.Text = "Tekst na de waarde";
             // 
-            // TxtLblContentAfterPhrase
+            // TxtContentAfterPhrase
             // 
-            TxtLblContentAfterPhrase.IsRequired = false;
-            TxtLblContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
-            TxtLblContentAfterPhrase.Name = "TxtLblContentAfterPhrase";
-            TxtLblContentAfterPhrase.Size = new System.Drawing.Size(273, 23);
-            TxtLblContentAfterPhrase.TabIndex = 23;
+            TxtContentAfterPhrase.IsRequired = false;
+            TxtContentAfterPhrase.IsWhiteSpaceAllowed = true;
+            TxtContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
+            TxtContentAfterPhrase.Name = "TxtContentAfterPhrase";
+            TxtContentAfterPhrase.Size = new System.Drawing.Size(273, 23);
+            TxtContentAfterPhrase.TabIndex = 23;
+            TxtContentAfterPhrase.TextChanged += TxtContentAfterPhrase_TextChanged;
             // 
             // LblContentBeforePhrase
             // 
@@ -602,17 +621,19 @@ namespace LogScraper.Log
             LblContentBeforePhrase.AutoSize = true;
             LblContentBeforePhrase.Location = new System.Drawing.Point(241, 66);
             LblContentBeforePhrase.Name = "LblContentBeforePhrase";
-            LblContentBeforePhrase.Size = new System.Drawing.Size(171, 15);
+            LblContentBeforePhrase.Size = new System.Drawing.Size(118, 15);
             LblContentBeforePhrase.TabIndex = 22;
-            LblContentBeforePhrase.Text = "Tekst voor de metadata waarde";
+            LblContentBeforePhrase.Text = "Tekst voor de waarde";
             // 
             // TxtContentBeforePhrase
             // 
             TxtContentBeforePhrase.IsRequired = true;
+            TxtContentBeforePhrase.IsWhiteSpaceAllowed = true;
             TxtContentBeforePhrase.Location = new System.Drawing.Point(241, 84);
             TxtContentBeforePhrase.Name = "TxtContentBeforePhrase";
             TxtContentBeforePhrase.Size = new System.Drawing.Size(273, 23);
             TxtContentBeforePhrase.TabIndex = 21;
+            TxtContentBeforePhrase.TextChanged += TxtContentBeforePhrase_TextChanged;
             // 
             // LblContentDescription
             // 
@@ -627,10 +648,12 @@ namespace LogScraper.Log
             // TxtContentDescription
             // 
             TxtContentDescription.IsRequired = true;
+            TxtContentDescription.IsWhiteSpaceAllowed = false;
             TxtContentDescription.Location = new System.Drawing.Point(241, 40);
             TxtContentDescription.Name = "TxtContentDescription";
             TxtContentDescription.Size = new System.Drawing.Size(273, 23);
             TxtContentDescription.TabIndex = 19;
+            TxtContentDescription.TextChanged += TxtContentDescription_TextChanged;
             // 
             // LstContent
             // 
@@ -641,6 +664,7 @@ namespace LogScraper.Log
             LstContent.Name = "LstContent";
             LstContent.Size = new System.Drawing.Size(220, 210);
             LstContent.TabIndex = 10;
+            LstContent.SelectedIndexChanged += LstContent_SelectedIndexChanged;
             // 
             // BtnContentAdd
             // 
@@ -651,6 +675,7 @@ namespace LogScraper.Log
             BtnContentAdd.TabIndex = 15;
             BtnContentAdd.Text = "Toevoegen";
             BtnContentAdd.UseVisualStyleBackColor = true;
+            BtnContentAdd.Click += BtnContentAdd_Click;
             // 
             // BtnContentRemove
             // 
@@ -661,6 +686,7 @@ namespace LogScraper.Log
             BtnContentRemove.TabIndex = 16;
             BtnContentRemove.Text = "Verwijderen";
             BtnContentRemove.UseVisualStyleBackColor = true;
+            BtnContentRemove.Click += BtnContentRemove_Click;
             // 
             // BtnContentDown
             // 
@@ -671,6 +697,7 @@ namespace LogScraper.Log
             BtnContentDown.Size = new System.Drawing.Size(22, 23);
             BtnContentDown.TabIndex = 18;
             BtnContentDown.UseVisualStyleBackColor = true;
+            BtnContentDown.Click += BtnContentDown_Click;
             // 
             // BtnContentUp
             // 
@@ -681,6 +708,7 @@ namespace LogScraper.Log
             BtnContentUp.Size = new System.Drawing.Size(22, 23);
             BtnContentUp.TabIndex = 17;
             BtnContentUp.UseVisualStyleBackColor = true;
+            BtnContentUp.Click += BtnContentUp_Click;
             // 
             // pictureBox2
             // 
@@ -774,7 +802,7 @@ namespace LogScraper.Log
         private ValidatedTextBox TxtMetadataDescription;
         private System.Windows.Forms.GroupBox GrpContent;
         private System.Windows.Forms.Label LblLblContentAfterPhrase;
-        private ValidatedTextBox TxtLblContentAfterPhrase;
+        private ValidatedTextBox TxtContentAfterPhrase;
         private System.Windows.Forms.Label LblContentBeforePhrase;
         private ValidatedTextBox TxtContentBeforePhrase;
         private System.Windows.Forms.Label LblContentDescription;
@@ -795,16 +823,15 @@ namespace LogScraper.Log
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.PictureBox pictureBox10;
-        private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageMetadata;
         private System.Windows.Forms.TabPage tabPageContentFilters;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.PictureBox pictureBox11;
         private System.Windows.Forms.PictureBox pictureBox12;
         private System.Windows.Forms.Label label1;
-        private ValidatedTextBox validatedTextBox1;
+        private ValidatedTextBox TxtMetadataEnd;
         private System.Windows.Forms.Label label2;
-        private ValidatedTextBox validatedTextBox2;
+        private ValidatedTextBox TxtMetadataBegin;
         private System.Windows.Forms.PictureBox pictureBox13;
         private System.Windows.Forms.TabControl TabControl;
     }
