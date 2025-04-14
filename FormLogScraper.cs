@@ -162,9 +162,9 @@ namespace LogScraper
             {
                 LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout);
 
-                LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout.LogMetadataProperties, LogCollection.Instance);
+                LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout, LogCollection.Instance);
 
-                LogLineClassifier.ClassifyLogLineContentProperties(logLayout.LogContentBeginEndFilters, LogCollection.Instance);
+                LogLineClassifier.ClassifyLogLineContentProperties(logLayout, LogCollection.Instance);
 
                 UpdateFilterControls();
                 FilterLoglines();

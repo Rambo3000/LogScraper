@@ -1,5 +1,6 @@
 ﻿using LogScraper.Export;
 using LogScraper.Log.Collection;
+using LogScraper.Log.Filter;
 using LogScraper.Log.Metadata;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace LogScraper.Log
             return logLine.Insert(startIndex, " " + string.Join(" | ", values));
         }
 
-        private static string RemoveTextBasedOnCriteria(string inputText, FilterCriteria criteria)
+        private static string RemoveTextBasedOnCriteria(string inputText, FilterCriteriaWithStartPosition criteria)
         {
             int startIndex = criteria.StartPosition;
 

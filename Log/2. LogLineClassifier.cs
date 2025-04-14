@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LogScraper.Log.Collection;
-using LogScraper.Log.Content;
+using LogScraper.Log.Filter;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Log
@@ -64,9 +64,9 @@ namespace LogScraper.Log
 
             return logMetadataPropertyAndValuesList;
         }
-        public static void ClassifyLogLineMetadataProperties(List<LogMetadataProperty> logMetadataProperties, LogCollection logCollection)
+        public static void ClassifyLogLineMetadataProperties(LogLayout logLayout, LogCollection logCollection)
         {
-            if (logCollection == null || logMetadataProperties == null) return;
+            if (logCollection == null || logLayout.LogMetadataProperties == null) return;
 
             foreach (var logLine in logCollection.LogLines)
             {
@@ -75,18 +75,18 @@ namespace LogScraper.Log
                 logLine.LogMetadataPropertiesWithStringValue = [];
 
                 // Determine and add log properties and their values to the LogLine based on LogMetadataProperties.
-                foreach (var logMetadataProperty in logMetadataProperties)
+                foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
                 {
                     // Extract and store the property value in the dictionary.
-                    string propertyValue = ExtractValue(logLine.Line, logMetadataProperty.Criteria, true);
+                    string propertyValue = ExtractValue(logLine.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
                     if (propertyValue != null) logLine.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
                     if (propertyValue == "ERROR") LogCollection.Instance.ErrorCount++;
                 }
             }
         }
-        public static void ClassifyLogLineContentProperties(List<LogContentProperty> LogContents, LogCollection logCollection)
+        public static void ClassifyLogLineContentProperties(LogLayout logLayout, LogCollection logCollection)
         {
-            if (logCollection == null || LogContents == null) return;
+            if (logCollection == null || logLayout.LogContentBeginEndFilters == null) return;
 
             foreach (var logLine in logCollection.LogLines)
             {
@@ -95,19 +95,19 @@ namespace LogScraper.Log
                 logLine.LogContentProperties = [];
 
                 // Determine and add log properties and their values to the LogLine based on LogMetadataProperties.
-                foreach (var LogContent in LogContents)
+                foreach (var LogContent in logLayout.LogContentBeginEndFilters)
                 {
                     // Extract and store the property value in the dictionary.
-                    string value = ExtractValue(logLine.Line, LogContent.Criteria, false);
+                    string value = ExtractValue(logLine.Line, LogContent.Criteria, false, logLayout.StartPosition);
                     if (value != null) logLine.LogContentProperties[LogContent] = logLine.TimeStamp.ToString("HH:mm:ss") + " " + value;
                 }
             }
         }
-        private static string ExtractValue(string logLine, FilterCriteria criteria, bool afterPhraseManditory)
+        private static string ExtractValue(string logLine, FilterCriteria criteria, bool afterPhraseManditory, int startPosition)
         {
             if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && string.IsNullOrEmpty(criteria.AfterPhrase)) return null;
 
-            int startIndex = logLine.IndexOf(criteria.BeforePhrase, criteria.StartPosition);
+            int startIndex = logLine.IndexOf(criteria.BeforePhrase, startPosition);
 
             if (startIndex == -1) return null;
 
