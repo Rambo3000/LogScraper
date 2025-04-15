@@ -31,10 +31,12 @@ namespace LogScraper.Log
         }
         [JsonIgnore]
         private int StartPositionCache { get; set; }
+        [JsonIgnore]
         public int StartPosition { get { return StartPositionCache; } }
         public List<LogMetadataProperty> LogMetadataProperties { get; set; }
         public List<LogContentProperty> LogContentBeginEndFilters { get; set; }
         public FilterCriteria RemoveMetaDataCriteria { get; set; }
+        [JsonIgnore]
         public List<ILogTransformer> LogTransformers { get; set; }
         [JsonProperty("transformers")]
         public List<LogTransformerConfig> LogTransformersConfig { get; set; }

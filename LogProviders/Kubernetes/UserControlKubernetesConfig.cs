@@ -25,7 +25,7 @@ namespace LogScraper.LogProviders.Kubernetes
             foreach (var layout in logLayouts)
             {
                 CboLogLayout.Items.Add(layout);
-                if (config.DefaultLogLayout != null && layout == config.DefaultLogLayout)
+                if (config.DefaultLogLayout != null && layout.Description == config.DefaultLogLayout.Description)
                 {
                     CboLogLayout.SelectedItem = layout;
                 }
@@ -329,7 +329,12 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
 
-            if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.Description = TxtNamespaceDescription.Text;
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected)
+            {
+                selected.Description = TxtNamespaceDescription.Text;
+                LstNamespaces.DisplayMember = "";
+                LstNamespaces.DisplayMember = "Description"; // Force update
+            }
         }
 
         private void BtnTest_Click(object sender, EventArgs e)

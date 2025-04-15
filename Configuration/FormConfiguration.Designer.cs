@@ -43,7 +43,7 @@
             userControlGenericConfig = new UserControlGenericConfig();
             TabPageLogProviders = new System.Windows.Forms.TabPage();
             TabPageLogLayouts = new System.Windows.Forms.TabPage();
-            userControlLogLayoutConfig1 = new LogScraper.Log.UserControlLogLayoutConfig();
+            userControlLogLayoutConfig = new LogScraper.Log.UserControlLogLayoutConfig();
             TabLogProviders.SuspendLayout();
             tabKubernetes.SuspendLayout();
             tabUrl.SuspendLayout();
@@ -186,7 +186,7 @@
             // 
             // TabPageLogLayouts
             // 
-            TabPageLogLayouts.Controls.Add(userControlLogLayoutConfig1);
+            TabPageLogLayouts.Controls.Add(userControlLogLayoutConfig);
             TabPageLogLayouts.Location = new System.Drawing.Point(4, 24);
             TabPageLogLayouts.Name = "TabPageLogLayouts";
             TabPageLogLayouts.Size = new System.Drawing.Size(827, 596);
@@ -196,11 +196,11 @@
             // 
             // userControlLogLayoutConfig1
             // 
-            userControlLogLayoutConfig1.Dock = System.Windows.Forms.DockStyle.Fill;
-            userControlLogLayoutConfig1.Location = new System.Drawing.Point(0, 0);
-            userControlLogLayoutConfig1.Name = "userControlLogLayoutConfig1";
-            userControlLogLayoutConfig1.Size = new System.Drawing.Size(827, 596);
-            userControlLogLayoutConfig1.TabIndex = 0;
+            userControlLogLayoutConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlLogLayoutConfig.Location = new System.Drawing.Point(0, 0);
+            userControlLogLayoutConfig.Name = "userControlLogLayoutConfig1";
+            userControlLogLayoutConfig.Size = new System.Drawing.Size(827, 596);
+            userControlLogLayoutConfig.TabIndex = 0;
             // 
             // FormConfiguration
             // 
@@ -242,6 +242,6 @@
         private System.Windows.Forms.TabPage TabPageGeneral;
         private UserControlGenericConfig userControlGenericConfig;
         private System.Windows.Forms.TabPage TabPageLogLayouts;
-        private Log.UserControlLogLayoutConfig userControlLogLayoutConfig1;
+        private Log.UserControlLogLayoutConfig userControlLogLayoutConfig;
     }
 }

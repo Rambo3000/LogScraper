@@ -85,6 +85,14 @@ namespace LogScraper.Log
             BtnContentRemove = new System.Windows.Forms.Button();
             BtnContentDown = new System.Windows.Forms.Button();
             BtnContentUp = new System.Windows.Forms.Button();
+            tabPageTransformers = new System.Windows.Forms.TabPage();
+            GrpExtractJson = new System.Windows.Forms.GroupBox();
+            pictureBox15 = new System.Windows.Forms.PictureBox();
+            pictureBox14 = new System.Windows.Forms.PictureBox();
+            chkTransformJson = new System.Windows.Forms.CheckBox();
+            lbl = new System.Windows.Forms.Label();
+            TxtJsonPath = new ValidatedTextBox();
+            chkTransformReverse = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             LblDateTimeFormat = new System.Windows.Forms.Label();
             LblDescription = new System.Windows.Forms.Label();
@@ -109,6 +117,10 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            tabPageTransformers.SuspendLayout();
+            GrpExtractJson.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox15).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox14).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
@@ -169,6 +181,7 @@ namespace LogScraper.Log
             // 
             // TxtDescription
             // 
+            TxtDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtDescription.IsRequired = true;
             TxtDescription.IsWhiteSpaceAllowed = false;
             TxtDescription.Location = new System.Drawing.Point(8, 37);
@@ -179,6 +192,7 @@ namespace LogScraper.Log
             // 
             // TxtDateTimeFormat
             // 
+            TxtDateTimeFormat.BackColor = System.Drawing.Color.MistyRose;
             TxtDateTimeFormat.IsRequired = true;
             TxtDateTimeFormat.IsWhiteSpaceAllowed = false;
             TxtDateTimeFormat.Location = new System.Drawing.Point(8, 81);
@@ -289,6 +303,7 @@ namespace LogScraper.Log
             // 
             // TxtMetadataEnd
             // 
+            TxtMetadataEnd.BackColor = System.Drawing.Color.MistyRose;
             TxtMetadataEnd.IsRequired = true;
             TxtMetadataEnd.IsWhiteSpaceAllowed = true;
             TxtMetadataEnd.Location = new System.Drawing.Point(6, 81);
@@ -309,6 +324,7 @@ namespace LogScraper.Log
             // 
             // TxtMetadataBegin
             // 
+            TxtMetadataBegin.BackColor = System.Drawing.SystemColors.Window;
             TxtMetadataBegin.IsRequired = false;
             TxtMetadataBegin.IsWhiteSpaceAllowed = true;
             TxtMetadataBegin.Location = new System.Drawing.Point(6, 37);
@@ -322,6 +338,7 @@ namespace LogScraper.Log
             TabControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TabControl.Controls.Add(tabPageMetadata);
             TabControl.Controls.Add(tabPageContentFilters);
+            TabControl.Controls.Add(tabPageTransformers);
             TabControl.Location = new System.Drawing.Point(8, 231);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
@@ -416,6 +433,7 @@ namespace LogScraper.Log
             // 
             // TxtMetadataAfterPhrase
             // 
+            TxtMetadataAfterPhrase.BackColor = System.Drawing.Color.MistyRose;
             TxtMetadataAfterPhrase.IsRequired = true;
             TxtMetadataAfterPhrase.IsWhiteSpaceAllowed = true;
             TxtMetadataAfterPhrase.Location = new System.Drawing.Point(241, 128);
@@ -436,6 +454,7 @@ namespace LogScraper.Log
             // 
             // TxtMetadataBeforePhrase
             // 
+            TxtMetadataBeforePhrase.BackColor = System.Drawing.Color.MistyRose;
             TxtMetadataBeforePhrase.IsRequired = true;
             TxtMetadataBeforePhrase.IsWhiteSpaceAllowed = true;
             TxtMetadataBeforePhrase.Location = new System.Drawing.Point(241, 84);
@@ -456,6 +475,7 @@ namespace LogScraper.Log
             // 
             // TxtMetadataDescription
             // 
+            TxtMetadataDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtMetadataDescription.IsRequired = true;
             TxtMetadataDescription.IsWhiteSpaceAllowed = false;
             TxtMetadataDescription.Location = new System.Drawing.Point(241, 40);
@@ -607,6 +627,7 @@ namespace LogScraper.Log
             // 
             // TxtContentAfterPhrase
             // 
+            TxtContentAfterPhrase.BackColor = System.Drawing.SystemColors.Window;
             TxtContentAfterPhrase.IsRequired = false;
             TxtContentAfterPhrase.IsWhiteSpaceAllowed = true;
             TxtContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
@@ -627,6 +648,7 @@ namespace LogScraper.Log
             // 
             // TxtContentBeforePhrase
             // 
+            TxtContentBeforePhrase.BackColor = System.Drawing.Color.MistyRose;
             TxtContentBeforePhrase.IsRequired = true;
             TxtContentBeforePhrase.IsWhiteSpaceAllowed = true;
             TxtContentBeforePhrase.Location = new System.Drawing.Point(241, 84);
@@ -647,6 +669,7 @@ namespace LogScraper.Log
             // 
             // TxtContentDescription
             // 
+            TxtContentDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtContentDescription.IsRequired = true;
             TxtContentDescription.IsWhiteSpaceAllowed = false;
             TxtContentDescription.Location = new System.Drawing.Point(241, 40);
@@ -710,6 +733,95 @@ namespace LogScraper.Log
             BtnContentUp.UseVisualStyleBackColor = true;
             BtnContentUp.Click += BtnContentUp_Click;
             // 
+            // tabPageTransformers
+            // 
+            tabPageTransformers.Controls.Add(GrpExtractJson);
+            tabPageTransformers.Controls.Add(chkTransformReverse);
+            tabPageTransformers.Location = new System.Drawing.Point(4, 24);
+            tabPageTransformers.Name = "tabPageTransformers";
+            tabPageTransformers.Size = new System.Drawing.Size(705, 273);
+            tabPageTransformers.TabIndex = 2;
+            tabPageTransformers.Text = "Transformeren";
+            tabPageTransformers.UseVisualStyleBackColor = true;
+            // 
+            // GrpExtractJson
+            // 
+            GrpExtractJson.Controls.Add(pictureBox15);
+            GrpExtractJson.Controls.Add(pictureBox14);
+            GrpExtractJson.Controls.Add(chkTransformJson);
+            GrpExtractJson.Controls.Add(lbl);
+            GrpExtractJson.Controls.Add(TxtJsonPath);
+            GrpExtractJson.Location = new System.Drawing.Point(3, 28);
+            GrpExtractJson.Name = "GrpExtractJson";
+            GrpExtractJson.Size = new System.Drawing.Size(281, 100);
+            GrpExtractJson.TabIndex = 35;
+            GrpExtractJson.TabStop = false;
+            GrpExtractJson.Text = "JSON  log";
+            // 
+            // pictureBox15
+            // 
+            pictureBox15.Image = Properties.Resources.help;
+            pictureBox15.Location = new System.Drawing.Point(67, 0);
+            pictureBox15.Name = "pictureBox15";
+            pictureBox15.Size = new System.Drawing.Size(16, 16);
+            pictureBox15.TabIndex = 37;
+            pictureBox15.TabStop = false;
+            toolTip.SetToolTip(pictureBox15, "Gebruik deze functionaliteit indien het log in JSON format is opgeslagen");
+            // 
+            // pictureBox14
+            // 
+            pictureBox14.Image = Properties.Resources.help;
+            pictureBox14.Location = new System.Drawing.Point(256, 43);
+            pictureBox14.Name = "pictureBox14";
+            pictureBox14.Size = new System.Drawing.Size(16, 16);
+            pictureBox14.TabIndex = 36;
+            pictureBox14.TabStop = false;
+            toolTip.SetToolTip(pictureBox14, "Geef hier de JSON path expressie op die binnen elke logregel de locatie bevat naar de daadwerkelijk logregel\r\n");
+            // 
+            // chkTransformJson
+            // 
+            chkTransformJson.AutoSize = true;
+            chkTransformJson.Location = new System.Drawing.Point(6, 22);
+            chkTransformJson.Name = "chkTransformJson";
+            chkTransformJson.Size = new System.Drawing.Size(155, 19);
+            chkTransformJson.TabIndex = 1;
+            chkTransformJson.Text = "Extract logregel uit JSON";
+            chkTransformJson.UseVisualStyleBackColor = true;
+            chkTransformJson.CheckedChanged += ChkTransformJson_CheckedChanged;
+            // 
+            // lbl
+            // 
+            lbl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lbl.AutoSize = true;
+            lbl.Location = new System.Drawing.Point(25, 44);
+            lbl.Name = "lbl";
+            lbl.Size = new System.Drawing.Size(112, 15);
+            lbl.TabIndex = 34;
+            lbl.Text = "JSON path expressie";
+            // 
+            // TxtJsonPath
+            // 
+            TxtJsonPath.BackColor = System.Drawing.SystemColors.Window;
+            TxtJsonPath.Enabled = false;
+            TxtJsonPath.IsRequired = false;
+            TxtJsonPath.IsWhiteSpaceAllowed = false;
+            TxtJsonPath.Location = new System.Drawing.Point(25, 62);
+            TxtJsonPath.Name = "TxtJsonPath";
+            TxtJsonPath.Size = new System.Drawing.Size(247, 23);
+            TxtJsonPath.TabIndex = 33;
+            TxtJsonPath.TextChanged += TxtJsonPath_TextChanged;
+            // 
+            // chkTransformReverse
+            // 
+            chkTransformReverse.AutoSize = true;
+            chkTransformReverse.Location = new System.Drawing.Point(3, 3);
+            chkTransformReverse.Name = "chkTransformReverse";
+            chkTransformReverse.Size = new System.Drawing.Size(338, 19);
+            chkTransformReverse.TabIndex = 0;
+            chkTransformReverse.Text = "Draai de volgorde van het log om (eerst regel wordt laatste)";
+            chkTransformReverse.UseVisualStyleBackColor = true;
+            chkTransformReverse.CheckedChanged += ChkTransformReverse_CheckedChanged;
+            // 
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.help;
@@ -771,6 +883,12 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            tabPageTransformers.ResumeLayout(false);
+            tabPageTransformers.PerformLayout();
+            GrpExtractJson.ResumeLayout(false);
+            GrpExtractJson.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox15).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox14).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
@@ -834,5 +952,13 @@ namespace LogScraper.Log
         private ValidatedTextBox TxtMetadataBegin;
         private System.Windows.Forms.PictureBox pictureBox13;
         private System.Windows.Forms.TabControl TabControl;
+        private System.Windows.Forms.TabPage tabPageTransformers;
+        private System.Windows.Forms.GroupBox GrpExtractJson;
+        private System.Windows.Forms.CheckBox chkTransformJson;
+        private System.Windows.Forms.Label lbl;
+        private ValidatedTextBox TxtJsonPath;
+        private System.Windows.Forms.CheckBox chkTransformReverse;
+        private System.Windows.Forms.PictureBox pictureBox15;
+        private System.Windows.Forms.PictureBox pictureBox14;
     }
 }

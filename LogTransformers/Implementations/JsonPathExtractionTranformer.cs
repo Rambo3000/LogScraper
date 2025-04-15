@@ -6,11 +6,11 @@ namespace LogScraper.LogTransformers.Implementations
 {
     internal class JsonPathExtractionTranformer(string jsonPath) : ILogTransformer
     {
-        private readonly string jsonPath = jsonPath;
+        public string JsonPath { get; set; } = jsonPath;
 
         public void Transform(string[] loglines)
         {
-            if (loglines == null) throw new ArgumentNullException(nameof(loglines));
+            ArgumentNullException.ThrowIfNull(loglines);
 
             // Parallelize the processing of log lines
             Parallel.For(0, loglines.Length, i =>
@@ -24,7 +24,7 @@ namespace LogScraper.LogTransformers.Implementations
                     JObject jsonObject = JObject.Parse(loglines[i]);
 
                     // Extract the value at the specified JSON path
-                    JToken value = jsonObject.SelectToken(jsonPath);
+                    JToken value = jsonObject.SelectToken(JsonPath);
 
                     string valueAsString = value?.ToString().Trim();
                     if (!string.IsNullOrEmpty(valueAsString))

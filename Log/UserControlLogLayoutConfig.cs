@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filter;
-using System.Linq;
+using LogScraper.LogTransformers;
+using LogScraper.LogTransformers.Implementations;
 
 namespace LogScraper.Log
 {
@@ -37,14 +37,15 @@ namespace LogScraper.Log
                     LogLayout layoutNew = new()
                     {
                         Description = layout.Description,
-                        DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fff",
+                        DateTimeFormat = layout.DateTimeFormat,
                         RemoveMetaDataCriteria = new()
                         {
                             AfterPhrase = layout.RemoveMetaDataCriteria.AfterPhrase,
                             BeforePhrase = layout.RemoveMetaDataCriteria.BeforePhrase,
                         },
                         LogMetadataProperties = [],
-                        LogContentBeginEndFilters = []
+                        LogContentBeginEndFilters = [],
+                        LogTransformers = [],
                     };
 
                     foreach (LogMetadataProperty property in layout.LogMetadataProperties)
@@ -73,6 +74,22 @@ namespace LogScraper.Log
                         };
                         layoutNew.LogContentBeginEndFilters.Add(newProperty);
                     }
+                    if (layout.LogTransformers != null)
+                    {
+                        foreach (ILogTransformer transformer in layout.LogTransformers)
+                        {
+                            if (transformer is OrderReversalTransformer)
+                            {
+                                ILogTransformer newTransformer = new OrderReversalTransformer();
+                                layoutNew.LogTransformers.Add(newTransformer);
+                            }
+                            if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
+                            {
+                                ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);
+                                layoutNew.LogTransformers.Add(newTransformer);
+                            }
+                        }
+                    }
                     _layouts.Add(layoutNew);
                 }
                 if (layouts.Count > 0) LstLayouts.SelectedIndex = 0;
@@ -82,13 +99,39 @@ namespace LogScraper.Log
         {
             List<string> errorMessages = [];
 
-
             foreach (LogLayout layout in _layouts)
             {
                 if (string.IsNullOrWhiteSpace(layout.Description) ||
-                    string.IsNullOrWhiteSpace(layout.DateTimeFormat))
+                    string.IsNullOrWhiteSpace(layout.DateTimeFormat) ||
+                    string.IsNullOrWhiteSpace(layout.RemoveMetaDataCriteria.AfterPhrase))
                 {
-                    errorMessages.Add($"Runtime '{layout.Description}' moet een omschrijving en datum tijd format hebben.");
+                    errorMessages.Add($"Layout '{layout.Description}' is niet compleet ingevuld.");
+                }
+
+                foreach (LogMetadataProperty property in layout.LogMetadataProperties)
+                {
+                    if (string.IsNullOrWhiteSpace(property.Description) ||
+                        string.IsNullOrEmpty(property.Criteria.BeforePhrase) ||
+                        string.IsNullOrEmpty(property.Criteria.AfterPhrase))
+                    {
+                        errorMessages.Add($"Layout '{layout.Description}' en metadata '{property.Description}' is niet compleet ingevuld.");
+                    }
+                }
+
+                foreach (LogContentProperty property in layout.LogContentBeginEndFilters)
+                {
+                    if (string.IsNullOrWhiteSpace(property.Description) ||
+                        string.IsNullOrWhiteSpace(property.Criteria.BeforePhrase))
+                    {
+                        errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' is niet compleet ingevuld.");
+                    }
+                }
+                foreach (ILogTransformer transformer in layout.LogTransformers)
+                {
+                    if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer && string.IsNullOrWhiteSpace(jsonPathExtractionTranformer.JsonPath))
+                    {
+                        errorMessages.Add($"Voor layout '{layout.Description}' is de JSON transformer geselecteerd maar er is geen JSON path ingevuld");
+                    }
                 }
             }
 
@@ -101,10 +144,17 @@ namespace LogScraper.Log
 
             config = new LogLayoutsConfig
             {
-                /*Instances = [.. _instances],
-                DefaultLogLayout = CboLogLayout.SelectedItem as LogLayout,
-                DefaultLogLayoutDescription = (CboLogLayout.SelectedItem as LogLayout).Description*/
+                layouts = [.. _layouts]
             };
+
+            foreach (LogLayout layout in config.layouts)
+            {
+                layout.LogTransformersConfig = [];
+                foreach (ILogTransformer transformer in layout.LogTransformers)
+                {
+                    layout.LogTransformersConfig.Add(transformer.CreateTransformerConfig());
+                }
+            }
 
             return true;
         }
@@ -230,6 +280,25 @@ namespace LogScraper.Log
                 }
                 if (_contentProperties.Count > 0) LstContent_SelectedIndexChanged(null, null);
 
+                chkTransformReverse.Checked = false;
+                chkTransformJson.Checked = false;
+                TxtJsonPath.Text = "";
+                if (selected.LogTransformers != null)
+                {
+                    foreach (ILogTransformer transformer in selected.LogTransformers)
+                    {
+                        if (transformer is OrderReversalTransformer)
+                        {
+                            chkTransformReverse.Checked = true;
+                        }
+                        if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
+                        {
+                            chkTransformJson.Checked = true;
+                            TxtJsonPath.Text = jsonPathExtractionTranformer.JsonPath;
+                        }
+                    }
+                }
+
                 UpdatingInformation = false;
             }
             UpdateButtons();
@@ -335,7 +404,12 @@ namespace LogScraper.Log
         {
             if (UpdatingInformation) return;
 
-            if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.Description = TxtMetadataDescription.Text;
+            if (LstMetadata.SelectedItem is LogMetadataProperty selected)
+            {
+                selected.Description = TxtMetadataDescription.Text;
+                LstMetadata.DisplayMember = "";
+                LstMetadata.DisplayMember = "Description";
+            }
 
         }
 
@@ -358,7 +432,12 @@ namespace LogScraper.Log
         {
             if (UpdatingInformation) return;
 
-            if (LstContent.SelectedItem is LogContentProperty selected) selected.Description = TxtContentDescription.Text;
+            if (LstContent.SelectedItem is LogContentProperty selected)
+            {
+                selected.Description = TxtContentDescription.Text;
+                LstContent.DisplayMember = "";
+                LstContent.DisplayMember = "Description";
+            }
 
         }
 
@@ -389,6 +468,82 @@ namespace LogScraper.Log
 
             if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.AfterPhrase = TxtMetadataEnd.Text;
 
+        }
+
+        private void ChkTransformReverse_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstLayouts.SelectedItem is LogLayout layout)
+            {
+                bool transformerFound = false;
+                foreach (ILogTransformer transformer in layout.LogTransformers)
+                {
+                    if (transformer is OrderReversalTransformer)
+                    {
+                        transformerFound = true;
+                        if (chkTransformReverse.Checked == false)
+                        {
+                            layout.LogTransformers.Remove(transformer);
+                            return;
+                        }
+                    }
+                }
+
+                if (chkTransformReverse.Checked && transformerFound == false)
+                {
+                    ILogTransformer newTransformer = new OrderReversalTransformer();
+                    layout.LogTransformers.Add(newTransformer);
+                }
+            }
+        }
+
+        private void ChkTransformJson_CheckedChanged(object sender, EventArgs e)
+        {
+            TxtJsonPath.Enabled = chkTransformJson.Checked;
+            TxtJsonPath.IsRequired = chkTransformJson.Checked;
+
+            if (UpdatingInformation) return;
+
+            if (LstLayouts.SelectedItem is LogLayout layout)
+            {
+                bool transformerFound = false;
+                foreach (ILogTransformer transformer in layout.LogTransformers)
+                {
+                    if (transformer is JsonPathExtractionTranformer)
+                    {
+                        transformerFound = true;
+                        if (chkTransformJson.Checked == false)
+                        {
+                            layout.LogTransformers.Remove(transformer);
+                            return;
+                        }
+                    }
+                }
+
+                if (chkTransformJson.Checked && transformerFound == false)
+                {
+                    ILogTransformer newTransformer = new JsonPathExtractionTranformer(string.Empty);
+                    layout.LogTransformers.Add(newTransformer);
+                }
+            }
+        }
+
+        private void TxtJsonPath_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstLayouts.SelectedItem is LogLayout layout)
+            {
+                foreach (ILogTransformer transformer in layout.LogTransformers)
+                {
+                    if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
+                    {
+                        jsonPathExtractionTranformer.JsonPath = TxtJsonPath.Text;
+                        return;
+                    }
+                }
+            }
         }
     }
 }

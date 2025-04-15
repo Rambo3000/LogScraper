@@ -16,7 +16,7 @@ namespace LogScraper.Extensions
         public bool IsRequired
         {
             get { return _isRequired; }
-            set { _isRequired = value; Invalidate(); }
+            set { _isRequired = value; Invalidate(); ValidateField(); }
         }
         private bool _isWhiteSpaceAllowed = false;
 

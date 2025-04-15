@@ -25,7 +25,7 @@ namespace LogScraper.LogProviders.Kubernetes
             foreach (var layout in logLayouts)
             {
                 CboLogLayout.Items.Add(layout);
-                if (config.DefaultLogLayout != null && layout == config.DefaultLogLayout)
+                if (config.DefaultLogLayout != null && layout.Description == config.DefaultLogLayout.Description)
                 {
                     CboLogLayout.SelectedItem = layout;
                 }

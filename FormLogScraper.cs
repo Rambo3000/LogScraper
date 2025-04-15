@@ -113,6 +113,7 @@ namespace LogScraper
         }
         private void PopulateLogLayouts()
         {
+            cboLogLayout.Items.Clear();
             if (ConfigurationManager.LogLayouts != null)
             {
                 cboLogLayout.Items.AddRange([.. ConfigurationManager.LogLayouts]);
@@ -633,6 +634,7 @@ namespace LogScraper
             KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
             RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
             LogScraperConfig oldGenericConfig = ConfigurationManager.GenericConfig;
+            LogLayoutsConfig logLayoutsConfig = ConfigurationManager.LogLayoutsConfig;
 
             using FormConfiguration form = new();
             DialogResult result = form.ShowDialog(this); // 'this' makes it modal to the main window
@@ -659,6 +661,7 @@ namespace LogScraper
                 }
 
                 if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig)) UpdateExportControls();
+                if (!logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig)) PopulateLogLayouts();
             }
         }
     }

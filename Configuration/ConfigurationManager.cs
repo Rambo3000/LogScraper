@@ -15,7 +15,7 @@ namespace LogScraper.Configuration
         private static readonly object lockObject = new();
         private static object LockObject => lockObject;
         private LogScraperConfig genericConfig;
-        private readonly LogLayoutsConfig logLayoutsConfig;
+        private LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
 
         private ConfigurationManager()
@@ -43,7 +43,7 @@ namespace LogScraper.Configuration
                 }
             }
             SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
-            //SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
+            SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
             SaveToFile("LogScraperConfig.json", instance.genericConfig);
         }
 
@@ -95,7 +95,7 @@ namespace LogScraper.Configuration
             logLayout.LogTransformers = [];
             foreach (var logTransformerConfig in logLayout.LogTransformersConfig)
             {
-                logLayout.LogTransformers.Add(LogTransformerHelper.CreateTransformerFromConfig(logTransformerConfig));
+                logLayout.LogTransformers.Add(logTransformerConfig.CreateTransformer());
             }
         }
 
@@ -134,6 +134,31 @@ namespace LogScraper.Configuration
                 lock (LockObject)
                 {
                     instance.genericConfig = value;
+                }
+            }
+        }
+
+        public static LogLayoutsConfig LogLayoutsConfig
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (LockObject)
+                    {
+                        instance ??= new ConfigurationManager();
+                    }
+                }
+                return instance.logLayoutsConfig;
+            }
+            set
+            {
+                // Use a lock to ensure only one thread creates the instance
+                lock (LockObject)
+                {
+                    instance.logLayoutsConfig = value;
                 }
             }
         }
