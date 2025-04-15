@@ -7,10 +7,10 @@
     <ApplicationIcon>Icons\Scraper transparant.ico</ApplicationIcon>
     <SignAssembly>False</SignAssembly>
     <Company>Robert de Volder</Company>
-    <Copyright>Copyright (C) 2023 Robert de Volder</Copyright>
+    <Copyright>Copyright (C) 2025 Robert de Volder</Copyright>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.1.8</FileVersion>
-    <Version>2.1.8</Version>
+    <FileVersion>2.2.0</FileVersion>
+    <Version>2.2.0</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -56,6 +56,28 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="LogProviders\File\UserControlFileConfig.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Log\UserControlLogLayoutConfig.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="LogProviders\File\UserControlFileConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="LogProviders\Runtime\UserControlRuntimeConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Log\UserControlLogLayoutConfig.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Configuration\LogScraperConfig.json">

@@ -9,10 +9,10 @@ namespace LogScraper.Configuration
     {
         [JsonConverter(typeof(EnumStringConverter<LogProviderType>))]
         public LogProviderType LogProviderTypeDefault { get; set; }
+        public bool ExportToFile { get; set; }
         public string EditorFileName { get; set; }
         public string EditorName { get; set; }
         public string ExportFileName { get; set; }
-        public string LogLayout { get; set; }
         public int HttpCLientTimeOUtSeconds { get; set; } = 30;
     }
 

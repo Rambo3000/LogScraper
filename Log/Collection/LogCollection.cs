@@ -10,7 +10,7 @@ namespace LogScraper.Log.Collection
 
         public int ErrorCount { get; set; }
 
-        LogCollection()
+        public LogCollection()
         {
             LogLines = [];
         }

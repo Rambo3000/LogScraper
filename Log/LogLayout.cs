@@ -4,19 +4,42 @@ using System.Collections.Generic;
 using System;
 using LogScraper.LogTransformers;
 using Newtonsoft.Json;
+using LogScraper.Log.Filter;
 
 namespace LogScraper.Log
 {
     internal class LogLayout : IEquatable<LogLayout>
     {
         public string Description { get; set; }
-        public string DateTimeFormat { get; set; }
+        [JsonIgnore]
+        public string DateTimeFormatCache;
+        public string DateTimeFormat
+        {
+            get { return DateTimeFormatCache; }
+            set
+            {
+                DateTimeFormatCache = value;
+                if (null != value)
+                {
+                    StartPositionCache = value.Length;
+                }
+                else
+                {
+                    StartPositionCache = 0;
+                }
+            }
+        }
+        [JsonIgnore]
+        private int StartPositionCache { get; set; }
+        [JsonIgnore]
+        public int StartPosition { get { return StartPositionCache; } }
         public List<LogMetadataProperty> LogMetadataProperties { get; set; }
         public List<LogContentProperty> LogContentBeginEndFilters { get; set; }
         public FilterCriteria RemoveMetaDataCriteria { get; set; }
+        [JsonIgnore]
         public List<ILogTransformer> LogTransformers { get; set; }
         [JsonProperty("transformers")]
-        public List<LogTransformerConfig> LogTransformersConfig{ get; set; }
+        public List<LogTransformerConfig> LogTransformersConfig { get; set; }
 
         public bool Equals(LogLayout other)
         {

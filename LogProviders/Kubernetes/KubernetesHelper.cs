@@ -32,11 +32,11 @@ namespace LogScraper.LogProviders.Kubernetes
                     string imageName = imageParts[^1].Split(':')[0];
                     string version = imageParts[^1].Split(':')[1];
 
-                    string description = podName.Replace("baas-umbrella-deployment-", "") + " (" + version + ")";
+                    string description = podName.Replace("baas-umbrella-deployment-", "");
 
                     KubernetesPod podInfo = new()
                     {
-                        Description = description, // You can update this as needed
+                        Description = description,
                         Name = podName,
                         Version = version,
                         ImageName = imageName

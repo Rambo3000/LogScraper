@@ -35,6 +35,7 @@
             lblLogLinesFiltered = new System.Windows.Forms.Label();
             LbllogLinesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
+            btnConfig = new System.Windows.Forms.Button();
             lblMemoryUsageValue = new System.Windows.Forms.Label();
             lblMemoryUsage = new System.Windows.Forms.Label();
             btnSmallWindow = new System.Windows.Forms.Button();
@@ -159,6 +160,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(btnConfig);
             groupBox3.Controls.Add(lblMemoryUsageValue);
             groupBox3.Controls.Add(lblMemoryUsage);
             groupBox3.Controls.Add(btnSmallWindow);
@@ -180,6 +182,16 @@
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
+            // 
+            // btnConfig
+            // 
+            btnConfig.Image = Properties.Resources.cog_outline_16px;
+            btnConfig.Location = new System.Drawing.Point(274, 85);
+            btnConfig.Name = "btnConfig";
+            btnConfig.Size = new System.Drawing.Size(24, 24);
+            btnConfig.TabIndex = 23;
+            btnConfig.UseVisualStyleBackColor = true;
+            btnConfig.Click += BtnConfig_Click;
             // 
             // lblMemoryUsageValue
             // 
@@ -820,5 +832,6 @@
         private System.Windows.Forms.Label lblEndFilterEnabled;
         private System.Windows.Forms.Label lblBeginFilterEnabled;
         private System.Windows.Forms.Panel PanelFilters;
+        private System.Windows.Forms.Button btnConfig;
     }
 }

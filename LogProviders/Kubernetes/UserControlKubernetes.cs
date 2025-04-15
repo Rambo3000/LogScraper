@@ -55,6 +55,8 @@ namespace LogScraper.LogProviders.Kubernetes
         private void PopulateKubernetesClusters()
         {
             cboKubernetesCluster.Items.Clear();
+            cboKubernetesNamespace.Items.Clear();
+            cboKubernetesPod.Items.Clear();
 
             cboKubernetesCluster.Items.AddRange([.. KubernetesClusters]);
         }
