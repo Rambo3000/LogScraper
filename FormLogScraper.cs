@@ -238,7 +238,7 @@ namespace LogScraper
             UsrLogContentBegin.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
             UsrLogContentEnd.UpdateLogLines(currentLogMetadataFilterResult.LogLines);
 
-            if (ConfigurationManager.GenericConfig.ExportToFile) UpdateAndWriteExport(currentLogMetadataFilterResult);
+            UpdateAndWriteExport(currentLogMetadataFilterResult);
         }
         public static string CreateMetadataExampleFilterString(List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList)
         {
@@ -313,9 +313,12 @@ namespace LogScraper
             txtLogLines.Select(initialSelectionStart, initialSelectionLength);
             txtLogLines.ResumeDrawing();
 
-            LogExporterWorker logExporter = new(txtWriteToFilePath.Text);
-            logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
-            logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
+            if (ConfigurationManager.GenericConfig.ExportToFile)
+            {
+                LogExporterWorker logExporter = new(txtWriteToFilePath.Text);
+                logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
+                logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
+            }
         }
 
         private void HighlightBeginAndEndFilterLines()
