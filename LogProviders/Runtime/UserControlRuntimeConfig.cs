@@ -58,7 +58,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout moet geselecteerd zijn.");
+                errorMessages.Add($"De standaard layout voor Directly Url moet geselecteerd zijn.");
             }
 
             foreach (RuntimeInstance instance in _instances)
@@ -66,7 +66,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 if (string.IsNullOrWhiteSpace(instance.Description) ||
                     string.IsNullOrWhiteSpace(instance.UrlRuntimeLog))
                 {
-                    errorMessages.Add($"Runtime '{instance.Description}' moet een Description en Url hebben.");
+                    errorMessages.Add($"Url '{instance.Description}' moet een Description en Url hebben.");
                 }
             }
 

@@ -128,7 +128,7 @@ namespace LogScraper.Log
             return logLine.Insert(startIndex, " " + string.Join(" | ", values));
         }
 
-        private static string RemoveTextBasedOnCriteria(string inputText, FilterCriteria criteria, int startPosition)
+        public static string RemoveTextBasedOnCriteria(string inputText, FilterCriteria criteria, int startPosition)
         {
             int startIndex = startPosition;
 

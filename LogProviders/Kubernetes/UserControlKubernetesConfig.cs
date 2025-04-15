@@ -71,7 +71,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout moet geselecteerd zijn.");
+                errorMessages.Add($"De standaard layout voor Kubernetes moet geselecteerd zijn.");
             }
 
             foreach (KubernetesCluster cluster in _clusters)
@@ -80,12 +80,12 @@ namespace LogScraper.LogProviders.Kubernetes
                     string.IsNullOrWhiteSpace(cluster.BaseUrl) ||
                     string.IsNullOrWhiteSpace(cluster.ClusterId))
                 {
-                    errorMessages.Add($"Cluster '{cluster.Description}' moet een Description, BaseUrl en ClusterId hebben.");
+                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' moet een Description, BaseUrl en ClusterId hebben.");
                 }
 
                 if (cluster.Namespaces == null || cluster.Namespaces.Count == 0)
                 {
-                    errorMessages.Add($"Cluster '{cluster.Description}' bevat geen namespaces.");
+                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' bevat geen namespaces.");
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace LogScraper.LogProviders.Kubernetes
                     {
                         if (string.IsNullOrWhiteSpace(ns.Description) || string.IsNullOrWhiteSpace(ns.Name))
                         {
-                            errorMessages.Add($"Namespace in cluster '{cluster.Description}' moet een naam en beschrijving hebben.");
+                            errorMessages.Add($"Kubernetes namespaces in cluster '{cluster.Description}' moeten een naam en beschrijving hebben.");
                         }
                     }
                 }

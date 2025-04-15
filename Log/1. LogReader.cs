@@ -64,7 +64,7 @@ namespace LogScraper.Log
         private static void GetLastLogLineAndNewBeginningIndex(string[] logLines, LogCollection logCollection, out LogLine lastLogLine, out int logLinesStartIndex)
         {
             lastLogLine = null;
-            if (LogCollection.Instance.LogLines.Count > 0)
+            if (logCollection.LogLines.Count > 0)
             {
                 lastLogLine = logCollection.LogLines.Last();
             }

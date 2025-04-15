@@ -80,7 +80,7 @@ namespace LogScraper.Log
                     // Extract and store the property value in the dictionary.
                     string propertyValue = ExtractValue(logLine.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
                     if (propertyValue != null) logLine.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
-                    if (propertyValue == "ERROR") LogCollection.Instance.ErrorCount++;
+                    if (propertyValue == "ERROR") logCollection.ErrorCount++;
                 }
             }
         }

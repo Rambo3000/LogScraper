@@ -29,7 +29,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout moet geselecteerd zijn.");
+                errorMessages.Add($"De standaard layout voor lokale bestanden moet geselecteerd zijn.");
             }
 
             config = null;

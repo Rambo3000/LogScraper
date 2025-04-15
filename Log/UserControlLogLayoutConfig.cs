@@ -8,6 +8,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Filter;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
+using LogScraper.Log.Collection;
 
 namespace LogScraper.Log
 {
@@ -516,6 +517,7 @@ namespace LogScraper.Log
                         if (chkTransformJson.Checked == false)
                         {
                             layout.LogTransformers.Remove(transformer);
+                            TxtJsonPath.Text = string.Empty;
                             return;
                         }
                     }
@@ -543,6 +545,59 @@ namespace LogScraper.Log
                         return;
                     }
                 }
+            }
+        }
+
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            if (LstLayouts.SelectedItem is LogLayout logLayout) // Ensure 'logLayout' is defined
+            {
+                LogCollection logCollection = new();
+                try
+                {
+                    if(TxtExampleLogLine.Text == string.Empty)
+                    {
+                        throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
+                    }
+
+                    LogReader.ReadIntoLogCollection([TxtExampleLogLine.Text], logCollection, logLayout);
+                    LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout, logCollection);
+                    LogLineClassifier.ClassifyLogLineContentProperties(logLayout, logCollection);
+
+                    string information = string.Empty;
+                    LogLine logLine = logCollection.LogLines[0];
+
+                    information += $"Datum tijd: {logLine.TimeStamp}" + Environment.NewLine;
+                    information += Environment.NewLine;
+                    information += $"Log regel zonder metadata:" + Environment.NewLine;
+                    information += $"   {LogExportDataCreator.RemoveTextBasedOnCriteria(logLine.Line, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
+                    information += Environment.NewLine;
+                    information += "Metadata:" + Environment.NewLine;
+                    foreach (var property in logLayout.LogMetadataProperties)
+                    {
+                        logLine.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
+                        information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
+                    }
+                    information += Environment.NewLine;
+                    information += "Content begin en eind filters:" + Environment.NewLine;
+                    foreach (var property in logLayout.LogContentBeginEndFilters)
+                    {
+                        logLine.LogContentProperties.TryGetValue(property, out string value);
+                        information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
+                    }
+                    TxtTestResponse.ForeColor = System.Drawing.Color.Black;
+                    TxtTestResponse.Text = information;
+
+                }
+                catch (Exception exception)
+                {
+                    TxtTestResponse.ForeColor = System.Drawing.Color.DarkRed;
+                    TxtTestResponse.Text = $"Error: {exception.Message}";
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a layout before testing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

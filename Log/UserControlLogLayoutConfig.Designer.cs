@@ -42,6 +42,12 @@ namespace LogScraper.Log
             GrpLayouts = new System.Windows.Forms.GroupBox();
             pictureBox7 = new System.Windows.Forms.PictureBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            pictureBox16 = new System.Windows.Forms.PictureBox();
+            TxtTestResponse = new System.Windows.Forms.RichTextBox();
+            label3 = new System.Windows.Forms.Label();
+            TxtExampleLogLine = new ValidatedTextBox();
+            BtnTest = new System.Windows.Forms.Button();
             groupBox1 = new System.Windows.Forms.GroupBox();
             pictureBox13 = new System.Windows.Forms.PictureBox();
             pictureBox11 = new System.Windows.Forms.PictureBox();
@@ -100,6 +106,8 @@ namespace LogScraper.Log
             GrpLayouts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
+            groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox13).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox11).BeginInit();
@@ -231,6 +239,7 @@ namespace LogScraper.Log
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(groupBox2);
             grpRuntime.Controls.Add(groupBox1);
             grpRuntime.Controls.Add(TabControl);
             grpRuntime.Controls.Add(pictureBox2);
@@ -244,6 +253,75 @@ namespace LogScraper.Log
             grpRuntime.TabIndex = 14;
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Log layout";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBox2.Controls.Add(pictureBox16);
+            groupBox2.Controls.Add(TxtTestResponse);
+            groupBox2.Controls.Add(label3);
+            groupBox2.Controls.Add(TxtExampleLogLine);
+            groupBox2.Controls.Add(BtnTest);
+            groupBox2.Location = new System.Drawing.Point(329, 19);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new System.Drawing.Size(385, 206);
+            groupBox2.TabIndex = 32;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Test de layout";
+            // 
+            // pictureBox16
+            // 
+            pictureBox16.Image = Properties.Resources.help;
+            pictureBox16.Location = new System.Drawing.Point(87, -1);
+            pictureBox16.Name = "pictureBox16";
+            pictureBox16.Size = new System.Drawing.Size(16, 16);
+            pictureBox16.TabIndex = 35;
+            pictureBox16.TabStop = false;
+            toolTip.SetToolTip(pictureBox16, "Voer een logregel in en controleer hoe de applicatie de regel interpreteert.");
+            // 
+            // TxtTestResponse
+            // 
+            TxtTestResponse.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtTestResponse.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            TxtTestResponse.Location = new System.Drawing.Point(6, 43);
+            TxtTestResponse.Name = "TxtTestResponse";
+            TxtTestResponse.ReadOnly = true;
+            TxtTestResponse.Size = new System.Drawing.Size(373, 157);
+            TxtTestResponse.TabIndex = 33;
+            TxtTestResponse.Text = "";
+            // 
+            // label3
+            // 
+            label3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(6, 18);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(56, 15);
+            label3.TabIndex = 32;
+            label3.Text = "Log regel";
+            // 
+            // TxtExampleLogLine
+            // 
+            TxtExampleLogLine.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtExampleLogLine.BackColor = System.Drawing.SystemColors.Window;
+            TxtExampleLogLine.IsRequired = false;
+            TxtExampleLogLine.IsWhiteSpaceAllowed = false;
+            TxtExampleLogLine.Location = new System.Drawing.Point(68, 15);
+            TxtExampleLogLine.Name = "TxtExampleLogLine";
+            TxtExampleLogLine.Size = new System.Drawing.Size(257, 23);
+            TxtExampleLogLine.TabIndex = 19;
+            TxtExampleLogLine.TextChanged += TxtMetadataDescription_TextChanged;
+            // 
+            // BtnTest
+            // 
+            BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnTest.Location = new System.Drawing.Point(331, 18);
+            BtnTest.Name = "BtnTest";
+            BtnTest.Size = new System.Drawing.Size(48, 22);
+            BtnTest.TabIndex = 30;
+            BtnTest.Text = "Test";
+            BtnTest.UseVisualStyleBackColor = true;
+            BtnTest.Click += BtnTest_Click;
             // 
             // groupBox1
             // 
@@ -863,6 +941,9 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox13).EndInit();
@@ -960,5 +1041,11 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox chkTransformReverse;
         private System.Windows.Forms.PictureBox pictureBox15;
         private System.Windows.Forms.PictureBox pictureBox14;
+        private ValidatedTextBox TxtExampleLogLine;
+        private System.Windows.Forms.Button BtnTest;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RichTextBox TxtTestResponse;
+        private System.Windows.Forms.PictureBox pictureBox16;
     }
 }
