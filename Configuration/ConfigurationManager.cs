@@ -27,6 +27,8 @@ namespace LogScraper.Configuration
 
             SetAllLayoutsTransformers();
 
+            // Limit the automatic read time to a maximum of 5 minutes
+            if (genericConfig.AutomaticReadTimeMinutes > 5) genericConfig.AutomaticReadTimeMinutes = 1;
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.FileConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);

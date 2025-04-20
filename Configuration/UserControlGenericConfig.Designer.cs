@@ -28,29 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new System.Windows.Forms.Label();
+            LblDefaultLogProviderType = new System.Windows.Forms.Label();
             GrpExportSettings = new System.Windows.Forms.GroupBox();
             label4 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             TxtEditorLocation = new LogScraper.Extensions.ValidatedTextBox();
             TxtEditorDescription = new LogScraper.Extensions.ValidatedTextBox();
+            ChkExportToFile = new System.Windows.Forms.CheckBox();
             TxtExportFileName = new LogScraper.Extensions.ValidatedTextBox();
             CboLogProviderType = new System.Windows.Forms.ComboBox();
-            lblTimeout = new System.Windows.Forms.Label();
+            LblTimeout = new System.Windows.Forms.Label();
             TxtTimeOut = new LogScraper.Extensions.ValidatedTextBox();
-            ChkExportToFile = new System.Windows.Forms.CheckBox();
+            CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
+            LblAutomaticReadTimea = new System.Windows.Forms.Label();
+            GrpGeneralSettings = new System.Windows.Forms.GroupBox();
             GrpExportSettings.SuspendLayout();
+            GrpGeneralSettings.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
+            // LblDefaultLogProviderType
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(0, 6);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(132, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Standaard logging bron";
+            LblDefaultLogProviderType.AutoSize = true;
+            LblDefaultLogProviderType.Location = new System.Drawing.Point(6, 19);
+            LblDefaultLogProviderType.Name = "LblDefaultLogProviderType";
+            LblDefaultLogProviderType.Size = new System.Drawing.Size(132, 15);
+            LblDefaultLogProviderType.TabIndex = 0;
+            LblDefaultLogProviderType.Text = "Standaard logging bron";
             // 
             // GrpExportSettings
             // 
@@ -62,9 +66,9 @@
             GrpExportSettings.Controls.Add(TxtEditorDescription);
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Enabled = false;
-            GrpExportSettings.Location = new System.Drawing.Point(6, 88);
+            GrpExportSettings.Location = new System.Drawing.Point(29, 128);
             GrpExportSettings.Name = "GrpExportSettings";
-            GrpExportSettings.Size = new System.Drawing.Size(639, 115);
+            GrpExportSettings.Size = new System.Drawing.Size(813, 115);
             GrpExportSettings.TabIndex = 1;
             GrpExportSettings.TabStop = false;
             GrpExportSettings.Text = "Log wegschrijven instellingen";
@@ -101,60 +105,26 @@
             TxtEditorLocation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtEditorLocation.BackColor = System.Drawing.Color.MistyRose;
             TxtEditorLocation.IsRequired = true;
+            TxtEditorLocation.IsWhiteSpaceAllowed = false;
             TxtEditorLocation.Location = new System.Drawing.Point(154, 80);
             TxtEditorLocation.Name = "TxtEditorLocation";
-            TxtEditorLocation.Size = new System.Drawing.Size(482, 23);
+            TxtEditorLocation.Size = new System.Drawing.Size(656, 23);
             TxtEditorLocation.TabIndex = 7;
             // 
             // TxtEditorDescription
             // 
             TxtEditorDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtEditorDescription.IsRequired = true;
+            TxtEditorDescription.IsWhiteSpaceAllowed = false;
             TxtEditorDescription.Location = new System.Drawing.Point(154, 51);
             TxtEditorDescription.Name = "TxtEditorDescription";
             TxtEditorDescription.Size = new System.Drawing.Size(322, 23);
             TxtEditorDescription.TabIndex = 6;
             // 
-            // TxtExportFileLocation
-            // 
-            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
-            TxtExportFileName.IsRequired = true;
-            TxtExportFileName.Location = new System.Drawing.Point(154, 22);
-            TxtExportFileName.Name = "TxtExportFileLocation";
-            TxtExportFileName.Size = new System.Drawing.Size(322, 23);
-            TxtExportFileName.TabIndex = 5;
-            // 
-            // CboLogProviderType
-            // 
-            CboLogProviderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            CboLogProviderType.FormattingEnabled = true;
-            CboLogProviderType.Location = new System.Drawing.Point(160, 3);
-            CboLogProviderType.Name = "CboLogProviderType";
-            CboLogProviderType.Size = new System.Drawing.Size(121, 23);
-            CboLogProviderType.TabIndex = 2;
-            // 
-            // lblTimeout
-            // 
-            lblTimeout.AutoSize = true;
-            lblTimeout.Location = new System.Drawing.Point(0, 35);
-            lblTimeout.Name = "lblTimeout";
-            lblTimeout.Size = new System.Drawing.Size(137, 15);
-            lblTimeout.TabIndex = 3;
-            lblTimeout.Text = "Timeout downloaden (s)";
-            // 
-            // TxtTimeOut
-            // 
-            TxtTimeOut.BackColor = System.Drawing.Color.MistyRose;
-            TxtTimeOut.IsRequired = true;
-            TxtTimeOut.Location = new System.Drawing.Point(160, 30);
-            TxtTimeOut.Name = "TxtTimeOut";
-            TxtTimeOut.Size = new System.Drawing.Size(121, 23);
-            TxtTimeOut.TabIndex = 4;
-            // 
             // ChkExportToFile
             // 
             ChkExportToFile.AutoSize = true;
-            ChkExportToFile.Location = new System.Drawing.Point(6, 63);
+            ChkExportToFile.Location = new System.Drawing.Point(6, 103);
             ChkExportToFile.Name = "ChkExportToFile";
             ChkExportToFile.Size = new System.Drawing.Size(241, 19);
             ChkExportToFile.TabIndex = 5;
@@ -162,30 +132,100 @@
             ChkExportToFile.UseVisualStyleBackColor = true;
             ChkExportToFile.CheckedChanged += ChkExportToFile_CheckedChanged;
             // 
+            // TxtExportFileName
+            // 
+            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
+            TxtExportFileName.IsRequired = true;
+            TxtExportFileName.IsWhiteSpaceAllowed = false;
+            TxtExportFileName.Location = new System.Drawing.Point(154, 22);
+            TxtExportFileName.Name = "TxtExportFileName";
+            TxtExportFileName.Size = new System.Drawing.Size(322, 23);
+            TxtExportFileName.TabIndex = 5;
+            // 
+            // CboLogProviderType
+            // 
+            CboLogProviderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CboLogProviderType.FormattingEnabled = true;
+            CboLogProviderType.Location = new System.Drawing.Point(166, 16);
+            CboLogProviderType.Name = "CboLogProviderType";
+            CboLogProviderType.Size = new System.Drawing.Size(121, 23);
+            CboLogProviderType.TabIndex = 2;
+            // 
+            // LblTimeout
+            // 
+            LblTimeout.AutoSize = true;
+            LblTimeout.Location = new System.Drawing.Point(3, 79);
+            LblTimeout.Name = "LblTimeout";
+            LblTimeout.Size = new System.Drawing.Size(137, 15);
+            LblTimeout.TabIndex = 3;
+            LblTimeout.Text = "Timeout downloaden (s)";
+            // 
+            // TxtTimeOut
+            // 
+            TxtTimeOut.BackColor = System.Drawing.Color.MistyRose;
+            TxtTimeOut.IsRequired = true;
+            TxtTimeOut.IsWhiteSpaceAllowed = false;
+            TxtTimeOut.Location = new System.Drawing.Point(166, 74);
+            TxtTimeOut.Name = "TxtTimeOut";
+            TxtTimeOut.Size = new System.Drawing.Size(121, 23);
+            TxtTimeOut.TabIndex = 4;
+            // 
+            // CboAutomaticReadTime
+            // 
+            CboAutomaticReadTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CboAutomaticReadTime.FormattingEnabled = true;
+            CboAutomaticReadTime.Location = new System.Drawing.Point(166, 45);
+            CboAutomaticReadTime.Name = "CboAutomaticReadTime";
+            CboAutomaticReadTime.Size = new System.Drawing.Size(121, 23);
+            CboAutomaticReadTime.TabIndex = 7;
+            // 
+            // LblAutomaticReadTimea
+            // 
+            LblAutomaticReadTimea.AutoSize = true;
+            LblAutomaticReadTimea.Location = new System.Drawing.Point(6, 48);
+            LblAutomaticReadTimea.Name = "LblAutomaticReadTimea";
+            LblAutomaticReadTimea.Size = new System.Drawing.Size(147, 15);
+            LblAutomaticReadTimea.TabIndex = 6;
+            LblAutomaticReadTimea.Text = "Automatisch lezen tijd (m)";
+            // 
+            // GrpGeneralSettings
+            // 
+            GrpGeneralSettings.Controls.Add(LblDefaultLogProviderType);
+            GrpGeneralSettings.Controls.Add(CboAutomaticReadTime);
+            GrpGeneralSettings.Controls.Add(GrpExportSettings);
+            GrpGeneralSettings.Controls.Add(LblAutomaticReadTimea);
+            GrpGeneralSettings.Controls.Add(CboLogProviderType);
+            GrpGeneralSettings.Controls.Add(ChkExportToFile);
+            GrpGeneralSettings.Controls.Add(LblTimeout);
+            GrpGeneralSettings.Controls.Add(TxtTimeOut);
+            GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
+            GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
+            GrpGeneralSettings.Name = "GrpGeneralSettings";
+            GrpGeneralSettings.Size = new System.Drawing.Size(848, 251);
+            GrpGeneralSettings.TabIndex = 8;
+            GrpGeneralSettings.TabStop = false;
+            GrpGeneralSettings.Text = "Algemene instellingen";
+            // 
             // UserControlGenericConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(ChkExportToFile);
-            Controls.Add(TxtTimeOut);
-            Controls.Add(lblTimeout);
-            Controls.Add(CboLogProviderType);
-            Controls.Add(label1);
-            Controls.Add(GrpExportSettings);
+            Controls.Add(GrpGeneralSettings);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(645, 241);
+            Size = new System.Drawing.Size(848, 251);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
+            GrpGeneralSettings.ResumeLayout(false);
+            GrpGeneralSettings.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label LblDefaultLogProviderType;
         private System.Windows.Forms.GroupBox GrpExportSettings;
         private System.Windows.Forms.ComboBox CboLogProviderType;
-        private System.Windows.Forms.Label lblTimeout;
+        private System.Windows.Forms.Label LblTimeout;
         private Extensions.ValidatedTextBox TxtTimeOut;
         private System.Windows.Forms.CheckBox ChkExportToFile;
         private System.Windows.Forms.Label label2;
@@ -194,5 +234,8 @@
         private Extensions.ValidatedTextBox TxtExportFileName;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox CboAutomaticReadTime;
+        private System.Windows.Forms.Label LblAutomaticReadTimea;
+        private System.Windows.Forms.GroupBox GrpGeneralSettings;
     }
 }

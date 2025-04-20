@@ -10,10 +10,12 @@ namespace LogScraper.Configuration
         {
             InitializeComponent();
             CboLogProviderType.DataSource = Enum.GetValues<LogProviderType>();
+            CboAutomaticReadTime.DataSource = new int[] { 1, 2, 3, 4, 5 };
         }
         internal void SetGenericConfig(LogScraperConfig config)
         {
             CboLogProviderType.SelectedItem = config.LogProviderTypeDefault;
+            CboAutomaticReadTime.SelectedItem = config.AutomaticReadTimeMinutes;
             ChkExportToFile.Checked = config.ExportToFile;
             TxtEditorLocation.Text = config.EditorFileName;
             TxtEditorDescription.Text = config.EditorName;
@@ -62,6 +64,7 @@ namespace LogScraper.Configuration
                 EditorName = TxtEditorDescription.Text,
                 ExportFileName = TxtExportFileName.Text,
                 ExportToFile = ChkExportToFile.Checked,
+                AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
                 LogProviderTypeDefault = (LogProviderType)CboLogProviderType.SelectedItem,
                 HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0
             };

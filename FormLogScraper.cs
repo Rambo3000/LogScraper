@@ -55,6 +55,8 @@ namespace LogScraper
 
             lblVersion.Text = "v" + version;
 
+            btnDowloadLogLongTime.Text = "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " min";
+
             timerMemoryUsage.Interval = 1000;
             timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
             timerMemoryUsage.Start();
@@ -459,6 +461,7 @@ namespace LogScraper
                 miniTopForm.btnRead.Enabled = btnReadFromUrl.Enabled;
                 miniTopForm.btnStop.Visible = btnStop.Visible;
                 miniTopForm.btnStop.Text = btnStop.Text;
+                miniTopForm.btnRead1Minute.Text = btnDowloadLogLongTime.Text;
                 miniTopForm.btnReset.Enabled = BtnClearLog.Enabled;
                 miniTopForm.btnReset.Enabled = btnReadFromUrl.Enabled;
             }
@@ -515,7 +518,9 @@ namespace LogScraper
         }
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int duration)
         {
-            btnStop.Text = "Stop" + (duration == -1 ? "" : " " + (duration - elapsedSeconds).ToString() + "...");
+            TimeSpan tijd = TimeSpan.FromSeconds(duration - elapsedSeconds);
+            string tijdFormat = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
+            btnStop.Text = "Stop" + (duration == -1 ? "" : " " + tijdFormat + "...");
         }
         #endregion
 
@@ -526,7 +531,7 @@ namespace LogScraper
         }
         public void BtnDowloadLogLongTime_Click(object sender, EventArgs e)
         {
-            StartLogProviderAsync(1, 60);
+            StartLogProviderAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
         }
         public void BtnStop_Click(object sender, EventArgs e)
         {
@@ -660,7 +665,12 @@ namespace LogScraper
                     }
                 }
 
-                if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig)) UpdateExportControls();
+                if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig))
+                {
+
+                    btnDowloadLogLongTime.Text = "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " min";
+                    UpdateExportControls();
+                }
                 if (!logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig)) PopulateLogLayouts();
             }
         }
