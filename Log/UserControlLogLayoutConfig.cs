@@ -17,7 +17,6 @@ namespace LogScraper.Log
         private readonly BindingList<LogLayout> _layouts = [];
         private readonly BindingList<LogMetadataProperty> _metadataProperties = [];
         private readonly BindingList<LogContentProperty> _contentProperties = [];
-
         public UserControlLogLayoutConfig()
         {
             InitializeComponent();
@@ -259,6 +258,7 @@ namespace LogScraper.Log
         private bool UpdatingInformation = false;
         private void LstLogLayouts_SelectedIndexChanged(object sender, EventArgs e)
         {
+            BtnCopy.Enabled = LstLayouts.SelectedItem != null;
             if (LstLayouts.SelectedItem is LogLayout selected)
             {
                 UpdatingInformation = true;
@@ -555,7 +555,7 @@ namespace LogScraper.Log
                 LogCollection logCollection = new();
                 try
                 {
-                    if(TxtExampleLogLine.Text == string.Empty)
+                    if (TxtExampleLogLine.Text == string.Empty)
                     {
                         throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
                     }
@@ -599,6 +599,64 @@ namespace LogScraper.Log
             {
                 MessageBox.Show("Please select a layout before testing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void BtnCopy_Click(object sender, EventArgs e)
+        {
+            if (LstLayouts.SelectedItem is not LogLayout logLayout) return;
+            LogLayout logLayoutCopy = new()
+            {
+                Description = logLayout.Description + " (kopie)",
+                DateTimeFormat = logLayout.DateTimeFormat,
+                RemoveMetaDataCriteria = new()
+                {
+                    AfterPhrase = logLayout.RemoveMetaDataCriteria.AfterPhrase,
+                    BeforePhrase = logLayout.RemoveMetaDataCriteria.BeforePhrase,
+                },
+                LogMetadataProperties = [],
+                LogContentBeginEndFilters = [],
+                LogTransformers = []
+            };
+            foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
+            {
+                LogMetadataProperty newProperty = new()
+                {
+                    Description = property.Description,
+                    Criteria = new FilterCriteria()
+                    {
+                        BeforePhrase = property.Criteria.BeforePhrase,
+                        AfterPhrase = property.Criteria.AfterPhrase
+                    }
+                };
+                logLayoutCopy.LogMetadataProperties.Add(newProperty);
+            }
+            foreach (LogContentProperty property in logLayout.LogContentBeginEndFilters)
+            {
+                LogContentProperty newProperty = new()
+                {
+                    Description = property.Description,
+                    Criteria = new FilterCriteria()
+                    {
+                        BeforePhrase = property.Criteria.BeforePhrase,
+                        AfterPhrase = property.Criteria.AfterPhrase
+                    }
+                };
+                logLayoutCopy.LogContentBeginEndFilters.Add(newProperty);
+            }
+            foreach(ILogTransformer transformer in logLayout.LogTransformers)
+            {
+                if (transformer is OrderReversalTransformer)
+                {
+                    ILogTransformer newTransformer = new OrderReversalTransformer();
+                    logLayoutCopy.LogTransformers.Add(newTransformer);
+                }
+                if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
+                {
+                    ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);
+                    logLayoutCopy.LogTransformers.Add(newTransformer);
+                }
+            }
+            _layouts.Add(logLayoutCopy);
         }
     }
 }

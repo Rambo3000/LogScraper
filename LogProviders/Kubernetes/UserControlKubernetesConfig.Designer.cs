@@ -39,6 +39,7 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtClusterBaseUrl = new ValidatedTextBox();
             TxtClusterId = new ValidatedTextBox();
             GrpClusters = new System.Windows.Forms.GroupBox();
+            BtnCopy = new System.Windows.Forms.Button();
             GrpCluster = new System.Windows.Forms.GroupBox();
             grpNamespace = new System.Windows.Forms.GroupBox();
             TxtTestMessage = new System.Windows.Forms.TextBox();
@@ -70,7 +71,7 @@ namespace LogScraper.LogProviders.Kubernetes
             LstClusters.IntegralHeight = false;
             LstClusters.Location = new System.Drawing.Point(6, 22);
             LstClusters.Name = "LstClusters";
-            LstClusters.Size = new System.Drawing.Size(232, 396);
+            LstClusters.Size = new System.Drawing.Size(247, 396);
             LstClusters.TabIndex = 0;
             LstClusters.SelectedIndexChanged += LstClusters_SelectedIndexChanged;
             // 
@@ -100,7 +101,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnClusterUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnClusterUp.Image = Properties.Resources.up;
-            BtnClusterUp.Location = new System.Drawing.Point(192, 424);
+            BtnClusterUp.Location = new System.Drawing.Point(206, 424);
             BtnClusterUp.Name = "BtnClusterUp";
             BtnClusterUp.Size = new System.Drawing.Size(22, 23);
             BtnClusterUp.TabIndex = 3;
@@ -111,7 +112,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnClusterDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnClusterDown.Image = Properties.Resources.down;
-            BtnClusterDown.Location = new System.Drawing.Point(216, 424);
+            BtnClusterDown.Location = new System.Drawing.Point(231, 424);
             BtnClusterDown.Name = "BtnClusterDown";
             BtnClusterDown.Size = new System.Drawing.Size(22, 23);
             BtnClusterDown.TabIndex = 4;
@@ -120,7 +121,9 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // TxtClusterDescription
             // 
+            TxtClusterDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtClusterDescription.IsRequired = true;
+            TxtClusterDescription.IsWhiteSpaceAllowed = false;
             TxtClusterDescription.Location = new System.Drawing.Point(8, 37);
             TxtClusterDescription.Name = "TxtClusterDescription";
             TxtClusterDescription.Size = new System.Drawing.Size(239, 23);
@@ -130,26 +133,31 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtClusterBaseUrl
             // 
             TxtClusterBaseUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtClusterBaseUrl.BackColor = System.Drawing.Color.MistyRose;
             TxtClusterBaseUrl.IsRequired = true;
+            TxtClusterBaseUrl.IsWhiteSpaceAllowed = false;
             TxtClusterBaseUrl.Location = new System.Drawing.Point(8, 125);
             TxtClusterBaseUrl.Name = "TxtClusterBaseUrl";
-            TxtClusterBaseUrl.Size = new System.Drawing.Size(520, 23);
+            TxtClusterBaseUrl.Size = new System.Drawing.Size(505, 23);
             TxtClusterBaseUrl.TabIndex = 6;
             TxtClusterBaseUrl.TextChanged += TxtClusterBaseUrl_TextChanged;
             // 
             // TxtClusterId
             // 
             TxtClusterId.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtClusterId.BackColor = System.Drawing.Color.MistyRose;
             TxtClusterId.IsRequired = true;
+            TxtClusterId.IsWhiteSpaceAllowed = false;
             TxtClusterId.Location = new System.Drawing.Point(6, 81);
             TxtClusterId.Name = "TxtClusterId";
-            TxtClusterId.Size = new System.Drawing.Size(287, 23);
+            TxtClusterId.Size = new System.Drawing.Size(272, 23);
             TxtClusterId.TabIndex = 7;
             TxtClusterId.TextChanged += TxtClusterId_TextChanged;
             // 
             // GrpClusters
             // 
             GrpClusters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpClusters.Controls.Add(BtnCopy);
             GrpClusters.Controls.Add(GrpCluster);
             GrpClusters.Controls.Add(LstClusters);
             GrpClusters.Controls.Add(BtnAddCluster);
@@ -162,6 +170,18 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpClusters.TabIndex = 8;
             GrpClusters.TabStop = false;
             GrpClusters.Text = "Clusters";
+            // 
+            // BtnCopy
+            // 
+            BtnCopy.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnCopy.Enabled = false;
+            BtnCopy.Image = Properties.Resources.copy;
+            BtnCopy.Location = new System.Drawing.Point(178, 424);
+            BtnCopy.Name = "BtnCopy";
+            BtnCopy.Size = new System.Drawing.Size(22, 23);
+            BtnCopy.TabIndex = 24;
+            BtnCopy.UseVisualStyleBackColor = true;
+            BtnCopy.Click += BtnCopy_Click;
             // 
             // GrpCluster
             // 
@@ -179,9 +199,9 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpCluster.Controls.Add(BtnNamespaceUp);
             GrpCluster.Controls.Add(TxtClusterDescription);
             GrpCluster.Controls.Add(BtnNamespaceDown);
-            GrpCluster.Location = new System.Drawing.Point(244, 16);
+            GrpCluster.Location = new System.Drawing.Point(259, 16);
             GrpCluster.Name = "GrpCluster";
-            GrpCluster.Size = new System.Drawing.Size(532, 402);
+            GrpCluster.Size = new System.Drawing.Size(517, 402);
             GrpCluster.TabIndex = 14;
             GrpCluster.TabStop = false;
             GrpCluster.Text = "Cluster";
@@ -197,7 +217,7 @@ namespace LogScraper.LogProviders.Kubernetes
             grpNamespace.Controls.Add(TxtNamespaceName);
             grpNamespace.Location = new System.Drawing.Point(233, 162);
             grpNamespace.Name = "grpNamespace";
-            grpNamespace.Size = new System.Drawing.Size(293, 205);
+            grpNamespace.Size = new System.Drawing.Size(278, 205);
             grpNamespace.TabIndex = 20;
             grpNamespace.TabStop = false;
             grpNamespace.Text = "Namespace";
@@ -211,14 +231,14 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtTestMessage.Multiline = true;
             TxtTestMessage.Name = "TxtTestMessage";
             TxtTestMessage.ReadOnly = true;
-            TxtTestMessage.Size = new System.Drawing.Size(279, 56);
+            TxtTestMessage.Size = new System.Drawing.Size(264, 56);
             TxtTestMessage.TabIndex = 15;
             TxtTestMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BtnTest
             // 
             BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            BtnTest.Location = new System.Drawing.Point(102, 110);
+            BtnTest.Location = new System.Drawing.Point(95, 110);
             BtnTest.Name = "BtnTest";
             BtnTest.Size = new System.Drawing.Size(96, 27);
             BtnTest.TabIndex = 14;
@@ -238,10 +258,12 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtNamespaceDescription
             // 
             TxtNamespaceDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtNamespaceDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtNamespaceDescription.IsRequired = true;
+            TxtNamespaceDescription.IsWhiteSpaceAllowed = false;
             TxtNamespaceDescription.Location = new System.Drawing.Point(6, 37);
             TxtNamespaceDescription.Name = "TxtNamespaceDescription";
-            TxtNamespaceDescription.Size = new System.Drawing.Size(281, 23);
+            TxtNamespaceDescription.Size = new System.Drawing.Size(266, 23);
             TxtNamespaceDescription.TabIndex = 10;
             TxtNamespaceDescription.TextChanged += TxtNamespaceDescription_TextChanged;
             // 
@@ -257,11 +279,13 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtNamespaceName
             // 
             TxtNamespaceName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtNamespaceName.BackColor = System.Drawing.Color.MistyRose;
             TxtNamespaceName.ForeColor = System.Drawing.SystemColors.WindowText;
             TxtNamespaceName.IsRequired = true;
+            TxtNamespaceName.IsWhiteSpaceAllowed = false;
             TxtNamespaceName.Location = new System.Drawing.Point(6, 81);
             TxtNamespaceName.Name = "TxtNamespaceName";
-            TxtNamespaceName.Size = new System.Drawing.Size(281, 23);
+            TxtNamespaceName.Size = new System.Drawing.Size(266, 23);
             TxtNamespaceName.TabIndex = 12;
             TxtNamespaceName.TextChanged += TxtNamespaceName_TextChanged;
             // 
@@ -426,5 +450,6 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.Label lblLogLayout;
         private System.Windows.Forms.Button BtnTest;
         private System.Windows.Forms.TextBox TxtTestMessage;
+        private System.Windows.Forms.Button BtnCopy;
     }
 }

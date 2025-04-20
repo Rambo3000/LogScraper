@@ -150,7 +150,7 @@ namespace LogScraper.LogProviders.Kubernetes
             BtnRemoveNamespace.Enabled = LstNamespaces.Items.Count > 1;
             BtnNamespaceUp.Enabled = LstNamespaces.SelectedIndex > 0;
             BtnNamespaceDown.Enabled = LstNamespaces.SelectedIndex != -1 && LstNamespaces.SelectedIndex < (LstNamespaces.Items.Count - 1);
-            
+
             UpdateButtonTest();
         }
 
@@ -262,6 +262,7 @@ namespace LogScraper.LogProviders.Kubernetes
         private bool UpdatingClusterInformation = false;
         private void LstClusters_SelectedIndexChanged(object sender, EventArgs e)
         {
+            BtnCopy.Enabled = LstClusters.SelectedItem != null;
             if (LstClusters.SelectedItem is KubernetesCluster selected)
             {
                 UpdatingClusterInformation = true;
@@ -364,6 +365,33 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 BtnTest.Enabled = true;
             }
+        }
+
+        private void BtnCopy_Click(object sender, EventArgs e)
+        {
+            if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
+
+            KubernetesCluster cluster = new()
+            {
+                Description = selected.Description + " (kopie)",
+                BaseUrl = selected.BaseUrl,
+                ClusterId = selected.ClusterId,
+                Namespaces = [.. selected.Namespaces]
+            };
+            _clusters.Add(cluster);
+
+            foreach (KubernetesNamespace ns in cluster.Namespaces)
+            {
+                KubernetesNamespace nsNew = new()
+                {
+                    Description = ns.Description,
+                    Name = ns.Name
+                };
+                _namespaces.Add(nsNew);
+            }
+
+            LstClusters.SelectedItem = cluster;
+            LstNamespaces_SelectedIndexChanged(null, null);
         }
     }
 }
