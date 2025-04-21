@@ -185,10 +185,13 @@
             // btnConfig
             // 
             btnConfig.Image = Properties.Resources.cog_outline_16px;
-            btnConfig.Location = new System.Drawing.Point(274, 85);
+            btnConfig.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnConfig.Location = new System.Drawing.Point(197, 116);
             btnConfig.Name = "btnConfig";
-            btnConfig.Size = new System.Drawing.Size(24, 24);
+            btnConfig.Size = new System.Drawing.Size(101, 24);
             btnConfig.TabIndex = 23;
+            btnConfig.Text = "Instellingen";
+            btnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             btnConfig.UseVisualStyleBackColor = true;
             btnConfig.Click += BtnConfig_Click;
             // 
@@ -214,13 +217,14 @@
             // btnSmallWindow
             // 
             btnSmallWindow.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnSmallWindow.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            btnSmallWindow.Location = new System.Drawing.Point(203, 110);
+            btnSmallWindow.Image = Properties.Resources.open_in_new;
+            btnSmallWindow.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnSmallWindow.Location = new System.Drawing.Point(197, 90);
             btnSmallWindow.Name = "btnSmallWindow";
-            btnSmallWindow.Size = new System.Drawing.Size(95, 30);
+            btnSmallWindow.Size = new System.Drawing.Size(101, 25);
             btnSmallWindow.TabIndex = 11;
             btnSmallWindow.Text = "Mini controls";
-            btnSmallWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnSmallWindow.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             btnSmallWindow.UseVisualStyleBackColor = true;
             btnSmallWindow.Click += BtnMiniTopForm_Click;
             // 
