@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.LogTransformers
 {
-    internal interface ILogTransformer
+    public interface ILogTransformer
     {
         void Transform(string[] loglines);
     }

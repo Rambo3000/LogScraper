@@ -8,7 +8,7 @@ using LogScraper.Log.Filter;
 
 namespace LogScraper.Log
 {
-    internal class LogLayout : IEquatable<LogLayout>
+    public class LogLayout : IEquatable<LogLayout>
     {
         public string Description { get; set; }
         [JsonIgnore]

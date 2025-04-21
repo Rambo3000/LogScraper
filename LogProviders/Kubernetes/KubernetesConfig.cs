@@ -2,13 +2,15 @@
 using Newtonsoft.Json;
 using LogScraper.Configuration.LogProviderConfig;
 using LogScraper.Log;
+using LogScraper.Configuration;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
-    internal class KubernetesConfig : ILogProviderConfig
+    public class KubernetesConfig : ILogProviderConfig
     {
         public string DefaultLogLayoutDescription { get; set; }
-        public List<KubernetesCluster> Clusters { get; set; }
+        public KubernetesTimespan DefaultKubernetesTimespan { get; set; } = KubernetesTimespan.Everything;
+        public List<KubernetesCluster> Clusters { get; set; } 
         [JsonIgnore]
         public LogLayout DefaultLogLayout { get; set; }
         public override string ToString()

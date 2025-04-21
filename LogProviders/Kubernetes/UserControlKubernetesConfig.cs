@@ -18,6 +18,14 @@ namespace LogScraper.LogProviders.Kubernetes
         public UserControlKubernetesConfig()
         {
             InitializeComponent();
+            CboKubernetesTimespan.DataSource = Enum.GetValues<KubernetesTimespan>();
+            CboKubernetesTimespan.Format += (s, e) =>
+            {
+                if (e.ListItem is KubernetesTimespan timespan)
+                {
+                    e.Value = timespan.ToReadableString();
+                }
+            };
         }
         internal void SetKubernetesConfig(KubernetesConfig config, List<LogLayout> logLayouts)
         {
@@ -30,6 +38,8 @@ namespace LogScraper.LogProviders.Kubernetes
                     CboLogLayout.SelectedItem = layout;
                 }
             }
+
+            CboKubernetesTimespan.SelectedItem = config.DefaultKubernetesTimespan;
 
             _clusters.Clear();
             LstClusters.SelectedIndex = -1;
@@ -109,6 +119,7 @@ namespace LogScraper.LogProviders.Kubernetes
             config = new KubernetesConfig
             {
                 Clusters = [.. _clusters],
+                DefaultKubernetesTimespan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem,
                 DefaultLogLayout = CboLogLayout.SelectedItem as LogLayout,
                 DefaultLogLayoutDescription = (CboLogLayout.SelectedItem as LogLayout).Description
             };

@@ -22,12 +22,20 @@ namespace LogScraper.LogProviders.Kubernetes
         public UserControlKubernetesLogProvider()
         {
             InitializeComponent();
+            CboKubernetesTimespan.DataSource = Enum.GetValues<KubernetesTimespan>();
+            CboKubernetesTimespan.Format += (s, e) =>
+            {
+                if (e.ListItem is KubernetesTimespan timespan)
+                {
+                    e.Value = timespan.ToReadableString();
+                }
+            };
         }
 
-        public void UpdateClusters(List<KubernetesCluster> kubernetesClusters)
+        public void Update(KubernetesConfig kubernetesConfig)
         {
-            KubernetesClusters = kubernetesClusters;
-
+            KubernetesClusters = kubernetesConfig.Clusters;
+            CboKubernetesTimespan.SelectedItem = kubernetesConfig.DefaultKubernetesTimespan;
             PopulateKubernetesClusters();
         }
         public ISourceAdapter GetSourceAdapter()
@@ -37,6 +45,11 @@ namespace LogScraper.LogProviders.Kubernetes
         public ISourceAdapter GetSourceAdapter(string url = null, DateTime? lastTrailTime = null)
         {
             if (Debugger.IsAttached) return SourceAdapterFactory.CreateFileSourceAdapter("Stubs/KubernetesPodLog.txt");
+
+            if (lastTrailTime == null)
+            {
+                lastTrailTime = ((KubernetesTimespan)CboKubernetesTimespan.SelectedItem).TolastTrailTime();
+            }
 
             KubernetesCluster kubernetesCluster = (KubernetesCluster)cboKubernetesCluster.SelectedItem;
 

@@ -81,7 +81,7 @@ namespace LogScraper
         {
             try
             {
-                usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
                 usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
                 grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
                 PopulateLogLayouts();
@@ -440,11 +440,9 @@ namespace LogScraper
             btnReadFromUrl.Enabled = !downloadingInProgress;
             btnDowloadLogLongTime.Visible = !downloadingInProgress;
             btnStop.Visible = downloadingInProgress;
-
-            cboLogProvider.Enabled = !downloadingInProgress;
-            lblLogProvider.Enabled = !downloadingInProgress;
-            usrRuntime.Enabled = !downloadingInProgress;
-            usrKubernetes.Enabled = !downloadingInProgress;
+            btnConfig.Enabled = !downloadingInProgress;
+            GrpSourceAndLayout.Enabled = !downloadingInProgress;
+            GrpLogProvidersSettings.Enabled = !downloadingInProgress;
 
             UpdateFormMiniControls();
         }
@@ -588,11 +586,14 @@ namespace LogScraper
             {
                 case LogProviderType.Runtime:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
+                    GrpLogProvidersSettings.Text = "Directe URL instellingen";
                     break;
                 case LogProviderType.Kubernetes:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
+                    GrpLogProvidersSettings.Text = "Kubernetes instellingen";
                     break;
                 case LogProviderType.File:
+                    GrpLogProvidersSettings.Text = "Lokaal bestand instellingen";
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
                     break;
             }
@@ -655,7 +656,7 @@ namespace LogScraper
                     {
                         if (kubernetesChanged)
                         {
-                            usrKubernetes.UpdateClusters(ConfigurationManager.LogProvidersConfig.KubernetesConfig.Clusters);
+                            usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
                         }
                         if (runtimeChanged)
                         {
