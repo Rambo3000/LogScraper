@@ -273,8 +273,7 @@ namespace LogScraper
         #region Export
         private void UpdateExportControls()
         {
-            grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
-            txtWriteToFilePath.Text = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+            grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile; 
             if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
 
         }
@@ -318,7 +317,8 @@ namespace LogScraper
 
             if (ConfigurationManager.GenericConfig.ExportToFile)
             {
-                LogExporterWorker logExporter = new(txtWriteToFilePath.Text);
+                string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+                LogExporterWorker logExporter = new(fileName);
                 logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
                 logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
             }
@@ -556,7 +556,8 @@ namespace LogScraper
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
-            LogExportWorkerManager.OpenFileInExternalEditor(txtWriteToFilePath.Text);
+            string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+            LogExportWorkerManager.OpenFileInExternalEditor(fileName);
         }
         private void UserControlLogFilter_FilterChanged(object sender, EventArgs e)
         {

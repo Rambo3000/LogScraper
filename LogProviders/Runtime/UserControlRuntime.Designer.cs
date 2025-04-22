@@ -45,11 +45,12 @@
             // 
             // cboRuntimeInstances
             // 
+            cboRuntimeInstances.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboRuntimeInstances.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboRuntimeInstances.FormattingEnabled = true;
-            cboRuntimeInstances.Location = new System.Drawing.Point(77, 3);
+            cboRuntimeInstances.Location = new System.Drawing.Point(88, 3);
             cboRuntimeInstances.Name = "cboRuntimeInstances";
-            cboRuntimeInstances.Size = new System.Drawing.Size(175, 23);
+            cboRuntimeInstances.Size = new System.Drawing.Size(168, 23);
             cboRuntimeInstances.TabIndex = 22;
             cboRuntimeInstances.SelectedIndexChanged += CboRuntimeInstances_SelectedIndexChanged;
             // 
@@ -58,15 +59,15 @@
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(4, 6);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(52, 15);
+            label2.Size = new System.Drawing.Size(78, 15);
             label2.TabIndex = 21;
-            label2.Text = "Runtime";
+            label2.Text = "Omschrijving";
             // 
             // txtUrl
             // 
             txtUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtUrl.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtUrl.Location = new System.Drawing.Point(77, 32);
+            txtUrl.Location = new System.Drawing.Point(88, 32);
             txtUrl.Multiline = true;
             txtUrl.Name = "txtUrl";
             txtUrl.ReadOnly = true;

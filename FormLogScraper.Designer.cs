@@ -51,9 +51,6 @@
             usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
             grpWriteLog = new System.Windows.Forms.GroupBox();
             txtStatusWrite = new System.Windows.Forms.TextBox();
-            label6 = new System.Windows.Forms.Label();
-            lblStatusWrite = new System.Windows.Forms.Label();
-            txtWriteToFilePath = new System.Windows.Forms.TextBox();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -303,7 +300,7 @@
             cboLogProvider.FormattingEnabled = true;
             cboLogProvider.Location = new System.Drawing.Point(5, 39);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(175, 23);
+            cboLogProvider.Size = new System.Drawing.Size(184, 23);
             cboLogProvider.TabIndex = 18;
             cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
             // 
@@ -312,7 +309,7 @@
             usrRuntime.Dock = System.Windows.Forms.DockStyle.Fill;
             usrRuntime.Location = new System.Drawing.Point(3, 19);
             usrRuntime.Name = "usrRuntime";
-            usrRuntime.Size = new System.Drawing.Size(362, 125);
+            usrRuntime.Size = new System.Drawing.Size(425, 125);
             usrRuntime.TabIndex = 0;
             // 
             // usrKubernetes
@@ -320,20 +317,16 @@
             usrKubernetes.Dock = System.Windows.Forms.DockStyle.Fill;
             usrKubernetes.Location = new System.Drawing.Point(3, 19);
             usrKubernetes.Name = "usrKubernetes";
-            usrKubernetes.Size = new System.Drawing.Size(362, 125);
+            usrKubernetes.Size = new System.Drawing.Size(425, 125);
             usrKubernetes.TabIndex = 8;
             // 
             // grpWriteLog
             // 
-            grpWriteLog.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             grpWriteLog.Controls.Add(txtStatusWrite);
-            grpWriteLog.Controls.Add(label6);
-            grpWriteLog.Controls.Add(lblStatusWrite);
-            grpWriteLog.Controls.Add(txtWriteToFilePath);
             grpWriteLog.Controls.Add(btnOpenWithEditor);
-            grpWriteLog.Location = new System.Drawing.Point(881, 5);
+            grpWriteLog.Location = new System.Drawing.Point(954, 5);
             grpWriteLog.Name = "grpWriteLog";
-            grpWriteLog.Size = new System.Drawing.Size(274, 147);
+            grpWriteLog.Size = new System.Drawing.Size(134, 147);
             grpWriteLog.TabIndex = 23;
             grpWriteLog.TabStop = false;
             grpWriteLog.Text = "Log wegschrijven";
@@ -342,43 +335,17 @@
             // 
             txtStatusWrite.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtStatusWrite.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtStatusWrite.Location = new System.Drawing.Point(57, 50);
+            txtStatusWrite.Location = new System.Drawing.Point(6, 69);
             txtStatusWrite.Multiline = true;
             txtStatusWrite.Name = "txtStatusWrite";
             txtStatusWrite.ReadOnly = true;
-            txtStatusWrite.Size = new System.Drawing.Size(86, 90);
+            txtStatusWrite.Size = new System.Drawing.Size(122, 69);
             txtStatusWrite.TabIndex = 34;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(6, 25);
-            label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(45, 15);
-            label6.TabIndex = 20;
-            label6.Text = "Locatie";
-            // 
-            // lblStatusWrite
-            // 
-            lblStatusWrite.AutoSize = true;
-            lblStatusWrite.Location = new System.Drawing.Point(6, 50);
-            lblStatusWrite.Name = "lblStatusWrite";
-            lblStatusWrite.Size = new System.Drawing.Size(39, 15);
-            lblStatusWrite.TabIndex = 33;
-            lblStatusWrite.Text = "Status";
-            // 
-            // txtWriteToFilePath
-            // 
-            txtWriteToFilePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtWriteToFilePath.Location = new System.Drawing.Point(57, 21);
-            txtWriteToFilePath.Name = "txtWriteToFilePath";
-            txtWriteToFilePath.Size = new System.Drawing.Size(86, 23);
-            txtWriteToFilePath.TabIndex = 0;
+            txtStatusWrite.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // btnOpenWithEditor
             // 
-            btnOpenWithEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnOpenWithEditor.Location = new System.Drawing.Point(148, 21);
+            btnOpenWithEditor.Location = new System.Drawing.Point(6, 19);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(119, 43);
             btnOpenWithEditor.TabIndex = 11;
@@ -392,7 +359,7 @@
             cboLogLayout.FormattingEnabled = true;
             cboLogLayout.Location = new System.Drawing.Point(6, 85);
             cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(174, 23);
+            cboLogLayout.Size = new System.Drawing.Size(183, 23);
             cboLogLayout.TabIndex = 23;
             cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
@@ -695,10 +662,10 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(508, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(517, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
-            GrpLogProvidersSettings.Size = new System.Drawing.Size(368, 147);
+            GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
             GrpLogProvidersSettings.TabIndex = 24;
             GrpLogProvidersSettings.TabStop = false;
             GrpLogProvidersSettings.Text = "Instellingen";
@@ -708,7 +675,7 @@
             usrFileLogProvider.Dock = System.Windows.Forms.DockStyle.Fill;
             usrFileLogProvider.Location = new System.Drawing.Point(3, 19);
             usrFileLogProvider.Name = "usrFileLogProvider";
-            usrFileLogProvider.Size = new System.Drawing.Size(362, 125);
+            usrFileLogProvider.Size = new System.Drawing.Size(425, 125);
             usrFileLogProvider.TabIndex = 9;
             // 
             // GrpSourceAndLayout
@@ -719,7 +686,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
             GrpSourceAndLayout.Location = new System.Drawing.Point(316, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
-            GrpSourceAndLayout.Size = new System.Drawing.Size(186, 147);
+            GrpSourceAndLayout.Size = new System.Drawing.Size(195, 147);
             GrpSourceAndLayout.TabIndex = 25;
             GrpSourceAndLayout.TabStop = false;
             GrpSourceAndLayout.Text = "Bron en layout";
@@ -794,8 +761,6 @@
         private System.Windows.Forms.Label lblLogLinesFilteredWithError;
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.GroupBox grpWriteLog;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtWriteToFilePath;
         private System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.RichTextBox txtLogLines;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -817,7 +782,6 @@
         private LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
         private System.Windows.Forms.TextBox txtStatusRead;
         private System.Windows.Forms.TextBox txtStatusWrite;
-        private System.Windows.Forms.Label lblStatusWrite;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
         private System.Windows.Forms.Label lblMemoryUsageValue;
