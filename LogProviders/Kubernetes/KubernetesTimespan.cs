@@ -4,6 +4,7 @@ namespace LogScraper.LogProviders.Kubernetes
 {
     public enum KubernetesTimespan
     {
+        Everything,
         Last1Minute,
         Last5Minutes,
         Last10Minutes,
@@ -11,8 +12,7 @@ namespace LogScraper.LogProviders.Kubernetes
         Last1Hour,
         Last4Hours,
         Last12Hours,
-        Last1Day,
-        Everything
+        Last1Day
     }
     public static class KubernetesTimespanExtensions
     {
@@ -26,8 +26,8 @@ namespace LogScraper.LogProviders.Kubernetes
                 KubernetesTimespan.Last30Minutes => "Laatste 30 min",
                 KubernetesTimespan.Last1Hour => "Laatste 1 uur",
                 KubernetesTimespan.Last4Hours => "Laatste 4 uur",
-                KubernetesTimespan.Last12Hours => "Laatst 12 uur",
-                KubernetesTimespan.Last1Day => "Laatst 1 dag",
+                KubernetesTimespan.Last12Hours => "Laatste 12 uur",
+                KubernetesTimespan.Last1Day => "Laatste 1 dag",
                 KubernetesTimespan.Everything => "Alles",
                 _ => timeSpan.ToString()
             };

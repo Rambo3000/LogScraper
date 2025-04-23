@@ -110,13 +110,13 @@
             // 
             // CboKubernetesTimespan
             // 
-            CboKubernetesTimespan.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             CboKubernetesTimespan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboKubernetesTimespan.FormattingEnabled = true;
             CboKubernetesTimespan.Location = new System.Drawing.Point(77, 91);
             CboKubernetesTimespan.Name = "CboKubernetesTimespan";
             CboKubernetesTimespan.Size = new System.Drawing.Size(160, 23);
             CboKubernetesTimespan.TabIndex = 30;
+            CboKubernetesTimespan.SelectedIndexChanged += CboKubernetesTimespan_SelectedIndexChanged;
             // 
             // label1
             // 

@@ -181,5 +181,18 @@ namespace LogScraper.LogProviders.Kubernetes
             PopulateKubernetesPods();
         }
 
+        KubernetesTimespan? previousTimeSpan = null;
+        private void CboKubernetesTimespan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            KubernetesTimespan newTimeSpan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem;
+            if (cboKubernetesPod.SelectedIndex != -1 && 
+                previousTimeSpan != null && 
+                ( newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
+                MessageBox.Show("Om oudere loggegevens op te halen moeten het log eerst gewist worden, wil je dit doen?", "Log wissen", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                OnSourceSelectionChanged(EventArgs.Empty);
+            }
+            previousTimeSpan = newTimeSpan;
+        }
     }
 }
