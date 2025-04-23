@@ -1,6 +1,7 @@
 ﻿using LogScraper.Log.Collection;
 using LogScraper.LogTransformers;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
@@ -57,7 +58,10 @@ namespace LogScraper.Log
             }
             if (logLines.Length > 0 && logCollection.LogLines.Count == 0)
             {
-                throw new Exception("No lines could be interpreted, probably because the timestamp at the beginning of each line is not parsed correctly. Make sure you have the correct log layout selected or create a new log layout.");
+                int maxLength = logLines[0].Length < logLayout.DateTimeFormat.Length ? logLines[0].Length : logLayout.DateTimeFormat.Length;
+                string message = "The log could not be interpreted. The timestamp required at the beginning of each line could not be parsed. Make sure you have selected the correct log layout and its date-time format matches the format of the log." + Environment.NewLine;
+                message += $"Expected date time format {logLayout.DateTimeFormat} at the start of each log line but instead found " + logLines[0][..maxLength];
+                throw new Exception(message);
             }
         }
 

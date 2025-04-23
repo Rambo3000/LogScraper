@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using static LogScraper.Extensions.RichTextBoxExtensions;
 using static LogScraper.UserControlSearch;
@@ -163,7 +164,16 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             try
             {
-                LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout);
+                try
+                {
+                    LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout);
+                }
+                catch (Exception)
+                {
+                    //Write the raw log to the text box to not leave the user completely in the dark
+                    txtLogLines.Text = JoinLines(rawLog);
+                    throw;
+                }
 
                 LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout, LogCollection.Instance);
 
@@ -180,6 +190,19 @@ namespace LogScraper
             {
                 HandleExceptionWhenReadingLog(ex);
             }
+        }
+        private static string JoinLines(string[] lines)
+        {
+            StringBuilder builder = new();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                builder.Append(lines[i]);
+                if (i < lines.Length - 1)
+                {
+                    builder.AppendLine();
+                }
+            }
+            return builder.ToString();
         }
         #endregion
 
