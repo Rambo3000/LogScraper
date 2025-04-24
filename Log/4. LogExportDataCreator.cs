@@ -145,7 +145,7 @@ namespace LogScraper.Log
                 if (beforeIndex != -1)
                 {
                     // Find the index of the AfterPhrase.
-                    int afterIndex = inputText.IndexOf(criteria.AfterPhrase, beforeIndex, StringComparison.Ordinal);
+                    int afterIndex = inputText.IndexOf(criteria.AfterPhrase, beforeIndex + 1, StringComparison.Ordinal);
 
                     if (afterIndex != -1)
                     {
