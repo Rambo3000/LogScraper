@@ -177,6 +177,7 @@ namespace LogScraper.Log
                 LogMetadataProperties = [],
                 LogContentBeginEndFilters = []
             };
+            layout.LogTransformers = [];
             layout.LogMetadataProperties.Add(CreateLogMetadataProperty());
             layout.LogContentBeginEndFilters.Add(CreateLogContentProperty());
 
