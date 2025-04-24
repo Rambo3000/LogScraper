@@ -103,7 +103,7 @@ namespace LogScraper.Log
             {
                 if (string.IsNullOrWhiteSpace(layout.Description) ||
                     string.IsNullOrWhiteSpace(layout.DateTimeFormat) ||
-                    string.IsNullOrWhiteSpace(layout.RemoveMetaDataCriteria.AfterPhrase))
+                    string.IsNullOrEmpty(layout.RemoveMetaDataCriteria.AfterPhrase))
                 {
                     errorMessages.Add($"Layout '{layout.Description}' is niet compleet ingevuld.");
                 }
@@ -203,14 +203,33 @@ namespace LogScraper.Log
             BtnLayoutUp.Enabled = LstLayouts.SelectedIndex > 0;
             BtnLayoutDown.Enabled = LstLayouts.SelectedIndex != -1 && LstLayouts.SelectedIndex < (LstLayouts.Items.Count - 1);
 
-            BtnMetadataRemove.Enabled = LstMetadata.Items.Count > 1;
+            BtnMetadataRemove.Enabled = LstMetadata.Items.Count > 0;
             BtnMetadataUp.Enabled = LstMetadata.SelectedIndex > 0;
             BtnMetadataDown.Enabled = LstMetadata.SelectedIndex != -1 && LstMetadata.SelectedIndex < (LstMetadata.Items.Count - 1);
 
-            BtnContentRemove.Enabled = LstContent.Items.Count > 1;
+            if (LstMetadata.Items.Count == 0)
+            {
+                TxtMetadataDescription.Text = string.Empty;
+                TxtMetadataBeforePhrase.Text = string.Empty;
+                TxtMetadataAfterPhrase.Text = string.Empty;
+            }
+            TxtMetadataDescription.Enabled = LstMetadata.Items.Count > 0;
+            TxtMetadataBeforePhrase.Enabled = LstMetadata.Items.Count > 0;
+            TxtMetadataAfterPhrase.Enabled = LstMetadata.Items.Count > 0;
+
+            BtnContentRemove.Enabled = LstContent.Items.Count > 0;
             BtnContentUp.Enabled = LstContent.SelectedIndex > 0;
             BtnContentDown.Enabled = LstContent.SelectedIndex != -1 && LstContent.SelectedIndex < (LstContent.Items.Count - 1);
 
+            if (LstContent.Items.Count == 0)
+            {
+                TxtContentDescription.Text = string.Empty;
+                TxtContentBeforePhrase.Text = string.Empty;
+                TxtContentAfterPhrase.Text = string.Empty;
+            }
+            TxtContentDescription.Enabled = LstContent.Items.Count > 0;
+            TxtContentBeforePhrase.Enabled = LstContent.Items.Count > 0;
+            TxtContentAfterPhrase.Enabled = LstContent.Items.Count > 0;
         }
         private void ButtonRemove<T>(ListBox listbox, BindingList<T> bindingList)
         {
@@ -350,7 +369,8 @@ namespace LogScraper.Log
             LogContentProperty property = CreateLogContentProperty();
             _contentProperties.Add(property);
 
-            LstContent.SelectedItem = property;
+            LstContent.SelectedIndex = -1;
+            LstContent.SelectedIndex = LstContent.Items.Count - 1;
             if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentBeginEndFilters = [.. _contentProperties];
             UpdateButtons();
         }
@@ -378,7 +398,8 @@ namespace LogScraper.Log
             LogMetadataProperty property = CreateLogMetadataProperty();
             _metadataProperties.Add(property);
 
-            LstMetadata.SelectedItem = property;
+            LstMetadata.SelectedIndex = -1;
+            LstMetadata.SelectedIndex = LstMetadata.Items.Count - 1;
             if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
             UpdateButtons();
         }
@@ -644,7 +665,7 @@ namespace LogScraper.Log
                 };
                 logLayoutCopy.LogContentBeginEndFilters.Add(newProperty);
             }
-            foreach(ILogTransformer transformer in logLayout.LogTransformers)
+            foreach (ILogTransformer transformer in logLayout.LogTransformers)
             {
                 if (transformer is OrderReversalTransformer)
                 {

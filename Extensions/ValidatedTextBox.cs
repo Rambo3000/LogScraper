@@ -55,6 +55,12 @@ namespace LogScraper.Extensions
             _defaultBackColor = SystemColors.Window;
             TextChanged += ValidatedTextBox_TextChanged;
             Leave += ValidatedTextBox_Leave;
+            EnabledChanged += ValidatedTextBox_EnabledChanged;
+        }
+
+        private void ValidatedTextBox_EnabledChanged(object sender, EventArgs e)
+        {
+            ValidateField();
         }
 
         private void ValidatedTextBox_Leave(object sender, EventArgs e)
@@ -69,7 +75,7 @@ namespace LogScraper.Extensions
 
         public void ValidateField()
         {
-            if (!IsValid)
+            if (!IsValid && Enabled)
             {
                 BackColor = _errorBackColor;
             }
