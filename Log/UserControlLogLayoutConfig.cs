@@ -592,7 +592,7 @@ namespace LogScraper.Log
                     information += $"Datum tijd: {logLine.TimeStamp}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += $"Log regel zonder metadata:" + Environment.NewLine;
-                    information += $"   {LogExportDataCreator.RemoveTextBasedOnCriteria(logLine.Line, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
+                    information += $"   {LogDataExporter.RemoveTextByCriteria(logLine.Line, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += "Metadata:" + Environment.NewLine;
                     foreach (var property in logLayout.LogMetadataProperties)

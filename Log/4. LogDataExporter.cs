@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LogScraper.Log
 {
-    internal class LogExportDataCreator
+    internal class LogDataExporter
     {
         /// <summary>
         /// Creates a LogExportData object based on the filtered log metadata, export settings, and display options.
@@ -17,10 +17,10 @@ namespace LogScraper.Log
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <param name="reduceNumberOfLinesForDisplaying">Whether to reduce the number of lines for display purposes.</param>
         /// <returns>A LogExportData object containing the processed log data.</returns>
-        public static LogExportData CreateLogExportData(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLinesForDisplaying)
+        public static LogExportData GenerateExportedLogData(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLinesForDisplaying)
         {
             // Calculate the start and end indices based on the begin and end filters and extra lines to include.
-            (int startIndex, int endIndex) = GetStartAndEndIndex(filterResult, logExportSettings);
+            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logExportSettings);
 
             // If the calculated indices are invalid, return an empty LogExportData object.
             if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return new() { ExportRaw = string.Empty };
@@ -40,7 +40,7 @@ namespace LogScraper.Log
         /// <param name="filterResult">The result of filtering log metadata.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
-        private static (int startIndex, int endIndex) GetStartAndEndIndex(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        private static (int startIndex, int endIndex) CalculateExportRange(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
         {
             int numberOfLinesTotal = filterResult.LogLines.Count;
 
@@ -112,7 +112,7 @@ namespace LogScraper.Log
                     continue;
                 }
 
-                StringBuilderAppendLogLine(stringBuilder, filterResult.LogLines[i], logExportSettings.LogExportSettingsMetadata);
+                AppendLogLineToBuilder(stringBuilder, filterResult.LogLines[i], logExportSettings.LogExportSettingsMetadata);
             }
             return stringBuilder.ToString();
         }
@@ -123,7 +123,7 @@ namespace LogScraper.Log
         /// <param name="stringbuilder">The StringBuilder to append to.</param>
         /// <param name="logLine">The log line to append.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        private static void StringBuilderAppendLogLine(StringBuilder stringbuilder, LogLine logLine, LogExportSettingsMetadata logExportSettingsMetadata)
+        private static void AppendLogLineToBuilder(StringBuilder stringbuilder, LogLine logLine, LogExportSettingsMetadata logExportSettingsMetadata)
         {
             string logLineMetadataFormatted = logLine.Line;
 
@@ -132,10 +132,10 @@ namespace LogScraper.Log
             {
                 if (logExportSettingsMetadata.RemoveMetaDataCriteria != null)
                 {
-                    logLineMetadataFormatted = RemoveTextBasedOnCriteria(logLine.Line, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
+                    logLineMetadataFormatted = RemoveTextByCriteria(logLine.Line, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
                 }
                 // Insert metadata at the original metadata position.
-                logLineMetadataFormatted = AddMetadata(logLineMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logLine.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
+                logLineMetadataFormatted = InsertMetadataIntoLogLine(logLineMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logLine.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
             }
 
             stringbuilder.AppendLine(logLineMetadataFormatted);
@@ -151,14 +151,14 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Adds metadata to a log line at the specified position.
+        /// Inserts metadata to a log line at the specified position.
         /// </summary>
         /// <param name="logLine">The original log line.</param>
         /// <param name="startIndex">The position to insert the metadata.</param>
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
         /// <returns>The log line with added metadata.</returns>
-        private static string AddMetadata(string logLine, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettingsMetadata logExportSettingsMetadata)
+        private static string InsertMetadataIntoLogLine(string logLine, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettingsMetadata logExportSettingsMetadata)
         {
             if (startIndex <= 0 ||
                 logExportSettingsMetadata.SelectedMetadataProperties == null ||
@@ -187,7 +187,7 @@ namespace LogScraper.Log
         /// <param name="criteria">The criteria for removing text.</param>
         /// <param name="startPosition">The starting position on the input text after which the filter criteria should be applied.</param>
         /// <returns>The modified string with the specified text removed.</returns>
-        public static string RemoveTextBasedOnCriteria(string inputText, FilterCriteria criteria, int startPosition)
+        public static string RemoveTextByCriteria(string inputText, FilterCriteria criteria, int startPosition)
         {
             int startIndex = startPosition;
 
