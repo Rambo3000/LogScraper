@@ -44,7 +44,7 @@ namespace LogScraper.Log
                             BeforePhrase = layout.RemoveMetaDataCriteria.BeforePhrase,
                         },
                         LogMetadataProperties = [],
-                        LogContentBeginEndFilters = [],
+                        LogContentProperties = [],
                         LogTransformers = [],
                     };
 
@@ -61,7 +61,7 @@ namespace LogScraper.Log
                         };
                         layoutNew.LogMetadataProperties.Add(newProperty);
                     }
-                    foreach (LogContentProperty property in layout.LogContentBeginEndFilters)
+                    foreach (LogContentProperty property in layout.LogContentProperties)
                     {
                         LogContentProperty newProperty = new()
                         {
@@ -72,7 +72,7 @@ namespace LogScraper.Log
                                 AfterPhrase = property.Criteria.AfterPhrase
                             }
                         };
-                        layoutNew.LogContentBeginEndFilters.Add(newProperty);
+                        layoutNew.LogContentProperties.Add(newProperty);
                     }
                     if (layout.LogTransformers != null)
                     {
@@ -118,7 +118,7 @@ namespace LogScraper.Log
                     }
                 }
 
-                foreach (LogContentProperty property in layout.LogContentBeginEndFilters)
+                foreach (LogContentProperty property in layout.LogContentProperties)
                 {
                     if (string.IsNullOrWhiteSpace(property.Description) ||
                         string.IsNullOrWhiteSpace(property.Criteria.BeforePhrase))
@@ -175,11 +175,11 @@ namespace LogScraper.Log
                 DateTimeFormat = "yyyy-MM-ddTHH:mm:ss,fff",
                 RemoveMetaDataCriteria = new(),
                 LogMetadataProperties = [],
-                LogContentBeginEndFilters = []
+                LogContentProperties = []
             };
             layout.LogTransformers = [];
             layout.LogMetadataProperties.Add(CreateLogMetadataProperty());
-            layout.LogContentBeginEndFilters.Add(CreateLogContentProperty());
+            layout.LogContentProperties.Add(CreateLogContentProperty());
 
             return layout;
         }
@@ -295,7 +295,7 @@ namespace LogScraper.Log
                 if (_metadataProperties.Count > 0) LstMetadata_SelectedIndexChanged(null, null);
 
                 _contentProperties.Clear();
-                foreach (LogContentProperty property in selected.LogContentBeginEndFilters)
+                foreach (LogContentProperty property in selected.LogContentProperties)
                 {
                     _contentProperties.Add(property);
                 }
@@ -371,26 +371,26 @@ namespace LogScraper.Log
 
             LstContent.SelectedIndex = -1;
             LstContent.SelectedIndex = LstContent.Items.Count - 1;
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentBeginEndFilters = [.. _contentProperties];
+            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
             UpdateButtons();
         }
 
         private void BtnContentRemove_Click(object sender, EventArgs e)
         {
             ButtonRemove(LstContent, _contentProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentBeginEndFilters = [.. _contentProperties];
+            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
         }
 
         private void BtnContentUp_Click(object sender, EventArgs e)
         {
             ButtonUp(LstContent, _contentProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentBeginEndFilters = [.. _contentProperties];
+            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
         }
 
         private void BtnContentDown_Click(object sender, EventArgs e)
         {
             ButtonDown(LstContent, _contentProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentBeginEndFilters = [.. _contentProperties];
+            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
         }
 
         private void BtnMetadataAdd_Click(object sender, EventArgs e)
@@ -602,7 +602,7 @@ namespace LogScraper.Log
                     }
                     information += Environment.NewLine;
                     information += "Content begin en eind filters:" + Environment.NewLine;
-                    foreach (var property in logLayout.LogContentBeginEndFilters)
+                    foreach (var property in logLayout.LogContentProperties)
                     {
                         logLine.LogContentProperties.TryGetValue(property, out string value);
                         information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
@@ -636,7 +636,7 @@ namespace LogScraper.Log
                     BeforePhrase = logLayout.RemoveMetaDataCriteria.BeforePhrase,
                 },
                 LogMetadataProperties = [],
-                LogContentBeginEndFilters = [],
+                LogContentProperties = [],
                 LogTransformers = []
             };
             foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
@@ -652,7 +652,7 @@ namespace LogScraper.Log
                 };
                 logLayoutCopy.LogMetadataProperties.Add(newProperty);
             }
-            foreach (LogContentProperty property in logLayout.LogContentBeginEndFilters)
+            foreach (LogContentProperty property in logLayout.LogContentProperties)
             {
                 LogContentProperty newProperty = new()
                 {
@@ -663,7 +663,7 @@ namespace LogScraper.Log
                         AfterPhrase = property.Criteria.AfterPhrase
                     }
                 };
-                logLayoutCopy.LogContentBeginEndFilters.Add(newProperty);
+                logLayoutCopy.LogContentProperties.Add(newProperty);
             }
             foreach (ILogTransformer transformer in logLayout.LogTransformers)
             {

@@ -593,8 +593,8 @@ namespace LogScraper
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
-            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentBeginEndFilters);
+            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentProperties);
+            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentProperties);
             usrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();

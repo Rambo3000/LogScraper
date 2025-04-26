@@ -5,29 +5,37 @@ namespace LogScraper.Log.Collection
 {
     internal class LogCollection
     {
+        // Singleton instance of LogCollection.
         private static LogCollection instance = null;
+
+        // Lock object to ensure thread safety when creating the singleton instance.
         private static readonly Lock padlock = new();
 
+        /// <summary>
+        /// Gets or sets the count of errors in the log collection.
+        /// </summary>
         public int ErrorCount { get; set; }
 
-        public LogCollection()
-        {
-            LogLines = [];
-        }
-
+        /// <summary>
+        /// Clears the log collection by removing all log lines and resetting the error count.
+        /// </summary>
         public void Clear()
         {
             LogLines.Clear();
             ErrorCount = 0;
         }
 
+        /// <summary>
+        /// Gets the singleton instance of the LogCollection class.
+        /// Ensures that only one instance is created, even in a multithreaded environment.
+        /// </summary>
         public static LogCollection Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    // Use a lock to ensure only one thread creates the instance
+                    // Use a lock to ensure only one thread creates the instance.
                     lock (padlock)
                     {
                         instance ??= new LogCollection();
@@ -37,6 +45,9 @@ namespace LogScraper.Log.Collection
             }
         }
 
-        public List<LogLine> LogLines { get; set; }
+        /// <summary>
+        /// A list of log lines stored in the collection.
+        /// </summary>
+        public List<LogLine> LogLines { get; set; } = [];
     }
 }

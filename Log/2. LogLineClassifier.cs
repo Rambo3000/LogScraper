@@ -8,12 +8,20 @@ namespace LogScraper.Log
 {
     internal class LogLineClassifier
     {
+        /// <summary>
+        /// Processes a list of log lines and metadata properties to generate a list of metadata properties
+        /// and their available values across the loglines, along with count of each value.
+        /// </summary>
+        /// <param name="logLines">The list of log lines to process.</param>
+        /// <param name="logMetadataProperties">The metadata properties to extract from the log lines.</param>
+        /// <returns>A list of LogMetadataPropertyAndValues objects containing metadata properties and their values.</returns>
         public static List<LogMetadataPropertyAndValues> GetLogLinesListOfMetadataPropertyAndValues(List<LogLine> logLines, List<LogMetadataProperty> logMetadataProperties)
         {
             List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = [];
 
             if (logLines == null || logMetadataProperties == null) return logMetadataPropertyAndValuesList;
 
+            // Dictionary to store the count of each value for each metadata property.
             Dictionary<LogMetadataProperty, Dictionary<string, int>> valueCounts = [];
 
             foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
@@ -21,26 +29,28 @@ namespace LogScraper.Log
                 valueCounts[logMetadataProperty] = [];
             }
 
-            // Iterate through each LogLine in the LogCollection.
+            // Iterate through each log line to populate the value counts.
             foreach (LogLine logLine in logLines)
-                {
+            {
                 foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
                 {
+                    // Try to get the value of the current metadata property from the log line.
                     if (!logLine.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string propertyValue))
                     {
-                        // LogMetadataProperties is not present in the LogLine, skip it.
+                        // If the metadata property is not present in the log line, skip it.
                         continue;
                     }
 
-                    Dictionary<string,int> ValueCountDictionary = valueCounts[logMetadataProperty];
+                    // Get the dictionary for the current metadata property.
+                    Dictionary<string, int> ValueCountDictionary = valueCounts[logMetadataProperty];
+
+                    // Increment the count for the property value or initialize it to 1 if it doesn't exist.
                     if (ValueCountDictionary.TryGetValue(propertyValue, out int value))
                     {
-                        //Increment the value count
                         ValueCountDictionary[propertyValue] = ++value;
                     }
                     else
                     {
-                        //Initialize at 1 
                         ValueCountDictionary[propertyValue] = 1;
                     }
                 }
@@ -51,6 +61,7 @@ namespace LogScraper.Log
             {
                 LogMetadataPropertyAndValues LogMetadataPropertyAndValues = new()
                 {
+                    // Convert the value counts into a dictionary of LogMetadataValue objects.
                     LogMetadataValues = valueCounts[logMetadataProperty].ToDictionary(
                             kvp => new LogMetadataValue(kvp.Key, kvp.Value, false),
                             kvp => kvp.Value.ToString()
@@ -64,68 +75,103 @@ namespace LogScraper.Log
 
             return logMetadataPropertyAndValuesList;
         }
+
+        /// <summary>
+        /// Classifies metadata properties for each log line in the log collection based on the provided log layout and adds this to each log line.
+        /// </summary>
+        /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
+        /// <param name="logCollection">The collection of log lines to classify.</param>
         public static void ClassifyLogLineMetadataProperties(LogLayout logLayout, LogCollection logCollection)
         {
             if (logCollection == null || logLayout.LogMetadataProperties == null) return;
 
             foreach (var logLine in logCollection.LogLines)
             {
+                // Skip log lines that already have metadata properties classified.
                 if (logLine.LogMetadataPropertiesWithStringValue != null) continue;
 
                 logLine.LogMetadataPropertiesWithStringValue = [];
 
-                // Determine and add log properties and their values to the LogLine based on LogMetadataProperties.
+                // Determine and add metadata properties and their values to the log line.
                 foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
                 {
-                    // Extract and store the property value in the dictionary.
+                    // Extract the property value based on the criteria.
                     string propertyValue = ExtractValue(logLine.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
+
+                    // Add the property value to the log line if it exists.
                     if (propertyValue != null) logLine.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
+
+                    // Increment the error count if the property value is "ERROR".
                     if (propertyValue == "ERROR") logCollection.ErrorCount++;
                 }
             }
         }
+
+        /// <summary>
+        /// Classifies content properties for each log line in the log collection based on the provided log layout and adds this to each log line.
+        /// </summary>
+        /// <param name="logLayout">The layout defining content properties and their criteria.</param>
+        /// <param name="logCollection">The collection of log lines to classify.</param>
         public static void ClassifyLogLineContentProperties(LogLayout logLayout, LogCollection logCollection)
         {
-            if (logCollection == null || logLayout.LogContentBeginEndFilters == null) return;
+            if (logCollection == null || logLayout.LogContentProperties == null) return;
 
             foreach (var logLine in logCollection.LogLines)
             {
+                // Skip log lines that already have content properties classified.
                 if (logLine.LogContentProperties != null) continue;
 
                 logLine.LogContentProperties = [];
 
-                // Determine and add log properties and their values to the LogLine based on LogMetadataProperties.
-                foreach (var LogContent in logLayout.LogContentBeginEndFilters)
+                // Determine and add content properties and their values to the log line.
+                foreach (var LogContent in logLayout.LogContentProperties)
                 {
-                    // Extract and store the property value in the dictionary.
+                    // Extract the content value based on the criteria.
                     string value = ExtractValue(logLine.Line, LogContent.Criteria, false, logLayout.StartPosition);
-                    if (value != null) logLine.LogContentProperties[LogContent] = logLine.TimeStamp.ToString("HH:mm:ss") + " " + value;
+
+                    // Add the content value to the log line if it exists.
+                    if (value != null)
+                    {
+                        logLine.LogContentProperties[LogContent] = logLine.TimeStamp.ToString("HH:mm:ss") + " " + value;
+                    }
                 }
             }
         }
+
+        /// <summary>
+        /// Extracts a value from a log line based on the specified filter criteria.
+        /// </summary>
+        /// <param name="logLine">The log line to extract the value from.</param>
+        /// <param name="criteria">The criteria defining the extraction rules.</param>
+        /// <param name="afterPhraseManditory">Indicates whether the after phrase is mandatory for extraction.</param>
+        /// <param name="startPosition">The starting position for the search.</param>
+        /// <returns>The extracted value, or null if the criteria are not met.</returns>
         private static string ExtractValue(string logLine, FilterCriteria criteria, bool afterPhraseManditory, int startPosition)
         {
+            // Return null if the criteria are invalid or mandatory phrases are missing.
             if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && string.IsNullOrEmpty(criteria.AfterPhrase)) return null;
 
+            // Find the start index of the before phrase.
             int startIndex = logLine.IndexOf(criteria.BeforePhrase, startPosition);
 
             if (startIndex == -1) return null;
 
+            // Move the start index to the end of the before phrase.
             startIndex += criteria.BeforePhrase.Length;
 
+            // Find the end index of the after phrase, if it exists.
             int endIndex = criteria.AfterPhrase == null ? -1 : logLine.IndexOf(criteria.AfterPhrase, startIndex);
 
-            if (afterPhraseManditory && endIndex == -1)
-            {
-                return null;
-            }
-            else if (endIndex == -1)
-            {
-                endIndex = logLine.Length;
-            }
+            // Handle cases where the after phrase is mandatory but not found.
+            if (afterPhraseManditory && endIndex == -1) return null;
 
+            // Use the end of the line if no after phrase is specified.
+            if (endIndex == -1) endIndex = logLine.Length;
+
+            // Return an empty string if the start and end indices are the same.
             if (endIndex == startIndex) return string.Empty;
 
+            // Extract and return the substring between the start and end indices.
             return logLine[startIndex..endIndex];
         }
     }
