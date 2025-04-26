@@ -74,7 +74,7 @@
             groupBox1 = new System.Windows.Forms.GroupBox();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
-            PanelFilters = new System.Windows.Forms.Panel();
+            UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
             tabPage4 = new System.Windows.Forms.TabPage();
             usrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -601,7 +601,7 @@
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(PanelFilters);
+            tabPage3.Controls.Add(UsrMetadataFilterOverview);
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -610,15 +610,14 @@
             tabPage3.Text = "Filteren";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // PanelFilters
+            // UsrMetadataFilterOverview
             // 
-            PanelFilters.AutoScroll = true;
-            PanelFilters.Dock = System.Windows.Forms.DockStyle.Fill;
-            PanelFilters.Location = new System.Drawing.Point(3, 3);
-            PanelFilters.Name = "PanelFilters";
-            PanelFilters.Size = new System.Drawing.Size(191, 391);
-            PanelFilters.TabIndex = 0;
-            PanelFilters.Resize += PanelFilters_Resize;
+            UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
+            UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 3);
+            UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
+            UsrMetadataFilterOverview.Size = new System.Drawing.Size(191, 391);
+            UsrMetadataFilterOverview.TabIndex = 0;
+            UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
             // 
             // tabPage4
             // 
@@ -797,8 +796,8 @@
         private System.Windows.Forms.CheckBox chkShowAllLogEntries;
         private System.Windows.Forms.Label lblEndFilterEnabled;
         private System.Windows.Forms.Label lblBeginFilterEnabled;
-        private System.Windows.Forms.Panel PanelFilters;
         private System.Windows.Forms.Button btnConfig;
         private System.Windows.Forms.Label label2;
+        private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
     }
 }

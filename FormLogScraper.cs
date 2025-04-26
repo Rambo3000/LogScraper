@@ -35,7 +35,6 @@ namespace LogScraper
 
         private readonly Timer timerMemoryUsage = new();
 
-        private readonly Dictionary<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> logMetadataPropertyControls = [];
         #endregion
 
         #region Initialization
@@ -175,7 +174,7 @@ namespace LogScraper
 
                 LogEntryClassifier.ClassifyLogEntryContentProperties(logLayout, LogCollection.Instance);
 
-                UpdateFilterControls();
+                UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
                 FilterLogEntries();
                 UpdateStatisticsLogCollection();
                 HandleLogProviderStatusUpdate("Ok (" + DateTime.Now.ToString("HH:mm:ss") + ")", true);
@@ -203,89 +202,19 @@ namespace LogScraper
         #endregion
 
         #region Filter processing
-        private void UpdateFilterControls()
-        {
-            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues = LogEntryClassifier.GetLogEntriesListOfMetadataPropertyAndValues(LogCollection.Instance.LogEntries, logLayout.LogMetadataProperties);
-            UserControlLogMetadataFilter previousFilter = null;
-            PanelFilters.SuspendDrawing();
-            foreach (LogMetadataPropertyAndValues filterProperty in logMetadataPropertyAndValues)
-            {
-                if (!logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
-                {
-                    // Create a new UserControlLogMetadataFilter and add it to the dictionary and the form's controls.
-                    userControlLogFilter = new UserControlLogMetadataFilter(filterProperty.LogMetadataProperty.Description)
-                    {
-                        Width = PanelFilters.ClientSize.Width
-                    };
-                    userControlLogFilter.FilterChanged += UserControlLogFilter_FilterChanged;
-
-                    PanelFilters.Controls.Add(userControlLogFilter);
-                    logMetadataPropertyControls[filterProperty] = userControlLogFilter;
-                }
-                userControlLogFilter.UpdateListView(filterProperty);
-
-                if (previousFilter != null)
-                {
-                    userControlLogFilter.Top = previousFilter.Bottom + 5;
-                }
-                previousFilter = userControlLogFilter;
-            }
-            PanelFilters.ResumeDrawing();
-        }
-
-        private void UpdateFilterControlsCount(List<LogMetadataPropertyAndValues> filterProperties)
-        {
-            foreach (LogMetadataPropertyAndValues filterProperty in filterProperties)
-            {
-                if (logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
-                {
-                    userControlLogFilter.UpdateCountInListView(filterProperty);
-                }
-            }
-        }
         private void FilterLogEntries()
         {
             // Get all the metadata properties and their values from all the user controls
-            List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = [];
-            foreach (UserControlLogMetadataFilter userControlLogFilter in PanelFilters.Controls)
-            {
-                LogMetadataPropertyAndValuesList.Add(userControlLogFilter.GetCurrentLogMetadataPropertyAndValues());
-            }
+            List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = UsrMetadataFilterOverview.GetMetadataPropertyAndValues();
 
             // Filter the logentries into the FilterResult and update the count
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList);
 
-            UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValuesList);
+            UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValuesList);
             UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
             UsrLogContentEnd.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
 
             UpdateAndWriteExport(currentLogMetadataFilterResult);
-        }
-        public static string CreateMetadataExampleFilterString(List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList)
-        {
-            List<string> filterGroups = [];
-
-            foreach (var item in LogMetadataPropertyAndValuesList)
-            {
-                if (item.IsFilterEnabled)
-                {
-                    var values = item.LogMetadataValues.Where(kv => kv.Key.IsFilterEnabled).Select(kv => kv.Key.Value).ToList();
-
-                    if (values.Count > 1)
-                    {
-                        string group = "(" + string.Join(" of ", values) + ")";
-                        filterGroups.Add(group);
-                    }
-                    else if (values.Count == 1)
-                    {
-                        filterGroups.Add(values[0]);
-                    }
-                }
-            }
-
-            string result = string.Join(" en ", filterGroups);
-            return string.IsNullOrEmpty(result) ? "-" : result;
         }
         #endregion
 
@@ -431,13 +360,7 @@ namespace LogScraper
 
             currentLogMetadataFilterResult = null;
 
-            foreach (Control control in PanelFilters.Controls)
-            {
-                UserControlLogMetadataFilter userControlLogMetadataFilter = (UserControlLogMetadataFilter)control;
-                userControlLogMetadataFilter.FilterChanged -= UserControlLogFilter_FilterChanged;
-            }
-            PanelFilters.Controls.Clear();
-            logMetadataPropertyControls.Clear();
+            UsrMetadataFilterOverview.Reset();
             txtStatusRead.Text = string.Empty;
             txtStatusRead.Visible = false;
             ClearLog();
@@ -578,7 +501,7 @@ namespace LogScraper
             string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
             LogExportWorkerManager.OpenFileInExternalEditor(fileName);
         }
-        private void UserControlLogFilter_FilterChanged(object sender, EventArgs e)
+        private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e)
         {
             FilterLogEntries();
         }
@@ -635,25 +558,6 @@ namespace LogScraper
             }
         }
         #endregion
-        int previousWidth = 0;
-        private void PanelFilters_Resize(object sender, EventArgs e)
-        {
-            int newWidth = PanelFilters.ClientSize.Width;
-            if (newWidth == previousWidth) return;
-
-            PanelFilters.SuspendDrawing();
-            PanelFilters.SuspendLayout();
-            foreach (Control ctrl in PanelFilters.Controls)
-            {
-                if (ctrl.Width != newWidth)
-                {
-                    ctrl.Width = newWidth;
-                }
-            }
-            PanelFilters.ResumeLayout();
-            PanelFilters.ResumeDrawing();
-            previousWidth = newWidth;
-        }
 
         private void BtnConfig_Click(object sender, EventArgs e)
         {

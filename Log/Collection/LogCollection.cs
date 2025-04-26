@@ -6,7 +6,7 @@ namespace LogScraper.Log.Collection
     /// <summary>
     /// Represents a collection of log entries.
     /// </summary>
-    internal class LogCollection
+    public class LogCollection
     {
         // Singleton instance of LogCollection.
         private static LogCollection instance = null;
