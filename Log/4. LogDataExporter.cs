@@ -30,32 +30,32 @@ namespace LogScraper.Log
 
             return new()
             {
-                DateTimeFirstLine = filterResult.LogLines[startIndex].TimeStamp,
-                DateTimeLastLine = filterResult.LogLines[endIndex - 1].TimeStamp,
+                DateTimeFirstLine = filterResult.LogEntries[startIndex].TimeStamp,
+                DateTimeLastLine = filterResult.LogEntries[endIndex - 1].TimeStamp,
                 LineCount = endIndex - startIndex,
-                ExportRaw = GetLogLinesAsString(filterResult, reduceNumberOfLinesForDisplaying, startIndex, endIndex, logExportSettings)
+                ExportRaw = GetLogEntriesAsString(filterResult, reduceNumberOfLinesForDisplaying, startIndex, endIndex, logExportSettings)
             };
         }
 
         /// <summary>
-        /// Determines the start and end indices for the log lines to be exported based on the export settings.
+        /// Determines the start and end indices for the log entries to be exported based on the export settings.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
         private static (int startIndex, int endIndex) CalculateExportRange(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
         {
-            int numberOfLinesTotal = filterResult.LogLines.Count;
+            int numberOfLinesTotal = filterResult.LogEntries.Count;
 
             int startindex = 0;
             int endindex = numberOfLinesTotal;
 
-            // Adjust the start index based on the LoglineBegin setting and extra lines to include.
-            if (logExportSettings.LoglineBegin != null)
+            // Adjust the start index based on the LogEntryBegin setting and extra lines to include.
+            if (logExportSettings.LogEntryBegin != null)
             {
                 for (int i = 0; i < numberOfLinesTotal; i++)
                 {
-                    if (filterResult.LogLines[i] == logExportSettings.LoglineBegin)
+                    if (filterResult.LogEntries[i] == logExportSettings.LogEntryBegin)
                     {
                         startindex = i;
                         break;
@@ -65,12 +65,12 @@ namespace LogScraper.Log
                 if (startindex < 0) startindex = 0; // Ensure the start index is not negative.
             }
 
-            // Adjust the end index based on the LogLineEnd setting and extra lines to include.
-            if (logExportSettings.LogLineEnd != null)
+            // Adjust the end index based on the LogEntryEnd setting and extra lines to include.
+            if (logExportSettings.LogEntryEnd != null)
             {
                 for (int i = 0; i < numberOfLinesTotal; i++)
                 {
-                    if (filterResult.LogLines[i] == logExportSettings.LogLineEnd)
+                    if (filterResult.LogEntries[i] == logExportSettings.LogEntryEnd)
                     {
                         endindex = i + 1;
                         break;
@@ -84,15 +84,15 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Converts the specified range of log lines into a single string, optionally reducing the number of lines for display.
+        /// Converts the specified range of log entries into a single string, optionally reducing the number of lines for display.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
         /// <param name="reduceNumberOfLinesForDisplaying">Whether to reduce the number of lines for display purposes.</param>
-        /// <param name="startIndex">The starting index of the log lines to include.</param>
-        /// <param name="endIndex">The ending index of the log lines to include.</param>
+        /// <param name="startIndex">The starting index of the log entries to include.</param>
+        /// <param name="endIndex">The ending index of the log entries to include.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
-        /// <returns>A string containing the formatted log lines.</returns>
-        private static string GetLogLinesAsString(LogMetadataFilterResult filterResult, bool reduceNumberOfLinesForDisplaying, int startIndex, int endIndex, LogExportSettings logExportSettings)
+        /// <returns>A string containing the formatted log entries.</returns>
+        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, bool reduceNumberOfLinesForDisplaying, int startIndex, int endIndex, LogExportSettings logExportSettings)
         {
             StringBuilder stringBuilder = new();
             const int maxNrOfRecordsShown = 1000;
@@ -115,53 +115,53 @@ namespace LogScraper.Log
                     continue;
                 }
 
-                AppendLogLineToBuilder(stringBuilder, filterResult.LogLines[i], logExportSettings.LogExportSettingsMetadata);
+                AppendLogEntryToBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings.LogExportSettingsMetadata);
             }
             return stringBuilder.ToString();
         }
 
         /// <summary>
-        /// Appends a log line and its metadata to the StringBuilder.
+        /// Appends a log entry and its metadata to the StringBuilder.
         /// </summary>
         /// <param name="stringbuilder">The StringBuilder to append to.</param>
-        /// <param name="logLine">The log line to append.</param>
+        /// <param name="logEntry">The log entry to append.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        private static void AppendLogLineToBuilder(StringBuilder stringbuilder, LogLine logLine, LogExportSettingsMetadata logExportSettingsMetadata)
+        private static void AppendLogEntryToBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettingsMetadata logExportSettingsMetadata)
         {
-            string logLineMetadataFormatted = logLine.Line;
+            string logEntryMetadataFormatted = logEntry.Line;
 
-            // Modify the log line metadata if the original metadata is not to be shown.
+            // Modify the log entry metadata if the original metadata is not to be shown.
             if (!logExportSettingsMetadata.ShowOriginalMetadata)
             {
                 if (logExportSettingsMetadata.RemoveMetaDataCriteria != null)
                 {
-                    logLineMetadataFormatted = RemoveTextByCriteria(logLine.Line, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
+                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Line, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
                 }
                 // Insert metadata at the original metadata position.
-                logLineMetadataFormatted = InsertMetadataIntoLogLine(logLineMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logLine.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
+                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logEntry.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
             }
 
-            stringbuilder.AppendLine(logLineMetadataFormatted);
+            stringbuilder.AppendLine(logEntryMetadataFormatted);
 
-            // Append any additional log lines associated with the current log line.
-            if (logLine.AdditionalLogLines != null)
+            // Append any additional log entries associated with the current log entry.
+            if (logEntry.AdditionalLogEntries != null)
             {
-                for (int j = 0; j < logLine.AdditionalLogLines.Count; j++)
+                for (int j = 0; j < logEntry.AdditionalLogEntries.Count; j++)
                 {
-                    stringbuilder.AppendLine(logLine.AdditionalLogLines[j]);
+                    stringbuilder.AppendLine(logEntry.AdditionalLogEntries[j]);
                 }
             }
         }
 
         /// <summary>
-        /// Inserts metadata to a log line at the specified position.
+        /// Inserts metadata to a log entry at the specified position.
         /// </summary>
-        /// <param name="logLine">The original log line.</param>
+        /// <param name="logEntry">The original log entry.</param>
         /// <param name="startIndex">The position to insert the metadata.</param>
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        /// <returns>The log line with added metadata.</returns>
-        private static string InsertMetadataIntoLogLine(string logLine, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettingsMetadata logExportSettingsMetadata)
+        /// <returns>The log entry with added metadata.</returns>
+        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettingsMetadata logExportSettingsMetadata)
         {
             if (startIndex <= 0 ||
                 logExportSettingsMetadata.SelectedMetadataProperties == null ||
@@ -169,7 +169,7 @@ namespace LogScraper.Log
                 logMetadataPropertiesWithStringValue == null ||
                 logMetadataPropertiesWithStringValue.Count == 0)
             {
-                return logLine;
+                return logEntry;
             }
 
             List<string> values = [];
@@ -179,8 +179,8 @@ namespace LogScraper.Log
                 if (value != null) { values.Add(value); }
             }
 
-            // Insert the metadata values into the log line at the specified position.
-            return logLine.Insert(startIndex, " " + string.Join(" | ", values));
+            // Insert the metadata values into the log entry at the specified position.
+            return logEntry.Insert(startIndex, " " + string.Join(" | ", values));
         }
 
         /// <summary>

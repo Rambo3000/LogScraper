@@ -5,17 +5,17 @@ namespace LogScraper.Log.Metadata
 {
     /// <summary>
     /// Represents the result of filtering log metadata.
-    /// This class contains the filtered log lines and their associated metadata properties.
+    /// This class contains the filtered log entries and their associated metadata properties.
     /// </summary>
     internal class LogMetadataFilterResult
     {
         /// <summary>
-        /// A list of log lines that match the filtering criteria.
+        /// A list of log entries that match the filtering criteria.
         /// </summary>
-        public List<LogLine> LogLines { get; set; }
+        public List<LogEntry> LogEntries { get; set; }
 
         /// <summary>
-        /// A list of metadata properties and their associated values for the filtered log lines.
+        /// A list of metadata properties and their associated values for the filtered log entries.
         /// </summary>
         public List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList { get; set; }
     }

@@ -4,9 +4,9 @@ namespace LogScraper.LogTransformers.Implementations
 {
     internal class OrderReversalTransformer : ILogTransformer
     {
-        public void Transform(string[] loglines)
+        public void Transform(string[] logEntries)
         {
-            Array.Reverse(loglines); ;
+            Array.Reverse(logEntries); ;
         }
     }
 }

@@ -577,34 +577,34 @@ namespace LogScraper.Log
                 LogCollection logCollection = new();
                 try
                 {
-                    if (TxtExampleLogLine.Text == string.Empty)
+                    if (TxtExampleLogEntry.Text == string.Empty)
                     {
                         throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
                     }
 
-                    LogReader.ReadIntoLogCollection([TxtExampleLogLine.Text], logCollection, logLayout);
-                    LogLineClassifier.ClassifyLogLineMetadataProperties(logLayout, logCollection);
-                    LogLineClassifier.ClassifyLogLineContentProperties(logLayout, logCollection);
+                    LogReader.ReadIntoLogCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
+                    LogEntryClassifier.ClassifyLogEntryMetadataProperties(logLayout, logCollection);
+                    LogEntryClassifier.ClassifyLogEntryContentProperties(logLayout, logCollection);
 
                     string information = string.Empty;
-                    LogLine logLine = logCollection.LogLines[0];
+                    LogEntry logEntry = logCollection.LogEntries[0];
 
-                    information += $"Datum tijd: {logLine.TimeStamp}" + Environment.NewLine;
+                    information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += $"Log regel zonder metadata:" + Environment.NewLine;
-                    information += $"   {LogDataExporter.RemoveTextByCriteria(logLine.Line, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
+                    information += $"   {LogDataExporter.RemoveTextByCriteria(logEntry.Line, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += "Metadata:" + Environment.NewLine;
                     foreach (var property in logLayout.LogMetadataProperties)
                     {
-                        logLine.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
+                        logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
                         information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
                     }
                     information += Environment.NewLine;
                     information += "Content begin en eind filters:" + Environment.NewLine;
                     foreach (var property in logLayout.LogContentProperties)
                     {
-                        logLine.LogContentProperties.TryGetValue(property, out string value);
+                        logEntry.LogContentProperties.TryGetValue(property, out string value);
                         information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
                     }
                     TxtTestResponse.ForeColor = System.Drawing.Color.Black;

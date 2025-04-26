@@ -7,22 +7,22 @@ using LogScraper.Log.Metadata;
 namespace LogScraper.Log
 {
     /// <summary>
-    /// Classifies log lines based on metadata properties and content properties.
+    /// Classifies log entries based on metadata properties and content properties.
     /// </summary>
-    internal class LogLineClassifier
+    internal class LogEntryClassifier
     {
         /// <summary>
-        /// Processes a list of log lines and metadata properties to generate a list of metadata properties
-        /// and their available values across the loglines, along with count of each value.
+        /// Processes a list of log entries and metadata properties to generate a list of metadata properties
+        /// and their available values across the logentries, along with count of each value.
         /// </summary>
-        /// <param name="logLines">The list of log lines to process.</param>
-        /// <param name="logMetadataProperties">The metadata properties to extract from the log lines.</param>
+        /// <param name="logEntries">The list of log entries to process.</param>
+        /// <param name="logMetadataProperties">The metadata properties to extract from the log entries.</param>
         /// <returns>A list of LogMetadataPropertyAndValues objects containing metadata properties and their values.</returns>
-        public static List<LogMetadataPropertyAndValues> GetLogLinesListOfMetadataPropertyAndValues(List<LogLine> logLines, List<LogMetadataProperty> logMetadataProperties)
+        public static List<LogMetadataPropertyAndValues> GetLogEntriesListOfMetadataPropertyAndValues(List<LogEntry> logEntries, List<LogMetadataProperty> logMetadataProperties)
         {
             List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = [];
 
-            if (logLines == null || logMetadataProperties == null) return logMetadataPropertyAndValuesList;
+            if (logEntries == null || logMetadataProperties == null) return logMetadataPropertyAndValuesList;
 
             // Dictionary to store the count of each value for each metadata property.
             Dictionary<LogMetadataProperty, Dictionary<string, int>> valueCounts = [];
@@ -32,15 +32,15 @@ namespace LogScraper.Log
                 valueCounts[logMetadataProperty] = [];
             }
 
-            // Iterate through each log line to populate the value counts.
-            foreach (LogLine logLine in logLines)
+            // Iterate through each log entry to populate the value counts.
+            foreach (LogEntry logEntry in logEntries)
             {
                 foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
                 {
-                    // Try to get the value of the current metadata property from the log line.
-                    if (!logLine.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string propertyValue))
+                    // Try to get the value of the current metadata property from the log entry.
+                    if (!logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string propertyValue))
                     {
-                        // If the metadata property is not present in the log line, skip it.
+                        // If the metadata property is not present in the log entry, skip it.
                         continue;
                     }
 
@@ -80,29 +80,29 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Classifies metadata properties for each log line in the log collection based on the provided log layout and adds this to each log line.
+        /// Classifies metadata properties for each log entry in the log collection based on the provided log layout and adds this to each log entry.
         /// </summary>
         /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
-        /// <param name="logCollection">The collection of log lines to classify.</param>
-        public static void ClassifyLogLineMetadataProperties(LogLayout logLayout, LogCollection logCollection)
+        /// <param name="logCollection">The collection of log entries to classify.</param>
+        public static void ClassifyLogEntryMetadataProperties(LogLayout logLayout, LogCollection logCollection)
         {
             if (logCollection == null || logLayout.LogMetadataProperties == null) return;
 
-            foreach (var logLine in logCollection.LogLines)
+            foreach (var logEntry in logCollection.LogEntries)
             {
-                // Skip log lines that already have metadata properties classified.
-                if (logLine.LogMetadataPropertiesWithStringValue != null) continue;
+                // Skip log entries that already have metadata properties classified.
+                if (logEntry.LogMetadataPropertiesWithStringValue != null) continue;
 
-                logLine.LogMetadataPropertiesWithStringValue = [];
+                logEntry.LogMetadataPropertiesWithStringValue = [];
 
-                // Determine and add metadata properties and their values to the log line.
+                // Determine and add metadata properties and their values to the log entry.
                 foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
                 {
                     // Extract the property value based on the criteria.
-                    string propertyValue = ExtractValue(logLine.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
+                    string propertyValue = ExtractValue(logEntry.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
 
-                    // Add the property value to the log line if it exists.
-                    if (propertyValue != null) logLine.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
+                    // Add the property value to the log entry if it exists.
+                    if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
 
                     // Increment the error count if the property value is "ERROR".
                     if (propertyValue == "ERROR") logCollection.ErrorCount++;
@@ -111,51 +111,51 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Classifies content properties for each log line in the log collection based on the provided log layout and adds this to each log line.
+        /// Classifies content properties for each log entry in the log collection based on the provided log layout and adds this to each log entry.
         /// </summary>
         /// <param name="logLayout">The layout defining content properties and their criteria.</param>
-        /// <param name="logCollection">The collection of log lines to classify.</param>
-        public static void ClassifyLogLineContentProperties(LogLayout logLayout, LogCollection logCollection)
+        /// <param name="logCollection">The collection of log entries to classify.</param>
+        public static void ClassifyLogEntryContentProperties(LogLayout logLayout, LogCollection logCollection)
         {
             if (logCollection == null || logLayout.LogContentProperties == null) return;
 
-            foreach (var logLine in logCollection.LogLines)
+            foreach (var logEntry in logCollection.LogEntries)
             {
-                // Skip log lines that already have content properties classified.
-                if (logLine.LogContentProperties != null) continue;
+                // Skip log entries that already have content properties classified.
+                if (logEntry.LogContentProperties != null) continue;
 
-                logLine.LogContentProperties = [];
+                logEntry.LogContentProperties = [];
 
-                // Determine and add content properties and their values to the log line.
+                // Determine and add content properties and their values to the log entry.
                 foreach (var LogContent in logLayout.LogContentProperties)
                 {
                     // Extract the content value based on the criteria.
-                    string value = ExtractValue(logLine.Line, LogContent.Criteria, false, logLayout.StartPosition);
+                    string value = ExtractValue(logEntry.Line, LogContent.Criteria, false, logLayout.StartPosition);
 
-                    // Add the content value to the log line if it exists.
+                    // Add the content value to the log entry if it exists.
                     if (value != null)
                     {
-                        logLine.LogContentProperties[LogContent] = logLine.TimeStamp.ToString("HH:mm:ss") + " " + value;
+                        logEntry.LogContentProperties[LogContent] = logEntry.TimeStamp.ToString("HH:mm:ss") + " " + value;
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Extracts a value from a log line based on the specified filter criteria.
+        /// Extracts a value from a log entry based on the specified filter criteria.
         /// </summary>
-        /// <param name="logLine">The log line to extract the value from.</param>
+        /// <param name="logEntry">The log entry to extract the value from.</param>
         /// <param name="criteria">The criteria defining the extraction rules.</param>
         /// <param name="afterPhraseManditory">Indicates whether the after phrase is mandatory for extraction.</param>
         /// <param name="startPosition">The starting position for the search.</param>
         /// <returns>The extracted value, or null if the criteria are not met.</returns>
-        private static string ExtractValue(string logLine, FilterCriteria criteria, bool afterPhraseManditory, int startPosition)
+        private static string ExtractValue(string logEntry, FilterCriteria criteria, bool afterPhraseManditory, int startPosition)
         {
             // Return null if the criteria are invalid or mandatory phrases are missing.
             if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && string.IsNullOrEmpty(criteria.AfterPhrase)) return null;
 
             // Find the start index of the before phrase.
-            int startIndex = logLine.IndexOf(criteria.BeforePhrase, startPosition);
+            int startIndex = logEntry.IndexOf(criteria.BeforePhrase, startPosition);
 
             if (startIndex == -1) return null;
 
@@ -163,19 +163,19 @@ namespace LogScraper.Log
             startIndex += criteria.BeforePhrase.Length;
 
             // Find the end index of the after phrase, if it exists.
-            int endIndex = criteria.AfterPhrase == null ? -1 : logLine.IndexOf(criteria.AfterPhrase, startIndex);
+            int endIndex = criteria.AfterPhrase == null ? -1 : logEntry.IndexOf(criteria.AfterPhrase, startIndex);
 
             // Handle cases where the after phrase is mandatory but not found.
             if (afterPhraseManditory && endIndex == -1) return null;
 
             // Use the end of the line if no after phrase is specified.
-            if (endIndex == -1) endIndex = logLine.Length;
+            if (endIndex == -1) endIndex = logEntry.Length;
 
             // Return an empty string if the start and end indices are the same.
             if (endIndex == startIndex) return string.Empty;
 
             // Extract and return the substring between the start and end indices.
-            return logLine[startIndex..endIndex];
+            return logEntry[startIndex..endIndex];
         }
     }
 }

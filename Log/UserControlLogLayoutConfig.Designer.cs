@@ -56,7 +56,7 @@ namespace LogScraper.Log
             pictureBox16 = new System.Windows.Forms.PictureBox();
             TxtTestResponse = new System.Windows.Forms.RichTextBox();
             label3 = new System.Windows.Forms.Label();
-            TxtExampleLogLine = new ValidatedTextBox();
+            TxtExampleLogEntry = new ValidatedTextBox();
             BtnTest = new System.Windows.Forms.Button();
             LblDescription = new System.Windows.Forms.Label();
             LblDateTimeFormat = new System.Windows.Forms.Label();
@@ -385,7 +385,7 @@ namespace LogScraper.Log
             groupBox2.Controls.Add(pictureBox16);
             groupBox2.Controls.Add(TxtTestResponse);
             groupBox2.Controls.Add(label3);
-            groupBox2.Controls.Add(TxtExampleLogLine);
+            groupBox2.Controls.Add(TxtExampleLogEntry);
             groupBox2.Controls.Add(BtnTest);
             groupBox2.Location = new System.Drawing.Point(308, 6);
             groupBox2.Name = "groupBox2";
@@ -425,17 +425,17 @@ namespace LogScraper.Log
             label3.TabIndex = 32;
             label3.Text = "Log regel";
             // 
-            // TxtExampleLogLine
+            // TxtExampleLogEntry
             // 
-            TxtExampleLogLine.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            TxtExampleLogLine.BackColor = System.Drawing.SystemColors.Window;
-            TxtExampleLogLine.IsRequired = false;
-            TxtExampleLogLine.IsWhiteSpaceAllowed = false;
-            TxtExampleLogLine.Location = new System.Drawing.Point(68, 15);
-            TxtExampleLogLine.Name = "TxtExampleLogLine";
-            TxtExampleLogLine.Size = new System.Drawing.Size(267, 23);
-            TxtExampleLogLine.TabIndex = 19;
-            TxtExampleLogLine.TextChanged += TxtMetadataDescription_TextChanged;
+            TxtExampleLogEntry.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtExampleLogEntry.BackColor = System.Drawing.SystemColors.Window;
+            TxtExampleLogEntry.IsRequired = false;
+            TxtExampleLogEntry.IsWhiteSpaceAllowed = false;
+            TxtExampleLogEntry.Location = new System.Drawing.Point(68, 15);
+            TxtExampleLogEntry.Name = "TxtExampleLogEntry";
+            TxtExampleLogEntry.Size = new System.Drawing.Size(267, 23);
+            TxtExampleLogEntry.TabIndex = 19;
+            TxtExampleLogEntry.TextChanged += TxtMetadataDescription_TextChanged;
             // 
             // BtnTest
             // 
@@ -1082,7 +1082,7 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox chkTransformReverse;
         private System.Windows.Forms.PictureBox pictureBox15;
         private System.Windows.Forms.PictureBox pictureBox14;
-        private ValidatedTextBox TxtExampleLogLine;
+        private ValidatedTextBox TxtExampleLogEntry;
         private System.Windows.Forms.Button BtnTest;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label3;

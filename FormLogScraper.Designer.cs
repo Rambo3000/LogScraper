@@ -30,18 +30,18 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             btnReadFromUrl = new System.Windows.Forms.Button();
-            lblLogLinesTotalValue = new System.Windows.Forms.Label();
-            lblNumberOfLogLinesFiltered = new System.Windows.Forms.Label();
-            lblLogLinesFiltered = new System.Windows.Forms.Label();
-            LbllogLinesTotal = new System.Windows.Forms.Label();
+            lblLogEntriesTotalValue = new System.Windows.Forms.Label();
+            lblNumberOfLogEntriesFiltered = new System.Windows.Forms.Label();
+            lblLogEntriesFiltered = new System.Windows.Forms.Label();
+            LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
             btnConfig = new System.Windows.Forms.Button();
             lblMemoryUsageValue = new System.Windows.Forms.Label();
             lblMemoryUsage = new System.Windows.Forms.Label();
             btnSmallWindow = new System.Windows.Forms.Button();
-            lblNumberOfLogLinesFilteredWithError = new System.Windows.Forms.Label();
+            lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             btnReset = new System.Windows.Forms.Button();
-            lblLogLinesFilteredWithError = new System.Windows.Forms.Label();
+            lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnClearLog = new System.Windows.Forms.Button();
             btnStop = new System.Windows.Forms.Button();
             btnDowloadLogLongTime = new System.Windows.Forms.Button();
@@ -57,11 +57,11 @@
             groupBox2 = new System.Windows.Forms.GroupBox();
             lblEndFilterEnabled = new System.Windows.Forms.Label();
             lblBeginFilterEnabled = new System.Windows.Forms.Label();
-            chkShowAllLogLines = new System.Windows.Forms.CheckBox();
-            lblNumberOfLogLinesShown = new System.Windows.Forms.Label();
+            chkShowAllLogEntries = new System.Windows.Forms.CheckBox();
+            lblNumberOfLogEntriesShown = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             txtStatusRead = new System.Windows.Forms.TextBox();
-            txtLogLines = new System.Windows.Forms.RichTextBox();
+            txtLogEntries = new System.Windows.Forms.RichTextBox();
             groupBox5 = new System.Windows.Forms.GroupBox();
             usrSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
@@ -116,43 +116,43 @@
             btnReadFromUrl.UseVisualStyleBackColor = true;
             btnReadFromUrl.Click += BtnReadFromUrl_Click;
             // 
-            // lblLogLinesTotalValue
+            // lblLogEntriesTotalValue
             // 
-            lblLogLinesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblLogLinesTotalValue.Location = new System.Drawing.Point(230, 33);
-            lblLogLinesTotalValue.Name = "lblLogLinesTotalValue";
-            lblLogLinesTotalValue.Size = new System.Drawing.Size(63, 15);
-            lblLogLinesTotalValue.TabIndex = 7;
-            lblLogLinesTotalValue.Text = "0";
-            lblLogLinesTotalValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblLogEntriesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            lblLogEntriesTotalValue.Location = new System.Drawing.Point(230, 33);
+            lblLogEntriesTotalValue.Name = "lblLogEntriesTotalValue";
+            lblLogEntriesTotalValue.Size = new System.Drawing.Size(63, 15);
+            lblLogEntriesTotalValue.TabIndex = 7;
+            lblLogEntriesTotalValue.Text = "0";
+            lblLogEntriesTotalValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblNumberOfLogLinesFiltered
+            // lblNumberOfLogEntriesFiltered
             // 
-            lblNumberOfLogLinesFiltered.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogLinesFiltered.Location = new System.Drawing.Point(230, 51);
-            lblNumberOfLogLinesFiltered.Name = "lblNumberOfLogLinesFiltered";
-            lblNumberOfLogLinesFiltered.Size = new System.Drawing.Size(63, 15);
-            lblNumberOfLogLinesFiltered.TabIndex = 17;
-            lblNumberOfLogLinesFiltered.Text = "0";
-            lblNumberOfLogLinesFiltered.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblNumberOfLogEntriesFiltered.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(230, 51);
+            lblNumberOfLogEntriesFiltered.Name = "lblNumberOfLogEntriesFiltered";
+            lblNumberOfLogEntriesFiltered.Size = new System.Drawing.Size(63, 15);
+            lblNumberOfLogEntriesFiltered.TabIndex = 17;
+            lblNumberOfLogEntriesFiltered.Text = "0";
+            lblNumberOfLogEntriesFiltered.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblLogLinesFiltered
+            // lblLogEntriesFiltered
             // 
-            lblLogLinesFiltered.AutoSize = true;
-            lblLogLinesFiltered.Location = new System.Drawing.Point(121, 51);
-            lblLogLinesFiltered.Name = "lblLogLinesFiltered";
-            lblLogLinesFiltered.Size = new System.Drawing.Size(88, 15);
-            lblLogLinesFiltered.TabIndex = 16;
-            lblLogLinesFiltered.Text = "Regels gefilterd";
+            lblLogEntriesFiltered.AutoSize = true;
+            lblLogEntriesFiltered.Location = new System.Drawing.Point(121, 51);
+            lblLogEntriesFiltered.Name = "lblLogEntriesFiltered";
+            lblLogEntriesFiltered.Size = new System.Drawing.Size(88, 15);
+            lblLogEntriesFiltered.TabIndex = 16;
+            lblLogEntriesFiltered.Text = "Regels gefilterd";
             // 
-            // LbllogLinesTotal
+            // LbllogEntriesTotal
             // 
-            LbllogLinesTotal.AutoSize = true;
-            LbllogLinesTotal.Location = new System.Drawing.Point(121, 33);
-            LbllogLinesTotal.Name = "LbllogLinesTotal";
-            LbllogLinesTotal.Size = new System.Drawing.Size(100, 15);
-            LbllogLinesTotal.TabIndex = 10;
-            LbllogLinesTotal.Text = "Regels opgehaald";
+            LbllogEntriesTotal.AutoSize = true;
+            LbllogEntriesTotal.Location = new System.Drawing.Point(121, 33);
+            LbllogEntriesTotal.Name = "LbllogEntriesTotal";
+            LbllogEntriesTotal.Size = new System.Drawing.Size(100, 15);
+            LbllogEntriesTotal.TabIndex = 10;
+            LbllogEntriesTotal.Text = "Regels opgehaald";
             // 
             // groupBox3
             // 
@@ -160,15 +160,15 @@
             groupBox3.Controls.Add(lblMemoryUsageValue);
             groupBox3.Controls.Add(lblMemoryUsage);
             groupBox3.Controls.Add(btnSmallWindow);
-            groupBox3.Controls.Add(lblNumberOfLogLinesFilteredWithError);
+            groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
             groupBox3.Controls.Add(btnReset);
-            groupBox3.Controls.Add(lblNumberOfLogLinesFiltered);
+            groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
             groupBox3.Controls.Add(btnReadFromUrl);
-            groupBox3.Controls.Add(lblLogLinesFilteredWithError);
+            groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
             groupBox3.Controls.Add(BtnClearLog);
-            groupBox3.Controls.Add(lblLogLinesTotalValue);
-            groupBox3.Controls.Add(LbllogLinesTotal);
-            groupBox3.Controls.Add(lblLogLinesFiltered);
+            groupBox3.Controls.Add(lblLogEntriesTotalValue);
+            groupBox3.Controls.Add(LbllogEntriesTotal);
+            groupBox3.Controls.Add(lblLogEntriesFiltered);
             groupBox3.Controls.Add(btnStop);
             groupBox3.Controls.Add(btnDowloadLogLongTime);
             groupBox3.Location = new System.Drawing.Point(5, 5);
@@ -225,15 +225,15 @@
             btnSmallWindow.UseVisualStyleBackColor = true;
             btnSmallWindow.Click += BtnMiniTopForm_Click;
             // 
-            // lblNumberOfLogLinesFilteredWithError
+            // lblNumberOfLogEntriesFilteredWithError
             // 
-            lblNumberOfLogLinesFilteredWithError.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogLinesFilteredWithError.Location = new System.Drawing.Point(230, 69);
-            lblNumberOfLogLinesFilteredWithError.Name = "lblNumberOfLogLinesFilteredWithError";
-            lblNumberOfLogLinesFilteredWithError.Size = new System.Drawing.Size(63, 15);
-            lblNumberOfLogLinesFilteredWithError.TabIndex = 19;
-            lblNumberOfLogLinesFilteredWithError.Text = "0";
-            lblNumberOfLogLinesFilteredWithError.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblNumberOfLogEntriesFilteredWithError.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(230, 69);
+            lblNumberOfLogEntriesFilteredWithError.Name = "lblNumberOfLogEntriesFilteredWithError";
+            lblNumberOfLogEntriesFilteredWithError.Size = new System.Drawing.Size(63, 15);
+            lblNumberOfLogEntriesFilteredWithError.TabIndex = 19;
+            lblNumberOfLogEntriesFilteredWithError.Text = "0";
+            lblNumberOfLogEntriesFilteredWithError.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // btnReset
             // 
@@ -245,14 +245,14 @@
             btnReset.UseVisualStyleBackColor = true;
             btnReset.Click += BtnReset_Click;
             // 
-            // lblLogLinesFilteredWithError
+            // lblLogEntriesFilteredWithError
             // 
-            lblLogLinesFilteredWithError.AutoSize = true;
-            lblLogLinesFilteredWithError.Location = new System.Drawing.Point(121, 69);
-            lblLogLinesFilteredWithError.Name = "lblLogLinesFilteredWithError";
-            lblLogLinesFilteredWithError.Size = new System.Drawing.Size(93, 15);
-            lblLogLinesFilteredWithError.TabIndex = 18;
-            lblLogLinesFilteredWithError.Text = "Regels met error";
+            lblLogEntriesFilteredWithError.AutoSize = true;
+            lblLogEntriesFilteredWithError.Location = new System.Drawing.Point(121, 69);
+            lblLogEntriesFilteredWithError.Name = "lblLogEntriesFilteredWithError";
+            lblLogEntriesFilteredWithError.Size = new System.Drawing.Size(93, 15);
+            lblLogEntriesFilteredWithError.TabIndex = 18;
+            lblLogEntriesFilteredWithError.Text = "Regels met error";
             // 
             // BtnClearLog
             // 
@@ -385,11 +385,11 @@
             // 
             groupBox2.Controls.Add(lblEndFilterEnabled);
             groupBox2.Controls.Add(lblBeginFilterEnabled);
-            groupBox2.Controls.Add(chkShowAllLogLines);
-            groupBox2.Controls.Add(lblNumberOfLogLinesShown);
+            groupBox2.Controls.Add(chkShowAllLogEntries);
+            groupBox2.Controls.Add(lblNumberOfLogEntriesShown);
             groupBox2.Controls.Add(label1);
             groupBox2.Controls.Add(txtStatusRead);
-            groupBox2.Controls.Add(txtLogLines);
+            groupBox2.Controls.Add(txtLogEntries);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(0, 0);
             groupBox2.Name = "groupBox2";
@@ -422,26 +422,26 @@
             lblBeginFilterEnabled.Text = "Beginfilter actief";
             lblBeginFilterEnabled.Visible = false;
             // 
-            // chkShowAllLogLines
+            // chkShowAllLogEntries
             // 
-            chkShowAllLogLines.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            chkShowAllLogLines.AutoSize = true;
-            chkShowAllLogLines.Location = new System.Drawing.Point(172, 426);
-            chkShowAllLogLines.Name = "chkShowAllLogLines";
-            chkShowAllLogLines.Size = new System.Drawing.Size(180, 19);
-            chkShowAllLogLines.TabIndex = 35;
-            chkShowAllLogLines.Text = "Alle regels tonen (langzamer)";
-            chkShowAllLogLines.UseVisualStyleBackColor = true;
-            chkShowAllLogLines.CheckedChanged += ChkShowAllLogLines_CheckedChanged;
+            chkShowAllLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            chkShowAllLogEntries.AutoSize = true;
+            chkShowAllLogEntries.Location = new System.Drawing.Point(172, 426);
+            chkShowAllLogEntries.Name = "chkShowAllLogEntries";
+            chkShowAllLogEntries.Size = new System.Drawing.Size(180, 19);
+            chkShowAllLogEntries.TabIndex = 35;
+            chkShowAllLogEntries.Text = "Alle regels tonen (langzamer)";
+            chkShowAllLogEntries.UseVisualStyleBackColor = true;
+            chkShowAllLogEntries.CheckedChanged += ChkShowAllLogEntries_CheckedChanged;
             // 
-            // lblNumberOfLogLinesShown
+            // lblNumberOfLogEntriesShown
             // 
-            lblNumberOfLogLinesShown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            lblNumberOfLogLinesShown.Location = new System.Drawing.Point(96, 427);
-            lblNumberOfLogLinesShown.Name = "lblNumberOfLogLinesShown";
-            lblNumberOfLogLinesShown.Size = new System.Drawing.Size(80, 15);
-            lblNumberOfLogLinesShown.TabIndex = 34;
-            lblNumberOfLogLinesShown.Text = "-";
+            lblNumberOfLogEntriesShown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            lblNumberOfLogEntriesShown.Location = new System.Drawing.Point(96, 427);
+            lblNumberOfLogEntriesShown.Name = "lblNumberOfLogEntriesShown";
+            lblNumberOfLogEntriesShown.Size = new System.Drawing.Size(80, 15);
+            lblNumberOfLogEntriesShown.TabIndex = 34;
+            lblNumberOfLogEntriesShown.Text = "-";
             // 
             // label1
             // 
@@ -467,19 +467,19 @@
             txtStatusRead.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             txtStatusRead.Visible = false;
             // 
-            // txtLogLines
+            // txtLogEntries
             // 
-            txtLogLines.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtLogLines.BackColor = System.Drawing.Color.White;
-            txtLogLines.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtLogLines.DetectUrls = false;
-            txtLogLines.Location = new System.Drawing.Point(6, 15);
-            txtLogLines.Name = "txtLogLines";
-            txtLogLines.ReadOnly = true;
-            txtLogLines.Size = new System.Drawing.Size(673, 409);
-            txtLogLines.TabIndex = 3;
-            txtLogLines.Text = "";
-            txtLogLines.WordWrap = false;
+            txtLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            txtLogEntries.BackColor = System.Drawing.Color.White;
+            txtLogEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtLogEntries.DetectUrls = false;
+            txtLogEntries.Location = new System.Drawing.Point(6, 15);
+            txtLogEntries.Name = "txtLogEntries";
+            txtLogEntries.ReadOnly = true;
+            txtLogEntries.Size = new System.Drawing.Size(673, 409);
+            txtLogEntries.TabIndex = 3;
+            txtLogEntries.Text = "";
+            txtLogEntries.WordWrap = false;
             // 
             // groupBox5
             // 
@@ -748,21 +748,21 @@
         #endregion
 
         private System.Windows.Forms.Button btnReadFromUrl;
-        private System.Windows.Forms.Label lblLogLinesTotalValue;
-        private System.Windows.Forms.Label LbllogLinesTotal;
+        private System.Windows.Forms.Label lblLogEntriesTotalValue;
+        private System.Windows.Forms.Label LbllogEntriesTotal;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnDowloadLogLongTime;
         private System.Windows.Forms.Button BtnClearLog;
         private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Label lblNumberOfLogLinesFiltered;
-        private System.Windows.Forms.Label lblLogLinesFiltered;
+        private System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
+        private System.Windows.Forms.Label lblLogEntriesFiltered;
         private System.Windows.Forms.Button btnSmallWindow;
-        private System.Windows.Forms.Label lblNumberOfLogLinesFilteredWithError;
-        private System.Windows.Forms.Label lblLogLinesFilteredWithError;
+        private System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
+        private System.Windows.Forms.Label lblLogEntriesFilteredWithError;
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.GroupBox grpWriteLog;
         private System.Windows.Forms.Button btnOpenWithEditor;
-        private System.Windows.Forms.RichTextBox txtLogLines;
+        private System.Windows.Forms.RichTextBox txtLogEntries;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -792,9 +792,9 @@
         private System.Windows.Forms.Label lblVersion;
         private UserControlSearch usrSearch;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Label lblNumberOfLogLinesShown;
+        private System.Windows.Forms.Label lblNumberOfLogEntriesShown;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chkShowAllLogLines;
+        private System.Windows.Forms.CheckBox chkShowAllLogEntries;
         private System.Windows.Forms.Label lblEndFilterEnabled;
         private System.Windows.Forms.Label lblBeginFilterEnabled;
         private System.Windows.Forms.Panel PanelFilters;

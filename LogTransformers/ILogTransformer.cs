@@ -2,6 +2,6 @@
 {
     public interface ILogTransformer
     {
-        void Transform(string[] loglines);
+        void Transform(string[] logEntries);
     }
 }

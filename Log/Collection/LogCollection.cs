@@ -4,7 +4,7 @@ using System.Threading;
 namespace LogScraper.Log.Collection
 {
     /// <summary>
-    /// Represents a collection of log lines.
+    /// Represents a collection of log entries.
     /// </summary>
     internal class LogCollection
     {
@@ -20,11 +20,11 @@ namespace LogScraper.Log.Collection
         public int ErrorCount { get; set; }
 
         /// <summary>
-        /// Clears the log collection by removing all log lines and resetting the error count.
+        /// Clears the log collection by removing all log entries and resetting the error count.
         /// </summary>
         public void Clear()
         {
-            LogLines.Clear();
+            LogEntries.Clear();
             ErrorCount = 0;
         }
 
@@ -49,8 +49,8 @@ namespace LogScraper.Log.Collection
         }
 
         /// <summary>
-        /// A list of log lines stored in the collection.
+        /// A list of log entries stored in the collection.
         /// </summary>
-        public List<LogLine> LogLines { get; set; } = [];
+        public List<LogEntry> LogEntries { get; set; } = [];
     }
 }

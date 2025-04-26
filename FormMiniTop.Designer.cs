@@ -33,11 +33,11 @@
             btnRead1Minute = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
-            lblLogLinesFilteredCount = new System.Windows.Forms.Label();
-            lblLogLinesTotalCount = new System.Windows.Forms.Label();
+            lblLogEntriesFilteredCount = new System.Windows.Forms.Label();
+            lblLogEntriesTotalCount = new System.Windows.Forms.Label();
             btnStop = new System.Windows.Forms.Button();
             btnReset = new System.Windows.Forms.Button();
-            lblLogLinesFilteredWithErrorCount = new System.Windows.Forms.Label();
+            lblLogEntriesFilteredWithErrorCount = new System.Windows.Forms.Label();
             lblError = new System.Windows.Forms.Label();
             btnBack = new System.Windows.Forms.Button();
             SuspendLayout();
@@ -80,23 +80,23 @@
             label2.TabIndex = 3;
             label2.Text = "Gefilterd";
             // 
-            // lblLogLinesFilteredCount
+            // lblLogEntriesFilteredCount
             // 
-            lblLogLinesFilteredCount.Location = new System.Drawing.Point(149, 34);
-            lblLogLinesFilteredCount.Name = "lblLogLinesFilteredCount";
-            lblLogLinesFilteredCount.Size = new System.Drawing.Size(63, 15);
-            lblLogLinesFilteredCount.TabIndex = 8;
-            lblLogLinesFilteredCount.Text = "0";
-            lblLogLinesFilteredCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblLogEntriesFilteredCount.Location = new System.Drawing.Point(149, 34);
+            lblLogEntriesFilteredCount.Name = "lblLogEntriesFilteredCount";
+            lblLogEntriesFilteredCount.Size = new System.Drawing.Size(63, 15);
+            lblLogEntriesFilteredCount.TabIndex = 8;
+            lblLogEntriesFilteredCount.Text = "0";
+            lblLogEntriesFilteredCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblLogLinesTotalCount
+            // lblLogEntriesTotalCount
             // 
-            lblLogLinesTotalCount.Location = new System.Drawing.Point(149, 9);
-            lblLogLinesTotalCount.Name = "lblLogLinesTotalCount";
-            lblLogLinesTotalCount.Size = new System.Drawing.Size(63, 15);
-            lblLogLinesTotalCount.TabIndex = 9;
-            lblLogLinesTotalCount.Text = "0";
-            lblLogLinesTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblLogEntriesTotalCount.Location = new System.Drawing.Point(149, 9);
+            lblLogEntriesTotalCount.Name = "lblLogEntriesTotalCount";
+            lblLogEntriesTotalCount.Size = new System.Drawing.Size(63, 15);
+            lblLogEntriesTotalCount.TabIndex = 9;
+            lblLogEntriesTotalCount.Text = "0";
+            lblLogEntriesTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnStop
             // 
@@ -119,14 +119,14 @@
             btnReset.UseVisualStyleBackColor = true;
             btnReset.Click += BtnReset_Click;
             // 
-            // lblLogLinesFilteredWithErrorCount
+            // lblLogEntriesFilteredWithErrorCount
             // 
-            lblLogLinesFilteredWithErrorCount.Location = new System.Drawing.Point(149, 59);
-            lblLogLinesFilteredWithErrorCount.Name = "lblLogLinesFilteredWithErrorCount";
-            lblLogLinesFilteredWithErrorCount.Size = new System.Drawing.Size(63, 15);
-            lblLogLinesFilteredWithErrorCount.TabIndex = 13;
-            lblLogLinesFilteredWithErrorCount.Text = "0";
-            lblLogLinesFilteredWithErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblLogEntriesFilteredWithErrorCount.Location = new System.Drawing.Point(149, 59);
+            lblLogEntriesFilteredWithErrorCount.Name = "lblLogEntriesFilteredWithErrorCount";
+            lblLogEntriesFilteredWithErrorCount.Size = new System.Drawing.Size(63, 15);
+            lblLogEntriesFilteredWithErrorCount.TabIndex = 13;
+            lblLogEntriesFilteredWithErrorCount.Text = "0";
+            lblLogEntriesFilteredWithErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblError
             // 
@@ -154,11 +154,11 @@
             AutoSize = true;
             ClientSize = new System.Drawing.Size(213, 99);
             Controls.Add(btnBack);
-            Controls.Add(lblLogLinesFilteredWithErrorCount);
+            Controls.Add(lblLogEntriesFilteredWithErrorCount);
             Controls.Add(lblError);
             Controls.Add(btnReset);
-            Controls.Add(lblLogLinesTotalCount);
-            Controls.Add(lblLogLinesFilteredCount);
+            Controls.Add(lblLogEntriesTotalCount);
+            Controls.Add(lblLogEntriesFilteredCount);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnRead);
@@ -182,11 +182,11 @@
         public System.Windows.Forms.Button btnRead1Minute;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        public System.Windows.Forms.Label lblLogLinesFilteredCount;
-        public System.Windows.Forms.Label lblLogLinesTotalCount;
+        public System.Windows.Forms.Label lblLogEntriesFilteredCount;
+        public System.Windows.Forms.Label lblLogEntriesTotalCount;
         public System.Windows.Forms.Button btnStop;
         public System.Windows.Forms.Button btnReset;
-        public System.Windows.Forms.Label lblLogLinesFilteredWithErrorCount;
+        public System.Windows.Forms.Label lblLogEntriesFilteredWithErrorCount;
         public System.Windows.Forms.Label lblError;
         public System.Windows.Forms.Button btnBack;
     }

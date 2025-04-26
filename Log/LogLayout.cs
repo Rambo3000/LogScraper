@@ -49,7 +49,7 @@ namespace LogScraper.Log
         private int StartPositionCache { get; set; }
 
         /// <summary>
-        /// The starting position of the log line based on the DateTimeFormat.
+        /// The starting position of the log entry based on the DateTimeFormat.
         /// This is derived from the DateTimeFormat length.
         /// </summary>
         [JsonIgnore]
@@ -70,14 +70,14 @@ namespace LogScraper.Log
 
         /// <summary>
         /// Criteria for removing metadata from the log.
-        /// This is used to clean up or simplify log lines by removing unnecessary metadata.
+        /// This is used to clean up or simplify log entries by removing unnecessary metadata.
         /// </summary>
         public FilterCriteria RemoveMetaDataCriteria { get; set; }
 
         [JsonIgnore]
         /// <summary>
-        /// A list of transformers that can be applied to the log lines.
-        /// These transformers modify the log lines based on specific rules or configurations.
+        /// A list of transformers that can be applied to the log entries.
+        /// These transformers modify the log entries based on specific rules or configurations.
         /// </summary>
         public List<ILogTransformer> LogTransformers { get; set; }
 

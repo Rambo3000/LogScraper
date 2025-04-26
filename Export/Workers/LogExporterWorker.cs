@@ -16,7 +16,7 @@ namespace LogScraper.Export.Workers
             try
             {
                 OnStatusUpdate("Bezig met wegschrijven...", true);
-                // Concatenate log lines into a single string
+                // Concatenate log entries into a single string
                 LogExportData logExportData = LogDataExporter.GenerateExportedLogData(filterResult, logExportSettings, false);
 
                 // Write the entire log content to the file asynchronously
