@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace LogScraper.Log.Collection
 {
+    /// <summary>
+    /// Represents a collection of log lines.
+    /// </summary>
     internal class LogCollection
     {
         // Singleton instance of LogCollection.

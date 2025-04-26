@@ -8,6 +8,10 @@ using LogScraper.Log.Filter;
 
 namespace LogScraper.Log
 {
+    /// <summary>
+    /// Represents the layout of a log file, including its description, date and time format,
+    ///  metadata properties, content filters, and transformers.
+    /// </summary>
     public class LogLayout : IEquatable<LogLayout>
     {
         /// <summary>

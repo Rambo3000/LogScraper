@@ -5,7 +5,10 @@ using System.Globalization;
 using System.Linq;
 
 namespace LogScraper.Log
-{
+{ 
+    /// <summary>
+    /// Handles the reading and parsing of log lines into a structured format.
+    /// </summary>
     internal static class LogReader
     {
         /// <summary>

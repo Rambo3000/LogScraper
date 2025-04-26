@@ -6,6 +6,9 @@ using LogScraper.Log.Metadata;
 
 namespace LogScraper.Log
 {
+    /// <summary>
+    /// Classifies log lines based on metadata properties and content properties.
+    /// </summary>
     internal class LogLineClassifier
     {
         /// <summary>

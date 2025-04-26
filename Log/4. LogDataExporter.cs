@@ -8,6 +8,9 @@ using System.Text;
 
 namespace LogScraper.Log
 {
+    /// <summary>
+    /// This class is responsible for exporting log data based on the filtered log metadata and export settings.
+    /// </summary>
     internal class LogDataExporter
     {
         /// <summary>
