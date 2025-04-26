@@ -31,8 +31,8 @@
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             BtnReset = new System.Windows.Forms.Button();
-            ChkShowExtraLines = new System.Windows.Forms.CheckBox();
-            TxtExtraLines = new System.Windows.Forms.TextBox();
+            ChkShowExtraLogEntries = new System.Windows.Forms.CheckBox();
+            TxtExtraLogEntries = new System.Windows.Forms.TextBox();
             chkShowErrors = new System.Windows.Forms.CheckBox();
             txtSearch = new System.Windows.Forms.TextBox();
             SuspendLayout();
@@ -73,28 +73,28 @@
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
-            // ChkShowExtraLines
+            // ChkShowExtraLogEntries
             // 
-            ChkShowExtraLines.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkShowExtraLines.AutoSize = true;
-            ChkShowExtraLines.Location = new System.Drawing.Point(5, 161);
-            ChkShowExtraLines.Name = "ChkShowExtraLines";
-            ChkShowExtraLines.Size = new System.Drawing.Size(115, 19);
-            ChkShowExtraLines.TabIndex = 3;
-            ChkShowExtraLines.Text = "Toon extra regels";
-            ChkShowExtraLines.UseVisualStyleBackColor = true;
-            ChkShowExtraLines.CheckedChanged += ChkShowExtraLines_CheckedChanged;
+            ChkShowExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            ChkShowExtraLogEntries.AutoSize = true;
+            ChkShowExtraLogEntries.Location = new System.Drawing.Point(5, 161);
+            ChkShowExtraLogEntries.Name = "ChkShowExtraLogEntries";
+            ChkShowExtraLogEntries.Size = new System.Drawing.Size(115, 19);
+            ChkShowExtraLogEntries.TabIndex = 3;
+            ChkShowExtraLogEntries.Text = "Toon extra regels";
+            ChkShowExtraLogEntries.UseVisualStyleBackColor = true;
+            ChkShowExtraLogEntries.CheckedChanged += ChkShowExtraLogEntries_CheckedChanged;
             // 
-            // TxtExtraLines
+            // TxtExtraLogEntries
             // 
-            TxtExtraLines.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            TxtExtraLines.Location = new System.Drawing.Point(126, 159);
-            TxtExtraLines.Name = "TxtExtraLines";
-            TxtExtraLines.Size = new System.Drawing.Size(53, 23);
-            TxtExtraLines.TabIndex = 4;
-            TxtExtraLines.Text = "20";
-            TxtExtraLines.Visible = false;
-            TxtExtraLines.TextChanged += TxtExtraLines_TextChanged;
+            TxtExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            TxtExtraLogEntries.Location = new System.Drawing.Point(126, 159);
+            TxtExtraLogEntries.Name = "TxtExtraLogEntries";
+            TxtExtraLogEntries.Size = new System.Drawing.Size(53, 23);
+            TxtExtraLogEntries.TabIndex = 4;
+            TxtExtraLogEntries.Text = "20";
+            TxtExtraLogEntries.Visible = false;
+            TxtExtraLogEntries.TextChanged += TxtExtraLogEntries_TextChanged;
             // 
             // chkShowErrors
             // 
@@ -130,8 +130,8 @@
             BackColor = System.Drawing.SystemColors.Window;
             Controls.Add(txtSearch);
             Controls.Add(chkShowErrors);
-            Controls.Add(TxtExtraLines);
-            Controls.Add(ChkShowExtraLines);
+            Controls.Add(TxtExtraLogEntries);
+            Controls.Add(ChkShowExtraLogEntries);
             Controls.Add(BtnReset);
             Controls.Add(CboLogContentType);
             Controls.Add(LstLogContent);
@@ -146,8 +146,8 @@
         private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Button BtnReset;
-        private System.Windows.Forms.CheckBox ChkShowExtraLines;
-        private System.Windows.Forms.TextBox TxtExtraLines;
+        private System.Windows.Forms.CheckBox ChkShowExtraLogEntries;
+        private System.Windows.Forms.TextBox TxtExtraLogEntries;
         private System.Windows.Forms.CheckBox chkShowErrors;
         private System.Windows.Forms.TextBox txtSearch;
     }

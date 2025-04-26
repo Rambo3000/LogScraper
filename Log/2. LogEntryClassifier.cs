@@ -99,7 +99,7 @@ namespace LogScraper.Log
                 foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
                 {
                     // Extract the property value based on the criteria.
-                    string propertyValue = ExtractValue(logEntry.Line, logMetadataProperty.Criteria, true, logLayout.StartPosition);
+                    string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartPosition);
 
                     // Add the property value to the log entry if it exists.
                     if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
@@ -130,7 +130,7 @@ namespace LogScraper.Log
                 foreach (var LogContent in logLayout.LogContentProperties)
                 {
                     // Extract the content value based on the criteria.
-                    string value = ExtractValue(logEntry.Line, LogContent.Criteria, false, logLayout.StartPosition);
+                    string value = ExtractValue(logEntry.Entry, LogContent.Criteria, false, logLayout.StartPosition);
 
                     // Add the content value to the log entry if it exists.
                     if (value != null)
@@ -168,7 +168,7 @@ namespace LogScraper.Log
             // Handle cases where the after phrase is mandatory but not found.
             if (afterPhraseManditory && endIndex == -1) return null;
 
-            // Use the end of the line if no after phrase is specified.
+            // Use the end of the log entry if no after phrase is specified.
             if (endIndex == -1) endIndex = logEntry.Length;
 
             // Return an empty string if the start and end indices are the same.

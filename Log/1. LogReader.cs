@@ -55,10 +55,10 @@ namespace LogScraper.Log
                 }
 
                 // Create and add a new log entry.
-                LogEntry newLine = new(logEntries[i], timestamp);
-                logCollection.LogEntries.Add(newLine);
+                LogEntry newLogEntry = new(logEntries[i], timestamp);
+                logCollection.LogEntries.Add(newLogEntry);
                 logEntryIsAdded = true;
-                lastLogEntry = newLine;
+                lastLogEntry = newLogEntry;
             }
 
             // Handle the case where no valid log entries were added.
@@ -66,7 +66,7 @@ namespace LogScraper.Log
             {
                 // Provide an explanation for the failure to parse the log entries, including the expected date-time format.
                 int maxLength = logEntries[0].Length < logLayout.DateTimeFormat.Length ? logEntries[0].Length : logLayout.DateTimeFormat.Length;
-                string message = "The log could not be interpreted. The timestamp required at the beginning of each line could not be parsed. Make sure you have selected the correct log layout and its date-time format matches the format of the log." + Environment.NewLine;
+                string message = "The log could not be interpreted. The timestamp required at the beginning of each entry could not be parsed. Make sure you have selected the correct log layout and its date-time format matches the format of the log." + Environment.NewLine;
                 message += $"Expected date time format {logLayout.DateTimeFormat} at the start of log entries but instead found (for example) " + logEntries[0][..maxLength];
                 throw new Exception(message);
             }
@@ -94,7 +94,7 @@ namespace LogScraper.Log
             {
                 if (logEntries[i] == string.Empty) continue;
 
-                if (logEntries[i] == lastLogEntry.Line)
+                if (logEntries[i] == lastLogEntry.Entry)
                 {
                     logEntriesStartIndex = i + 1;
                     break;
@@ -105,18 +105,18 @@ namespace LogScraper.Log
         /// <summary>
         /// Extracts a DateTime object from a raw log entry based on the provided date-time format.
         /// </summary>
-        /// <param name="line">The raw log entry to parse.</param>
+        /// <param name="logEntry">The raw log entry to parse.</param>
         /// <param name="dateTimeFormat">The expected date-time format at the start of the log entry.</param>
         /// <returns>A DateTime object representing the timestamp, or a default DateTime if parsing fails.</returns>
-        public static DateTime GetDateTimeFromRawLogEntry(string line, string dateTimeFormat)
+        public static DateTime GetDateTimeFromRawLogEntry(string logEntry, string dateTimeFormat)
         {
             DateTime timeStampOut = new();
             int length = dateTimeFormat.Length;
 
-            // Ensure the line is long enough to contain the date-time format.
-            if (length > line.Length) return timeStampOut;
+            // Ensure the log entry is long enough to contain the date-time format.
+            if (length > logEntry.Length) return timeStampOut;
 
-            string dateTimeStampString = line[..(dateTimeFormat.Length)];
+            string dateTimeStampString = logEntry[..(dateTimeFormat.Length)];
             DateTime.TryParseExact(dateTimeStampString, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out timeStampOut);
 
             return timeStampOut;

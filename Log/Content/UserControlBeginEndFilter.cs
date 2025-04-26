@@ -15,7 +15,7 @@ namespace LogScraper
 
         public event EventHandler FilterChanged;
         /// <summary>
-        ///     Used for showing the error lines for non-error LogContentProperties
+        ///     Used for showing the error log entries for non-error LogContentProperties
         /// </summary>
         private LogContentProperty LogContentPropertyError;
 
@@ -232,13 +232,13 @@ namespace LogScraper
                 return ((LogEntryWithToStringOverride)LstLogContent.SelectedItem).Content;
             }
         }
-        public int ExtraLineCount
+        public int ExtraLogEntryCount
         {
             get
             {
-                if (!ChkShowExtraLines.Checked) return 0;
+                if (!ChkShowExtraLogEntries.Checked) return 0;
 
-                if (int.TryParse(TxtExtraLines.Text, out int extraLinesCount)) return extraLinesCount;
+                if (int.TryParse(TxtExtraLogEntries.Text, out int extraLogEntryCount)) return extraLogEntryCount;
 
                 return 0;
             }
@@ -264,13 +264,13 @@ namespace LogScraper
             if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
         }
 
-        private void ChkShowExtraLines_CheckedChanged(object sender, EventArgs e)
+        private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
         {
-            TxtExtraLines.Visible = ChkShowExtraLines.Checked;
+            TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
             OnFilterChanged(EventArgs.Empty);
         }
 
-        private void TxtExtraLines_TextChanged(object sender, EventArgs e)
+        private void TxtExtraLogEntries_TextChanged(object sender, EventArgs e)
         {
             OnFilterChanged(EventArgs.Empty);
         }

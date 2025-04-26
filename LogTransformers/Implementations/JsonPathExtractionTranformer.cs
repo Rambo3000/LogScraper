@@ -32,7 +32,7 @@ namespace LogScraper.LogTransformers.Implementations
                 }
                 catch
                 {
-                    // Do nothing, keep the line as is
+                    // Do nothing, keep the log entry as is
                 }
             });
         }

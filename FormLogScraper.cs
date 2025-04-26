@@ -171,7 +171,7 @@ namespace LogScraper
                 catch (Exception)
                 {
                     //Write the raw log to the text box to not leave the user completely in the dark
-                    txtLogEntries.Text = JoinLines(rawLog);
+                    txtLogEntries.Text = JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
@@ -191,13 +191,13 @@ namespace LogScraper
                 HandleExceptionWhenReadingLog(ex);
             }
         }
-        private static string JoinLines(string[] lines)
+        private static string JoinRawLogIntoString(string[] rawLog)
         {
             StringBuilder builder = new();
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < rawLog.Length; i++)
             {
-                builder.Append(lines[i]);
-                if (i < lines.Length - 1)
+                builder.Append(rawLog[i]);
+                if (i < rawLog.Length - 1)
                 {
                     builder.AppendLine();
                 }
@@ -305,9 +305,9 @@ namespace LogScraper
             LogExportSettings logExportSettings = new()
             {
                 LogEntryBegin = UsrLogContentBegin.SelectedLogEntry,
-                ExtraLinesBegin = UsrLogContentBegin.ExtraLineCount,
+                ExtraLogEntriesBegin = UsrLogContentBegin.ExtraLogEntryCount,
                 LogEntryEnd = UsrLogContentEnd.SelectedLogEntry,
-                ExtraLinesEnd = UsrLogContentEnd.ExtraLineCount,
+                ExtraLogEntriesEnd = UsrLogContentEnd.ExtraLogEntryCount,
                 LogExportSettingsMetadata = usrControlMetadataFormating.LogExportSettingsMetadata,
             };
 
@@ -316,18 +316,18 @@ namespace LogScraper
 
             LogExportData logExportData = LogDataExporter.GenerateExportedLogData(logMetadataFilterResult, logExportSettings, !chkShowAllLogEntries.Checked);
 
-            if (chkShowAllLogEntries.Checked || logExportData.LineCount < 2000)
+            if (chkShowAllLogEntries.Checked || logExportData.LogEntryCount < 2000)
             {
-                lblNumberOfLogEntriesShown.Text = logExportData.LineCount.ToString() + " (alle)";
+                lblNumberOfLogEntriesShown.Text = logExportData.LogEntryCount.ToString() + " (alle)";
                 lblNumberOfLogEntriesShown.ForeColor = Color.Black;
             }
             else
             {
-                lblNumberOfLogEntriesShown.Text = "2000/" + logExportData.LineCount.ToString();
+                lblNumberOfLogEntriesShown.Text = "2000/" + logExportData.LogEntryCount.ToString();
                 lblNumberOfLogEntriesShown.ForeColor = Color.DarkRed;
             }
 
-            lblNumberOfLogEntriesFiltered.Text = logExportData.LineCount.ToString();
+            lblNumberOfLogEntriesFiltered.Text = logExportData.LogEntryCount.ToString();
 
             int initialSelectionStart = txtLogEntries.SelectionStart;
             int initialSelectionLength = txtLogEntries.SelectionLength;
@@ -351,9 +351,9 @@ namespace LogScraper
         {
             if (txtLogEntries.Lines.Length > 0)
             {
-                if (UsrLogContentBegin.SelectedItem != null) txtLogEntries.HighlightLine(UsrLogContentBegin.ExtraLineCount, Color.Orange, Color.Black);
-                // Minus two because the index is 0 based and there is always an additional empty line (hard to remove)
-                if (UsrLogContentEnd.SelectedItem != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2 - UsrLogContentEnd.ExtraLineCount, Color.GreenYellow, Color.Black);
+                if (UsrLogContentBegin.SelectedItem != null) txtLogEntries.HighlightLine(UsrLogContentBegin.ExtraLogEntryCount, Color.Orange, Color.Black);
+                // Minus two because the index is 0 based and there is always an additional empty log entry (hard to remove)
+                if (UsrLogContentEnd.SelectedItem != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2 - UsrLogContentEnd.ExtraLogEntryCount, Color.GreenYellow, Color.Black);
             }
         }
         private void UpdateStatisticsLogCollection()
