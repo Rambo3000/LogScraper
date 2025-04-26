@@ -28,30 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            PanelFilters = new System.Windows.Forms.Panel();
             SuspendLayout();
-            // 
-            // PanelFilters
-            //
-            PanelFilters.AutoScroll = true;
-            PanelFilters.Dock = System.Windows.Forms.DockStyle.Fill;
-            PanelFilters.Location = new System.Drawing.Point(3, 3);
-            PanelFilters.Name = "PanelFilters";
-            PanelFilters.Size = new System.Drawing.Size(191, 391);
-            PanelFilters.TabIndex = 0;
-            PanelFilters.Resize += PanelFilters_Resize;
             // 
             // UserControlMetadataFilterOverview
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(PanelFilters);
+            AutoScroll = true;
+            Margin = new System.Windows.Forms.Padding(0);
             Name = "UserControlMetadataFilterOverview";
+            Resize += UserControlMetadataFilterOverview_Resize;
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel PanelFilters;
     }
 }

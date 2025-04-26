@@ -13,7 +13,7 @@ namespace LogScraper.Log.Metadata
     public partial class UserControlMetadataFilterOverview : UserControl
     {
         // Dictionary to store metadata property controls for quick access.
-        private readonly Dictionary<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> logMetadataPropertyControls = new();
+        private readonly Dictionary<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> logMetadataPropertyControls = [];
 
         /// <summary>
         /// Event triggered when a filter is changed.
@@ -34,16 +34,16 @@ namespace LogScraper.Log.Metadata
         /// <summary>
         /// Handles the resize event of the control to adjust the width of child controls.
         /// </summary>
-        private void PanelFilters_Resize(object sender, EventArgs e)
+        private void UserControlMetadataFilterOverview_Resize(object sender, EventArgs e)
         {
-            int newWidth = PanelFilters.ClientSize.Width;
+            int newWidth = ClientSize.Width;
             if (newWidth == previousWidth) return;
 
             // Suspend layout updates to improve performance during resizing.
-            PanelFilters.SuspendDrawing();
-            PanelFilters.SuspendLayout();
+            this.SuspendDrawing();
+            SuspendLayout();
 
-            foreach (Control ctrl in PanelFilters.Controls)
+            foreach (Control ctrl in Controls)
             {
                 if (ctrl.Width != newWidth)
                 {
@@ -52,8 +52,8 @@ namespace LogScraper.Log.Metadata
             }
 
             // Resume layout updates after resizing.
-            PanelFilters.ResumeLayout();
-            PanelFilters.ResumeDrawing();
+            ResumeLayout();
+            this.ResumeDrawing();
             previousWidth = newWidth;
         }
 
@@ -71,7 +71,7 @@ namespace LogScraper.Log.Metadata
             UserControlLogMetadataFilter previousFilter = null;
 
             // Suspend layout updates to improve performance during control updates.
-            PanelFilters.SuspendDrawing();
+            this.SuspendDrawing();
 
             foreach (LogMetadataPropertyAndValues filterProperty in logMetadataPropertyAndValues)
             {
@@ -80,11 +80,11 @@ namespace LogScraper.Log.Metadata
                     // Create a new UserControlLogMetadataFilter and add it to the dictionary and the panel.
                     userControlLogFilter = new UserControlLogMetadataFilter(filterProperty.LogMetadataProperty.Description)
                     {
-                        Width = PanelFilters.ClientSize.Width
+                        Width = ClientSize.Width
                     };
                     userControlLogFilter.FilterChanged += OnFilterChanged;
 
-                    PanelFilters.Controls.Add(userControlLogFilter);
+                    Controls.Add(userControlLogFilter);
                     logMetadataPropertyControls[filterProperty] = userControlLogFilter;
                 }
 
@@ -99,7 +99,7 @@ namespace LogScraper.Log.Metadata
                 previousFilter = userControlLogFilter;
             }
 
-            PanelFilters.ResumeDrawing();
+            this.ResumeDrawing();
         }
 
         /// <summary>
@@ -116,9 +116,9 @@ namespace LogScraper.Log.Metadata
         /// <returns>A list of metadata properties and their values.</returns>
         public List<LogMetadataPropertyAndValues> GetMetadataPropertyAndValues()
         {
-            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = new();
+            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = [];
 
-            foreach (UserControlLogMetadataFilter userControlLogFilter in PanelFilters.Controls)
+            foreach (UserControlLogMetadataFilter userControlLogFilter in Controls)
             {
                 logMetadataPropertyAndValuesList.Add(userControlLogFilter.GetCurrentLogMetadataPropertyAndValues());
             }
@@ -146,7 +146,7 @@ namespace LogScraper.Log.Metadata
         /// </summary>
         public void Reset()
         {
-            foreach (Control control in PanelFilters.Controls)
+            foreach (Control control in Controls)
             {
                 if (control is UserControlLogMetadataFilter userControlLogMetadataFilter)
                 {
@@ -154,7 +154,7 @@ namespace LogScraper.Log.Metadata
                 }
             }
 
-            PanelFilters.Controls.Clear();
+            Controls.Clear();
             logMetadataPropertyControls.Clear();
         }
     }
