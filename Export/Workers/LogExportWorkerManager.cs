@@ -4,12 +4,32 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LogScraper.Export.Workers
 {
     internal class LogExportWorkerManager
     {
+        private static LogExportWorkerManager instance;
+        private static readonly Lock lockObject = new();
+        public static LogExportWorkerManager Instance
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (lockObject)
+                    {
+                        instance ??= new LogExportWorkerManager();
+                    }
+                }
+                return instance;
+            }
+        }
+
         private readonly Queue<(LogExporterWorker, LogMetadataFilterResult, LogExportSettings)> workerQueue = new();
         private bool isProcessingQueue = false;
         public event Action<int> QueueLengthUpdate;

@@ -7,6 +7,25 @@ namespace LogScraper.Sources.Workers
 {
     internal class SourceProcessingManager
     {
+        private static SourceProcessingManager instance;
+        private static readonly Lock lockObject = new();
+        public static SourceProcessingManager Instance
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (lockObject)
+                    {
+                        instance ??= new SourceProcessingManager();
+                    }
+                }
+                return instance;
+            }
+        }
+
         private readonly Queue<(SourceProcessingWorker, ISourceAdapter, int, int, CancellationTokenSource)> workerQueue = new();
         private bool isProcessingQueue = false;
         public event Action<int> QueueLengthUpdate;

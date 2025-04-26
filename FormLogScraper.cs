@@ -11,7 +11,6 @@ using LogScraper.LogProviders.Kubernetes;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,9 +28,6 @@ namespace LogScraper
         #region Private fields
         private FormMiniTop miniTopForm = null;
         private bool isFormInitializing = true;
-
-        private readonly LogExportWorkerManager logExportManager = new();
-        private readonly SourceProcessingManager logProviderManager = new();
 
         private int numberOfSourceProcessingWorkers = 0;
 
@@ -76,7 +72,7 @@ namespace LogScraper
 
             usrSearch.Search += UsrSearch_Search;
 
-            logProviderManager.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
+            SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
         }
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
@@ -152,7 +148,7 @@ namespace LogScraper
                 sourceProcessingWorker.DownloadCompleted += ProcessNewLogStringArray;
                 sourceProcessingWorker.StatusUpdate += HandleLogProviderStatusUpdate;
                 sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
-                logProviderManager.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
+                SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
             }
             catch (Exception ex)
             {
@@ -343,7 +339,7 @@ namespace LogScraper
                 string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
                 LogExporterWorker logExporter = new(fileName);
                 logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
-                logExportManager.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
+                LogExportWorkerManager.Instance.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
             }
         }
 
@@ -556,7 +552,7 @@ namespace LogScraper
         }
         public void BtnStop_Click(object sender, EventArgs e)
         {
-            logProviderManager.CancelAllWorkers();
+            SourceProcessingManager.Instance.CancelAllWorkers();
         }
         public void BtnClearLog_Click(object sender, EventArgs e)
         {
