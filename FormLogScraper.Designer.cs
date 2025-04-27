@@ -28,30 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
-            btnReadFromUrl = new System.Windows.Forms.Button();
+            BtnPlay = new System.Windows.Forms.Button();
             lblLogEntriesTotalValue = new System.Windows.Forms.Label();
             lblNumberOfLogEntriesFiltered = new System.Windows.Forms.Label();
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
             btnConfig = new System.Windows.Forms.Button();
-            lblMemoryUsageValue = new System.Windows.Forms.Label();
-            lblMemoryUsage = new System.Windows.Forms.Label();
+            LblMemoryUsageValue = new System.Windows.Forms.Label();
+            btnOpenWithEditor = new System.Windows.Forms.Button();
             btnSmallWindow = new System.Windows.Forms.Button();
-            lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             btnReset = new System.Windows.Forms.Button();
-            lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
-            BtnClearLog = new System.Windows.Forms.Button();
+            BtnErase = new System.Windows.Forms.Button();
             btnStop = new System.Windows.Forms.Button();
-            btnDowloadLogLongTime = new System.Windows.Forms.Button();
+            lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
+            BtnPlayWithTimes = new System.Windows.Forms.Button();
+            lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
             usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
             usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
-            grpWriteLog = new System.Windows.Forms.GroupBox();
-            txtStatusWrite = new System.Windows.Forms.TextBox();
-            btnOpenWithEditor = new System.Windows.Forms.Button();
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -82,8 +80,8 @@
             usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
+            ToolTip = new System.Windows.Forms.ToolTip(components);
             groupBox3.SuspendLayout();
-            grpWriteLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
@@ -106,20 +104,21 @@
             GrpSourceAndLayout.SuspendLayout();
             SuspendLayout();
             // 
-            // btnReadFromUrl
+            // BtnPlay
             // 
-            btnReadFromUrl.Location = new System.Drawing.Point(6, 16);
-            btnReadFromUrl.Name = "btnReadFromUrl";
-            btnReadFromUrl.Size = new System.Drawing.Size(109, 31);
-            btnReadFromUrl.TabIndex = 0;
-            btnReadFromUrl.Text = "Uitlezen";
-            btnReadFromUrl.UseVisualStyleBackColor = true;
-            btnReadFromUrl.Click += BtnReadFromUrl_Click;
+            BtnPlay.Image = (System.Drawing.Image)resources.GetObject("BtnPlay.Image");
+            BtnPlay.Location = new System.Drawing.Point(6, 22);
+            BtnPlay.Name = "BtnPlay";
+            BtnPlay.Size = new System.Drawing.Size(52, 40);
+            BtnPlay.TabIndex = 0;
+            ToolTip.SetToolTip(BtnPlay, "Lees log uit");
+            BtnPlay.UseVisualStyleBackColor = true;
+            BtnPlay.Click += BtnPlay_Click;
             // 
             // lblLogEntriesTotalValue
             // 
             lblLogEntriesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblLogEntriesTotalValue.Location = new System.Drawing.Point(230, 33);
+            lblLogEntriesTotalValue.Location = new System.Drawing.Point(116, 71);
             lblLogEntriesTotalValue.Name = "lblLogEntriesTotalValue";
             lblLogEntriesTotalValue.Size = new System.Drawing.Size(63, 15);
             lblLogEntriesTotalValue.TabIndex = 7;
@@ -129,7 +128,7 @@
             // lblNumberOfLogEntriesFiltered
             // 
             lblNumberOfLogEntriesFiltered.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(230, 51);
+            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(116, 93);
             lblNumberOfLogEntriesFiltered.Name = "lblNumberOfLogEntriesFiltered";
             lblNumberOfLogEntriesFiltered.Size = new System.Drawing.Size(63, 15);
             lblNumberOfLogEntriesFiltered.TabIndex = 17;
@@ -139,7 +138,7 @@
             // lblLogEntriesFiltered
             // 
             lblLogEntriesFiltered.AutoSize = true;
-            lblLogEntriesFiltered.Location = new System.Drawing.Point(121, 51);
+            lblLogEntriesFiltered.Location = new System.Drawing.Point(10, 93);
             lblLogEntriesFiltered.Name = "lblLogEntriesFiltered";
             lblLogEntriesFiltered.Size = new System.Drawing.Size(88, 15);
             lblLogEntriesFiltered.TabIndex = 16;
@@ -148,7 +147,7 @@
             // LbllogEntriesTotal
             // 
             LbllogEntriesTotal.AutoSize = true;
-            LbllogEntriesTotal.Location = new System.Drawing.Point(121, 33);
+            LbllogEntriesTotal.Location = new System.Drawing.Point(10, 71);
             LbllogEntriesTotal.Name = "LbllogEntriesTotal";
             LbllogEntriesTotal.Size = new System.Drawing.Size(100, 15);
             LbllogEntriesTotal.TabIndex = 10;
@@ -157,23 +156,23 @@
             // groupBox3
             // 
             groupBox3.Controls.Add(btnConfig);
-            groupBox3.Controls.Add(lblMemoryUsageValue);
-            groupBox3.Controls.Add(lblMemoryUsage);
+            groupBox3.Controls.Add(LblMemoryUsageValue);
+            groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(btnSmallWindow);
-            groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
             groupBox3.Controls.Add(btnReset);
-            groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
-            groupBox3.Controls.Add(btnReadFromUrl);
-            groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
-            groupBox3.Controls.Add(BtnClearLog);
-            groupBox3.Controls.Add(lblLogEntriesTotalValue);
+            groupBox3.Controls.Add(BtnPlay);
+            groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(LbllogEntriesTotal);
             groupBox3.Controls.Add(lblLogEntriesFiltered);
             groupBox3.Controls.Add(btnStop);
-            groupBox3.Controls.Add(btnDowloadLogLongTime);
+            groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
+            groupBox3.Controls.Add(BtnPlayWithTimes);
+            groupBox3.Controls.Add(lblLogEntriesTotalValue);
+            groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
+            groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(304, 147);
+            groupBox3.Size = new System.Drawing.Size(294, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
@@ -181,109 +180,110 @@
             // 
             // btnConfig
             // 
-            btnConfig.Image = Properties.Resources.cog_outline_16px;
-            btnConfig.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            btnConfig.Location = new System.Drawing.Point(197, 116);
+            btnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
+            btnConfig.Location = new System.Drawing.Point(264, 117);
             btnConfig.Name = "btnConfig";
-            btnConfig.Size = new System.Drawing.Size(101, 24);
+            btnConfig.Size = new System.Drawing.Size(24, 24);
             btnConfig.TabIndex = 23;
-            btnConfig.Text = "Instellingen";
             btnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(btnConfig, "Instellingen");
             btnConfig.UseVisualStyleBackColor = true;
             btnConfig.Click += BtnConfig_Click;
             // 
-            // lblMemoryUsageValue
+            // LblMemoryUsageValue
             // 
-            lblMemoryUsageValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblMemoryUsageValue.Location = new System.Drawing.Point(230, 16);
-            lblMemoryUsageValue.Name = "lblMemoryUsageValue";
-            lblMemoryUsageValue.Size = new System.Drawing.Size(63, 15);
-            lblMemoryUsageValue.TabIndex = 22;
-            lblMemoryUsageValue.Text = "0";
-            lblMemoryUsageValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            LblMemoryUsageValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblMemoryUsageValue.Location = new System.Drawing.Point(238, 99);
+            LblMemoryUsageValue.Name = "LblMemoryUsageValue";
+            LblMemoryUsageValue.Size = new System.Drawing.Size(50, 15);
+            LblMemoryUsageValue.TabIndex = 22;
+            LblMemoryUsageValue.Text = "0";
+            LblMemoryUsageValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            ToolTip.SetToolTip(LblMemoryUsageValue, "Geheugengebruik (MB)");
             // 
-            // lblMemoryUsage
+            // btnOpenWithEditor
             // 
-            lblMemoryUsage.AutoSize = true;
-            lblMemoryUsage.Location = new System.Drawing.Point(120, 16);
-            lblMemoryUsage.Name = "lblMemoryUsage";
-            lblMemoryUsage.Size = new System.Drawing.Size(101, 15);
-            lblMemoryUsage.TabIndex = 21;
-            lblMemoryUsage.Text = "Geheugengebruik";
+            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
+            btnOpenWithEditor.Location = new System.Drawing.Point(248, 22);
+            btnOpenWithEditor.Name = "btnOpenWithEditor";
+            btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
+            btnOpenWithEditor.TabIndex = 11;
+            btnOpenWithEditor.UseVisualStyleBackColor = true;
+            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
             // btnSmallWindow
             // 
-            btnSmallWindow.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnSmallWindow.Image = Properties.Resources.open_in_new;
-            btnSmallWindow.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            btnSmallWindow.Location = new System.Drawing.Point(197, 90);
+            btnSmallWindow.Image = (System.Drawing.Image)resources.GetObject("btnSmallWindow.Image");
+            btnSmallWindow.Location = new System.Drawing.Point(202, 22);
             btnSmallWindow.Name = "btnSmallWindow";
-            btnSmallWindow.Size = new System.Drawing.Size(101, 25);
+            btnSmallWindow.Size = new System.Drawing.Size(40, 40);
             btnSmallWindow.TabIndex = 11;
-            btnSmallWindow.Text = "Mini controls";
             btnSmallWindow.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(btnSmallWindow, "Open mini uitleesvenster");
             btnSmallWindow.UseVisualStyleBackColor = true;
             btnSmallWindow.Click += BtnMiniTopForm_Click;
+            // 
+            // btnReset
+            // 
+            btnReset.Image = (System.Drawing.Image)resources.GetObject("btnReset.Image");
+            btnReset.Location = new System.Drawing.Point(156, 22);
+            btnReset.Name = "btnReset";
+            btnReset.Size = new System.Drawing.Size(40, 40);
+            btnReset.TabIndex = 20;
+            ToolTip.SetToolTip(btnReset, "Reset");
+            btnReset.UseVisualStyleBackColor = true;
+            btnReset.Click += BtnReset_Click;
+            // 
+            // BtnErase
+            // 
+            BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
+            BtnErase.Location = new System.Drawing.Point(118, 22);
+            BtnErase.Name = "BtnErase";
+            BtnErase.Size = new System.Drawing.Size(40, 40);
+            BtnErase.TabIndex = 11;
+            ToolTip.SetToolTip(BtnErase, "Wis het log, behoud de metadata filtering");
+            BtnErase.UseVisualStyleBackColor = true;
+            BtnErase.Click += BtnErase_Click;
+            // 
+            // btnStop
+            // 
+            btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
+            btnStop.Location = new System.Drawing.Point(7, 22);
+            btnStop.Name = "btnStop";
+            btnStop.Size = new System.Drawing.Size(51, 40);
+            btnStop.TabIndex = 17;
+            ToolTip.SetToolTip(btnStop, "Stop");
+            btnStop.UseVisualStyleBackColor = true;
+            btnStop.Click += BtnStop_Click;
             // 
             // lblNumberOfLogEntriesFilteredWithError
             // 
             lblNumberOfLogEntriesFilteredWithError.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(230, 69);
+            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(116, 114);
             lblNumberOfLogEntriesFilteredWithError.Name = "lblNumberOfLogEntriesFilteredWithError";
             lblNumberOfLogEntriesFilteredWithError.Size = new System.Drawing.Size(63, 15);
             lblNumberOfLogEntriesFilteredWithError.TabIndex = 19;
             lblNumberOfLogEntriesFilteredWithError.Text = "0";
             lblNumberOfLogEntriesFilteredWithError.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnReset
+            // BtnPlayWithTimes
             // 
-            btnReset.Location = new System.Drawing.Point(6, 116);
-            btnReset.Name = "btnReset";
-            btnReset.Size = new System.Drawing.Size(109, 24);
-            btnReset.TabIndex = 20;
-            btnReset.Text = "Reset";
-            btnReset.UseVisualStyleBackColor = true;
-            btnReset.Click += BtnReset_Click;
+            BtnPlayWithTimes.Image = Properties.Resources.timer_play_outline_24x24;
+            BtnPlayWithTimes.Location = new System.Drawing.Point(56, 22);
+            BtnPlayWithTimes.Name = "BtnPlayWithTimes";
+            BtnPlayWithTimes.Size = new System.Drawing.Size(56, 40);
+            BtnPlayWithTimes.TabIndex = 16;
+            BtnPlayWithTimes.UseVisualStyleBackColor = true;
+            BtnPlayWithTimes.Click += BtnPlayWithTimer_Click;
             // 
             // lblLogEntriesFilteredWithError
             // 
             lblLogEntriesFilteredWithError.AutoSize = true;
-            lblLogEntriesFilteredWithError.Location = new System.Drawing.Point(121, 69);
+            lblLogEntriesFilteredWithError.Location = new System.Drawing.Point(10, 114);
             lblLogEntriesFilteredWithError.Name = "lblLogEntriesFilteredWithError";
             lblLogEntriesFilteredWithError.Size = new System.Drawing.Size(93, 15);
             lblLogEntriesFilteredWithError.TabIndex = 18;
             lblLogEntriesFilteredWithError.Text = "Regels met error";
-            // 
-            // BtnClearLog
-            // 
-            BtnClearLog.Location = new System.Drawing.Point(7, 90);
-            BtnClearLog.Name = "BtnClearLog";
-            BtnClearLog.Size = new System.Drawing.Size(109, 24);
-            BtnClearLog.TabIndex = 11;
-            BtnClearLog.Text = "Wis log";
-            BtnClearLog.UseVisualStyleBackColor = true;
-            BtnClearLog.Click += BtnClearLog_Click;
-            // 
-            // btnStop
-            // 
-            btnStop.Location = new System.Drawing.Point(7, 53);
-            btnStop.Name = "btnStop";
-            btnStop.Size = new System.Drawing.Size(109, 31);
-            btnStop.TabIndex = 17;
-            btnStop.Text = "Stop";
-            btnStop.UseVisualStyleBackColor = true;
-            btnStop.Visible = false;
-            btnStop.Click += BtnStop_Click;
-            // 
-            // btnDowloadLogLongTime
-            // 
-            btnDowloadLogLongTime.Location = new System.Drawing.Point(6, 53);
-            btnDowloadLogLongTime.Name = "btnDowloadLogLongTime";
-            btnDowloadLogLongTime.Size = new System.Drawing.Size(109, 31);
-            btnDowloadLogLongTime.TabIndex = 16;
-            btnDowloadLogLongTime.Text = "Lees log 1 minuut";
-            btnDowloadLogLongTime.UseVisualStyleBackColor = true;
-            btnDowloadLogLongTime.Click += BtnDowloadLogLongTime_Click;
             // 
             // lblLogProvider
             // 
@@ -296,6 +296,7 @@
             // 
             // cboLogProvider
             // 
+            cboLogProvider.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogProvider.FormattingEnabled = true;
             cboLogProvider.Location = new System.Drawing.Point(5, 39);
@@ -320,41 +321,9 @@
             usrKubernetes.Size = new System.Drawing.Size(425, 125);
             usrKubernetes.TabIndex = 8;
             // 
-            // grpWriteLog
-            // 
-            grpWriteLog.Controls.Add(txtStatusWrite);
-            grpWriteLog.Controls.Add(btnOpenWithEditor);
-            grpWriteLog.Location = new System.Drawing.Point(954, 5);
-            grpWriteLog.Name = "grpWriteLog";
-            grpWriteLog.Size = new System.Drawing.Size(134, 147);
-            grpWriteLog.TabIndex = 23;
-            grpWriteLog.TabStop = false;
-            grpWriteLog.Text = "Log wegschrijven";
-            // 
-            // txtStatusWrite
-            // 
-            txtStatusWrite.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtStatusWrite.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtStatusWrite.Location = new System.Drawing.Point(6, 69);
-            txtStatusWrite.Multiline = true;
-            txtStatusWrite.Name = "txtStatusWrite";
-            txtStatusWrite.ReadOnly = true;
-            txtStatusWrite.Size = new System.Drawing.Size(122, 69);
-            txtStatusWrite.TabIndex = 34;
-            txtStatusWrite.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // btnOpenWithEditor
-            // 
-            btnOpenWithEditor.Location = new System.Drawing.Point(6, 19);
-            btnOpenWithEditor.Name = "btnOpenWithEditor";
-            btnOpenWithEditor.Size = new System.Drawing.Size(119, 43);
-            btnOpenWithEditor.TabIndex = 11;
-            btnOpenWithEditor.Text = "Open";
-            btnOpenWithEditor.UseVisualStyleBackColor = true;
-            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
-            // 
             // cboLogLayout
             // 
+            cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogLayout.FormattingEnabled = true;
             cboLogLayout.Location = new System.Drawing.Point(6, 85);
@@ -612,8 +581,10 @@
             // 
             // UsrMetadataFilterOverview
             // 
+            UsrMetadataFilterOverview.AutoScroll = true;
             UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 3);
+            UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
             UsrMetadataFilterOverview.Size = new System.Drawing.Size(191, 391);
             UsrMetadataFilterOverview.TabIndex = 0;
@@ -661,7 +632,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(517, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(509, 8);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -683,9 +654,9 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(316, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(305, 8);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
-            GrpSourceAndLayout.Size = new System.Drawing.Size(195, 147);
+            GrpSourceAndLayout.Size = new System.Drawing.Size(198, 147);
             GrpSourceAndLayout.TabIndex = 25;
             GrpSourceAndLayout.TabStop = false;
             GrpSourceAndLayout.Text = "Bron en layout";
@@ -706,7 +677,6 @@
             ClientSize = new System.Drawing.Size(1160, 610);
             Controls.Add(GrpSourceAndLayout);
             Controls.Add(GrpLogProvidersSettings);
-            Controls.Add(grpWriteLog);
             Controls.Add(splitContainer1);
             Controls.Add(groupBox3);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
@@ -717,8 +687,6 @@
             KeyDown += FormLogScraper_KeyDown;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
-            grpWriteLog.ResumeLayout(false);
-            grpWriteLog.PerformLayout();
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
@@ -746,12 +714,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnReadFromUrl;
+        private System.Windows.Forms.Button BtnPlay;
         private System.Windows.Forms.Label lblLogEntriesTotalValue;
         private System.Windows.Forms.Label LbllogEntriesTotal;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button btnDowloadLogLongTime;
-        private System.Windows.Forms.Button BtnClearLog;
+        private System.Windows.Forms.Button BtnPlayWithTimes;
+        private System.Windows.Forms.Button BtnErase;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
         private System.Windows.Forms.Label lblLogEntriesFiltered;
@@ -759,7 +727,6 @@
         private System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
         private System.Windows.Forms.Label lblLogEntriesFilteredWithError;
         private System.Windows.Forms.ComboBox cboLogProvider;
-        private System.Windows.Forms.GroupBox grpWriteLog;
         private System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.RichTextBox txtLogEntries;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -780,11 +747,9 @@
         private LogProviders.Kubernetes.UserControlKubernetesLogProvider usrKubernetes;
         private LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
         private System.Windows.Forms.TextBox txtStatusRead;
-        private System.Windows.Forms.TextBox txtStatusWrite;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
-        private System.Windows.Forms.Label lblMemoryUsageValue;
-        private System.Windows.Forms.Label lblMemoryUsage;
+        private System.Windows.Forms.Label LblMemoryUsageValue;
         private Log.Metadata.UserControlMetadataFormating usrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
@@ -799,5 +764,6 @@
         private System.Windows.Forms.Button btnConfig;
         private System.Windows.Forms.Label label2;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
+        private System.Windows.Forms.ToolTip ToolTip;
     }
 }

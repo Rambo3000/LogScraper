@@ -72,20 +72,30 @@ namespace LogScraper.Export.Workers
         }
         internal static void OpenFileInExternalEditor(string fileName)
         {
-            if (File.Exists(fileName))
+            if (!File.Exists(fileName))
             {
-                try
+                string path = Path.GetDirectoryName(fileName);
+
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                 {
-                    Process.Start(ConfigurationManager.GenericConfig.EditorFileName, "\"" + fileName + "\"");
+                    // Path bestaat
+                    MessageBox.Show($"Bestand is niet gevonden: {fileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // Path bestaat niet of was leeg
+                    MessageBox.Show($"Er is een ongeldig locatie opgegeven voor het exporteren van het log: {fileName}, pas deze aan via de instellingen.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("File does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Process.Start(ConfigurationManager.GenericConfig.EditorFileName, "\"" + fileName + "\"");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

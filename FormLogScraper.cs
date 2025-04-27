@@ -51,7 +51,8 @@ namespace LogScraper
 
             lblVersion.Text = "v" + version;
 
-            btnDowloadLogLongTime.Text = "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " min";
+
+            ToolTip.SetToolTip(BtnPlayWithTimes, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
 
             timerMemoryUsage.Interval = 1000;
             timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
@@ -79,7 +80,7 @@ namespace LogScraper
             {
                 usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
                 usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile;
+                btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
                 PopulateLogLayouts();
                 PopulateLogProviderControls();
                 UpdateExportControls();
@@ -129,7 +130,7 @@ namespace LogScraper
             if (durationInSeconds != -1) { StartLogProviderAsync(-1, -1); }
             try
             {
-                btnReadFromUrl.Enabled = false;
+                BtnPlay.Enabled = false;
 
                 UpdateFormMiniControls();
                 Application.DoEvents();
@@ -152,6 +153,10 @@ namespace LogScraper
             catch (Exception ex)
             {
                 HandleExceptionWhenReadingLog(ex);
+            }
+            finally
+            {
+                BtnPlay.Enabled = true;
             }
         }
         private void ProcessNewLogStringArray(string[] rawLog, DateTime? updatedLastTrailTime)
@@ -221,8 +226,11 @@ namespace LogScraper
         #region Export
         private void UpdateExportControls()
         {
-            grpWriteLog.Visible = ConfigurationManager.GenericConfig.ExportToFile; 
-            if (ConfigurationManager.GenericConfig.EditorName != null) btnOpenWithEditor.Text = "Open in " + ConfigurationManager.GenericConfig.EditorName;
+            btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
+            if (ConfigurationManager.GenericConfig.EditorName != null)
+            {
+                ToolTip.SetToolTip(btnOpenWithEditor, "Open in " + ConfigurationManager.GenericConfig.EditorName);
+            }
 
         }
         private void UpdateAndWriteExport(LogMetadataFilterResult logMetadataFilterResult)
@@ -267,7 +275,6 @@ namespace LogScraper
             {
                 string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
                 LogExporterWorker logExporter = new(fileName);
-                logExporter.StatusUpdate += HandleLogExporterStatusUpdate;
                 LogExportWorkerManager.Instance.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
             }
         }
@@ -374,13 +381,17 @@ namespace LogScraper
         #region Form updating related functions
         private void UpdateMemoryUsage(object sender, EventArgs e)
         {
-            lblMemoryUsageValue.Text = (Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).ToString() + " MB";
+            LblMemoryUsageValue.Text = (Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).ToString() + " MB";
         }
         private void UpdateDownloadControlsReadOnlyStatus()
         {
             bool downloadingInProgress = numberOfSourceProcessingWorkers > 0;
-            btnReadFromUrl.Enabled = !downloadingInProgress;
-            btnDowloadLogLongTime.Visible = !downloadingInProgress;
+            if (!downloadingInProgress)
+            {
+                HandleSourceProcessingWorkerProgressUpdate(-1, -1);
+            }
+            BtnPlay.Visible = !downloadingInProgress;
+            BtnPlayWithTimes.Enabled = !downloadingInProgress;
             btnStop.Visible = downloadingInProgress;
             btnConfig.Enabled = !downloadingInProgress;
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
@@ -398,23 +409,17 @@ namespace LogScraper
                 miniTopForm.lblLogEntriesFilteredWithErrorCount.ForeColor = lblNumberOfLogEntriesFilteredWithError.ForeColor;
                 miniTopForm.lblError.ForeColor = lblLogEntriesFilteredWithError.ForeColor;
 
-                miniTopForm.btnRead.Enabled = btnReadFromUrl.Enabled;
+                miniTopForm.btnRead.Enabled = BtnPlay.Enabled;
                 miniTopForm.btnStop.Visible = btnStop.Visible;
                 miniTopForm.btnStop.Text = btnStop.Text;
-                miniTopForm.btnRead1Minute.Text = btnDowloadLogLongTime.Text;
-                miniTopForm.btnReset.Enabled = BtnClearLog.Enabled;
-                miniTopForm.btnReset.Enabled = btnReadFromUrl.Enabled;
+                miniTopForm.btnRead1Minute.Text = BtnPlayWithTimes.Text;
+                miniTopForm.btnReset.Enabled = BtnErase.Enabled;
+                miniTopForm.btnReset.Enabled = BtnPlay.Enabled;
             }
         }
         #endregion
 
         #region User controls event handling
-        private void HandleLogExporterStatusUpdate(string message, bool isSucces)
-        {
-            txtStatusWrite.Text = message;
-            txtStatusWrite.BackColor = txtStatusWrite.BackColor;
-            txtStatusWrite.ForeColor = isSucces ? Color.DarkGreen : Color.DarkRed;
-        }
         private void HandleLogProviderStatusUpdate(string message, bool isSucces)
         {
             txtStatusRead.Text = message;
@@ -458,18 +463,26 @@ namespace LogScraper
         }
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int duration)
         {
-            TimeSpan tijd = TimeSpan.FromSeconds(duration - elapsedSeconds);
-            string tijdFormat = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
-            btnStop.Text = "Stop" + (duration == -1 ? "" : " " + tijdFormat + "...");
+            if (duration == -1)
+            {
+                BtnPlayWithTimes.Text = string.Empty;
+                BtnPlayWithTimes.Image = Properties.Resources.timer_play_outline_24x24;
+            }
+            else
+            {
+                TimeSpan tijd = TimeSpan.FromSeconds(duration - elapsedSeconds);
+                BtnPlayWithTimes.Image = null;
+                BtnPlayWithTimes.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
+            }
         }
         #endregion
 
         #region Form controls events
-        public void BtnReadFromUrl_Click(object sender, EventArgs e)
+        public void BtnPlay_Click(object sender, EventArgs e)
         {
             StartLogProviderAsync();
         }
-        public void BtnDowloadLogLongTime_Click(object sender, EventArgs e)
+        public void BtnPlayWithTimer_Click(object sender, EventArgs e)
         {
             StartLogProviderAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
         }
@@ -477,7 +490,7 @@ namespace LogScraper
         {
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
-        public void BtnClearLog_Click(object sender, EventArgs e)
+        public void BtnErase_Click(object sender, EventArgs e)
         {
             ClearLog();
         }
@@ -487,6 +500,7 @@ namespace LogScraper
         }
         private void BtnMiniTopForm_Click(object sender, EventArgs e)
         {
+            if (numberOfSourceProcessingWorkers == 0) { BtnPlayWithTimer_Click(sender, e); }
             if (miniTopForm == null || miniTopForm.IsDisposed)
             {
                 miniTopForm = new FormMiniTop(this);
@@ -498,7 +512,7 @@ namespace LogScraper
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
-            string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+            string fileName =  ConfigurationManager.GenericConfig.ExportFileName;
             LogExportWorkerManager.OpenFileInExternalEditor(fileName);
         }
         private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e)
@@ -592,8 +606,7 @@ namespace LogScraper
 
                 if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig))
                 {
-
-                    btnDowloadLogLongTime.Text = "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " min";
+                    ToolTip.SetToolTip(BtnPlayWithTimes, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
                     UpdateExportControls();
                 }
                 if (!logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig)) PopulateLogLayouts();
