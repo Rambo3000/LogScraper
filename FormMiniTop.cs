@@ -13,14 +13,14 @@ namespace LogScraper
             LogScraperForm = logScraperForm;
         }
 
-        private void BtnPlay_Click(object sender, System.EventArgs e)
+        private void BtnRecord_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnPlay_Click(sender, e);
+            LogScraperForm.BtnRecord_Click(sender, e);
         }
 
-        private void BtnPlayWithTimer_Click(object sender, System.EventArgs e)
+        private void BtnRecordWithTimer_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnPlayWithTimer_Click(sender, e);
+            LogScraperForm.BtnRecordWithTimer_Click(sender, e);
         }
 
         private void BtnStop_Click(object sender, System.EventArgs e)
@@ -54,12 +54,12 @@ namespace LogScraper
             lblLogEntriesFilteredWithErrorCount.ForeColor = LogScraperForm.lblNumberOfLogEntriesFilteredWithError.ForeColor;
             lblError.ForeColor = LogScraperForm.lblLogEntriesFilteredWithError.ForeColor;
 
-            btnRead.Enabled = LogScraperForm.BtnPlay.Enabled;
-            btnRead.Visible = LogScraperForm.BtnPlay.Visible;
+            BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
+            BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;
             btnStop.Visible = LogScraperForm.btnStop.Visible;
-            BtnPlayWithTimer.Text = LogScraperForm.BtnPlayWithTimes.Text;
-            BtnPlayWithTimer.Image = LogScraperForm.BtnPlayWithTimes.Image;
-            BtnPlayWithTimer.Enabled = LogScraperForm.BtnPlayWithTimes.Enabled;
+            BtnRecordWithTimer.Text = LogScraperForm.BtnRecordWithTimer.Text;
+            BtnRecordWithTimer.Image = LogScraperForm.BtnRecordWithTimer.Image;
+            BtnRecordWithTimer.Enabled = LogScraperForm.BtnRecordWithTimer.Enabled;
             btnErase.Enabled = LogScraperForm.BtnErase.Enabled;
             btnOpenWithEditor.Enabled = LogScraperForm.btnOpenWithEditor.Enabled;
         }

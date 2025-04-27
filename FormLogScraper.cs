@@ -52,7 +52,7 @@ namespace LogScraper
             lblVersion.Text = "v" + version;
 
 
-            ToolTip.SetToolTip(BtnPlayWithTimes, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
 
             timerMemoryUsage.Interval = 1000;
             timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
@@ -130,8 +130,8 @@ namespace LogScraper
             if (durationInSeconds != -1) { StartLogProviderAsync(-1, -1); }
             try
             {
-                BtnPlay.Enabled = false;
-                BtnPlayWithTimes.Enabled = false;
+                BtnRecord.Enabled = false;
+                BtnRecordWithTimer.Enabled = false;
                 UpdateFormMiniControls();
                 Application.DoEvents();
 
@@ -153,11 +153,10 @@ namespace LogScraper
             catch (Exception ex)
             {
                 HandleExceptionWhenReadingLog(ex);
+                UpdateDownloadControlsReadOnlyStatus();
             }
             finally
             {
-                BtnPlay.Enabled = true;
-                BtnPlayWithTimes.Enabled = true;
                 UpdateFormMiniControls();
             }
         }
@@ -349,7 +348,7 @@ namespace LogScraper
         #endregion
 
         #region Reset and Clear
-        private void ClearLog()
+        private void Erase()
         {
             if (isFormInitializing) return;
 
@@ -372,7 +371,7 @@ namespace LogScraper
             UsrMetadataFilterOverview.Reset();
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
-            ClearLog();
+            Erase();
 
             //Force memory cleanup
             GC.Collect();
@@ -392,8 +391,9 @@ namespace LogScraper
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
             }
-            BtnPlay.Visible = !downloadingInProgress;
-            BtnPlayWithTimes.Enabled = !downloadingInProgress;
+            BtnRecord.Visible = !downloadingInProgress;
+            BtnRecord.Enabled = !downloadingInProgress;
+            BtnRecordWithTimer.Enabled = !downloadingInProgress;
             btnStop.Visible = downloadingInProgress;
             btnConfig.Enabled = !downloadingInProgress;
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
@@ -442,7 +442,7 @@ namespace LogScraper
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
         {
-            ClearLog();
+            Erase();
         }
         private void HandleExceptionWhenReadingLog(Exception ex)
         {
@@ -453,24 +453,24 @@ namespace LogScraper
         {
             if (duration == -1)
             {
-                BtnPlayWithTimes.Text = string.Empty;
-                BtnPlayWithTimes.Image = Properties.Resources.timer_play_outline_24x24;
+                BtnRecordWithTimer.Text = string.Empty;
+                BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
             }
             else
             {
                 TimeSpan tijd = TimeSpan.FromSeconds(duration - elapsedSeconds);
-                BtnPlayWithTimes.Image = null;
-                BtnPlayWithTimes.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
+                BtnRecordWithTimer.Image = null;
+                BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
             }
         }
         #endregion
 
         #region Form controls events
-        public void BtnPlay_Click(object sender, EventArgs e)
+        public void BtnRecord_Click(object sender, EventArgs e)
         {
             StartLogProviderAsync();
         }
-        public void BtnPlayWithTimer_Click(object sender, EventArgs e)
+        public void BtnRecordWithTimer_Click(object sender, EventArgs e)
         {
             StartLogProviderAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
         }
@@ -480,7 +480,7 @@ namespace LogScraper
         }
         public void BtnErase_Click(object sender, EventArgs e)
         {
-            ClearLog();
+            Erase();
         }
         private void BtnReset_Click(object sender, EventArgs e)
         {
@@ -488,7 +488,7 @@ namespace LogScraper
         }
         private void BtnMiniTopForm_Click(object sender, EventArgs e)
         {
-            if (numberOfSourceProcessingWorkers == 0) { BtnPlayWithTimer_Click(sender, e); }
+            if (numberOfSourceProcessingWorkers == 0) { BtnRecordWithTimer_Click(sender, e); }
             if (miniTopForm == null || miniTopForm.IsDisposed)
             {
                 miniTopForm = new FormMiniTop(this);
@@ -594,7 +594,7 @@ namespace LogScraper
 
                 if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig))
                 {
-                    ToolTip.SetToolTip(BtnPlayWithTimes, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
+                    ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
                     UpdateExportControls();
                 }
                 if (!logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig)) PopulateLogLayouts();

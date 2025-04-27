@@ -30,8 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMiniTop));
-            btnRead = new System.Windows.Forms.Button();
-            BtnPlayWithTimer = new System.Windows.Forms.Button();
+            BtnRecord = new System.Windows.Forms.Button();
+            BtnRecordWithTimer = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             lblLogEntriesFilteredCount = new System.Windows.Forms.Label();
@@ -45,25 +45,25 @@
             ToolTip = new System.Windows.Forms.ToolTip(components);
             SuspendLayout();
             // 
-            // btnRead
+            // BtnRecord
             // 
-            btnRead.Image = (System.Drawing.Image)resources.GetObject("btnRead.Image");
-            btnRead.Location = new System.Drawing.Point(6, 5);
-            btnRead.Name = "btnRead";
-            btnRead.Size = new System.Drawing.Size(40, 40);
-            btnRead.TabIndex = 0;
-            btnRead.UseVisualStyleBackColor = true;
-            btnRead.Click += BtnPlay_Click;
+            BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
+            BtnRecord.Location = new System.Drawing.Point(6, 5);
+            BtnRecord.Name = "BtnRecord";
+            BtnRecord.Size = new System.Drawing.Size(40, 40);
+            BtnRecord.TabIndex = 0;
+            BtnRecord.UseVisualStyleBackColor = true;
+            BtnRecord.Click += BtnRecord_Click;
             // 
-            // BtnPlayWithTimer
+            // BtnRecordWithTimer
             // 
-            BtnPlayWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnPlayWithTimer.Image");
-            BtnPlayWithTimer.Location = new System.Drawing.Point(44, 5);
-            BtnPlayWithTimer.Name = "BtnPlayWithTimer";
-            BtnPlayWithTimer.Size = new System.Drawing.Size(40, 40);
-            BtnPlayWithTimer.TabIndex = 1;
-            BtnPlayWithTimer.UseVisualStyleBackColor = true;
-            BtnPlayWithTimer.Click += BtnPlayWithTimer_Click;
+            BtnRecordWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnRecordWithTimer.Image");
+            BtnRecordWithTimer.Location = new System.Drawing.Point(45, 5);
+            BtnRecordWithTimer.Name = "BtnRecordWithTimer";
+            BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
+            BtnRecordWithTimer.TabIndex = 1;
+            BtnRecordWithTimer.UseVisualStyleBackColor = true;
+            BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
             // label1
             // 
@@ -115,7 +115,7 @@
             // btnErase
             // 
             btnErase.Image = (System.Drawing.Image)resources.GetObject("btnErase.Image");
-            btnErase.Location = new System.Drawing.Point(90, 5);
+            btnErase.Location = new System.Drawing.Point(91, 5);
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(40, 40);
             btnErase.TabIndex = 11;
@@ -143,7 +143,7 @@
             // btnBack
             // 
             btnBack.Image = (System.Drawing.Image)resources.GetObject("btnBack.Image");
-            btnBack.Location = new System.Drawing.Point(182, 5);
+            btnBack.Location = new System.Drawing.Point(183, 5);
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
@@ -154,7 +154,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(136, 5);
+            btnOpenWithEditor.Location = new System.Drawing.Point(137, 5);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 15;
@@ -176,9 +176,9 @@
             Controls.Add(lblLogEntriesFilteredCount);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(btnRead);
+            Controls.Add(BtnRecord);
             Controls.Add(btnStop);
-            Controls.Add(BtnPlayWithTimer);
+            Controls.Add(BtnRecordWithTimer);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -193,8 +193,8 @@
 
         #endregion
 
-        public System.Windows.Forms.Button btnRead;
-        public System.Windows.Forms.Button BtnPlayWithTimer;
+        public System.Windows.Forms.Button BtnRecord;
+        public System.Windows.Forms.Button BtnRecordWithTimer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label lblLogEntriesFilteredCount;

@@ -30,7 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
-            BtnPlay = new System.Windows.Forms.Button();
+            BtnRecord = new System.Windows.Forms.Button();
             lblLogEntriesTotalValue = new System.Windows.Forms.Label();
             lblNumberOfLogEntriesFiltered = new System.Windows.Forms.Label();
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
@@ -44,7 +44,7 @@
             BtnErase = new System.Windows.Forms.Button();
             btnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
-            BtnPlayWithTimes = new System.Windows.Forms.Button();
+            BtnRecordWithTimer = new System.Windows.Forms.Button();
             lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
@@ -104,21 +104,21 @@
             GrpSourceAndLayout.SuspendLayout();
             SuspendLayout();
             // 
-            // BtnPlay
+            // BtnRecord
             // 
-            BtnPlay.Image = (System.Drawing.Image)resources.GetObject("BtnPlay.Image");
-            BtnPlay.Location = new System.Drawing.Point(6, 22);
-            BtnPlay.Name = "BtnPlay";
-            BtnPlay.Size = new System.Drawing.Size(52, 40);
-            BtnPlay.TabIndex = 0;
-            ToolTip.SetToolTip(BtnPlay, "Lees log uit");
-            BtnPlay.UseVisualStyleBackColor = true;
-            BtnPlay.Click += BtnPlay_Click;
+            BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
+            BtnRecord.Location = new System.Drawing.Point(6, 22);
+            BtnRecord.Name = "BtnRecord";
+            BtnRecord.Size = new System.Drawing.Size(52, 40);
+            BtnRecord.TabIndex = 0;
+            ToolTip.SetToolTip(BtnRecord, "Lees log uit");
+            BtnRecord.UseVisualStyleBackColor = true;
+            BtnRecord.Click += BtnRecord_Click;
             // 
             // lblLogEntriesTotalValue
             // 
             lblLogEntriesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblLogEntriesTotalValue.Location = new System.Drawing.Point(116, 71);
+            lblLogEntriesTotalValue.Location = new System.Drawing.Point(119, 71);
             lblLogEntriesTotalValue.Name = "lblLogEntriesTotalValue";
             lblLogEntriesTotalValue.Size = new System.Drawing.Size(63, 15);
             lblLogEntriesTotalValue.TabIndex = 7;
@@ -128,7 +128,7 @@
             // lblNumberOfLogEntriesFiltered
             // 
             lblNumberOfLogEntriesFiltered.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(116, 93);
+            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(119, 93);
             lblNumberOfLogEntriesFiltered.Name = "lblNumberOfLogEntriesFiltered";
             lblNumberOfLogEntriesFiltered.Size = new System.Drawing.Size(63, 15);
             lblNumberOfLogEntriesFiltered.TabIndex = 17;
@@ -160,19 +160,19 @@
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(btnSmallWindow);
             groupBox3.Controls.Add(btnReset);
-            groupBox3.Controls.Add(BtnPlay);
+            groupBox3.Controls.Add(BtnRecord);
             groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(LbllogEntriesTotal);
             groupBox3.Controls.Add(lblLogEntriesFiltered);
             groupBox3.Controls.Add(btnStop);
             groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
-            groupBox3.Controls.Add(BtnPlayWithTimes);
+            groupBox3.Controls.Add(BtnRecordWithTimer);
             groupBox3.Controls.Add(lblLogEntriesTotalValue);
             groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
             groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(294, 147);
+            groupBox3.Size = new System.Drawing.Size(297, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
@@ -181,7 +181,7 @@
             // btnConfig
             // 
             btnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
-            btnConfig.Location = new System.Drawing.Point(264, 117);
+            btnConfig.Location = new System.Drawing.Point(266, 117);
             btnConfig.Name = "btnConfig";
             btnConfig.Size = new System.Drawing.Size(24, 24);
             btnConfig.TabIndex = 23;
@@ -193,7 +193,7 @@
             // LblMemoryUsageValue
             // 
             LblMemoryUsageValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            LblMemoryUsageValue.Location = new System.Drawing.Point(238, 99);
+            LblMemoryUsageValue.Location = new System.Drawing.Point(240, 99);
             LblMemoryUsageValue.Name = "LblMemoryUsageValue";
             LblMemoryUsageValue.Size = new System.Drawing.Size(50, 15);
             LblMemoryUsageValue.TabIndex = 22;
@@ -204,7 +204,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(202, 22);
+            btnOpenWithEditor.Location = new System.Drawing.Point(204, 22);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
@@ -214,7 +214,7 @@
             // btnSmallWindow
             // 
             btnSmallWindow.Image = (System.Drawing.Image)resources.GetObject("btnSmallWindow.Image");
-            btnSmallWindow.Location = new System.Drawing.Point(248, 22);
+            btnSmallWindow.Location = new System.Drawing.Point(250, 22);
             btnSmallWindow.Name = "btnSmallWindow";
             btnSmallWindow.Size = new System.Drawing.Size(40, 40);
             btnSmallWindow.TabIndex = 11;
@@ -226,7 +226,7 @@
             // btnReset
             // 
             btnReset.Image = (System.Drawing.Image)resources.GetObject("btnReset.Image");
-            btnReset.Location = new System.Drawing.Point(156, 22);
+            btnReset.Location = new System.Drawing.Point(158, 22);
             btnReset.Name = "btnReset";
             btnReset.Size = new System.Drawing.Size(40, 40);
             btnReset.TabIndex = 20;
@@ -237,7 +237,7 @@
             // BtnErase
             // 
             BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
-            BtnErase.Location = new System.Drawing.Point(118, 22);
+            BtnErase.Location = new System.Drawing.Point(119, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
@@ -259,22 +259,22 @@
             // lblNumberOfLogEntriesFilteredWithError
             // 
             lblNumberOfLogEntriesFilteredWithError.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(116, 114);
+            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(119, 114);
             lblNumberOfLogEntriesFilteredWithError.Name = "lblNumberOfLogEntriesFilteredWithError";
             lblNumberOfLogEntriesFilteredWithError.Size = new System.Drawing.Size(63, 15);
             lblNumberOfLogEntriesFilteredWithError.TabIndex = 19;
             lblNumberOfLogEntriesFilteredWithError.Text = "0";
             lblNumberOfLogEntriesFilteredWithError.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // BtnPlayWithTimes
+            // BtnRecordWithTimer
             // 
-            BtnPlayWithTimes.Image = Properties.Resources.timer_play_outline_24x24;
-            BtnPlayWithTimes.Location = new System.Drawing.Point(56, 22);
-            BtnPlayWithTimes.Name = "BtnPlayWithTimes";
-            BtnPlayWithTimes.Size = new System.Drawing.Size(56, 40);
-            BtnPlayWithTimes.TabIndex = 16;
-            BtnPlayWithTimes.UseVisualStyleBackColor = true;
-            BtnPlayWithTimes.Click += BtnPlayWithTimer_Click;
+            BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
+            BtnRecordWithTimer.Location = new System.Drawing.Point(57, 22);
+            BtnRecordWithTimer.Name = "BtnRecordWithTimer";
+            BtnRecordWithTimer.Size = new System.Drawing.Size(56, 40);
+            BtnRecordWithTimer.TabIndex = 16;
+            BtnRecordWithTimer.UseVisualStyleBackColor = true;
+            BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
             // lblLogEntriesFilteredWithError
             // 
@@ -301,7 +301,7 @@
             cboLogProvider.FormattingEnabled = true;
             cboLogProvider.Location = new System.Drawing.Point(5, 39);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(184, 23);
+            cboLogProvider.Size = new System.Drawing.Size(178, 23);
             cboLogProvider.TabIndex = 18;
             cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
             // 
@@ -328,7 +328,7 @@
             cboLogLayout.FormattingEnabled = true;
             cboLogLayout.Location = new System.Drawing.Point(6, 85);
             cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(183, 23);
+            cboLogLayout.Size = new System.Drawing.Size(177, 23);
             cboLogLayout.TabIndex = 23;
             cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
@@ -632,7 +632,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(509, 8);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(506, 8);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -654,9 +654,9 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(305, 8);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(308, 8);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
-            GrpSourceAndLayout.Size = new System.Drawing.Size(198, 147);
+            GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
             GrpSourceAndLayout.TabStop = false;
             GrpSourceAndLayout.Text = "Bron en layout";
@@ -715,8 +715,8 @@
         #endregion
 
         //Make these controls public so that they can be accessed from the mini controls form
-        public System.Windows.Forms.Button BtnPlay;
-        public System.Windows.Forms.Button BtnPlayWithTimes;
+        public System.Windows.Forms.Button BtnRecord;
+        public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Button BtnErase;
         public System.Windows.Forms.Button btnStop;
         public System.Windows.Forms.Button btnReset;
