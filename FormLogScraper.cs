@@ -26,7 +26,7 @@ namespace LogScraper
     public partial class FormLogScraper : Form
     {
         #region Private fields
-        private FormMiniTop miniTopForm = null;
+        private readonly FormRecord formRecord = null;
         private bool isFormInitializing = true;
 
         private int numberOfSourceProcessingWorkers = 0;
@@ -44,6 +44,7 @@ namespace LogScraper
 
             ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
 
+            formRecord = new(this);
             timerMemoryUsage.Interval = 1000;
             timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
             timerMemoryUsage.Start();
@@ -122,7 +123,7 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
-                UpdateFormMiniControls();
+                formRecord.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
                 LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
@@ -147,7 +148,7 @@ namespace LogScraper
             }
             finally
             {
-                UpdateFormMiniControls();
+                formRecord.UpdateButtonsFromMainWindow();
             }
         }
         private void ProcessNewLogStringArray(string[] rawLog, DateTime? updatedLastTrailTime)
@@ -174,7 +175,7 @@ namespace LogScraper
                 FilterLogEntries();
                 UpdateStatisticsLogCollection();
                 HandleLogProviderStatusUpdate(string.Empty, true);
-                UpdateFormMiniControls();
+                formRecord.UpdateButtonsFromMainWindow();
                 lastTrailTime = updatedLastTrailTime;
             }
             catch (Exception ex)
@@ -331,7 +332,7 @@ namespace LogScraper
         }
         #endregion
 
-        #region Reset and Clear
+        #region Reset and Erase
         private void Erase()
         {
             if (isFormInitializing) return;
@@ -383,11 +384,7 @@ namespace LogScraper
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
             GrpLogProvidersSettings.Enabled = !downloadingInProgress;
 
-            UpdateFormMiniControls();
-        }
-        private void UpdateFormMiniControls()
-        {
-            if (miniTopForm != null && !miniTopForm.IsDisposed) miniTopForm.UpdateButtonsFromMainWindow();
+            formRecord.UpdateButtonsFromMainWindow();
         }
         #endregion
 
@@ -473,19 +470,11 @@ namespace LogScraper
         private void BtnMiniTopForm_Click(object sender, EventArgs e)
         {
             if (numberOfSourceProcessingWorkers == 0) { BtnRecordWithTimer_Click(sender, e); }
-            if (miniTopForm == null || miniTopForm.IsDisposed)
-            {
-                miniTopForm = new FormMiniTop(this);
-            }
-            UpdateFormMiniControls();
-            miniTopForm.Show();
-            miniTopForm.Focus();
-            WindowState = FormWindowState.Minimized;
+            formRecord.ShowForm();
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
-            string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
-            LogExportWorkerManager.OpenFileInExternalEditor(fileName);
+            LogExportWorkerManager.OpenFileInExternalEditor();
         }
         private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e)
         {

@@ -70,8 +70,9 @@ namespace LogScraper.Export.Workers
         {
             QueueLengthUpdate?.Invoke(workerQueue.Count);
         }
-        internal static void OpenFileInExternalEditor(string fileName)
+        internal static void OpenFileInExternalEditor()
         {
+            string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
             if (!File.Exists(fileName))
             {
                 string path = Path.GetDirectoryName(fileName);

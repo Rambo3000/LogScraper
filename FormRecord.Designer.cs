@@ -1,6 +1,6 @@
 ﻿namespace LogScraper
 {
-    partial class FormMiniTop
+    partial class FormRecord
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMiniTop));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormRecord));
             BtnRecord = new System.Windows.Forms.Button();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();

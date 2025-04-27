@@ -1,13 +1,14 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LogScraper
 {
-    public partial class FormMiniTop : Form
+    public partial class FormRecord : Form
     {
         readonly FormLogScraper LogScraperForm = null;
 
-        public FormMiniTop(FormLogScraper logScraperForm)
+        public FormRecord(FormLogScraper logScraperForm)
         {
             InitializeComponent();
             LogScraperForm = logScraperForm;
@@ -16,6 +17,19 @@ namespace LogScraper
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
             LogScraperForm.BtnRecord_Click(sender, e);
+        }
+        public void ShowForm()
+        {
+            UpdateButtonsFromMainWindow();
+            base.Show();
+            Focus();
+            LogScraperForm.WindowState = FormWindowState.Minimized;
+        }
+        public void HideForm()
+        {
+            LogScraperForm.BtnStop_Click(this, EventArgs.Empty);
+            Hide();
+            LogScraperForm.WindowState = FormWindowState.Normal;
         }
 
         private void BtnRecordWithTimer_Click(object sender, System.EventArgs e)
@@ -35,17 +49,19 @@ namespace LogScraper
 
         private void BtnBack_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnStop_Click(sender, e);
-            Hide();
-            LogScraperForm.WindowState = FormWindowState.Normal;
+            HideForm();
         }
 
         private void FormMiniTop_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Hide();
-            LogScraperForm.WindowState = FormWindowState.Normal;
+            HideForm();
             e.Cancel = true;
         }
+        private void BtnOpenWithEditor_Click(object sender, System.EventArgs e)
+        {
+            LogScraperForm.BtnOpenWithEditor_Click(sender, e);
+        }
+
         public void UpdateButtonsFromMainWindow()
         {
             lblLogEntriesTotalCount.Text = LogScraperForm.lblLogEntriesTotalValue.Text;
@@ -64,9 +80,5 @@ namespace LogScraper
             btnOpenWithEditor.Enabled = LogScraperForm.btnOpenWithEditor.Enabled;
         }
 
-        private void BtnOpenWithEditor_Click(object sender, System.EventArgs e)
-        {
-            LogScraperForm.BtnOpenWithEditor_Click(sender, e);
-        }
     }
 }
