@@ -98,5 +98,15 @@ namespace LogScraper.Export.Workers
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        internal static void WriteToFile(LogMetadataFilterResult logMetadataFilterResult, LogExportSettings logExportSettings)
+        {
+            if (ConfigurationManager.GenericConfig.ExportToFile)
+            {
+                string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+                LogExporterWorker logExporter = new(fileName);
+                LogExportWorkerManager.Instance.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
+            }
+        }
     }
 }

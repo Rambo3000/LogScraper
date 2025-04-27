@@ -272,12 +272,7 @@ namespace LogScraper
             txtLogEntries.Select(initialSelectionStart, initialSelectionLength);
             txtLogEntries.ResumeDrawing();
 
-            if (ConfigurationManager.GenericConfig.ExportToFile)
-            {
-                string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
-                LogExporterWorker logExporter = new(fileName);
-                LogExportWorkerManager.Instance.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
-            }
+            LogExportWorkerManager.WriteToFile(logMetadataFilterResult, logExportSettings);
         }
 
         private void HighlightBeginAndEndFilterLines()
