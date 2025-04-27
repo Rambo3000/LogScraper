@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using LogScraper.Configuration.LogProviderConfig;
 using Newtonsoft.Json;
-using LogScraper.Log;
+using LogScraper.Log.Layout;
 
 namespace LogScraper.LogProviders.Runtime
 {

@@ -4,6 +4,8 @@ using LogScraper.LogProviders.Kubernetes;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.LogProviders.File;
 using LogScraper.Extensions;
+using LogScraper.Log.Layout;
+using LogScraper.Configuration.Generic;
 
 namespace LogScraper.Configuration
 {
@@ -12,7 +14,7 @@ namespace LogScraper.Configuration
         private readonly KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
         private readonly RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
         private readonly FileConfig oldFileConfig = ConfigurationManager.LogProvidersConfig.FileConfig;
-        private readonly LogScraperConfig oldGenericConfig = ConfigurationManager.GenericConfig;
+        private readonly GenericConfig oldGenericConfig = ConfigurationManager.GenericConfig;
         private readonly LogLayoutsConfig logLayoutsConfig = ConfigurationManager.LogLayoutsConfig;
 
         public FormConfiguration()
@@ -54,7 +56,7 @@ namespace LogScraper.Configuration
             if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
             if (!userControlRuntimeConfig.TryGetConfiguration(out RuntimeConfig runtimeConfig)) return;
             if (!userControlFileConfig.TryGetConfiguration(out FileConfig fileConfig)) return;
-            if (!userControlGenericConfig.TryGetGenericConfig(out LogScraperConfig config)) return;
+            if (!userControlGenericConfig.TryGetGenericConfig(out GenericConfig config)) return;
             if (!userControlLogLayoutConfig.TryGetLogLayoutsConfig(out LogLayoutsConfig logLayoutsConfig)) return;
 
             ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;

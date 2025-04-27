@@ -3,9 +3,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using LogScraper.LogProviders;
 
-namespace LogScraper.Configuration
+namespace LogScraper.Configuration.Generic
 {
-    internal class LogScraperConfig
+    internal class GenericConfig
     {
         [JsonConverter(typeof(EnumStringConverter<LogProviderType>))]
         public LogProviderType LogProviderTypeDefault { get; set; }

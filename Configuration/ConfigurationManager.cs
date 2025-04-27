@@ -1,5 +1,6 @@
-﻿using LogScraper.Configuration.LogProviderConfig;
-using LogScraper.Log;
+﻿using LogScraper.Configuration.Generic;
+using LogScraper.Log.Layout;
+using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -14,14 +15,14 @@ namespace LogScraper.Configuration
         private static ConfigurationManager instance;
         private static readonly object lockObject = new();
         private static object LockObject => lockObject;
-        private LogScraperConfig genericConfig;
+        private GenericConfig genericConfig;
         private LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
 
         private ConfigurationManager()
         {
             // Load configuration from file during initialization
-            genericConfig = LoadFromFile<LogScraperConfig>("LogScraperConfig.json");
+            genericConfig = LoadFromFile<GenericConfig>("LogScraperConfig.json");
             logLayoutsConfig = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
             logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
 
@@ -70,7 +71,7 @@ namespace LogScraper.Configuration
                     instance ??= new ConfigurationManager();
                 }
             }
-            SaveToFile("LogScraperConfig.json", instance.genericConfig);
+            SaveToFile("GenericConfig.json", instance.genericConfig);
         }
 
         private static void SaveToFile<T>(string filePath, T data)
@@ -139,7 +140,7 @@ namespace LogScraper.Configuration
             );
         }
 
-        public static LogScraperConfig GenericConfig
+        public static GenericConfig GenericConfig
         {
             get
             {

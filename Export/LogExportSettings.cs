@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using LogScraper.Log;
 using LogScraper.Log.Collection;
+using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Export

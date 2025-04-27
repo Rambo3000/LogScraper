@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using LogScraper.Log;
-namespace LogScraper.Configuration
+namespace LogScraper.Log.Layout
 {
     internal class LogLayoutsConfig
     {

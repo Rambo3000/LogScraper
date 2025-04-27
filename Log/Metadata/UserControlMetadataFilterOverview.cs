@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using LogScraper.Extensions;
 using LogScraper.Log.Collection;
+using LogScraper.Log.Layout;
 
 namespace LogScraper.Log.Metadata
 {

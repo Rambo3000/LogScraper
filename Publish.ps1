@@ -29,10 +29,10 @@ Write-Host "----- Publishing -----"
 dotnet publish -r win-x64 -c Release --nologo --self-contained
 
 Write-Host "----- Moving configuration file -----" 
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\LogScraperConfig.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperConfig.json" -Force
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\LogScraperLogLayouts.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogLayouts.json" -Force
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\LogScraperLogProviders.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogProviders.json" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration" -Force
+Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperConfig.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperConfig.json" -Force
+Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperLogLayouts.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogLayouts.json" -Force
+Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperLogProviders.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogProviders.json" -Force
+Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration" -Force -Recurse
 
 Write-Host "----- Cleaning publish folder -----" 
 Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Stubs" -Recurse -Force

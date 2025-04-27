@@ -6,7 +6,7 @@ using LogScraper.LogTransformers;
 using Newtonsoft.Json;
 using LogScraper.Log.Filter;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Layout
 {
     /// <summary>
     /// Represents the layout of a log file, including its description, date and time format,

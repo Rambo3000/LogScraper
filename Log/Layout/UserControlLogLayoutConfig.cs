@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using LogScraper.Configuration;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filter;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
 using LogScraper.Log.Collection;
+using LogScraper.Log.Layout;
 
 namespace LogScraper.Log
 {

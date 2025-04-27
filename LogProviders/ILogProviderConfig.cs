@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using LogScraper.Log;
-using LogScraper.LogProviders;
+using LogScraper.Log.Layout;
 
-namespace LogScraper.Configuration.LogProviderConfig
+namespace LogScraper.LogProviders
 {
     internal interface ILogProviderConfig
     {

@@ -1,4 +1,5 @@
 ﻿using LogScraper.Log.Collection;
+using LogScraper.Log.Layout;
 using LogScraper.LogTransformers;
 using System;
 using System.Globalization;

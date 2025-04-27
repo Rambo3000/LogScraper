@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using LogScraper.Log;
+using LogScraper.Log.Layout;
 using LogScraper.LogProviders.File;
 
 namespace LogScraper.LogProviders.Kubernetes

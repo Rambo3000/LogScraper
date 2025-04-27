@@ -2,7 +2,7 @@
 using LogScraper.LogProviders.Kubernetes;
 using LogScraper.LogProviders.Runtime;
 
-namespace LogScraper.Configuration.LogProviderConfig
+namespace LogScraper.LogProviders
 {
     internal class LogProvidersConfig
     {

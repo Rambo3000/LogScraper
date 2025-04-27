@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Credentials;
-using LogScraper.Log;
 using LogScraper.Sources.Adapters.Http;
 using LogScraper.Sources.Adapters;
 using LogScraper.Configuration;
+using LogScraper.Log.Layout;
 
 namespace LogScraper.LogProviders.Kubernetes
 {

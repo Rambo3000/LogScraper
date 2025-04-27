@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using LogScraper.Configuration.Generic;
 using LogScraper.LogProviders;
 
 namespace LogScraper.Configuration
@@ -12,7 +13,7 @@ namespace LogScraper.Configuration
             CboLogProviderType.DataSource = Enum.GetValues<LogProviderType>();
             CboAutomaticReadTime.DataSource = new int[] { 1, 2, 3, 4, 5 };
         }
-        internal void SetGenericConfig(LogScraperConfig config)
+        internal void SetGenericConfig(GenericConfig config)
         {
             CboLogProviderType.SelectedItem = config.LogProviderTypeDefault;
             CboAutomaticReadTime.SelectedItem = config.AutomaticReadTimeMinutes;
@@ -27,7 +28,7 @@ namespace LogScraper.Configuration
             GrpExportSettings.Enabled = ChkExportToFile.Checked;
         }
 
-        internal bool TryGetGenericConfig(out LogScraperConfig config)
+        internal bool TryGetGenericConfig(out GenericConfig config)
         {
             config = GetLogScraperConfig();
             if (config.HttpCLientTimeOUtSeconds == 0)
@@ -50,9 +51,9 @@ namespace LogScraper.Configuration
             }
             return true;
         }
-        internal LogScraperConfig GetLogScraperConfig()
+        internal GenericConfig GetLogScraperConfig()
         {
-            LogScraperConfig config = new()
+            GenericConfig config = new()
             {
                 EditorFileName = TxtEditorLocation.Text,
                 ExportFileName = TxtExportFileName.Text,

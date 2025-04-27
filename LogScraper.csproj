@@ -64,7 +64,7 @@
     <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Log\UserControlLogLayoutConfig.cs">
+    <Compile Update="Log\Layout\UserControlLogLayoutConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
@@ -75,18 +75,18 @@
     <EmbeddedResource Update="LogProviders\Runtime\UserControlRuntimeConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Log\UserControlLogLayoutConfig.resx">
+    <EmbeddedResource Update="Log\Layout\UserControlLogLayoutConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Configuration\LogScraperConfig.json">
+    <None Update="Configuration\JsonFiles\LogScraperConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Configuration\LogScraperLogLayouts.json">
+    <None Update="Configuration\JsonFiles\LogScraperLogLayouts.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Configuration\LogScraperLogProviders.json">
+    <None Update="Configuration\JsonFiles\LogScraperLogProviders.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Stubs\Inverted log.txt">
@@ -115,6 +115,6 @@
     </None>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="move &quot;$(TargetDir)Configuration\LogScraperConfig.json&quot; &quot;$(TargetDir)LogScraperConfig.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\LogScraperLogLayouts.json&quot; &quot;$(TargetDir)LogScraperLogLayouts.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\LogScraperLogProviders.json&quot; &quot;$(TargetDir)LogScraperLogProviders.json&quot;&#xD;&#xA;rmdir /s /q &quot;$(TargetDir)Configuration&quot;" />
+    <Exec Command="move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperConfig.json&quot; &quot;$(TargetDir)LogScraperConfig.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperLogLayouts.json&quot; &quot;$(TargetDir)LogScraperLogLayouts.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperLogProviders.json&quot; &quot;$(TargetDir)LogScraperLogProviders.json&quot;&#xD;&#xA;rmdir /s /q &quot;$(TargetDir)Configuration&quot;" />
   </Target>
 </Project>

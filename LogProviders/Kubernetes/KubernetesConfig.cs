@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using LogScraper.Configuration.LogProviderConfig;
-using LogScraper.Log;
 using LogScraper.Configuration;
+using LogScraper.Log.Layout;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
