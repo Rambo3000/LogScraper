@@ -33,7 +33,7 @@ namespace LogScraper.Configuration
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);
         }
-        public static void Save()
+        public static void SaveLogProviders()
         {
             // Check if an instance already exists
             if (instance == null)
@@ -45,7 +45,31 @@ namespace LogScraper.Configuration
                 }
             }
             SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
+        }
+        public static void SaveLogLayout()
+        {
+            // Check if an instance already exists
+            if (instance == null)
+            {
+                // Use a lock to ensure only one thread creates the instance
+                lock (LockObject)
+                {
+                    instance ??= new ConfigurationManager();
+                }
+            }
             SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
+        }
+        public static void SaveGenericConfig()
+        {
+            // Check if an instance already exists
+            if (instance == null)
+            {
+                // Use a lock to ensure only one thread creates the instance
+                lock (LockObject)
+                {
+                    instance ??= new ConfigurationManager();
+                }
+            }
             SaveToFile("LogScraperConfig.json", instance.genericConfig);
         }
 

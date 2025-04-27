@@ -3,6 +3,7 @@ using LogScraper.LogTransformers;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace LogScraper.Log
 { 
@@ -120,6 +121,24 @@ namespace LogScraper.Log
             DateTime.TryParseExact(dateTimeStampString, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out timeStampOut);
 
             return timeStampOut;
+        }
+        /// <summary>
+        /// Joins an array of raw log entries into a single string, separating each entry with a newline character.
+        /// </summary>
+        /// <param name="rawLog">The raw log to parse.</param>
+        /// <returns>A string of all strings in the provided array.</returns>
+        public static string JoinRawLogIntoString(string[] rawLog)
+        {
+            StringBuilder builder = new();
+            for (int i = 0; i < rawLog.Length; i++)
+            {
+                builder.Append(rawLog[i]);
+                if (i < rawLog.Length - 1)
+                {
+                    builder.AppendLine();
+                }
+            }
+            return builder.ToString();
         }
     }
 }

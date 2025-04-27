@@ -161,7 +161,7 @@
         YII=
 </value>
   </data>
-  <data name="btnSmallWindow.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="BtnFormRecord.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAW1JREFUSEuV
         VVtuwzAMo07QfQzrR461HmyX6zCgKJqvXWOD5IckSzYSAmlcWhJl2kmADtLhadTcaYkwEQgPmZ4XTShG

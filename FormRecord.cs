@@ -1,16 +1,39 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using LogScraper.Export.Workers;
 
 namespace LogScraper
 {
     public partial class FormRecord : Form
     {
-        readonly FormLogScraper LogScraperForm = null;
+        private static FormRecord instance;
+        private static readonly Lock lockObject = new();
+        public static FormRecord Instance
+        {
+            get
+            {
+                // Check if an instance already exists
+                if (instance == null)
+                {
+                    // Use a lock to ensure only one thread creates the instance
+                    lock (lockObject)
+                    {
+                        instance ??= new FormRecord();
+                    }
+                }
+                return instance;
+            }
+        }
 
-        public FormRecord(FormLogScraper logScraperForm)
+        private FormLogScraper LogScraperForm = null;
+
+        public FormRecord()
         {
             InitializeComponent();
+        }
+        public void SetFormLogScraper(FormLogScraper logScraperForm)
+        {
             LogScraperForm = logScraperForm;
         }
 

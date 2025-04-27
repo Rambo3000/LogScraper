@@ -39,7 +39,7 @@
             userControlMemoryUsage1 = new UserControlMemoryUsage();
             btnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
-            btnSmallWindow = new System.Windows.Forms.Button();
+            BtnFormRecord = new System.Windows.Forms.Button();
             btnReset = new System.Windows.Forms.Button();
             BtnErase = new System.Windows.Forms.Button();
             btnStop = new System.Windows.Forms.Button();
@@ -157,7 +157,7 @@
             groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Controls.Add(btnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
-            groupBox3.Controls.Add(btnSmallWindow);
+            groupBox3.Controls.Add(BtnFormRecord);
             groupBox3.Controls.Add(btnReset);
             groupBox3.Controls.Add(BtnRecord);
             groupBox3.Controls.Add(BtnErase);
@@ -208,17 +208,17 @@
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
-            // btnSmallWindow
+            // BtnFormRecord
             // 
-            btnSmallWindow.Image = (System.Drawing.Image)resources.GetObject("btnSmallWindow.Image");
-            btnSmallWindow.Location = new System.Drawing.Point(250, 22);
-            btnSmallWindow.Name = "btnSmallWindow";
-            btnSmallWindow.Size = new System.Drawing.Size(40, 40);
-            btnSmallWindow.TabIndex = 11;
-            btnSmallWindow.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(btnSmallWindow, "Open mini controls en start met uitlezen");
-            btnSmallWindow.UseVisualStyleBackColor = true;
-            btnSmallWindow.Click += BtnMiniTopForm_Click;
+            BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
+            BtnFormRecord.Location = new System.Drawing.Point(250, 22);
+            BtnFormRecord.Name = "BtnFormRecord";
+            BtnFormRecord.Size = new System.Drawing.Size(40, 40);
+            BtnFormRecord.TabIndex = 11;
+            BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(BtnFormRecord, "Open mini controls en start met uitlezen");
+            BtnFormRecord.UseVisualStyleBackColor = true;
+            BtnFormRecord.Click += BtnFormRecord_Click;
             // 
             // btnReset
             // 
@@ -714,7 +714,7 @@
 
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label lblLogEntriesFiltered;
-        private System.Windows.Forms.Button btnSmallWindow;
+        private System.Windows.Forms.Button BtnFormRecord;
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.RichTextBox txtLogEntries;
         private System.Windows.Forms.GroupBox groupBox1;

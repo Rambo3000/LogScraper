@@ -11,6 +11,7 @@ namespace LogScraper.Configuration
     {
         private readonly KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
         private readonly RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
+        private readonly FileConfig oldFileConfig = ConfigurationManager.LogProvidersConfig.FileConfig;
         private readonly LogScraperConfig oldGenericConfig = ConfigurationManager.GenericConfig;
         private readonly LogLayoutsConfig logLayoutsConfig = ConfigurationManager.LogLayoutsConfig;
 
@@ -24,13 +25,14 @@ namespace LogScraper.Configuration
             lblVersion.Text = "v" + version;
         }
 
-        public void GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged)
+        public void GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out bool fileChanged)
         {
             genericConfigChanged = !oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig);
             logLayoutsChanged = !logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig);
 
             kubernetesChanged = !oldKubernetesConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
             runtimeChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
+            fileChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
         }
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
@@ -60,7 +62,12 @@ namespace LogScraper.Configuration
             ConfigurationManager.LogProvidersConfig.FileConfig = fileConfig;
             ConfigurationManager.LogLayoutsConfig = logLayoutsConfig;
             ConfigurationManager.GenericConfig = config;
-            ConfigurationManager.Save();
+
+            GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out bool fileChanged);
+
+            if (genericConfigChanged) ConfigurationManager.SaveGenericConfig();
+            if (logLayoutsChanged) ConfigurationManager.SaveLogLayout();
+            if (kubernetesChanged || runtimeChanged || fileChanged) ConfigurationManager.SaveLogProviders();
 
             DialogResult = DialogResult.OK;
             Close();
