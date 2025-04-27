@@ -58,7 +58,7 @@
             chkShowAllLogEntries = new System.Windows.Forms.CheckBox();
             lblNumberOfLogEntriesShown = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
-            txtStatusRead = new System.Windows.Forms.TextBox();
+            TxtErrorMessage = new System.Windows.Forms.TextBox();
             txtLogEntries = new System.Windows.Forms.RichTextBox();
             groupBox5 = new System.Windows.Forms.GroupBox();
             usrSearch = new UserControlSearch();
@@ -204,7 +204,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(248, 22);
+            btnOpenWithEditor.Location = new System.Drawing.Point(202, 22);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
@@ -214,12 +214,12 @@
             // btnSmallWindow
             // 
             btnSmallWindow.Image = (System.Drawing.Image)resources.GetObject("btnSmallWindow.Image");
-            btnSmallWindow.Location = new System.Drawing.Point(202, 22);
+            btnSmallWindow.Location = new System.Drawing.Point(248, 22);
             btnSmallWindow.Name = "btnSmallWindow";
             btnSmallWindow.Size = new System.Drawing.Size(40, 40);
             btnSmallWindow.TabIndex = 11;
             btnSmallWindow.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(btnSmallWindow, "Open mini uitleesvenster");
+            ToolTip.SetToolTip(btnSmallWindow, "Open mini controls en start met uitlezen");
             btnSmallWindow.UseVisualStyleBackColor = true;
             btnSmallWindow.Click += BtnMiniTopForm_Click;
             // 
@@ -357,7 +357,7 @@
             groupBox2.Controls.Add(chkShowAllLogEntries);
             groupBox2.Controls.Add(lblNumberOfLogEntriesShown);
             groupBox2.Controls.Add(label1);
-            groupBox2.Controls.Add(txtStatusRead);
+            groupBox2.Controls.Add(TxtErrorMessage);
             groupBox2.Controls.Add(txtLogEntries);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(0, 0);
@@ -422,19 +422,19 @@
             label1.TabIndex = 33;
             label1.Text = "Regels getoond:";
             // 
-            // txtStatusRead
+            // TxtErrorMessage
             // 
-            txtStatusRead.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtStatusRead.BackColor = System.Drawing.SystemColors.Window;
-            txtStatusRead.ForeColor = System.Drawing.Color.DarkRed;
-            txtStatusRead.Location = new System.Drawing.Point(91, 32);
-            txtStatusRead.Multiline = true;
-            txtStatusRead.Name = "txtStatusRead";
-            txtStatusRead.ReadOnly = true;
-            txtStatusRead.Size = new System.Drawing.Size(497, 59);
-            txtStatusRead.TabIndex = 32;
-            txtStatusRead.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            txtStatusRead.Visible = false;
+            TxtErrorMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtErrorMessage.BackColor = System.Drawing.SystemColors.Window;
+            TxtErrorMessage.ForeColor = System.Drawing.Color.DarkRed;
+            TxtErrorMessage.Location = new System.Drawing.Point(91, 32);
+            TxtErrorMessage.Multiline = true;
+            TxtErrorMessage.Name = "TxtErrorMessage";
+            TxtErrorMessage.ReadOnly = true;
+            TxtErrorMessage.Size = new System.Drawing.Size(497, 59);
+            TxtErrorMessage.TabIndex = 32;
+            TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            TxtErrorMessage.Visible = false;
             // 
             // txtLogEntries
             // 
@@ -714,20 +714,24 @@
 
         #endregion
 
-        private System.Windows.Forms.Button BtnPlay;
-        private System.Windows.Forms.Label lblLogEntriesTotalValue;
+        //Make these controls public so that they can be accessed from the mini controls form
+        public System.Windows.Forms.Button BtnPlay;
+        public System.Windows.Forms.Button BtnPlayWithTimes;
+        public System.Windows.Forms.Button BtnErase;
+        public System.Windows.Forms.Button btnStop;
+        public System.Windows.Forms.Button btnReset;
+        public System.Windows.Forms.Button btnOpenWithEditor;
+        public System.Windows.Forms.Label lblLogEntriesTotalValue;
+        public System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
+        public System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
+        public System.Windows.Forms.Label lblLogEntriesFilteredWithError;
+
         private System.Windows.Forms.Label LbllogEntriesTotal;
+
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button BtnPlayWithTimes;
-        private System.Windows.Forms.Button BtnErase;
-        private System.Windows.Forms.Button btnStop;
-        private System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
         private System.Windows.Forms.Label lblLogEntriesFiltered;
         private System.Windows.Forms.Button btnSmallWindow;
-        private System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
-        private System.Windows.Forms.Label lblLogEntriesFilteredWithError;
         private System.Windows.Forms.ComboBox cboLogProvider;
-        private System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.RichTextBox txtLogEntries;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -739,14 +743,13 @@
         private UserControlBeginEndFilter UsrLogContentEnd;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.Label lblLogProvider;
         private LogProviders.Kubernetes.UserControlKubernetesLogProvider usrKubernetes;
         private LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
-        private System.Windows.Forms.TextBox txtStatusRead;
+        private System.Windows.Forms.TextBox TxtErrorMessage;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
         private System.Windows.Forms.Label LblMemoryUsageValue;

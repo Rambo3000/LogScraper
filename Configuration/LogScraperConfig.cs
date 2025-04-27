@@ -9,7 +9,7 @@ namespace LogScraper.Configuration
     {
         [JsonConverter(typeof(EnumStringConverter<LogProviderType>))]
         public LogProviderType LogProviderTypeDefault { get; set; }
-        public bool ExportToFile { get; set; }
+        public bool ExportToFile { get; set; } = true;
         public string EditorFileName { get; set; }
         public string EditorName { get; set; }
         public string ExportFileName { get; set; }

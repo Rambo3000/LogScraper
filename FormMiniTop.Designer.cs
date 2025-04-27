@@ -28,44 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMiniTop));
             btnRead = new System.Windows.Forms.Button();
-            btnRead1Minute = new System.Windows.Forms.Button();
+            BtnPlayWithTimer = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             lblLogEntriesFilteredCount = new System.Windows.Forms.Label();
             lblLogEntriesTotalCount = new System.Windows.Forms.Label();
             btnStop = new System.Windows.Forms.Button();
-            btnReset = new System.Windows.Forms.Button();
+            btnErase = new System.Windows.Forms.Button();
             lblLogEntriesFilteredWithErrorCount = new System.Windows.Forms.Label();
             lblError = new System.Windows.Forms.Label();
             btnBack = new System.Windows.Forms.Button();
+            btnOpenWithEditor = new System.Windows.Forms.Button();
+            ToolTip = new System.Windows.Forms.ToolTip(components);
             SuspendLayout();
             // 
             // btnRead
             // 
+            btnRead.Image = (System.Drawing.Image)resources.GetObject("btnRead.Image");
             btnRead.Location = new System.Drawing.Point(6, 5);
             btnRead.Name = "btnRead";
-            btnRead.Size = new System.Drawing.Size(88, 23);
+            btnRead.Size = new System.Drawing.Size(40, 40);
             btnRead.TabIndex = 0;
-            btnRead.Text = "Lees";
             btnRead.UseVisualStyleBackColor = true;
-            btnRead.Click += BtnRead_Click;
+            btnRead.Click += BtnPlay_Click;
             // 
-            // btnRead1Minute
+            // BtnPlayWithTimer
             // 
-            btnRead1Minute.Location = new System.Drawing.Point(6, 28);
-            btnRead1Minute.Name = "btnRead1Minute";
-            btnRead1Minute.Size = new System.Drawing.Size(88, 23);
-            btnRead1Minute.TabIndex = 1;
-            btnRead1Minute.Text = "Lees 1 min";
-            btnRead1Minute.UseVisualStyleBackColor = true;
-            btnRead1Minute.Click += BtnRead1Minute_Click;
+            BtnPlayWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnPlayWithTimer.Image");
+            BtnPlayWithTimer.Location = new System.Drawing.Point(44, 5);
+            BtnPlayWithTimer.Name = "BtnPlayWithTimer";
+            BtnPlayWithTimer.Size = new System.Drawing.Size(40, 40);
+            BtnPlayWithTimer.TabIndex = 1;
+            BtnPlayWithTimer.UseVisualStyleBackColor = true;
+            BtnPlayWithTimer.Click += BtnPlayWithTimer_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(95, 9);
+            label1.Location = new System.Drawing.Point(6, 48);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(41, 15);
             label1.TabIndex = 2;
@@ -74,7 +77,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(95, 34);
+            label2.Location = new System.Drawing.Point(6, 65);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(52, 15);
             label2.TabIndex = 3;
@@ -82,7 +85,7 @@
             // 
             // lblLogEntriesFilteredCount
             // 
-            lblLogEntriesFilteredCount.Location = new System.Drawing.Point(149, 34);
+            lblLogEntriesFilteredCount.Location = new System.Drawing.Point(60, 65);
             lblLogEntriesFilteredCount.Name = "lblLogEntriesFilteredCount";
             lblLogEntriesFilteredCount.Size = new System.Drawing.Size(63, 15);
             lblLogEntriesFilteredCount.TabIndex = 8;
@@ -91,7 +94,7 @@
             // 
             // lblLogEntriesTotalCount
             // 
-            lblLogEntriesTotalCount.Location = new System.Drawing.Point(149, 9);
+            lblLogEntriesTotalCount.Location = new System.Drawing.Point(60, 48);
             lblLogEntriesTotalCount.Name = "lblLogEntriesTotalCount";
             lblLogEntriesTotalCount.Size = new System.Drawing.Size(63, 15);
             lblLogEntriesTotalCount.TabIndex = 9;
@@ -100,28 +103,28 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new System.Drawing.Point(6, 28);
+            btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
+            btnStop.Location = new System.Drawing.Point(6, 5);
             btnStop.Name = "btnStop";
-            btnStop.Size = new System.Drawing.Size(88, 23);
+            btnStop.Size = new System.Drawing.Size(40, 40);
             btnStop.TabIndex = 10;
-            btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Visible = false;
             btnStop.Click += BtnStop_Click;
             // 
-            // btnReset
+            // btnErase
             // 
-            btnReset.Location = new System.Drawing.Point(6, 51);
-            btnReset.Name = "btnReset";
-            btnReset.Size = new System.Drawing.Size(88, 23);
-            btnReset.TabIndex = 11;
-            btnReset.Text = "Wis en Lees";
-            btnReset.UseVisualStyleBackColor = true;
-            btnReset.Click += BtnReset_Click;
+            btnErase.Image = (System.Drawing.Image)resources.GetObject("btnErase.Image");
+            btnErase.Location = new System.Drawing.Point(90, 5);
+            btnErase.Name = "btnErase";
+            btnErase.Size = new System.Drawing.Size(40, 40);
+            btnErase.TabIndex = 11;
+            btnErase.UseVisualStyleBackColor = true;
+            btnErase.Click += BtnErase_Click;
             // 
             // lblLogEntriesFilteredWithErrorCount
             // 
-            lblLogEntriesFilteredWithErrorCount.Location = new System.Drawing.Point(149, 59);
+            lblLogEntriesFilteredWithErrorCount.Location = new System.Drawing.Point(60, 82);
             lblLogEntriesFilteredWithErrorCount.Name = "lblLogEntriesFilteredWithErrorCount";
             lblLogEntriesFilteredWithErrorCount.Size = new System.Drawing.Size(63, 15);
             lblLogEntriesFilteredWithErrorCount.TabIndex = 13;
@@ -131,7 +134,7 @@
             // lblError
             // 
             lblError.AutoSize = true;
-            lblError.Location = new System.Drawing.Point(95, 59);
+            lblError.Location = new System.Drawing.Point(6, 82);
             lblError.Name = "lblError";
             lblError.Size = new System.Drawing.Size(32, 15);
             lblError.TabIndex = 12;
@@ -139,31 +142,43 @@
             // 
             // btnBack
             // 
-            btnBack.Location = new System.Drawing.Point(6, 74);
+            btnBack.Image = (System.Drawing.Image)resources.GetObject("btnBack.Image");
+            btnBack.Location = new System.Drawing.Point(182, 5);
             btnBack.Name = "btnBack";
-            btnBack.Size = new System.Drawing.Size(88, 23);
+            btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            btnBack.Text = "Terug";
+            ToolTip.SetToolTip(btnBack, "Sluit dit venster en stop het uitlezen");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
+            // 
+            // btnOpenWithEditor
+            // 
+            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
+            btnOpenWithEditor.Location = new System.Drawing.Point(136, 5);
+            btnOpenWithEditor.Name = "btnOpenWithEditor";
+            btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
+            btnOpenWithEditor.TabIndex = 15;
+            btnOpenWithEditor.UseVisualStyleBackColor = true;
+            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
             // FormMiniTop
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new System.Drawing.Size(213, 99);
+            ClientSize = new System.Drawing.Size(229, 103);
+            Controls.Add(btnOpenWithEditor);
             Controls.Add(btnBack);
             Controls.Add(lblLogEntriesFilteredWithErrorCount);
             Controls.Add(lblError);
-            Controls.Add(btnReset);
+            Controls.Add(btnErase);
             Controls.Add(lblLogEntriesTotalCount);
             Controls.Add(lblLogEntriesFilteredCount);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnRead);
             Controls.Add(btnStop);
-            Controls.Add(btnRead1Minute);
+            Controls.Add(BtnPlayWithTimer);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -179,15 +194,17 @@
         #endregion
 
         public System.Windows.Forms.Button btnRead;
-        public System.Windows.Forms.Button btnRead1Minute;
+        public System.Windows.Forms.Button BtnPlayWithTimer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label lblLogEntriesFilteredCount;
         public System.Windows.Forms.Label lblLogEntriesTotalCount;
         public System.Windows.Forms.Button btnStop;
-        public System.Windows.Forms.Button btnReset;
+        public System.Windows.Forms.Button btnErase;
         public System.Windows.Forms.Label lblLogEntriesFilteredWithErrorCount;
         public System.Windows.Forms.Label lblError;
         public System.Windows.Forms.Button btnBack;
+        public System.Windows.Forms.Button btnOpenWithEditor;
+        private System.Windows.Forms.ToolTip ToolTip;
     }
 }

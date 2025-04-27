@@ -131,7 +131,7 @@ namespace LogScraper
             try
             {
                 BtnPlay.Enabled = false;
-
+                BtnPlayWithTimes.Enabled = false;
                 UpdateFormMiniControls();
                 Application.DoEvents();
 
@@ -157,6 +157,8 @@ namespace LogScraper
             finally
             {
                 BtnPlay.Enabled = true;
+                BtnPlayWithTimes.Enabled = true;
+                UpdateFormMiniControls();
             }
         }
         private void ProcessNewLogStringArray(string[] rawLog, DateTime? updatedLastTrailTime)
@@ -182,7 +184,7 @@ namespace LogScraper
                 UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
                 FilterLogEntries();
                 UpdateStatisticsLogCollection();
-                HandleLogProviderStatusUpdate("Ok (" + DateTime.Now.ToString("HH:mm:ss") + ")", true);
+                HandleLogProviderStatusUpdate(string.Empty, true);
                 UpdateFormMiniControls();
                 lastTrailTime = updatedLastTrailTime;
             }
@@ -368,8 +370,8 @@ namespace LogScraper
             currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
-            txtStatusRead.Text = string.Empty;
-            txtStatusRead.Visible = false;
+            TxtErrorMessage.Text = string.Empty;
+            TxtErrorMessage.Visible = false;
             ClearLog();
 
             //Force memory cleanup
@@ -401,29 +403,15 @@ namespace LogScraper
         }
         private void UpdateFormMiniControls()
         {
-            if (miniTopForm != null && !miniTopForm.IsDisposed)
-            {
-                miniTopForm.lblLogEntriesTotalCount.Text = lblLogEntriesTotalValue.Text;
-                miniTopForm.lblLogEntriesFilteredCount.Text = lblNumberOfLogEntriesFiltered.Text;
-                miniTopForm.lblLogEntriesFilteredWithErrorCount.Text = lblNumberOfLogEntriesFilteredWithError.Text;
-                miniTopForm.lblLogEntriesFilteredWithErrorCount.ForeColor = lblNumberOfLogEntriesFilteredWithError.ForeColor;
-                miniTopForm.lblError.ForeColor = lblLogEntriesFilteredWithError.ForeColor;
-
-                miniTopForm.btnRead.Enabled = BtnPlay.Enabled;
-                miniTopForm.btnStop.Visible = btnStop.Visible;
-                miniTopForm.btnStop.Text = btnStop.Text;
-                miniTopForm.btnRead1Minute.Text = BtnPlayWithTimes.Text;
-                miniTopForm.btnReset.Enabled = BtnErase.Enabled;
-                miniTopForm.btnReset.Enabled = BtnPlay.Enabled;
-            }
+            if (miniTopForm != null && !miniTopForm.IsDisposed) miniTopForm.UpdateButtonsFromMainWindow();
         }
         #endregion
 
         #region User controls event handling
         private void HandleLogProviderStatusUpdate(string message, bool isSucces)
         {
-            txtStatusRead.Text = message;
-            txtStatusRead.Visible = !isSucces;
+            TxtErrorMessage.Text = message;
+            TxtErrorMessage.Visible = !isSucces;
         }
         private void HandleLogProviderManagerQueueUpdate(int numberOfWorkers)
         {
@@ -512,7 +500,7 @@ namespace LogScraper
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
-            string fileName =  ConfigurationManager.GenericConfig.ExportFileName;
+            string fileName = Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
             LogExportWorkerManager.OpenFileInExternalEditor(fileName);
         }
         private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e)
