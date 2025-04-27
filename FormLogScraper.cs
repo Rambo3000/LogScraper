@@ -68,7 +68,7 @@ namespace LogScraper
             UsrLogContentBegin.FilterChanged += HandleLogContentFilterUpdateBegin;
             UsrLogContentEnd.FilterChanged += HandleLogContentFilterUpdateEnd;
             UsrLogContentEnd.SelectedItemBackColor = Brushes.GreenYellow;
-            usrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
             usrSearch.Search += UsrSearch_Search;
 
@@ -239,14 +239,13 @@ namespace LogScraper
             LogExportSettings logExportSettings = new()
             {
                 LogEntryBegin = UsrLogContentBegin.SelectedLogEntry,
-                ExtraLogEntriesBegin = UsrLogContentBegin.ExtraLogEntryCount,
                 LogEntryEnd = UsrLogContentEnd.SelectedLogEntry,
+                ExtraLogEntriesBegin = UsrLogContentBegin.ExtraLogEntryCount,
                 ExtraLogEntriesEnd = UsrLogContentEnd.ExtraLogEntryCount,
-                LogExportSettingsMetadata = usrControlMetadataFormating.LogExportSettingsMetadata,
+                LogLayout = (LogLayout)cboLogLayout.SelectedItem,
+                ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
+                SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-
-            logExportSettings.LogExportSettingsMetadata.RemoveMetaDataCriteria = ((LogLayout)cboLogLayout.SelectedItem).RemoveMetaDataCriteria;
-            logExportSettings.LogExportSettingsMetadata.MetadataStartPosition = ((LogLayout)cboLogLayout.SelectedItem).StartPosition;
 
             LogExportData logExportData = LogDataExporter.GenerateExportedLogData(logMetadataFilterResult, logExportSettings, !chkShowAllLogEntries.Checked);
 
@@ -428,11 +427,11 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdateEnd(object sender, EventArgs e)
         {
-            usrControlMetadataFormating.SuspendDrawing();
+            UsrControlMetadataFormating.SuspendDrawing();
             HandleLogContentFilterUpdate(sender, e);
             txtLogEntries.SelectionStart = txtLogEntries.Text.Length;
             txtLogEntries.ScrollToCaret();
-            usrControlMetadataFormating.ResumeDrawing();
+            UsrControlMetadataFormating.ResumeDrawing();
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
@@ -511,7 +510,7 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentProperties);
             UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentProperties);
-            usrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
+            UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();
         }

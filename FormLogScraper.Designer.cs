@@ -74,7 +74,7 @@
             tabPage3 = new System.Windows.Forms.TabPage();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
             tabPage4 = new System.Windows.Forms.TabPage();
-            usrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
+            UsrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             GrpLogProvidersSettings = new System.Windows.Forms.GroupBox();
             usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
@@ -592,7 +592,7 @@
             // 
             // tabPage4
             // 
-            tabPage4.Controls.Add(usrControlMetadataFormating);
+            tabPage4.Controls.Add(UsrControlMetadataFormating);
             tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -603,12 +603,12 @@
             // 
             // usrControlMetadataFormating
             // 
-            usrControlMetadataFormating.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
-            usrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
-            usrControlMetadataFormating.Name = "usrControlMetadataFormating";
-            usrControlMetadataFormating.Size = new System.Drawing.Size(191, 391);
-            usrControlMetadataFormating.TabIndex = 0;
+            UsrControlMetadataFormating.Dock = System.Windows.Forms.DockStyle.Fill;
+            UsrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
+            UsrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
+            UsrControlMetadataFormating.Name = "usrControlMetadataFormating";
+            UsrControlMetadataFormating.Size = new System.Drawing.Size(191, 391);
+            UsrControlMetadataFormating.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -753,7 +753,7 @@
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
         private System.Windows.Forms.Label LblMemoryUsageValue;
-        private Log.Metadata.UserControlMetadataFormating usrControlMetadataFormating;
+        private Log.Metadata.UserControlMetadataFormating UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
         private System.Windows.Forms.Label lblVersion;

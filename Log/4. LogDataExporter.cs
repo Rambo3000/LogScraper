@@ -115,7 +115,7 @@ namespace LogScraper.Log
                     continue;
                 }
 
-                AppendLogEntryToBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings.LogExportSettingsMetadata);
+                AppendLogEntryToBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings);
             }
             return stringBuilder.ToString();
         }
@@ -126,19 +126,19 @@ namespace LogScraper.Log
         /// <param name="stringbuilder">The StringBuilder to append to.</param>
         /// <param name="logEntry">The log entry to append.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        private static void AppendLogEntryToBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettingsMetadata logExportSettingsMetadata)
+        private static void AppendLogEntryToBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettings logExportSettings)
         {
             string logEntryMetadataFormatted = logEntry.Entry;
 
             // Modify the log entry metadata if the original metadata is not to be shown.
-            if (!logExportSettingsMetadata.ShowOriginalMetadata)
+            if (!logExportSettings.ShowOriginalMetadata)
             {
-                if (logExportSettingsMetadata.RemoveMetaDataCriteria != null)
+                if (logExportSettings.LogLayout.RemoveMetaDataCriteria != null)
                 {
-                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Entry, logExportSettingsMetadata.RemoveMetaDataCriteria, logExportSettingsMetadata.MetadataStartPosition);
+                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Entry, logExportSettings.LogLayout.RemoveMetaDataCriteria, logExportSettings.LogLayout.StartPosition);
                 }
                 // Insert metadata at the original metadata position.
-                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettingsMetadata.MetadataStartPosition, logEntry.LogMetadataPropertiesWithStringValue, logExportSettingsMetadata);
+                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettings.LogLayout.StartPosition, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
             }
 
             stringbuilder.AppendLine(logEntryMetadataFormatted);
@@ -161,11 +161,11 @@ namespace LogScraper.Log
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
         /// <returns>The log entry with added metadata.</returns>
-        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettingsMetadata logExportSettingsMetadata)
+        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettings logExportSettings)
         {
             if (startIndex <= 0 ||
-                logExportSettingsMetadata.SelectedMetadataProperties == null ||
-                logExportSettingsMetadata.SelectedMetadataProperties.Count == 0 ||
+                logExportSettings.SelectedMetadataProperties == null ||
+                logExportSettings.SelectedMetadataProperties.Count == 0 ||
                 logMetadataPropertiesWithStringValue == null ||
                 logMetadataPropertiesWithStringValue.Count == 0)
             {
@@ -173,7 +173,7 @@ namespace LogScraper.Log
             }
 
             List<string> values = [];
-            foreach (LogMetadataProperty logMetadataProperty in logExportSettingsMetadata.SelectedMetadataProperties)
+            foreach (LogMetadataProperty logMetadataProperty in logExportSettings.SelectedMetadataProperties)
             {
                 logMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value);
                 if (value != null) { values.Add(value); }

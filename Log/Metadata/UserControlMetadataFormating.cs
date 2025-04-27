@@ -44,27 +44,21 @@ namespace LogScraper.Log.Metadata
             }
             grpAddMetadata.Visible = logMetadataProperties.Count > 0;
         }
-        public LogExportSettingsMetadata LogExportSettingsMetadata
+        public bool ShowOriginalMetadata => chkShowOriginalMetdata.Checked;
+        public List<LogMetadataProperty> SelectedMetadataProperties
         {
             get
             {
-                LogExportSettingsMetadata LogExportSettingsMetadata = new()
-                {
-                    SelectedMetadataProperties = [],
-                    ShowOriginalMetadata = chkShowOriginalMetdata.Checked
-                };
-                if (LogExportSettingsMetadata.ShowOriginalMetadata)
-                {
-                    return LogExportSettingsMetadata;
-                }
+                List<LogMetadataProperty> SelectedMetadataProperties = [];
+                if (ShowOriginalMetadata) return SelectedMetadataProperties;
 
                 foreach (Control control in pnlCheckBoxes.Controls)
                 {
                     if (!((CheckBox)control).Checked) continue;
 
-                    LogExportSettingsMetadata.SelectedMetadataProperties.Add((LogMetadataProperty)control.Tag);
+                    SelectedMetadataProperties.Add((LogMetadataProperty)control.Tag);
                 }
-                return LogExportSettingsMetadata;
+                return SelectedMetadataProperties;
             }
         }
         public void Clear()
