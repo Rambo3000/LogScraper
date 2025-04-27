@@ -1,7 +1,7 @@
-﻿using LogScraper.Log.Content;
-using LogScraper.Log.Metadata;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using LogScraper.Log.Content;
+using LogScraper.Log.Metadata;
 
 namespace LogScraper.Log.Collection
 {

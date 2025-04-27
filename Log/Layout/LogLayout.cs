@@ -1,10 +1,10 @@
-﻿using LogScraper.Log.Content;
-using LogScraper.Log.Metadata;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using LogScraper.Log.Content;
+using LogScraper.Log.Filter;
+using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using Newtonsoft.Json;
-using LogScraper.Log.Filter;
 
 namespace LogScraper.Log.Layout
 {
