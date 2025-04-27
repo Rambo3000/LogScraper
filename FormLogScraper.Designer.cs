@@ -65,7 +65,6 @@
             groupBox6 = new System.Windows.Forms.GroupBox();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabPage1 = new System.Windows.Forms.TabPage();
-            lblVersion = new System.Windows.Forms.Label();
             UsrLogContentBegin = new UserControlBeginEndFilter();
             tabPage2 = new System.Windows.Forms.TabPage();
             UsrLogContentEnd = new UserControlBeginEndFilter();
@@ -493,7 +492,6 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(lblVersion);
             tabPage1.Controls.Add(UsrLogContentBegin);
             tabPage1.Location = new System.Drawing.Point(4, 24);
             tabPage1.Name = "tabPage1";
@@ -502,18 +500,6 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Tonen vanaf";
             tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // lblVersion
-            // 
-            lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            lblVersion.BackColor = System.Drawing.SystemColors.Window;
-            lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            lblVersion.Location = new System.Drawing.Point(185, 294);
-            lblVersion.Name = "lblVersion";
-            lblVersion.Size = new System.Drawing.Size(46, 15);
-            lblVersion.TabIndex = 23;
-            lblVersion.Text = "2.00.00";
-            lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // UsrLogContentBegin
             // 
@@ -601,12 +587,12 @@
             tabPage4.Text = "Tonen";
             tabPage4.UseVisualStyleBackColor = true;
             // 
-            // usrControlMetadataFormating
+            // UsrControlMetadataFormating
             // 
             UsrControlMetadataFormating.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
             UsrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
-            UsrControlMetadataFormating.Name = "usrControlMetadataFormating";
+            UsrControlMetadataFormating.Name = "UsrControlMetadataFormating";
             UsrControlMetadataFormating.Size = new System.Drawing.Size(191, 391);
             UsrControlMetadataFormating.TabIndex = 0;
             // 
@@ -756,7 +742,6 @@
         private Log.Metadata.UserControlMetadataFormating UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
-        private System.Windows.Forms.Label lblVersion;
         private UserControlSearch usrSearch;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label lblNumberOfLogEntriesShown;

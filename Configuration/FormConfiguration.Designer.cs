@@ -44,6 +44,7 @@
             TabPageLogProviders = new System.Windows.Forms.TabPage();
             TabPageLogLayouts = new System.Windows.Forms.TabPage();
             userControlLogLayoutConfig = new LogScraper.Log.UserControlLogLayoutConfig();
+            lblVersion = new System.Windows.Forms.Label();
             TabLogProviders.SuspendLayout();
             tabKubernetes.SuspendLayout();
             tabUrl.SuspendLayout();
@@ -90,7 +91,7 @@
             tabUrl.Controls.Add(userControlRuntimeConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
-            tabUrl.Size = new System.Drawing.Size(785, 466);
+            tabUrl.Size = new System.Drawing.Size(813, 562);
             tabUrl.TabIndex = 1;
             tabUrl.Text = "Directe Url";
             tabUrl.UseVisualStyleBackColor = true;
@@ -100,7 +101,7 @@
             userControlRuntimeConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
             userControlRuntimeConfig.Name = "userControlRuntimeConfig";
-            userControlRuntimeConfig.Size = new System.Drawing.Size(785, 466);
+            userControlRuntimeConfig.Size = new System.Drawing.Size(813, 562);
             userControlRuntimeConfig.TabIndex = 0;
             // 
             // tabFile
@@ -108,7 +109,7 @@
             tabFile.Controls.Add(userControlFileConfig);
             tabFile.Location = new System.Drawing.Point(4, 24);
             tabFile.Name = "tabFile";
-            tabFile.Size = new System.Drawing.Size(785, 466);
+            tabFile.Size = new System.Drawing.Size(813, 562);
             tabFile.TabIndex = 2;
             tabFile.Text = "Lokaal bestand";
             tabFile.UseVisualStyleBackColor = true;
@@ -118,7 +119,7 @@
             userControlFileConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlFileConfig.Location = new System.Drawing.Point(0, 0);
             userControlFileConfig.Name = "userControlFileConfig";
-            userControlFileConfig.Size = new System.Drawing.Size(785, 466);
+            userControlFileConfig.Size = new System.Drawing.Size(813, 562);
             userControlFileConfig.TabIndex = 0;
             // 
             // btnOk
@@ -160,7 +161,7 @@
             TabPageGeneral.Controls.Add(userControlGenericConfig);
             TabPageGeneral.Location = new System.Drawing.Point(4, 24);
             TabPageGeneral.Name = "TabPageGeneral";
-            TabPageGeneral.Size = new System.Drawing.Size(820, 607);
+            TabPageGeneral.Size = new System.Drawing.Size(827, 596);
             TabPageGeneral.TabIndex = 2;
             TabPageGeneral.Text = "Algemeen";
             TabPageGeneral.UseVisualStyleBackColor = true;
@@ -170,7 +171,7 @@
             userControlGenericConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlGenericConfig.Location = new System.Drawing.Point(0, 0);
             userControlGenericConfig.Name = "userControlGenericConfig";
-            userControlGenericConfig.Size = new System.Drawing.Size(820, 607);
+            userControlGenericConfig.Size = new System.Drawing.Size(827, 596);
             userControlGenericConfig.TabIndex = 0;
             // 
             // TabPageLogProviders
@@ -194,19 +195,32 @@
             TabPageLogLayouts.Text = "Log layout";
             TabPageLogLayouts.UseVisualStyleBackColor = true;
             // 
-            // userControlLogLayoutConfig1
+            // userControlLogLayoutConfig
             // 
             userControlLogLayoutConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlLogLayoutConfig.Location = new System.Drawing.Point(0, 0);
-            userControlLogLayoutConfig.Name = "userControlLogLayoutConfig1";
+            userControlLogLayoutConfig.Name = "userControlLogLayoutConfig";
             userControlLogLayoutConfig.Size = new System.Drawing.Size(827, 596);
             userControlLogLayoutConfig.TabIndex = 0;
+            // 
+            // lblVersion
+            // 
+            lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            lblVersion.BackColor = System.Drawing.SystemColors.Control;
+            lblVersion.ForeColor = System.Drawing.SystemColors.ButtonShadow;
+            lblVersion.Location = new System.Drawing.Point(786, 5);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new System.Drawing.Size(46, 15);
+            lblVersion.TabIndex = 24;
+            lblVersion.Text = "2.00.00";
+            lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormConfiguration
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(840, 667);
+            Controls.Add(lblVersion);
             Controls.Add(tabMain);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
@@ -243,5 +257,6 @@
         private UserControlGenericConfig userControlGenericConfig;
         private System.Windows.Forms.TabPage TabPageLogLayouts;
         private Log.UserControlLogLayoutConfig userControlLogLayoutConfig;
+        private System.Windows.Forms.Label lblVersion;
     }
 }

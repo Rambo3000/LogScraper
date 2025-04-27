@@ -11,6 +11,11 @@ namespace LogScraper.Configuration
         public FormConfiguration()
         {
             InitializeComponent();
+
+            string version = Application.ProductVersion;
+            if (version.Contains('+')) version = version[..version.IndexOf('+')];
+            
+            lblVersion.Text = "v" + version;
         }
 
         private void FormConfiguration_Load(object sender, EventArgs e)

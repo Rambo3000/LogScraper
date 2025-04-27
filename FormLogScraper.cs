@@ -42,16 +42,6 @@ namespace LogScraper
         {
             InitializeComponent();
 
-            string version = Application.ProductVersion;
-            const string versionSeperator = "+";
-            if (version.Contains(versionSeperator))
-            {
-                version = version[..version.IndexOf(versionSeperator)];
-            }
-
-            lblVersion.Text = "v" + version;
-
-
             ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
 
             timerMemoryUsage.Interval = 1000;
