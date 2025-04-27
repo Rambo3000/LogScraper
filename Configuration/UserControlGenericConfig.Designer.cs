@@ -30,13 +30,11 @@
         {
             LblDefaultLogProviderType = new System.Windows.Forms.Label();
             GrpExportSettings = new System.Windows.Forms.GroupBox();
-            label4 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             TxtEditorLocation = new LogScraper.Extensions.ValidatedTextBox();
-            TxtEditorDescription = new LogScraper.Extensions.ValidatedTextBox();
-            ChkExportToFile = new System.Windows.Forms.CheckBox();
             TxtExportFileName = new LogScraper.Extensions.ValidatedTextBox();
+            ChkExportToFile = new System.Windows.Forms.CheckBox();
             CboLogProviderType = new System.Windows.Forms.ComboBox();
             LblTimeout = new System.Windows.Forms.Label();
             TxtTimeOut = new LogScraper.Extensions.ValidatedTextBox();
@@ -59,33 +57,22 @@
             // GrpExportSettings
             // 
             GrpExportSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            GrpExportSettings.Controls.Add(label4);
             GrpExportSettings.Controls.Add(label3);
             GrpExportSettings.Controls.Add(label2);
             GrpExportSettings.Controls.Add(TxtEditorLocation);
-            GrpExportSettings.Controls.Add(TxtEditorDescription);
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Enabled = false;
             GrpExportSettings.Location = new System.Drawing.Point(29, 128);
             GrpExportSettings.Name = "GrpExportSettings";
-            GrpExportSettings.Size = new System.Drawing.Size(813, 115);
+            GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
             GrpExportSettings.TabStop = false;
             GrpExportSettings.Text = "Log wegschrijven instellingen";
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new System.Drawing.Point(6, 54);
-            label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(112, 15);
-            label4.TabIndex = 10;
-            label4.Text = "Omschrijving editor";
-            // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(6, 83);
+            label3.Location = new System.Drawing.Point(6, 54);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(79, 15);
             label3.TabIndex = 9;
@@ -106,20 +93,20 @@
             TxtEditorLocation.BackColor = System.Drawing.Color.MistyRose;
             TxtEditorLocation.IsRequired = true;
             TxtEditorLocation.IsWhiteSpaceAllowed = false;
-            TxtEditorLocation.Location = new System.Drawing.Point(154, 80);
+            TxtEditorLocation.Location = new System.Drawing.Point(154, 51);
             TxtEditorLocation.Name = "TxtEditorLocation";
             TxtEditorLocation.Size = new System.Drawing.Size(656, 23);
             TxtEditorLocation.TabIndex = 7;
             // 
-            // TxtEditorDescription
+            // TxtExportFileName
             // 
-            TxtEditorDescription.BackColor = System.Drawing.Color.MistyRose;
-            TxtEditorDescription.IsRequired = true;
-            TxtEditorDescription.IsWhiteSpaceAllowed = false;
-            TxtEditorDescription.Location = new System.Drawing.Point(154, 51);
-            TxtEditorDescription.Name = "TxtEditorDescription";
-            TxtEditorDescription.Size = new System.Drawing.Size(322, 23);
-            TxtEditorDescription.TabIndex = 6;
+            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
+            TxtExportFileName.IsRequired = true;
+            TxtExportFileName.IsWhiteSpaceAllowed = false;
+            TxtExportFileName.Location = new System.Drawing.Point(154, 22);
+            TxtExportFileName.Name = "TxtExportFileName";
+            TxtExportFileName.Size = new System.Drawing.Size(322, 23);
+            TxtExportFileName.TabIndex = 5;
             // 
             // ChkExportToFile
             // 
@@ -131,16 +118,6 @@
             ChkExportToFile.Text = "Schrijf de gefilterde log naar een bestand";
             ChkExportToFile.UseVisualStyleBackColor = true;
             ChkExportToFile.CheckedChanged += ChkExportToFile_CheckedChanged;
-            // 
-            // TxtExportFileName
-            // 
-            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
-            TxtExportFileName.IsRequired = true;
-            TxtExportFileName.IsWhiteSpaceAllowed = false;
-            TxtExportFileName.Location = new System.Drawing.Point(154, 22);
-            TxtExportFileName.Name = "TxtExportFileName";
-            TxtExportFileName.Size = new System.Drawing.Size(322, 23);
-            TxtExportFileName.TabIndex = 5;
             // 
             // CboLogProviderType
             // 
@@ -201,7 +178,7 @@
             GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
-            GrpGeneralSettings.Size = new System.Drawing.Size(848, 251);
+            GrpGeneralSettings.Size = new System.Drawing.Size(848, 215);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
@@ -212,7 +189,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(GrpGeneralSettings);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(848, 251);
+            Size = new System.Drawing.Size(848, 215);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
@@ -230,9 +207,7 @@
         private System.Windows.Forms.CheckBox ChkExportToFile;
         private System.Windows.Forms.Label label2;
         private Extensions.ValidatedTextBox TxtEditorLocation;
-        private Extensions.ValidatedTextBox TxtEditorDescription;
         private Extensions.ValidatedTextBox TxtExportFileName;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox CboAutomaticReadTime;
         private System.Windows.Forms.Label LblAutomaticReadTimea;

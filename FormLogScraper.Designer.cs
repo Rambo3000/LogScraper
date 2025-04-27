@@ -36,8 +36,8 @@
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
+            userControlMemoryUsage1 = new UserControlMemoryUsage();
             btnConfig = new System.Windows.Forms.Button();
-            LblMemoryUsageValue = new System.Windows.Forms.Label();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             btnSmallWindow = new System.Windows.Forms.Button();
             btnReset = new System.Windows.Forms.Button();
@@ -110,7 +110,7 @@
             BtnRecord.Name = "BtnRecord";
             BtnRecord.Size = new System.Drawing.Size(52, 40);
             BtnRecord.TabIndex = 0;
-            ToolTip.SetToolTip(BtnRecord, "Lees log uit");
+            ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
             BtnRecord.UseVisualStyleBackColor = true;
             BtnRecord.Click += BtnRecord_Click;
             // 
@@ -154,8 +154,8 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Controls.Add(btnConfig);
-            groupBox3.Controls.Add(LblMemoryUsageValue);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(btnSmallWindow);
             groupBox3.Controls.Add(btnReset);
@@ -177,6 +177,14 @@
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
             // 
+            // userControlMemoryUsage1
+            // 
+            userControlMemoryUsage1.AutoSize = true;
+            userControlMemoryUsage1.Location = new System.Drawing.Point(246, 100);
+            userControlMemoryUsage1.Name = "userControlMemoryUsage1";
+            userControlMemoryUsage1.Size = new System.Drawing.Size(46, 17);
+            userControlMemoryUsage1.TabIndex = 24;
+            // 
             // btnConfig
             // 
             btnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
@@ -189,17 +197,6 @@
             btnConfig.UseVisualStyleBackColor = true;
             btnConfig.Click += BtnConfig_Click;
             // 
-            // LblMemoryUsageValue
-            // 
-            LblMemoryUsageValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            LblMemoryUsageValue.Location = new System.Drawing.Point(240, 99);
-            LblMemoryUsageValue.Name = "LblMemoryUsageValue";
-            LblMemoryUsageValue.Size = new System.Drawing.Size(50, 15);
-            LblMemoryUsageValue.TabIndex = 22;
-            LblMemoryUsageValue.Text = "0";
-            LblMemoryUsageValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            ToolTip.SetToolTip(LblMemoryUsageValue, "Geheugengebruik (MB)");
-            // 
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
@@ -207,6 +204,7 @@
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
+            ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
@@ -738,7 +736,6 @@
         private System.Windows.Forms.TextBox TxtErrorMessage;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
-        private System.Windows.Forms.Label LblMemoryUsageValue;
         private Log.Metadata.UserControlMetadataFormating UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
@@ -753,5 +750,6 @@
         private System.Windows.Forms.Label label2;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;
+        private UserControlMemoryUsage userControlMemoryUsage1;
     }
 }

@@ -11,7 +11,6 @@ namespace LogScraper.Configuration
         public LogProviderType LogProviderTypeDefault { get; set; }
         public bool ExportToFile { get; set; } = true;
         public string EditorFileName { get; set; }
-        public string EditorName { get; set; }
         public string ExportFileName { get; set; }
         public int HttpCLientTimeOUtSeconds { get; set; } = 30;
         public int AutomaticReadTimeMinutes { get; set; } = 2;

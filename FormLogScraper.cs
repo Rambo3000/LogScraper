@@ -33,8 +33,6 @@ namespace LogScraper
 
         private LogMetadataFilterResult currentLogMetadataFilterResult;
 
-        private readonly Timer timerMemoryUsage = new();
-
         #endregion
 
         #region Initialization
@@ -45,9 +43,6 @@ namespace LogScraper
             ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
 
             formRecord = new(this);
-            timerMemoryUsage.Interval = 1000;
-            timerMemoryUsage.Tick += new EventHandler(UpdateMemoryUsage);
-            timerMemoryUsage.Start();
 
             usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrKubernetes.StatusUpdate += HandleLogProviderStatusUpdate;
@@ -219,11 +214,6 @@ namespace LogScraper
         private void UpdateExportControls()
         {
             btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-            if (ConfigurationManager.GenericConfig.EditorName != null)
-            {
-                ToolTip.SetToolTip(btnOpenWithEditor, "Open in " + ConfigurationManager.GenericConfig.EditorName);
-            }
-
         }
         private void UpdateAndWriteExport(LogMetadataFilterResult logMetadataFilterResult)
         {
@@ -365,10 +355,6 @@ namespace LogScraper
         #endregion
 
         #region Form updating related functions
-        private void UpdateMemoryUsage(object sender, EventArgs e)
-        {
-            LblMemoryUsageValue.Text = (Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).ToString() + " MB";
-        }
         private void UpdateDownloadControlsReadOnlyStatus()
         {
             bool downloadingInProgress = numberOfSourceProcessingWorkers > 0;
@@ -446,7 +432,7 @@ namespace LogScraper
         }
         #endregion
 
-        #region Form controls events
+        #region Buttons
         public void BtnRecord_Click(object sender, EventArgs e)
         {
             StartLogProviderAsync();
@@ -484,6 +470,43 @@ namespace LogScraper
         {
             HandleLogContentFilterUpdate(sender, e);
         }
+        private void BtnConfig_Click(object sender, EventArgs e)
+        {
+            using FormConfiguration form = new();
+
+            // 'this' makes it modal to the main window
+            if (form.ShowDialog(this) == DialogResult.OK)
+            {
+                form.GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged);
+
+                if (genericConfigChanged)
+                {
+                    ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
+                    UpdateExportControls();
+                }
+
+                if (logLayoutsChanged) PopulateLogLayouts();
+
+                if (kubernetesChanged || runtimeChanged)
+                {
+                    if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                    {
+                        if (kubernetesChanged)
+                        {
+                            usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+                        }
+                        if (runtimeChanged)
+                        {
+                            usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                        }
+                        CboLogProvider_SelectedIndexChanged(null, null);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Dropdowns log providers and layout
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
@@ -533,45 +556,5 @@ namespace LogScraper
             }
         }
         #endregion
-
-        private void BtnConfig_Click(object sender, EventArgs e)
-        {
-            KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
-            RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
-            LogScraperConfig oldGenericConfig = ConfigurationManager.GenericConfig;
-            LogLayoutsConfig logLayoutsConfig = ConfigurationManager.LogLayoutsConfig;
-
-            using FormConfiguration form = new();
-            DialogResult result = form.ShowDialog(this); // 'this' makes it modal to the main window
-
-            if (result == DialogResult.OK)
-            {
-                bool kubernetesChanged = !oldKubernetesConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                bool runtimeChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-
-                if (kubernetesChanged || runtimeChanged)
-                {
-                    if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
-                    {
-                        if (kubernetesChanged)
-                        {
-                            usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                        }
-                        if (runtimeChanged)
-                        {
-                            usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                        }
-                        CboLogProvider_SelectedIndexChanged(null, null);
-                    }
-                }
-
-                if (!oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig))
-                {
-                    ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
-                    UpdateExportControls();
-                }
-                if (!logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig)) PopulateLogLayouts();
-            }
-        }
     }
 }

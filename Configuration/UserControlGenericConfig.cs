@@ -18,7 +18,6 @@ namespace LogScraper.Configuration
             CboAutomaticReadTime.SelectedItem = config.AutomaticReadTimeMinutes;
             ChkExportToFile.Checked = config.ExportToFile;
             TxtEditorLocation.Text = config.EditorFileName;
-            TxtEditorDescription.Text = config.EditorName;
             TxtExportFileName.Text = config.ExportFileName;
             TxtTimeOut.Text = config.HttpCLientTimeOUtSeconds.ToString();
         }
@@ -38,11 +37,6 @@ namespace LogScraper.Configuration
             }
             if (config.ExportToFile)
             {
-                if (string.IsNullOrWhiteSpace(config.EditorName))
-                {
-                    MessageBox.Show("De omschrijving van de editor is verplicht", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
                 if (string.IsNullOrWhiteSpace(config.EditorFileName))
                 {
                     MessageBox.Show("De locatie van de editor is verplicht.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -61,7 +55,6 @@ namespace LogScraper.Configuration
             LogScraperConfig config = new()
             {
                 EditorFileName = TxtEditorLocation.Text,
-                EditorName = TxtEditorDescription.Text,
                 ExportFileName = TxtExportFileName.Text,
                 ExportToFile = ChkExportToFile.Checked,
                 AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
