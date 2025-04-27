@@ -37,12 +37,12 @@
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
             userControlMemoryUsage1 = new UserControlMemoryUsage();
-            btnConfig = new System.Windows.Forms.Button();
+            BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
             btnReset = new System.Windows.Forms.Button();
             BtnErase = new System.Windows.Forms.Button();
-            btnStop = new System.Windows.Forms.Button();
+            BtnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
@@ -155,7 +155,7 @@
             // groupBox3
             // 
             groupBox3.Controls.Add(userControlMemoryUsage1);
-            groupBox3.Controls.Add(btnConfig);
+            groupBox3.Controls.Add(BtnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
             groupBox3.Controls.Add(btnReset);
@@ -163,7 +163,7 @@
             groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(LbllogEntriesTotal);
             groupBox3.Controls.Add(lblLogEntriesFiltered);
-            groupBox3.Controls.Add(btnStop);
+            groupBox3.Controls.Add(BtnStop);
             groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
             groupBox3.Controls.Add(BtnRecordWithTimer);
             groupBox3.Controls.Add(lblLogEntriesTotalValue);
@@ -187,15 +187,15 @@
             // 
             // btnConfig
             // 
-            btnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
-            btnConfig.Location = new System.Drawing.Point(266, 117);
-            btnConfig.Name = "btnConfig";
-            btnConfig.Size = new System.Drawing.Size(24, 24);
-            btnConfig.TabIndex = 23;
-            btnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(btnConfig, "Instellingen");
-            btnConfig.UseVisualStyleBackColor = true;
-            btnConfig.Click += BtnConfig_Click;
+            BtnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
+            BtnConfig.Location = new System.Drawing.Point(266, 117);
+            BtnConfig.Name = "btnConfig";
+            BtnConfig.Size = new System.Drawing.Size(24, 24);
+            BtnConfig.TabIndex = 23;
+            BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(BtnConfig, "Instellingen");
+            BtnConfig.UseVisualStyleBackColor = true;
+            BtnConfig.Click += BtnConfig_Click;
             // 
             // btnOpenWithEditor
             // 
@@ -244,14 +244,14 @@
             // 
             // btnStop
             // 
-            btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
-            btnStop.Location = new System.Drawing.Point(7, 22);
-            btnStop.Name = "btnStop";
-            btnStop.Size = new System.Drawing.Size(51, 40);
-            btnStop.TabIndex = 17;
-            ToolTip.SetToolTip(btnStop, "Stop");
-            btnStop.UseVisualStyleBackColor = true;
-            btnStop.Click += BtnStop_Click;
+            BtnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
+            BtnStop.Location = new System.Drawing.Point(7, 22);
+            BtnStop.Name = "btnStop";
+            BtnStop.Size = new System.Drawing.Size(51, 40);
+            BtnStop.TabIndex = 17;
+            ToolTip.SetToolTip(BtnStop, "Stop");
+            BtnStop.UseVisualStyleBackColor = true;
+            BtnStop.Click += BtnStop_Click;
             // 
             // lblNumberOfLogEntriesFilteredWithError
             // 
@@ -702,7 +702,7 @@
         public System.Windows.Forms.Button BtnRecord;
         public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Button BtnErase;
-        public System.Windows.Forms.Button btnStop;
+        public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnReset;
         public System.Windows.Forms.Button btnOpenWithEditor;
         public System.Windows.Forms.Label lblLogEntriesTotalValue;
@@ -746,7 +746,7 @@
         private System.Windows.Forms.CheckBox chkShowAllLogEntries;
         private System.Windows.Forms.Label lblEndFilterEnabled;
         private System.Windows.Forms.Label lblBeginFilterEnabled;
-        private System.Windows.Forms.Button btnConfig;
+        private System.Windows.Forms.Button BtnConfig;
         private System.Windows.Forms.Label label2;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;

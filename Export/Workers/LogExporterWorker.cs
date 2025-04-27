@@ -17,10 +17,10 @@ namespace LogScraper.Export.Workers
             {
                 OnStatusUpdate("Bezig met wegschrijven...", true);
                 // Concatenate log entries into a single string
-                LogExportData logExportData = LogDataExporter.GenerateExportedLogData(filterResult, logExportSettings, false);
+                string exportedLog = LogDataExporter.CreateExportedLog(filterResult, logExportSettings, false, out int _);
 
                 // Write the entire log content to the file asynchronously
-                await File.WriteAllTextAsync(logFilePath, logExportData.ExportRaw);
+                await File.WriteAllTextAsync(logFilePath, exportedLog);
                 OnStatusUpdate("Ok", true);
             }
             catch (Exception ex)

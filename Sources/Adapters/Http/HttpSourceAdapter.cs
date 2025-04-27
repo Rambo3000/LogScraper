@@ -7,7 +7,7 @@ using LogScraper.SourceAdapters;
 
 namespace LogScraper.Sources.Adapters.Http
 {
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, TrailType trailType, DateTime? lastTrailTime = null) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, TrailType trailType, DateTime? lastLogTrailTime = null) : ISourceAdapter
     {
         private readonly string apiUrl = apiUrl;
         private readonly string credentialManagerUri = credentialManagerUri;
@@ -15,11 +15,11 @@ namespace LogScraper.Sources.Adapters.Http
         public HttpAuthenticationData AuthenticationData { get; private set; }
 
         private readonly TrailType trailType = trailType;
-        private DateTime? lastTrailTime = lastTrailTime;
+        private DateTime? lastLogTrailTime = lastLogTrailTime;
 
         public DateTime? GetLastTrailTime()
         {
-            return lastTrailTime;
+            return lastLogTrailTime;
         }
 
         public HttpResponseMessage TestConnectionAndAskForAuthorisation()
@@ -96,7 +96,7 @@ namespace LogScraper.Sources.Adapters.Http
 
             DateTime now = DateTime.Now;
 
-            int elapsedSeconds = lastTrailTime == null ? -1 : (int)(now - (DateTime)lastTrailTime).TotalSeconds + 1;
+            int elapsedSeconds = lastLogTrailTime == null ? -1 : (int)(now - (DateTime)lastLogTrailTime).TotalSeconds + 1;
 
             string query = string.Empty;
             if (trailType == TrailType.Kubernetes)
@@ -104,7 +104,7 @@ namespace LogScraper.Sources.Adapters.Http
                 query = elapsedSeconds == -1 ? string.Empty : "?sinceSeconds=" + elapsedSeconds;
             }
             // Update the time for the next call
-            lastTrailTime = now;
+            lastLogTrailTime = now;
 
             return query;
         }

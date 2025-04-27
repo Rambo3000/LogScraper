@@ -28,7 +28,7 @@ namespace LogScraper.Sources.Workers
 
         private readonly Queue<(SourceProcessingWorker, ISourceAdapter, int, int, CancellationTokenSource)> workerQueue = new();
         private bool isProcessingQueue = false;
-        public event Action<int> QueueLengthUpdate;
+        public event Action QueueLengthUpdate;
         private CancellationTokenSource currentWorkercancellationTokenSource;
 
         public void AddWorker(SourceProcessingWorker logExporterWorker, ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds)
@@ -70,7 +70,14 @@ namespace LogScraper.Sources.Workers
         protected virtual void OnQueueLengthUpdate()
         {
             // Raise the event on the UI thread
-            QueueLengthUpdate?.Invoke(workerQueue.Count);
+            QueueLengthUpdate?.Invoke();
+        }
+        public int QueueLength
+        {
+            get
+            {
+                return workerQueue.Count;
+            }
         }
     }
 }

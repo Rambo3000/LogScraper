@@ -17,6 +17,6 @@ namespace LogScraper.Log.Metadata
         /// <summary>
         /// A list of metadata properties and their associated values for the filtered log entries.
         /// </summary>
-        public List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList { get; set; }
+        public List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValues { get; set; }
     }
 }

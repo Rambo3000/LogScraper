@@ -14,27 +14,24 @@ namespace LogScraper.Log
     internal class LogDataExporter
     {
         /// <summary>
-        /// Creates a LogExportData object based on the filtered log metadata, export settings, and display options.
+        /// Creates a single string based on the filtered log metadata, export settings, and display options.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
-        /// <returns>A LogExportData object containing the processed log data.</returns>
-        public static LogExportData GenerateExportedLogData(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLogEntriesForDisplaying)
+        /// <returns>A single string containing the processed log data.</returns>
+        public static  string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLogEntriesForDisplaying, out int entryCount)
         {
+            entryCount = 0;
             // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
             (int startIndex, int endIndex) = CalculateExportRange(filterResult, logExportSettings);
 
-            // If the calculated indices are invalid, return an empty LogExportData object.
-            if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return new() { ExportRaw = string.Empty };
+            // If the calculated indices are invalid, return an empty ExportedLogData object.
+            if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return string.Empty;
 
-            return new()
-            {
-                DateTimeFirstLogEntry = filterResult.LogEntries[startIndex].TimeStamp,
-                DateTimeLastLogEntry = filterResult.LogEntries[endIndex - 1].TimeStamp,
-                LogEntryCount = endIndex - startIndex,
-                ExportRaw = GetLogEntriesAsString(filterResult, reduceNumberOfLogEntriesForDisplaying, startIndex, endIndex, logExportSettings)
-            };
+            entryCount = endIndex - startIndex;
+
+            return GetLogEntriesAsString(filterResult, reduceNumberOfLogEntriesForDisplaying, startIndex, endIndex, logExportSettings);
         }
 
         /// <summary>

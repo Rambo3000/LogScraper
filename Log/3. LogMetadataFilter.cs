@@ -21,7 +21,7 @@ namespace LogScraper.Log
             LogMetadataFilterResult logMetadataFilterResult = new()
             {
                 LogEntries = FilterLogEntriesUsingMetadataProperties(allLogEntries, logMetadataPropertyAndValuesList),
-                LogMetadataPropertyAndValuesList = logMetadataPropertyAndValuesList
+                LogMetadataPropertyAndValues = logMetadataPropertyAndValuesList
             };
 
             UpdateLogMetadataValuesCount(logMetadataFilterResult.LogEntries, logMetadataPropertyAndValuesList);

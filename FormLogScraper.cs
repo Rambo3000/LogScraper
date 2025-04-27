@@ -7,16 +7,11 @@ using LogScraper.Log;
 using LogScraper.Log.Collection;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
-using LogScraper.LogProviders.Kubernetes;
-using LogScraper.LogProviders.Runtime;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using static LogScraper.Extensions.RichTextBoxExtensions;
 using static LogScraper.UserControlSearch;
@@ -25,14 +20,8 @@ namespace LogScraper
 {
     public partial class FormLogScraper : Form
     {
-        #region Private fields
-
-        private int numberOfSourceProcessingWorkers = 0;
-
-        private LogMetadataFilterResult currentLogMetadataFilterResult;
-        #endregion
-
         #region Form Initialization
+        private LogMetadataFilterResult currentLogMetadataFilterResult;
         public FormLogScraper()
         {
             InitializeComponent();
@@ -69,17 +58,17 @@ namespace LogScraper
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
 
-            UpdateStatisticsLogCollection();
+            RefreshLogStatistics();
         }
         #endregion
 
         #region Initiate getting raw log and processing of raw log
 
         private DateTime? lastTrailTime = null;
-        private void GetRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
+        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
             // In case we want to download for a given duration, first get the log and after that start the duration
-            if (durationInSeconds != -1) { GetRawLogAsync(-1, -1); }
+            if (durationInSeconds != -1) { FetchRawLogAsync(-1, -1); }
             try
             {
                 BtnRecord.Enabled = false;
@@ -134,7 +123,7 @@ namespace LogScraper
 
                 UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
                 FilterLogEntries();
-                UpdateStatisticsLogCollection();
+                RefreshLogStatistics();
                 HandleErrorMessages(string.Empty, true);
                 FormRecord.Instance.UpdateButtonsFromMainWindow();
                 lastTrailTime = updatedLastTrailTime;
@@ -144,7 +133,7 @@ namespace LogScraper
                 ShowException(ex);
             }
         }
-        private void UpdateStatisticsLogCollection()
+        private void RefreshLogStatistics()
         {
             lblLogEntriesTotalValue.Text = LogCollection.Instance.LogEntries.Count.ToString();
             lblLogEntriesTotalValue.ForeColor = LogCollection.Instance.LogEntries.Count > 50000 ? Color.DarkRed : Color.Black;
@@ -167,16 +156,16 @@ namespace LogScraper
             // Get all the metadata properties and their values from all the user controls
             List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = UsrMetadataFilterOverview.GetMetadataPropertyAndValues();
 
-            // Filter the logentries into the FilterResult and update the count
+            // Filter the log entries into the FilterResult and update the count
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList);
 
-            UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValuesList);
+            UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
             UsrLogContentEnd.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
 
-            UpdateAndWriteExport(currentLogMetadataFilterResult);
+            WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
-        private void UpdateAndWriteExport(LogMetadataFilterResult logMetadataFilterResult)
+        private void WriteLogToScreenAndFile(LogMetadataFilterResult logMetadataFilterResult)
         {
             LogExportSettings logExportSettings = new()
             {
@@ -189,26 +178,26 @@ namespace LogScraper
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
 
-            LogExportData logExportData = LogDataExporter.GenerateExportedLogData(logMetadataFilterResult, logExportSettings, !chkShowAllLogEntries.Checked);
+            string exportedLog = LogDataExporter.CreateExportedLog(logMetadataFilterResult, logExportSettings, !chkShowAllLogEntries.Checked, out int entryCount);
 
-            if (chkShowAllLogEntries.Checked || logExportData.LogEntryCount < 2000)
+            if (chkShowAllLogEntries.Checked || entryCount < 2000)
             {
-                lblNumberOfLogEntriesShown.Text = logExportData.LogEntryCount.ToString() + " (alle)";
+                lblNumberOfLogEntriesShown.Text = entryCount.ToString() + " (alle)";
                 lblNumberOfLogEntriesShown.ForeColor = Color.Black;
             }
             else
             {
-                lblNumberOfLogEntriesShown.Text = "2000/" + logExportData.LogEntryCount.ToString();
+                lblNumberOfLogEntriesShown.Text = "2000/" + entryCount.ToString();
                 lblNumberOfLogEntriesShown.ForeColor = Color.DarkRed;
             }
 
-            lblNumberOfLogEntriesFiltered.Text = logExportData.LogEntryCount.ToString();
+            lblNumberOfLogEntriesFiltered.Text = entryCount.ToString();
 
             int initialSelectionStart = txtLogEntries.SelectionStart;
             int initialSelectionLength = txtLogEntries.SelectionLength;
 
             txtLogEntries.SuspendDrawing();
-            txtLogEntries.Text = logExportData.ExportRaw;
+            txtLogEntries.Text = exportedLog;
             HighlightBeginAndEndFilterLines();
             txtLogEntries.Select(initialSelectionStart, initialSelectionLength);
             txtLogEntries.ResumeDrawing();
@@ -282,7 +271,7 @@ namespace LogScraper
             UsrLogContentEnd.UpdateLogEntries(null);
 
             txtLogEntries.Text = "";
-            UpdateStatisticsLogCollection();
+            RefreshLogStatistics();
             UpdateButtonStatus();
             lastTrailTime = null;
         }
@@ -307,9 +296,8 @@ namespace LogScraper
             TxtErrorMessage.Text = message;
             TxtErrorMessage.Visible = !isSucces;
         }
-        private void HandleLogProviderManagerQueueUpdate(int numberOfWorkers)
+        private void HandleLogProviderManagerQueueUpdate()
         {
-            numberOfSourceProcessingWorkers = numberOfWorkers;
             UpdateButtonStatus();
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
@@ -317,7 +305,7 @@ namespace LogScraper
             lblBeginFilterEnabled.Visible = UsrLogContentBegin.FilterIsEnabled;
             lblEndFilterEnabled.Visible = UsrLogContentEnd.FilterIsEnabled;
 
-            if (currentLogMetadataFilterResult != null) UpdateAndWriteExport(currentLogMetadataFilterResult);
+            if (currentLogMetadataFilterResult != null) WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
         private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)
         {
@@ -357,7 +345,7 @@ namespace LogScraper
         #region Buttons
         private void UpdateButtonStatus()
         {
-            bool downloadingInProgress = numberOfSourceProcessingWorkers > 0;
+            bool downloadingInProgress = SourceProcessingManager.Instance.QueueLength > 0;
             if (!downloadingInProgress)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
@@ -365,8 +353,8 @@ namespace LogScraper
             BtnRecord.Visible = !downloadingInProgress;
             BtnRecord.Enabled = !downloadingInProgress;
             BtnRecordWithTimer.Enabled = !downloadingInProgress;
-            btnStop.Visible = downloadingInProgress;
-            btnConfig.Enabled = !downloadingInProgress;
+            BtnStop.Visible = downloadingInProgress;
+            BtnConfig.Enabled = !downloadingInProgress;
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
             GrpLogProvidersSettings.Enabled = !downloadingInProgress;
 
@@ -374,11 +362,11 @@ namespace LogScraper
         }
         public void BtnRecord_Click(object sender, EventArgs e)
         {
-            GetRawLogAsync();
+            FetchRawLogAsync();
         }
         public void BtnRecordWithTimer_Click(object sender, EventArgs e)
         {
-            GetRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
+            FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
         }
         public void BtnStop_Click(object sender, EventArgs e)
         {
@@ -398,7 +386,7 @@ namespace LogScraper
         }
         private void BtnFormRecord_Click(object sender, EventArgs e)
         {
-            if (numberOfSourceProcessingWorkers == 0) { BtnRecordWithTimer_Click(sender, e); }
+            if (SourceProcessingManager.Instance.QueueLength == 0) { BtnRecordWithTimer_Click(sender, e); }
             FormRecord.Instance.ShowForm();
         }
         private void BtnConfig_Click(object sender, EventArgs e)

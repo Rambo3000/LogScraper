@@ -95,7 +95,7 @@ namespace LogScraper
 
             BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
             BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;
-            btnStop.Visible = LogScraperForm.btnStop.Visible;
+            btnStop.Visible = LogScraperForm.BtnStop.Visible;
             BtnRecordWithTimer.Text = LogScraperForm.BtnRecordWithTimer.Text;
             BtnRecordWithTimer.Image = LogScraperForm.BtnRecordWithTimer.Image;
             BtnRecordWithTimer.Enabled = LogScraperForm.BtnRecordWithTimer.Enabled;
