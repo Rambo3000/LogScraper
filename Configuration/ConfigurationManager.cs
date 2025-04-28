@@ -7,14 +7,15 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace LogScraper.Configuration
 {
     internal class ConfigurationManager
     {
         private static ConfigurationManager instance;
-        private static readonly object lockObject = new();
-        private static object LockObject => lockObject;
+        private static readonly Lock lockObject = new();
+
         private GenericConfig genericConfig;
         private LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
@@ -34,44 +35,32 @@ namespace LogScraper.Configuration
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);
         }
-        public static void SaveLogProviders()
+        private static void CreateInstanceIfNeeded()
         {
             // Check if an instance already exists
             if (instance == null)
             {
                 // Use a lock to ensure only one thread creates the instance
-                lock (LockObject)
+                lock (lockObject)
                 {
                     instance ??= new ConfigurationManager();
                 }
             }
+        }
+        public static void SaveLogProviders()
+        {
+            CreateInstanceIfNeeded();
             SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
         }
         public static void SaveLogLayout()
         {
-            // Check if an instance already exists
-            if (instance == null)
-            {
-                // Use a lock to ensure only one thread creates the instance
-                lock (LockObject)
-                {
-                    instance ??= new ConfigurationManager();
-                }
-            }
+            CreateInstanceIfNeeded();
             SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
         }
         public static void SaveGenericConfig()
         {
-            // Check if an instance already exists
-            if (instance == null)
-            {
-                // Use a lock to ensure only one thread creates the instance
-                lock (LockObject)
-                {
-                    instance ??= new ConfigurationManager();
-                }
-            }
-            SaveToFile("GenericConfig.json", instance.genericConfig);
+            CreateInstanceIfNeeded();
+            SaveToFile("LogScraperConfig.json", instance.genericConfig);
         }
 
         private static void SaveToFile<T>(string filePath, T data)
@@ -144,21 +133,13 @@ namespace LogScraper.Configuration
         {
             get
             {
-                // Check if an instance already exists
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance
-                    lock (LockObject)
-                    {
-                        instance ??= new ConfigurationManager();
-                    }
-                }
+                CreateInstanceIfNeeded();
                 return instance.genericConfig;
             }
             set
             {
                 // Use a lock to ensure only one thread creates the instance
-                lock (LockObject)
+                lock (lockObject)
                 {
                     instance.genericConfig = value;
                 }
@@ -169,21 +150,13 @@ namespace LogScraper.Configuration
         {
             get
             {
-                // Check if an instance already exists
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance
-                    lock (LockObject)
-                    {
-                        instance ??= new ConfigurationManager();
-                    }
-                }
+                CreateInstanceIfNeeded();
                 return instance.logLayoutsConfig;
             }
             set
             {
                 // Use a lock to ensure only one thread creates the instance
-                lock (LockObject)
+                lock (lockObject)
                 {
                     instance.logLayoutsConfig = value;
                 }
@@ -193,15 +166,7 @@ namespace LogScraper.Configuration
         {
             get
             {
-                // Check if an instance already exists
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance
-                    lock (LockObject)
-                    {
-                        instance ??= new ConfigurationManager();
-                    }
-                }
+                CreateInstanceIfNeeded();
                 return instance.logLayoutsConfig.layouts;
             }
         }
@@ -209,15 +174,7 @@ namespace LogScraper.Configuration
         {
             get
             {
-                // Check if an instance already exists
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance
-                    lock (LockObject)
-                    {
-                        instance ??= new ConfigurationManager();
-                    }
-                }
+                CreateInstanceIfNeeded();
                 return instance?.logProvidersConfig;
             }
         }
