@@ -6,7 +6,7 @@ namespace LogScraper.Extensions
     {
         public static bool IsEqualByJsonComparison(this object obj1, object obj2)
         {
-            JsonSerializerSettings settings = new ()
+            JsonSerializerSettings settings = new()
             {
                 Formatting = Formatting.None,
                 NullValueHandling = NullValueHandling.Ignore,

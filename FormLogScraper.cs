@@ -1,4 +1,8 @@
-﻿using LogScraper.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using LogScraper.Configuration;
 using LogScraper.Export;
 using LogScraper.Export.Workers;
 using LogScraper.Extensions;
@@ -9,10 +13,6 @@ using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using static LogScraper.Extensions.RichTextBoxExtensions;
 using static LogScraper.UserControlSearch;
 

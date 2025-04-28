@@ -174,12 +174,10 @@ namespace LogScraper.Log
                 Description = "Nieuwe layout",
                 DateTimeFormat = "yyyy-MM-ddTHH:mm:ss,fff",
                 RemoveMetaDataCriteria = new(),
-                LogMetadataProperties = [],
-                LogContentProperties = []
+                LogMetadataProperties = [CreateLogMetadataProperty()],
+                LogContentProperties = [CreateLogContentProperty()],
+                LogTransformers = []
             };
-            layout.LogTransformers = [];
-            layout.LogMetadataProperties.Add(CreateLogMetadataProperty());
-            layout.LogContentProperties.Add(CreateLogContentProperty());
 
             return layout;
         }
