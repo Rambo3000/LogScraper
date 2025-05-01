@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using LogScraper.Log.Metadata;
 using LogScraper.Log.Content;
-using LogScraper.Log.Filter;
+using LogScraper.Log.Layout;
+using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
-using LogScraper.Log.Collection;
-using LogScraper.Log.Layout;
 
 namespace LogScraper.Log
 {
@@ -580,7 +578,7 @@ namespace LogScraper.Log
                         throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
                     }
 
-                    LogReader.ReadIntoLogCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
+                    RawLogParser.ParseLogEntriesIntoCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
                     LogEntryClassifier.ClassifyLogEntryMetadataProperties(logLayout, logCollection);
                     LogEntryClassifier.ClassifyLogEntryContentProperties(logLayout, logCollection);
 

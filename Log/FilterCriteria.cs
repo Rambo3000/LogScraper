@@ -1,4 +1,4 @@
-﻿namespace LogScraper.Log.Filter
+﻿namespace LogScraper.Log
 {
     /// <summary>
     /// Represents criteria for filtering log content or metadata.

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
-using LogScraper.Export.Workers;
 
 namespace LogScraper
 {
@@ -19,7 +18,7 @@ namespace LogScraper
                     // Use a lock to ensure only one thread creates the instance
                     lock (lockObject)
                     {
-                        instance ??= new FormRecord();
+                        instance ??= new();
                     }
                 }
                 return instance;

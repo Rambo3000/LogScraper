@@ -1,5 +1,4 @@
 ﻿using System;
-using LogScraper.Log.Filter;
 
 namespace LogScraper.Log.Content
 {

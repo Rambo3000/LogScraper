@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace LogScraper.Export.Workers
+namespace LogScraper.Export
 {
     internal class LogExportWorkerManager
     {

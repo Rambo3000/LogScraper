@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using LogScraper.Log.Collection;
+using LogScraper.Log;
 using LogScraper.Sources.Adapters.Http;
 using System.ComponentModel;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace LogScraper.Log.Collection
+namespace LogScraper.Log
 {
     /// <summary>
     /// Represents a collection of log entries.

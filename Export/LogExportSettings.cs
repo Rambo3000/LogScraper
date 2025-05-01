@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LogScraper.Log.Collection;
+using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 

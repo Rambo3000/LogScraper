@@ -1,10 +1,8 @@
-﻿using LogScraper.Export;
-using LogScraper.Log.Collection;
-using LogScraper.Log.Filter;
-using LogScraper.Log.Metadata;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using LogScraper.Export;
+using LogScraper.Log.Metadata;
 
 namespace LogScraper.Log
 {
@@ -20,7 +18,7 @@ namespace LogScraper.Log
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
         /// <returns>A single string containing the processed log data.</returns>
-        public static  string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLogEntriesForDisplaying, out int entryCount)
+        public static string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLogEntriesForDisplaying, out int entryCount)
         {
             entryCount = 0;
             // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.

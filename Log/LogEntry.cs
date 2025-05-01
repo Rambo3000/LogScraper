@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 
-namespace LogScraper.Log.Collection
+namespace LogScraper.Log
 {
     /// <summary>
     /// Represents a single log entry with its associated metadata and content properties.

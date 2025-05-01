@@ -4,10 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Export;
-using LogScraper.Export.Workers;
 using LogScraper.Extensions;
 using LogScraper.Log;
-using LogScraper.Log.Collection;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
@@ -108,12 +106,12 @@ namespace LogScraper
             {
                 try
                 {
-                    LogReader.ReadIntoLogCollection(rawLog, LogCollection.Instance, logLayout);
+                    RawLogParser.ParseLogEntriesIntoCollection(rawLog, LogCollection.Instance, logLayout);
                 }
                 catch (Exception)
                 {
                     //Write the raw log to the text box to not leave the user completely in the dark
-                    txtLogEntries.Text = LogReader.JoinRawLogIntoString(rawLog);
+                    txtLogEntries.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
@@ -465,6 +463,7 @@ namespace LogScraper
         }
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentProperties);
             UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentProperties);

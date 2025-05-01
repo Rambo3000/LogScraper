@@ -1,11 +1,11 @@
-﻿using LogScraper.Extensions;
-using LogScraper.Log.Collection;
-using LogScraper.Log.Content;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using LogScraper.Extensions;
+using LogScraper.Log;
+using LogScraper.Log.Content;
 
 namespace LogScraper
 {

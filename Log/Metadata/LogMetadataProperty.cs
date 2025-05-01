@@ -1,6 +1,4 @@
-﻿using LogScraper.Log.Collection;
-using LogScraper.Log.Filter;
-using System;
+﻿using System;
 
 namespace LogScraper.Log.Metadata
 {
