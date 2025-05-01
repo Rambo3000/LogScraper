@@ -13,7 +13,7 @@ namespace LogScraper.Log
     internal static class RawLogParser
     {
         /// <summary>
-        /// Parses the raw log entries and isnerts them into the provided LogCollection based on the specified LogLayout.
+        /// Parses the raw log entries and inserts them into the provided LogCollection based on the specified LogLayout.
         /// </summary>
         /// <param name="rawLogEntries">Array of raw log entries to process.</param>
         /// <param name="logCollection">The collection where processed log entries will be stored.</param>
