@@ -75,7 +75,7 @@ namespace LogScraper
 
             if (txtSearch.Text == DefaulSearchtText)
             {
-                txtSearch.Text = "";
+                txtSearch.Text = string.Empty;
                 txtSearch.ForeColor = SystemColors.ControlText;
             }
         }

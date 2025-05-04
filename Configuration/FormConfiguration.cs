@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
-using LogScraper.LogProviders.Kubernetes;
-using LogScraper.LogProviders.Runtime;
-using LogScraper.LogProviders.File;
+using LogScraper.Configuration.Generic;
 using LogScraper.Extensions;
 using LogScraper.Log.Layout;
-using LogScraper.Configuration.Generic;
+using LogScraper.LogProviders.File;
+using LogScraper.LogProviders.Kubernetes;
+using LogScraper.LogProviders.Runtime;
 
 namespace LogScraper.Configuration
 {

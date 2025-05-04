@@ -75,7 +75,7 @@ namespace LogScraper.Sources.Adapters.Http
         public static void SaveAuthenticationDataToCredentialStore(HttpAuthenticationData authenticationData, string credentialManagerUri)
         {
             // Save the authentication type to the credential store.
-            CredentialManager.SaveCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri, ConvertHttpAuthenticationTypeToString(authenticationData.Type), "");
+            CredentialManager.SaveCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri, ConvertHttpAuthenticationTypeToString(authenticationData.Type), string.Empty);
 
             // Save the authentication data based on the specified authentication type.
             switch (authenticationData.Type)
@@ -84,7 +84,7 @@ namespace LogScraper.Sources.Adapters.Http
                     CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.Key, authenticationData.Secret);
                     break;
                 case HttpAuthenticationType.BearerToken:
-                    CredentialManager.SaveCredentials(credentialManagerUri, "", authenticationData.BearerToken);
+                    CredentialManager.SaveCredentials(credentialManagerUri, string.Empty, authenticationData.BearerToken);
                     break;
                 case HttpAuthenticationType.BasicAuthentication:
                     CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);

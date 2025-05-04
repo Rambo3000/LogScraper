@@ -299,7 +299,7 @@ namespace LogScraper.Log
 
                 chkTransformReverse.Checked = false;
                 chkTransformJson.Checked = false;
-                TxtJsonPath.Text = "";
+                TxtJsonPath.Text = string.Empty;
                 if (selected.LogTransformers != null)
                 {
                     foreach (ILogTransformer transformer in selected.LogTransformers)
@@ -327,7 +327,7 @@ namespace LogScraper.Log
 
             if (LstLayouts.SelectedItem is LogLayout selected) selected.Description = TxtDescription.Text;
 
-            LstLayouts.DisplayMember = ""; // Force update
+            LstLayouts.DisplayMember = string.Empty; // Force update
             LstLayouts.DisplayMember = "Description";
         }
 
@@ -426,7 +426,7 @@ namespace LogScraper.Log
             if (LstMetadata.SelectedItem is LogMetadataProperty selected)
             {
                 selected.Description = TxtMetadataDescription.Text;
-                LstMetadata.DisplayMember = "";
+                LstMetadata.DisplayMember = string.Empty;
                 LstMetadata.DisplayMember = "Description";
             }
 
@@ -454,7 +454,7 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selected)
             {
                 selected.Description = TxtContentDescription.Text;
-                LstContent.DisplayMember = "";
+                LstContent.DisplayMember = string.Empty;
                 LstContent.DisplayMember = "Description";
             }
 

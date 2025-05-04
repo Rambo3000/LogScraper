@@ -336,7 +336,7 @@ namespace LogScraper
         {
             if (txtSearch.Text == DefaulSearchtText)
             {
-                txtSearch.Text = "";
+                txtSearch.Text = string.Empty;
                 txtSearch.ForeColor = SystemColors.ControlText;
             }
         }
@@ -363,7 +363,7 @@ namespace LogScraper
             PerformSearch();
         }
 
-        private string lastSearch = "";
+        private string lastSearch = string.Empty;
         private void PerformSearch()
         {
             string searchString = txtSearch.Text.Trim();

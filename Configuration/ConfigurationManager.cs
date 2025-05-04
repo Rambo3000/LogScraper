@@ -1,13 +1,13 @@
-﻿using LogScraper.Configuration.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading;
+using LogScraper.Configuration.Generic;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
 
 namespace LogScraper.Configuration
 {
@@ -55,7 +55,7 @@ namespace LogScraper.Configuration
             {
                 lock (lockObject)
                 {
-                    instance ??= new ConfigurationManager();
+                    instance ??= new();
                 }
             }
         }

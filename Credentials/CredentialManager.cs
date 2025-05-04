@@ -1,7 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
+using static LogScraper.Credentials.NativeMethods;
 
 namespace LogScraper.Credentials
 {
@@ -23,7 +23,7 @@ namespace LogScraper.Credentials
         public static void SaveCredentials(string target, string username, string password)
         {
             // Convert the password to a SecureString for secure handling.
-            var securePassword = new SecureString();
+            SecureString securePassword = new();
             foreach (char c in password)
             {
                 securePassword.AppendChar(c);
@@ -62,16 +62,16 @@ namespace LogScraper.Credentials
             if (NativeMethods.CredRead(target, NativeMethods.CredentialType.Generic, 0, out nint credPtr))
             {
                 // Marshal the credential structure from the unmanaged memory.
-                var credential = (NativeMethods.Credential)Marshal.PtrToStructure(credPtr, typeof(NativeMethods.Credential));
-                var password = credential.CredentialBlobSize == 0
-                    ? ""
+                Credential credential = Marshal.PtrToStructure<NativeMethods.Credential>(credPtr);
+                string password = credential.CredentialBlobSize == 0
+                    ? string.Empty
                     : Marshal.PtrToStringUni(credential.CredentialBlob, (int)credential.CredentialBlobSize / 2);
 
                 // Free the unmanaged memory allocated for the credential.
                 NativeMethods.CredFree(credPtr);
 
                 // Return the credentials as a NetworkCredential object.
-                return new NetworkCredential(credential.UserName, password);
+                return new(credential.UserName, password);
             }
 
             // Return null if the credentials are not found.
@@ -104,7 +104,7 @@ namespace LogScraper.Credentials
             // Combine the application name, log provider name, and sub-context into a single string.
             return applicationName + ":"
                 + LogProviderName
-                + ((subContext == null) ? "" : ":" + subContext);
+                + ((subContext == null) ? string.Empty : ":" + subContext);
         }
     }
 }

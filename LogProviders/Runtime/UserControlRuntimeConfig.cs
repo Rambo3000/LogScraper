@@ -47,7 +47,7 @@ namespace LogScraper.LogProviders.Kubernetes
                     _instances.Add(runtimeNew);
                 }
                 LstUrls.DataSource = _instances;
-                LstUrls.DisplayMember = "";
+                LstUrls.DisplayMember = string.Empty;
                 LstUrls.DisplayMember = "Description";
                 if (config.Instances.Count > 0) LstUrls.SelectedIndex = 0;
             }
@@ -171,7 +171,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstUrls.SelectedItem is RuntimeInstance selected) selected.Description = TxtDescription.Text;
 
-            LstUrls.DisplayMember = ""; // Force update
+            LstUrls.DisplayMember = string.Empty; // Force update
             LstUrls.DisplayMember = "Description";
         }
 

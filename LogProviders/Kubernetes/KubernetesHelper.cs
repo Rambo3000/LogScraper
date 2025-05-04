@@ -65,7 +65,7 @@ namespace LogScraper.LogProviders.Kubernetes
                     string imageName = imageParts[^1].Split(':')[0];
 
                     // Generate a description by removing a specific prefix from the pod name.
-                    string description = podName.Replace("baas-umbrella-deployment-", "");
+                    string description = podName.Replace("baas-umbrella-deployment-", string.Empty);
 
                     // Create a new KubernetesPod object with the extracted details.
                     KubernetesPod podInfo = new()

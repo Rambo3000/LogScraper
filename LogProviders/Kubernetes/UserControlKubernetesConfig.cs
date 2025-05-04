@@ -70,7 +70,7 @@ namespace LogScraper.LogProviders.Kubernetes
                     _clusters.Add(clusterNew);
                 }
                 LstClusters.DataSource = _clusters;
-                LstClusters.DisplayMember = "";
+                LstClusters.DisplayMember = string.Empty;
                 LstClusters.DisplayMember = "Description";
                 if (config.Clusters.Count > 0) LstClusters.SelectedIndex = 0;
             }
@@ -206,7 +206,7 @@ namespace LogScraper.LogProviders.Kubernetes
             KubernetesNamespace ns = new()
             {
                 Description = "Nieuwe namespace",
-                Name = ""
+                Name = string.Empty
             };
 
             _namespaces.Add(ns);
@@ -283,7 +283,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
                 _namespaces = [.. selected.Namespaces ?? []];
                 LstNamespaces.DataSource = _namespaces;
-                LstNamespaces.DisplayMember = "";
+                LstNamespaces.DisplayMember = string.Empty;
                 LstNamespaces.DisplayMember = "Description";
                 UpdatingClusterInformation = false;
             }
@@ -317,7 +317,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstClusters.SelectedItem is KubernetesCluster selected) selected.Description = TxtClusterDescription.Text;
 
-            LstClusters.DisplayMember = ""; // Force update
+            LstClusters.DisplayMember = string.Empty; // Force update
             LstClusters.DisplayMember = "Description";
         }
 
@@ -344,7 +344,7 @@ namespace LogScraper.LogProviders.Kubernetes
             if (LstNamespaces.SelectedItem is KubernetesNamespace selected)
             {
                 selected.Description = TxtNamespaceDescription.Text;
-                LstNamespaces.DisplayMember = "";
+                LstNamespaces.DisplayMember = string.Empty;
                 LstNamespaces.DisplayMember = "Description"; // Force update
             }
         }
