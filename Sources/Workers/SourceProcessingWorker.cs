@@ -83,7 +83,7 @@ namespace LogScraper.Sources.Workers
             string rawLog = await sourceAdapter.GetLogAsync();
 
             // Split the raw log data into an array of lines.
-            string[] rawLogArray = rawLog.Split(new[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.None);
+            string[] rawLogArray = rawLog.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None);
 
             // Notify listeners that the log data has been downloaded.
             OnDownloadCompleted(rawLogArray, sourceAdapter.GetLastTrailTime());

@@ -132,13 +132,13 @@ namespace LogScraper.Sources.Workers
         }
 
         /// <summary>
-        /// Gets the current length of the worker queue.
+        /// Gets a value indicating whether the worker queue is currently active.
         /// </summary>
-        public int QueueLength
+        public bool IsWorkerActive
         {
             get
             {
-                return workerQueue.Count;
+                return workerQueue.Count > 0;
             }
         }
     }

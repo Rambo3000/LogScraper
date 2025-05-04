@@ -63,10 +63,14 @@ namespace LogScraper
         #region Initiate getting raw log and processing of raw log
 
         private DateTime? lastTrailTime = null;
-        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
+        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1, bool isProgressUpdateEnabled = true)
         {
-            // In case we want to download for a given duration, first get the log and after that start the duration
-            if (durationInSeconds != -1) { FetchRawLogAsync(-1, -1); }
+            if (durationInSeconds != -1)
+            {
+                // In case we want to download for a given totalDurationInSeconds, first get the log and after that start the totalDurationInSeconds
+                HandleSourceProcessingWorkerProgressUpdate(0, durationInSeconds);
+                FetchRawLogAsync(-1, -1, false);
+            }
             try
             {
                 BtnRecord.Enabled = false;
@@ -86,7 +90,8 @@ namespace LogScraper
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
                 sourceProcessingWorker.StatusUpdate += HandleErrorMessages;
-                sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
+                // Do not update the timestamp when logging with duration and doing the initial fetch action
+                if (isProgressUpdateEnabled) sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
                 SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
             }
             catch (Exception ex)
@@ -268,7 +273,7 @@ namespace LogScraper
             UsrLogContentBegin.UpdateLogEntries(null);
             UsrLogContentEnd.UpdateLogEntries(null);
 
-            txtLogEntries.Text = "";
+            txtLogEntries.Text = string.Empty;
             RefreshLogStatistics();
             UpdateButtonStatus();
             lastTrailTime = null;
@@ -324,16 +329,16 @@ namespace LogScraper
         {
             Erase();
         }
-        private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int duration)
+        private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
         {
-            if (duration == -1)
+            if (totalDurationInSeconds == -1)
             {
                 BtnRecordWithTimer.Text = string.Empty;
                 BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
             }
             else
             {
-                TimeSpan tijd = TimeSpan.FromSeconds(duration - elapsedSeconds);
+                TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
             }
@@ -343,7 +348,7 @@ namespace LogScraper
         #region Buttons
         private void UpdateButtonStatus()
         {
-            bool downloadingInProgress = SourceProcessingManager.Instance.QueueLength > 0;
+            bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
             if (!downloadingInProgress)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
@@ -384,7 +389,7 @@ namespace LogScraper
         }
         private void BtnFormRecord_Click(object sender, EventArgs e)
         {
-            if (SourceProcessingManager.Instance.QueueLength == 0) { BtnRecordWithTimer_Click(sender, e); }
+            if (!SourceProcessingManager.Instance.IsWorkerActive) { BtnRecordWithTimer_Click(sender, e); }
             FormRecord.Instance.ShowForm();
         }
         private void BtnConfig_Click(object sender, EventArgs e)
