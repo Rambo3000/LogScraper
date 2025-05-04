@@ -40,7 +40,6 @@
             BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
-            btnReset = new System.Windows.Forms.Button();
             BtnErase = new System.Windows.Forms.Button();
             BtnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
@@ -116,7 +115,6 @@
             // 
             // lblLogEntriesTotalValue
             // 
-            lblLogEntriesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             lblLogEntriesTotalValue.Location = new System.Drawing.Point(119, 71);
             lblLogEntriesTotalValue.Name = "lblLogEntriesTotalValue";
             lblLogEntriesTotalValue.Size = new System.Drawing.Size(63, 15);
@@ -126,7 +124,6 @@
             // 
             // lblNumberOfLogEntriesFiltered
             // 
-            lblNumberOfLogEntriesFiltered.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(119, 93);
             lblNumberOfLogEntriesFiltered.Name = "lblNumberOfLogEntriesFiltered";
             lblNumberOfLogEntriesFiltered.Size = new System.Drawing.Size(63, 15);
@@ -158,7 +155,6 @@
             groupBox3.Controls.Add(BtnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
-            groupBox3.Controls.Add(btnReset);
             groupBox3.Controls.Add(BtnRecord);
             groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(LbllogEntriesTotal);
@@ -171,7 +167,7 @@
             groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(297, 147);
+            groupBox3.Size = new System.Drawing.Size(257, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
@@ -179,17 +175,19 @@
             // 
             // userControlMemoryUsage1
             // 
+            userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(246, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(206, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
             userControlMemoryUsage1.Size = new System.Drawing.Size(46, 17);
             userControlMemoryUsage1.TabIndex = 24;
             // 
-            // btnConfig
+            // BtnConfig
             // 
-            BtnConfig.Image = (System.Drawing.Image)resources.GetObject("btnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(266, 117);
-            BtnConfig.Name = "btnConfig";
+            BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
+            BtnConfig.Location = new System.Drawing.Point(226, 117);
+            BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
             BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -200,7 +198,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(204, 22);
+            btnOpenWithEditor.Location = new System.Drawing.Point(165, 22);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
@@ -211,7 +209,7 @@
             // BtnFormRecord
             // 
             BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
-            BtnFormRecord.Location = new System.Drawing.Point(250, 22);
+            BtnFormRecord.Location = new System.Drawing.Point(211, 22);
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
@@ -220,17 +218,6 @@
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnFormRecord_Click;
             // 
-            // btnReset
-            // 
-            btnReset.Image = (System.Drawing.Image)resources.GetObject("btnReset.Image");
-            btnReset.Location = new System.Drawing.Point(158, 22);
-            btnReset.Name = "btnReset";
-            btnReset.Size = new System.Drawing.Size(40, 40);
-            btnReset.TabIndex = 20;
-            ToolTip.SetToolTip(btnReset, "Reset");
-            btnReset.UseVisualStyleBackColor = true;
-            btnReset.Click += BtnReset_Click;
-            // 
             // BtnErase
             // 
             BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
@@ -238,15 +225,15 @@
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
-            ToolTip.SetToolTip(BtnErase, "Wis het log, behoud de metadata filtering");
+            ToolTip.SetToolTip(BtnErase, "Wis het log");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
             // 
-            // btnStop
+            // BtnStop
             // 
-            BtnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
+            BtnStop.Image = (System.Drawing.Image)resources.GetObject("BtnStop.Image");
             BtnStop.Location = new System.Drawing.Point(7, 22);
-            BtnStop.Name = "btnStop";
+            BtnStop.Name = "BtnStop";
             BtnStop.Size = new System.Drawing.Size(51, 40);
             BtnStop.TabIndex = 17;
             ToolTip.SetToolTip(BtnStop, "Stop");
@@ -255,7 +242,6 @@
             // 
             // lblNumberOfLogEntriesFilteredWithError
             // 
-            lblNumberOfLogEntriesFilteredWithError.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(119, 114);
             lblNumberOfLogEntriesFilteredWithError.Name = "lblNumberOfLogEntriesFilteredWithError";
             lblNumberOfLogEntriesFilteredWithError.Size = new System.Drawing.Size(63, 15);
@@ -616,7 +602,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(506, 8);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(466, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -638,7 +624,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(308, 8);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(268, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
@@ -703,7 +689,6 @@
         public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Button BtnErase;
         public System.Windows.Forms.Button BtnStop;
-        public System.Windows.Forms.Button btnReset;
         public System.Windows.Forms.Button btnOpenWithEditor;
         public System.Windows.Forms.Label lblLogEntriesTotalValue;
         public System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;

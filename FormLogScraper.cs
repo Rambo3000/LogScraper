@@ -269,14 +269,15 @@ namespace LogScraper
         private void Erase()
         {
             LogCollection.Instance.Clear();
-            FilterLogEntries();
-            UsrLogContentBegin.UpdateLogEntries(null);
-            UsrLogContentEnd.UpdateLogEntries(null);
-
             txtLogEntries.Text = string.Empty;
+            FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
             lastTrailTime = null;
+            HandleErrorMessages(string.Empty, true);
+            //Force memory cleanup
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         private void Reset()
         {
@@ -327,7 +328,7 @@ namespace LogScraper
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
         {
-            Erase();
+            Reset();
         }
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
         {
@@ -378,10 +379,6 @@ namespace LogScraper
         public void BtnErase_Click(object sender, EventArgs e)
         {
             Erase();
-        }
-        private void BtnReset_Click(object sender, EventArgs e)
-        {
-            Reset();
         }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {

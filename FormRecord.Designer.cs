@@ -161,7 +161,7 @@
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
-            // FormMiniTop
+            // FormRecord
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -183,7 +183,7 @@
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "FormMiniTop";
+            Name = "FormRecord";
             Text = " Log Scraper";
             TopMost = true;
             FormClosing += FormMiniTop_FormClosing;
