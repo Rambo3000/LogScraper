@@ -72,7 +72,7 @@
             tabPage3 = new System.Windows.Forms.TabPage();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
             tabPage4 = new System.Windows.Forms.TabPage();
-            UsrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormating();
+            UsrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormatting();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             GrpLogProvidersSettings = new System.Windows.Forms.GroupBox();
             usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
@@ -720,7 +720,7 @@
         private System.Windows.Forms.TextBox TxtErrorMessage;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
-        private Log.Metadata.UserControlMetadataFormating UsrControlMetadataFormating;
+        private Log.Metadata.UserControlMetadataFormatting UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
         private UserControlSearch usrSearch;

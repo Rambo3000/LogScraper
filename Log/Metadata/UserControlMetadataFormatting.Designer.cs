@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Log.Metadata
 {
-    partial class UserControlMetadataFormating
+    partial class UserControlMetadataFormatting
     {
         /// <summary> 
         /// Required designer variable.
@@ -67,14 +67,14 @@
             grpAddMetadata.TabStop = false;
             grpAddMetadata.Text = "Metadata toevoegen";
             // 
-            // UserControlMetadataFormating
+            // UserControlMetadataFormatting
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(grpAddMetadata);
             Controls.Add(chkShowOriginalMetdata);
             MinimumSize = new System.Drawing.Size(190, 0);
-            Name = "UserControlMetadataFormating";
+            Name = "UserControlMetadataFormatting";
             Size = new System.Drawing.Size(190, 150);
             grpAddMetadata.ResumeLayout(false);
             ResumeLayout(false);

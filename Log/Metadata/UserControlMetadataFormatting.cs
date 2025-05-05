@@ -5,11 +5,11 @@ using System.Windows.Forms;
 
 namespace LogScraper.Log.Metadata
 {
-    public partial class UserControlMetadataFormating : UserControl
+    public partial class UserControlMetadataFormatting : UserControl
     {
         public event EventHandler SelectionChanged;
 
-        public UserControlMetadataFormating()
+        public UserControlMetadataFormatting()
         {
             InitializeComponent();
         }
