@@ -138,7 +138,7 @@ namespace LogScraper.Sources.Workers
         {
             get
             {
-                return workerQueue.Count > 0;
+                return workerQueue.Count > 0 || currentWorkercancellationTokenSource != null; ;
             }
         }
     }
