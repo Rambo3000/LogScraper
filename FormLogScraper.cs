@@ -493,17 +493,38 @@ namespace LogScraper
         #endregion
 
         #region Form key shortcuts
-        private void FormLogScraper_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Overrides the default command key processing to handle custom keyboard shortcuts at the form level.
+        /// </summary>
+        /// <param name="msg">A <see cref="Message"/> structure that represents the window message to process.</param>
+        /// <param name="keyData">A <see cref="Keys"/> value that specifies the key or key combination to process.</param>
+        /// <returns>
+        /// True if the key combination was handled; otherwise, false to allow the base class to process the key.
+        /// </returns>
+        /// <remarks>
+        /// This method intercepts key combinations such as Ctrl+R and Ctrl+F before they are passed to the focused control.
+        /// - Ctrl+R triggers the "Record" functionality by invoking <see cref="BtnFormRecord_Click"/>.
+        /// - Ctrl+F sets focus to the search control (<see cref="usrSearch"/>).
+        /// For all other key combinations, the base class implementation is called.
+        /// </remarks>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // Check for Ctrl+F key combination
-            if (e.Control && e.KeyCode == Keys.F)
+            // Check for Ctrl+R key combination
+            if (keyData == (Keys.Control | Keys.R))
             {
-                // Set focus to the search TextBox
-                usrSearch.Focus();
-
-                // Suppress the key event to prevent further processing
-                e.SuppressKeyPress = true;
+                BtnFormRecord_Click(this, EventArgs.Empty); // Trigger the desired action
+                return true; // Indicate that the key combination has been handled
             }
+
+            // Check for Ctrl+F key combination
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                usrSearch.Focus(); // Set focus to the search control
+                return true; // Indicate that the key combination has been handled
+            }
+
+            // Let the base class handle other key combinations
+            return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
     }

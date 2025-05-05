@@ -214,7 +214,7 @@
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Open mini controls en start met uitlezen");
+            ToolTip.SetToolTip(BtnFormRecord, "Open mini controls en start met uitlezen [CTRL-R]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnFormRecord_Click;
             // 
@@ -654,7 +654,6 @@
             Name = "FormLogScraper";
             Text = "Log Scraper - GEBRUIK OP EIGEN RISICO - NIET GEBRUIKEN OP PRODUCTIE OMGEVINGEN";
             Load += FormLogScraper_Load;
-            KeyDown += FormLogScraper_KeyDown;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             splitContainer2.Panel1.ResumeLayout(false);
