@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlGenericConfig));
             LblDefaultLogProviderType = new System.Windows.Forms.Label();
             GrpExportSettings = new System.Windows.Forms.GroupBox();
             label3 = new System.Windows.Forms.Label();
@@ -41,8 +43,16 @@
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
+            ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
+            pictureBox16 = new System.Windows.Forms.PictureBox();
+            pictureBox1 = new System.Windows.Forms.PictureBox();
+            pictureBox2 = new System.Windows.Forms.PictureBox();
+            toolTip = new System.Windows.Forms.ToolTip(components);
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // LblDefaultLogProviderType
@@ -62,7 +72,7 @@
             GrpExportSettings.Controls.Add(TxtEditorLocation);
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Enabled = false;
-            GrpExportSettings.Location = new System.Drawing.Point(29, 128);
+            GrpExportSettings.Location = new System.Drawing.Point(29, 153);
             GrpExportSettings.Name = "GrpExportSettings";
             GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
@@ -111,7 +121,7 @@
             // ChkExportToFile
             // 
             ChkExportToFile.AutoSize = true;
-            ChkExportToFile.Location = new System.Drawing.Point(6, 103);
+            ChkExportToFile.Location = new System.Drawing.Point(6, 128);
             ChkExportToFile.Name = "ChkExportToFile";
             ChkExportToFile.Size = new System.Drawing.Size(241, 19);
             ChkExportToFile.TabIndex = 5;
@@ -167,6 +177,10 @@
             // 
             // GrpGeneralSettings
             // 
+            GrpGeneralSettings.Controls.Add(pictureBox2);
+            GrpGeneralSettings.Controls.Add(pictureBox1);
+            GrpGeneralSettings.Controls.Add(pictureBox16);
+            GrpGeneralSettings.Controls.Add(ChkShowErrorsInBeginAndEndFilters);
             GrpGeneralSettings.Controls.Add(LblDefaultLogProviderType);
             GrpGeneralSettings.Controls.Add(CboAutomaticReadTime);
             GrpGeneralSettings.Controls.Add(GrpExportSettings);
@@ -178,10 +192,50 @@
             GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
-            GrpGeneralSettings.Size = new System.Drawing.Size(848, 215);
+            GrpGeneralSettings.Size = new System.Drawing.Size(848, 248);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
+            // 
+            // ChkShowErrorsInBeginAndEndFilters
+            // 
+            ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
+            ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
+            ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(315, 19);
+            ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
+            ChkShowErrorsInBeginAndEndFilters.Text = "Toon regels met ERROR altijd in de begin en eind filters";
+            ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox16
+            // 
+            pictureBox16.Image = Properties.Resources.help;
+            pictureBox16.Location = new System.Drawing.Point(293, 79);
+            pictureBox16.Name = "pictureBox16";
+            pictureBox16.Size = new System.Drawing.Size(16, 16);
+            pictureBox16.TabIndex = 36;
+            pictureBox16.TabStop = false;
+            toolTip.SetToolTip(pictureBox16, "Dit betreft het aantal seconden dat een enkele download mag duren. Indien er grote bestanden gedownload moeten worden dan kan deze waarde verhoogd worden.");
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.help;
+            pictureBox1.Location = new System.Drawing.Point(327, 103);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new System.Drawing.Size(16, 16);
+            pictureBox1.TabIndex = 37;
+            pictureBox1.TabStop = false;
+            toolTip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = Properties.Resources.help;
+            pictureBox2.Location = new System.Drawing.Point(253, 128);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new System.Drawing.Size(16, 16);
+            pictureBox2.TabIndex = 38;
+            pictureBox2.TabStop = false;
+            toolTip.SetToolTip(pictureBox2, "Indien aangevinkt wordt er bij elke wijziging van het log deze ook naar het geselecteerde bestand weggeschreven.");
             // 
             // UserControlGenericConfig
             // 
@@ -189,11 +243,14 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(GrpGeneralSettings);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(848, 215);
+            Size = new System.Drawing.Size(848, 248);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
             GrpGeneralSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
         }
 
@@ -212,5 +269,10 @@
         private System.Windows.Forms.ComboBox CboAutomaticReadTime;
         private System.Windows.Forms.Label LblAutomaticReadTimea;
         private System.Windows.Forms.GroupBox GrpGeneralSettings;
+        private System.Windows.Forms.CheckBox ChkShowErrorsInBeginAndEndFilters;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.PictureBox pictureBox16;
     }
 }

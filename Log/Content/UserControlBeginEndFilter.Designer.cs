@@ -33,7 +33,6 @@
             BtnReset = new System.Windows.Forms.Button();
             ChkShowExtraLogEntries = new System.Windows.Forms.CheckBox();
             TxtExtraLogEntries = new System.Windows.Forms.TextBox();
-            chkShowErrors = new System.Windows.Forms.CheckBox();
             txtSearch = new System.Windows.Forms.TextBox();
             SuspendLayout();
             // 
@@ -46,7 +45,7 @@
             LstLogContent.IntegralHeight = false;
             LstLogContent.Location = new System.Drawing.Point(0, 62);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(216, 68);
+            LstLogContent.Size = new System.Drawing.Size(216, 93);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -96,20 +95,6 @@
             TxtExtraLogEntries.Visible = false;
             TxtExtraLogEntries.TextChanged += TxtExtraLogEntries_TextChanged;
             // 
-            // chkShowErrors
-            // 
-            chkShowErrors.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            chkShowErrors.AutoSize = true;
-            chkShowErrors.Checked = true;
-            chkShowErrors.CheckState = System.Windows.Forms.CheckState.Checked;
-            chkShowErrors.Location = new System.Drawing.Point(5, 136);
-            chkShowErrors.Name = "chkShowErrors";
-            chkShowErrors.Size = new System.Drawing.Size(125, 19);
-            chkShowErrors.TabIndex = 5;
-            chkShowErrors.Text = "Toon ERROR regels";
-            chkShowErrors.UseVisualStyleBackColor = true;
-            chkShowErrors.CheckedChanged += ChkShowErrors_CheckedChanged;
-            // 
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -129,7 +114,6 @@
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
             Controls.Add(txtSearch);
-            Controls.Add(chkShowErrors);
             Controls.Add(TxtExtraLogEntries);
             Controls.Add(ChkShowExtraLogEntries);
             Controls.Add(BtnReset);
@@ -148,7 +132,6 @@
         private System.Windows.Forms.Button BtnReset;
         private System.Windows.Forms.CheckBox ChkShowExtraLogEntries;
         private System.Windows.Forms.TextBox TxtExtraLogEntries;
-        private System.Windows.Forms.CheckBox chkShowErrors;
         private System.Windows.Forms.TextBox txtSearch;
     }
 }

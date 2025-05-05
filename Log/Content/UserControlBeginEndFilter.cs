@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using LogScraper.Configuration;
 using LogScraper.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Content;
@@ -134,7 +135,7 @@ namespace LogScraper
                 // If the content is null, check for errors if the "Show Errors" checkbox is checked
                 if (content == null)
                 {
-                    if (chkShowErrors.Checked) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out content);
+                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out content);
                     if (content == null) continue;
                     isError = true;
                 }
@@ -273,11 +274,6 @@ namespace LogScraper
         private void TxtExtraLogEntries_TextChanged(object sender, EventArgs e)
         {
             OnFilterChanged(EventArgs.Empty);
-        }
-
-        private void ChkShowErrors_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateLogContentList();
         }
 
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)

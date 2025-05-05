@@ -45,6 +45,12 @@ namespace LogScraper.Configuration.Generic
         /// Default value is 2 minutes.
         /// </summary>
         public int AutomaticReadTimeMinutes { get; set; } = 2;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to seperate show error lines in the begin and end filters.
+        /// Default value is <c>true</c>.
+        /// </summary>
+        public bool ShowErrorLinesInBeginAndEndFilters { get; set; } = true;
     }
 
     /// <summary>
