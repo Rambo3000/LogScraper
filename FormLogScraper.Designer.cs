@@ -198,7 +198,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(165, 22);
+            btnOpenWithEditor.Location = new System.Drawing.Point(166, 22);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
@@ -221,7 +221,7 @@
             // BtnErase
             // 
             BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
-            BtnErase.Location = new System.Drawing.Point(211, 22);
+            BtnErase.Location = new System.Drawing.Point(212, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
@@ -232,9 +232,9 @@
             // BtnStop
             // 
             BtnStop.Image = (System.Drawing.Image)resources.GetObject("BtnStop.Image");
-            BtnStop.Location = new System.Drawing.Point(52, 21);
+            BtnStop.Location = new System.Drawing.Point(53, 22);
             BtnStop.Name = "BtnStop";
-            BtnStop.Size = new System.Drawing.Size(51, 40);
+            BtnStop.Size = new System.Drawing.Size(52, 40);
             BtnStop.TabIndex = 17;
             ToolTip.SetToolTip(BtnStop, "Stop [CTRL-S]");
             BtnStop.UseVisualStyleBackColor = true;
@@ -252,7 +252,7 @@
             // BtnRecordWithTimer
             // 
             BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            BtnRecordWithTimer.Location = new System.Drawing.Point(103, 22);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(104, 22);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(56, 40);
             BtnRecordWithTimer.TabIndex = 16;

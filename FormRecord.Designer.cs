@@ -121,6 +121,7 @@
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(40, 40);
             btnErase.TabIndex = 11;
+            ToolTip.SetToolTip(btnErase, "Wis het log");
             btnErase.UseVisualStyleBackColor = true;
             btnErase.Click += BtnErase_Click;
             // 
@@ -160,6 +161,7 @@
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 15;
+            ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
