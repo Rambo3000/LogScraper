@@ -48,7 +48,7 @@
             // BtnRecord
             // 
             BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
-            BtnRecord.Location = new System.Drawing.Point(6, 5);
+            BtnRecord.Location = new System.Drawing.Point(52, 5);
             BtnRecord.Name = "BtnRecord";
             BtnRecord.Size = new System.Drawing.Size(40, 40);
             BtnRecord.TabIndex = 0;
@@ -58,7 +58,7 @@
             // BtnRecordWithTimer
             // 
             BtnRecordWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnRecordWithTimer.Image");
-            BtnRecordWithTimer.Location = new System.Drawing.Point(45, 5);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(90, 5);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 1;
@@ -104,7 +104,7 @@
             // btnStop
             // 
             btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
-            btnStop.Location = new System.Drawing.Point(6, 5);
+            btnStop.Location = new System.Drawing.Point(52, 5);
             btnStop.Name = "btnStop";
             btnStop.Size = new System.Drawing.Size(40, 40);
             btnStop.TabIndex = 10;
@@ -115,7 +115,7 @@
             // btnErase
             // 
             btnErase.Image = (System.Drawing.Image)resources.GetObject("btnErase.Image");
-            btnErase.Location = new System.Drawing.Point(91, 5);
+            btnErase.Location = new System.Drawing.Point(182, 5);
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(40, 40);
             btnErase.TabIndex = 11;
@@ -143,18 +143,18 @@
             // btnBack
             // 
             btnBack.Image = (System.Drawing.Image)resources.GetObject("btnBack.Image");
-            btnBack.Location = new System.Drawing.Point(183, 5);
+            btnBack.Location = new System.Drawing.Point(6, 5);
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            ToolTip.SetToolTip(btnBack, "Sluit dit venster en stop het uitlezen");
+            ToolTip.SetToolTip(btnBack, "Sluit dit venster en stop het uitlezen [CTRL-R]");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(137, 5);
+            btnOpenWithEditor.Location = new System.Drawing.Point(136, 5);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 15;

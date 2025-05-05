@@ -44,8 +44,11 @@ namespace LogScraper
         {
             UpdateButtonsFromMainWindow();
             base.Show();
-            Focus();
             LogScraperForm.WindowState = FormWindowState.Minimized;
+
+            // Ensure the form is brought to the foreground and activated
+            BringToFront();
+            Activate();
         }
         public void HideForm()
         {
@@ -102,5 +105,32 @@ namespace LogScraper
             btnOpenWithEditor.Enabled = LogScraperForm.btnOpenWithEditor.Enabled;
         }
 
+        #region Form key shortcuts
+        /// <summary>
+        /// Overrides the default command key processing to handle custom keyboard shortcuts at the form level.
+        /// </summary>
+        /// <param name="msg">A <see cref="Message"/> structure that represents the window message to process.</param>
+        /// <param name="keyData">A <see cref="Keys"/> value that specifies the key or key combination to process.</param>
+        /// <returns>
+        /// True if the key combination was handled; otherwise, false to allow the base class to process the key.
+        /// </returns>
+        /// <remarks>
+        /// This method intercepts key combinations such as Ctrl+R and Ctrl+F before they are passed to the focused control.
+        /// - Ctrl+R triggers the "Back" functionality by invoking <see cref="BtnBack_Click"/>.
+        /// For all other key combinations, the base class implementation is called.
+        /// </remarks>
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Check for Ctrl+R key combination
+            if (keyData == (Keys.Control | Keys.R))
+            {
+                BtnBack_Click(this, EventArgs.Empty); // Trigger the desired action
+                return true; // Indicate that the key combination has been handled
+            }
+
+            // Let the base class handle other key combinations
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        #endregion
     }
 }
