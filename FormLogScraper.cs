@@ -63,14 +63,8 @@ namespace LogScraper
         #region Initiate getting raw log and processing of raw log
 
         private DateTime? lastTrailTime = null;
-        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1, bool isProgressUpdateEnabled = true)
+        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
-            if (durationInSeconds != -1)
-            {
-                // In case we want to download for a given totalDurationInSeconds, first get the log and after that start the totalDurationInSeconds
-                HandleSourceProcessingWorkerProgressUpdate(0, durationInSeconds);
-                FetchRawLogAsync(-1, -1, false);
-            }
             try
             {
                 BtnRecord.Enabled = false;
@@ -90,8 +84,7 @@ namespace LogScraper
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
                 sourceProcessingWorker.StatusUpdate += HandleErrorMessages;
-                // Do not update the timestamp when logging with duration and doing the initial fetch action
-                if (isProgressUpdateEnabled) sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
+                sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
                 SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
             }
             catch (Exception ex)
