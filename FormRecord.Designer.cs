@@ -62,6 +62,7 @@
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 1;
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees uit voor meerdere minuten [CTRL-S]");
             BtnRecordWithTimer.UseVisualStyleBackColor = true;
             BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
@@ -108,6 +109,7 @@
             btnStop.Name = "btnStop";
             btnStop.Size = new System.Drawing.Size(40, 40);
             btnStop.TabIndex = 10;
+            ToolTip.SetToolTip(btnStop, "Stop [CTRL-S]");
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Visible = false;
             btnStop.Click += BtnStop_Click;

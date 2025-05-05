@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using LogScraper.Sources.Workers;
 
 namespace LogScraper
 {
@@ -65,6 +66,7 @@ namespace LogScraper
         private void BtnStop_Click(object sender, System.EventArgs e)
         {
             LogScraperForm.BtnStop_Click(sender, e);
+            UpdateButtonsFromMainWindow();
         }
 
         private void BtnErase_Click(object sender, System.EventArgs e)
@@ -98,6 +100,7 @@ namespace LogScraper
             BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
             BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;
             btnStop.Visible = LogScraperForm.BtnStop.Visible;
+            btnStop.Enabled = LogScraperForm.BtnStop.Enabled;
             BtnRecordWithTimer.Text = LogScraperForm.BtnRecordWithTimer.Text;
             BtnRecordWithTimer.Image = LogScraperForm.BtnRecordWithTimer.Image;
             BtnRecordWithTimer.Enabled = LogScraperForm.BtnRecordWithTimer.Enabled;
@@ -125,6 +128,20 @@ namespace LogScraper
             if (keyData == (Keys.Control | Keys.R))
             {
                 BtnBack_Click(this, EventArgs.Empty); // Trigger the desired action
+                return true; // Indicate that the key combination has been handled
+            }
+
+            // Check for Ctrl+S key combination
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                if (SourceProcessingManager.Instance.IsWorkerActive)
+                {
+                    BtnStop_Click(this, EventArgs.Empty);
+                }
+                else
+                {
+                    BtnRecordWithTimer_Click(this, EventArgs.Empty);
+                }
                 return true; // Indicate that the key combination has been handled
             }
 

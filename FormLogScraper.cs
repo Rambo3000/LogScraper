@@ -24,9 +24,9 @@ namespace LogScraper
         {
             InitializeComponent();
 
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
-
             FormRecord.Instance.SetFormLogScraper(this);
+
+            SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
             usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrKubernetes.StatusUpdate += HandleErrorMessages;
@@ -42,7 +42,7 @@ namespace LogScraper
 
             usrSearch.Search += UsrSearch_Search;
 
-            SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
+            SetDynamicToolTips();
         }
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
@@ -337,6 +337,10 @@ namespace LogScraper
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
             }
         }
+        private void SetDynamicToolTips()
+        {
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
+        }
         #endregion
 
         #region Buttons
@@ -351,6 +355,7 @@ namespace LogScraper
             BtnRecord.Enabled = !downloadingInProgress;
             BtnRecordWithTimer.Enabled = !downloadingInProgress;
             BtnStop.Visible = downloadingInProgress;
+            BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
             GrpLogProvidersSettings.Enabled = !downloadingInProgress;
@@ -367,6 +372,7 @@ namespace LogScraper
         }
         public void BtnStop_Click(object sender, EventArgs e)
         {
+            BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
         public void BtnErase_Click(object sender, EventArgs e)
@@ -393,7 +399,7 @@ namespace LogScraper
 
                 if (genericConfigChanged)
                 {
-                    ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten");
+                    SetDynamicToolTips();
                     btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
                 }
 
@@ -512,7 +518,7 @@ namespace LogScraper
             // Check for Ctrl+R key combination
             if (keyData == (Keys.Control | Keys.R))
             {
-                BtnFormRecord_Click(this, EventArgs.Empty); // Trigger the desired action
+                BtnFormRecord_Click(this, EventArgs.Empty);
                 return true; // Indicate that the key combination has been handled
             }
 
@@ -520,6 +526,20 @@ namespace LogScraper
             if (keyData == (Keys.Control | Keys.F))
             {
                 usrSearch.Focus(); // Set focus to the search control
+                return true; // Indicate that the key combination has been handled
+            }
+
+            // Check for Ctrl+S key combination
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                if (SourceProcessingManager.Instance.IsWorkerActive)
+                {
+                    BtnStop_Click(this, EventArgs.Empty);
+                }
+                else
+                {
+                    BtnRecordWithTimer_Click(this, EventArgs.Empty);
+                }
                 return true; // Indicate that the key combination has been handled
             }
 

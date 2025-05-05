@@ -236,7 +236,7 @@
             BtnStop.Name = "BtnStop";
             BtnStop.Size = new System.Drawing.Size(51, 40);
             BtnStop.TabIndex = 17;
-            ToolTip.SetToolTip(BtnStop, "Stop");
+            ToolTip.SetToolTip(BtnStop, "Stop [CTRL-S]");
             BtnStop.UseVisualStyleBackColor = true;
             BtnStop.Click += BtnStop_Click;
             // 
