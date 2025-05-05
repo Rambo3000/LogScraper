@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using LogScraper.Configuration.Generic;
 using LogScraper.LogProviders;
@@ -67,5 +68,82 @@ namespace LogScraper.Configuration
 
             return config;
         }
+
+        private void BtnBrowseExportFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new()
+            {
+                Title = "Selecteer exportbestand",
+                Filter = "Log bestanden (*.log, *.txt)|*.log;*.txt;|Alle bestanden (*.*)|*.*",
+                CheckFileExists = false,
+                CheckPathExists = true
+            };
+
+            string currentPath = TxtExportFileName.Text;
+
+            if (!string.IsNullOrWhiteSpace(currentPath))
+            {
+                try
+                {
+                    string directory = Path.GetDirectoryName(currentPath);
+                    if (Directory.Exists(directory))
+                    {
+                        dialog.InitialDirectory = directory;
+                    }
+                }
+                catch
+                {
+                    // The current path is invalid, fall back to the default behaviour.
+                }
+            }
+
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                TxtExportFileName.Text = dialog.FileName;
+            }
+        }
+
+        private void BtnBrowseEditor_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new()
+            {
+                Title = "Selecteer een teksteditor",
+                Filter = "Uitvoerbare bestanden (*.exe)|*.exe|Alle bestanden (*.*)|*.*",
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+
+            string currentPath = TxtEditorLocation.Text;
+
+            if (!string.IsNullOrWhiteSpace(currentPath))
+            {
+                try
+                {
+                    string directory = Path.GetDirectoryName(currentPath);
+                    if (Directory.Exists(directory))
+                    {
+                        dialog.InitialDirectory = directory;
+                    }
+
+                    string filename = Path.GetFileName(currentPath);
+                    if (!string.IsNullOrWhiteSpace(filename))
+                    {
+                        dialog.FileName = filename;
+                    }
+                }
+                catch
+                {
+                    // ongeldig pad, negeren
+                }
+            }
+
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                TxtEditorLocation.Text = dialog.FileName;
+            }
+        }
+
     }
 }

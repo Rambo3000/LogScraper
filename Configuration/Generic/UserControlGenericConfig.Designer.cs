@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlGenericConfig));
             LblDefaultLogProviderType = new System.Windows.Forms.Label();
             GrpExportSettings = new System.Windows.Forms.GroupBox();
+            BtnBrowseEditor = new System.Windows.Forms.Button();
+            BtnBrowseExportFIle = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             TxtEditorLocation = new LogScraper.Extensions.ValidatedTextBox();
@@ -43,16 +45,16 @@
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
-            ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
-            pictureBox16 = new System.Windows.Forms.PictureBox();
-            pictureBox1 = new System.Windows.Forms.PictureBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
+            pictureBox1 = new System.Windows.Forms.PictureBox();
+            pictureBox16 = new System.Windows.Forms.PictureBox();
+            ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
             SuspendLayout();
             // 
             // LblDefaultLogProviderType
@@ -67,6 +69,8 @@
             // GrpExportSettings
             // 
             GrpExportSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpExportSettings.Controls.Add(BtnBrowseEditor);
+            GrpExportSettings.Controls.Add(BtnBrowseExportFIle);
             GrpExportSettings.Controls.Add(label3);
             GrpExportSettings.Controls.Add(label2);
             GrpExportSettings.Controls.Add(TxtEditorLocation);
@@ -79,14 +83,36 @@
             GrpExportSettings.TabStop = false;
             GrpExportSettings.Text = "Log wegschrijven instellingen";
             // 
+            // BtnBrowseEditor
+            // 
+            BtnBrowseEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnBrowseEditor.Location = new System.Drawing.Point(778, 51);
+            BtnBrowseEditor.Name = "BtnBrowseEditor";
+            BtnBrowseEditor.Size = new System.Drawing.Size(29, 23);
+            BtnBrowseEditor.TabIndex = 11;
+            BtnBrowseEditor.Text = "...";
+            BtnBrowseEditor.UseVisualStyleBackColor = true;
+            BtnBrowseEditor.Click += BtnBrowseEditor_Click;
+            // 
+            // BtnBrowseExportFIle
+            // 
+            BtnBrowseExportFIle.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnBrowseExportFIle.Location = new System.Drawing.Point(778, 22);
+            BtnBrowseExportFIle.Name = "BtnBrowseExportFIle";
+            BtnBrowseExportFIle.Size = new System.Drawing.Size(29, 23);
+            BtnBrowseExportFIle.TabIndex = 10;
+            BtnBrowseExportFIle.Text = "...";
+            BtnBrowseExportFIle.UseVisualStyleBackColor = true;
+            BtnBrowseExportFIle.Click += BtnBrowseExportFile_Click;
+            // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Location = new System.Drawing.Point(6, 54);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(79, 15);
+            label3.Size = new System.Drawing.Size(62, 15);
             label3.TabIndex = 9;
-            label3.Text = "Locatie editor";
+            label3.Text = "Text editor";
             // 
             // label2
             // 
@@ -105,17 +131,18 @@
             TxtEditorLocation.IsWhiteSpaceAllowed = false;
             TxtEditorLocation.Location = new System.Drawing.Point(154, 51);
             TxtEditorLocation.Name = "TxtEditorLocation";
-            TxtEditorLocation.Size = new System.Drawing.Size(656, 23);
+            TxtEditorLocation.Size = new System.Drawing.Size(618, 23);
             TxtEditorLocation.TabIndex = 7;
             // 
             // TxtExportFileName
             // 
+            TxtExportFileName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
             TxtExportFileName.IsRequired = true;
             TxtExportFileName.IsWhiteSpaceAllowed = false;
             TxtExportFileName.Location = new System.Drawing.Point(154, 22);
             TxtExportFileName.Name = "TxtExportFileName";
-            TxtExportFileName.Size = new System.Drawing.Size(322, 23);
+            TxtExportFileName.Size = new System.Drawing.Size(618, 23);
             TxtExportFileName.TabIndex = 5;
             // 
             // ChkExportToFile
@@ -197,25 +224,15 @@
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
             // 
-            // ChkShowErrorsInBeginAndEndFilters
+            // pictureBox2
             // 
-            ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
-            ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
-            ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
-            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(315, 19);
-            ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
-            ChkShowErrorsInBeginAndEndFilters.Text = "Toon regels met ERROR altijd in de begin en eind filters";
-            ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox16
-            // 
-            pictureBox16.Image = Properties.Resources.help;
-            pictureBox16.Location = new System.Drawing.Point(293, 79);
-            pictureBox16.Name = "pictureBox16";
-            pictureBox16.Size = new System.Drawing.Size(16, 16);
-            pictureBox16.TabIndex = 36;
-            pictureBox16.TabStop = false;
-            toolTip.SetToolTip(pictureBox16, "Dit betreft het aantal seconden dat een enkele download mag duren. Indien er grote bestanden gedownload moeten worden dan kan deze waarde verhoogd worden.");
+            pictureBox2.Image = Properties.Resources.help;
+            pictureBox2.Location = new System.Drawing.Point(253, 128);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new System.Drawing.Size(16, 16);
+            pictureBox2.TabIndex = 38;
+            pictureBox2.TabStop = false;
+            toolTip.SetToolTip(pictureBox2, "Indien aangevinkt wordt er bij elke wijziging van het log deze ook naar het geselecteerde bestand weggeschreven.");
             // 
             // pictureBox1
             // 
@@ -227,15 +244,25 @@
             pictureBox1.TabStop = false;
             toolTip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
             // 
-            // pictureBox2
+            // pictureBox16
             // 
-            pictureBox2.Image = Properties.Resources.help;
-            pictureBox2.Location = new System.Drawing.Point(253, 128);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new System.Drawing.Size(16, 16);
-            pictureBox2.TabIndex = 38;
-            pictureBox2.TabStop = false;
-            toolTip.SetToolTip(pictureBox2, "Indien aangevinkt wordt er bij elke wijziging van het log deze ook naar het geselecteerde bestand weggeschreven.");
+            pictureBox16.Image = Properties.Resources.help;
+            pictureBox16.Location = new System.Drawing.Point(293, 79);
+            pictureBox16.Name = "pictureBox16";
+            pictureBox16.Size = new System.Drawing.Size(16, 16);
+            pictureBox16.TabIndex = 36;
+            pictureBox16.TabStop = false;
+            toolTip.SetToolTip(pictureBox16, "Dit betreft het aantal seconden dat een enkele download mag duren. Indien er grote bestanden gedownload moeten worden dan kan deze waarde verhoogd worden.");
+            // 
+            // ChkShowErrorsInBeginAndEndFilters
+            // 
+            ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
+            ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
+            ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(315, 19);
+            ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
+            ChkShowErrorsInBeginAndEndFilters.Text = "Toon regels met ERROR altijd in de begin en eind filters";
+            ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
             // 
             // UserControlGenericConfig
             // 
@@ -248,9 +275,9 @@
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
             GrpGeneralSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
             ResumeLayout(false);
         }
 
@@ -274,5 +301,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.PictureBox pictureBox16;
+        private System.Windows.Forms.Button BtnBrowseExportFIle;
+        private System.Windows.Forms.Button BtnBrowseEditor;
     }
 }
