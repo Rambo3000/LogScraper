@@ -48,7 +48,7 @@
             // BtnRecord
             // 
             BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
-            BtnRecord.Location = new System.Drawing.Point(52, 5);
+            BtnRecord.Location = new System.Drawing.Point(6, 5);
             BtnRecord.Name = "BtnRecord";
             BtnRecord.Size = new System.Drawing.Size(40, 40);
             BtnRecord.TabIndex = 0;
@@ -58,7 +58,7 @@
             // BtnRecordWithTimer
             // 
             BtnRecordWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnRecordWithTimer.Image");
-            BtnRecordWithTimer.Location = new System.Drawing.Point(90, 5);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(44, 5);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 1;
@@ -105,7 +105,7 @@
             // btnStop
             // 
             btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
-            btnStop.Location = new System.Drawing.Point(52, 5);
+            btnStop.Location = new System.Drawing.Point(6, 5);
             btnStop.Name = "btnStop";
             btnStop.Size = new System.Drawing.Size(40, 40);
             btnStop.TabIndex = 10;
@@ -146,7 +146,7 @@
             // btnBack
             // 
             btnBack.Image = (System.Drawing.Image)resources.GetObject("btnBack.Image");
-            btnBack.Location = new System.Drawing.Point(6, 5);
+            btnBack.Location = new System.Drawing.Point(90, 5);
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
