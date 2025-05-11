@@ -131,6 +131,15 @@ namespace LogScraper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log Scraper - USE AT YOUR OWN RISK - DO NOT USE IN PRODUCTION ENVIRONMENTS.
+        /// </summary>
+        internal static string FormMain_Title {
+            get {
+                return ResourceManager.GetString("FormMain_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap help {

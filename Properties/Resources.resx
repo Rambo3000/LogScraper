@@ -154,4 +154,7 @@
   <data name="timer-record-outline-24x24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\timer-record-outline-24x24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FormMain_Title" xml:space="preserve">
+    <value>Log Scraper - USE AT YOUR OWN RISK - DO NOT USE IN PRODUCTION ENVIRONMENTS</value>
+  </data>
 </root>
