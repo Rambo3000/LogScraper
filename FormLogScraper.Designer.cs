@@ -516,12 +516,12 @@
             UsrLogContentEnd.Size = new System.Drawing.Size(226, 306);
             UsrLogContentEnd.TabIndex = 0;
             // 
-            // groupBox1
+            // GrpAbout
             // 
             groupBox1.Controls.Add(tabControl2);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
-            groupBox1.Name = "groupBox1";
+            groupBox1.Name = "GrpAbout";
             groupBox1.Size = new System.Drawing.Size(211, 447);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;

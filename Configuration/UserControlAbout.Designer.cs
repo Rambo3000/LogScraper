@@ -30,14 +30,14 @@
         {
             lblVersion = new System.Windows.Forms.Label();
             LblAuthor = new System.Windows.Forms.Label();
-            groupBox1 = new System.Windows.Forms.GroupBox();
+            GrpAbout = new System.Windows.Forms.GroupBox();
             LblDisclaimer = new System.Windows.Forms.Label();
             LblRuntime = new System.Windows.Forms.Label();
             LblDisclaimerFullText = new System.Windows.Forms.Label();
             LblGnuLicense = new System.Windows.Forms.Label();
             BtnUpdate = new System.Windows.Forms.Button();
             LinkGitHub = new System.Windows.Forms.LinkLabel();
-            groupBox1.SuspendLayout();
+            GrpAbout.SuspendLayout();
             SuspendLayout();
             // 
             // lblVersion
@@ -58,24 +58,24 @@
             LblAuthor.TabIndex = 2;
             LblAuthor.Text = "Author: Robert de Volder";
             // 
-            // groupBox1
+            // GrpAbout
             // 
-            groupBox1.Controls.Add(LblDisclaimer);
-            groupBox1.Controls.Add(LblRuntime);
-            groupBox1.Controls.Add(LblDisclaimerFullText);
-            groupBox1.Controls.Add(LblGnuLicense);
-            groupBox1.Controls.Add(BtnUpdate);
-            groupBox1.Controls.Add(LinkGitHub);
-            groupBox1.Controls.Add(LblAuthor);
-            groupBox1.Controls.Add(lblVersion);
-            groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox1.Location = new System.Drawing.Point(0, 0);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new System.Windows.Forms.Padding(5);
-            groupBox1.Size = new System.Drawing.Size(723, 422);
-            groupBox1.TabIndex = 3;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Over Log Scraper";
+            GrpAbout.Controls.Add(LblDisclaimer);
+            GrpAbout.Controls.Add(LblRuntime);
+            GrpAbout.Controls.Add(LblDisclaimerFullText);
+            GrpAbout.Controls.Add(LblGnuLicense);
+            GrpAbout.Controls.Add(BtnUpdate);
+            GrpAbout.Controls.Add(LinkGitHub);
+            GrpAbout.Controls.Add(LblAuthor);
+            GrpAbout.Controls.Add(lblVersion);
+            GrpAbout.Dock = System.Windows.Forms.DockStyle.Fill;
+            GrpAbout.Location = new System.Drawing.Point(0, 0);
+            GrpAbout.Name = "GrpAbout";
+            GrpAbout.Padding = new System.Windows.Forms.Padding(5);
+            GrpAbout.Size = new System.Drawing.Size(723, 422);
+            GrpAbout.TabIndex = 3;
+            GrpAbout.TabStop = false;
+            GrpAbout.Text = "Over Log Scraper";
             // 
             // LblDisclaimer
             // 
@@ -135,18 +135,18 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(groupBox1);
+            Controls.Add(GrpAbout);
             Name = "UserControlAbout";
             Size = new System.Drawing.Size(723, 422);
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
+            GrpAbout.ResumeLayout(false);
+            GrpAbout.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox GrpAbout;
         private System.Windows.Forms.LinkLabel LinkGitHub;
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.Label LblDisclaimerFullText;

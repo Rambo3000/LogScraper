@@ -122,4 +122,7 @@ Gebruik deze applicatie op eigen risico.</value>
   <data name="UserControlAbout_LblRuntime" xml:space="preserve">
     <value>Runtime: {0}</value>
   </data>
+  <data name="UserControlAbout_GrpAbout" xml:space="preserve">
+    <value>Over Log Scraper</value>
+  </data>
 </root>

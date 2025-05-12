@@ -20,13 +20,14 @@ namespace LogScraper.Configuration
 
         public void ApplyLocalization()
         {
+            GrpAbout.Text = Resources.UserControlAbout_GrpAbout;
             string runtime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
             LblRuntime.Text = string.Format(Resources.UserControlAbout_LblRuntime, runtime);
             LblAuthor.Text = Resources.UserControlAbout_LblAuthor;
-            BtnUpdate.Text = Resources.UserControlAbout_BtnCheckForUpdates;
             LinkGitHub.Text = Resources.UserControlAbout_LinkGitHub;
             LinkGitHub.Links.Clear();
             LinkGitHub.Links.Add(0, LinkGitHub.Text.Length, "https://github.com/Rambo3000/LogScraper");
+            BtnUpdate.Text = Resources.UserControlAbout_BtnCheckForUpdates;
             LblDisclaimer.Text = Resources.UserControlAbout_LblDisclaimer;
             LblDisclaimerFullText.Text = Resources.UserControlAbout_LblDisclaimerFullText;
             LblGnuLicense.Text = Resources.UserControlAbout_LblGnuLicense;

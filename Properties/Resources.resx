@@ -179,4 +179,7 @@ Use this application at your own risk.</value>
   <data name="UserControlAbout_LblRuntime" xml:space="preserve">
     <value>Runtime: {0}</value>
   </data>
+  <data name="UserControlAbout_GrpAbout" xml:space="preserve">
+    <value>About Log Scraper</value>
+  </data>
 </root>

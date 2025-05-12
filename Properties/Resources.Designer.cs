@@ -190,6 +190,15 @@ namespace LogScraper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About Log Scraper.
+        /// </summary>
+        internal static string UserControlAbout_GrpAbout {
+            get {
+                return ResourceManager.GetString("UserControlAbout_GrpAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Author: Robert de Volder.
         /// </summary>
         internal static string UserControlAbout_LblAuthor {

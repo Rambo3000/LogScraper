@@ -291,7 +291,7 @@ namespace LogScraper.Log
             splitContainer1.SplitterDistance = 258;
             splitContainer1.TabIndex = 33;
             // 
-            // groupBox1
+            // GrpAbout
             // 
             groupBox1.Controls.Add(pictureBox13);
             groupBox1.Controls.Add(pictureBox11);
@@ -301,7 +301,7 @@ namespace LogScraper.Log
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(TxtMetadataBegin);
             groupBox1.Location = new System.Drawing.Point(4, 97);
-            groupBox1.Name = "groupBox1";
+            groupBox1.Name = "GrpAbout";
             groupBox1.Size = new System.Drawing.Size(288, 115);
             groupBox1.TabIndex = 29;
             groupBox1.TabStop = false;
