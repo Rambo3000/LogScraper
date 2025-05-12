@@ -145,14 +145,12 @@
 
         #endregion
         private System.Windows.Forms.Label lblVersion;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox GrpAbout;
         private System.Windows.Forms.LinkLabel LinkGitHub;
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.Label LblDisclaimerFullText;
         private System.Windows.Forms.Label LblGnuLicense;
         private System.Windows.Forms.Label LblRuntime;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label LblAuthor;
         private System.Windows.Forms.Label LblDisclaimer;
     }

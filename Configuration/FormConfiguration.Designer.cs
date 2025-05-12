@@ -267,7 +267,6 @@
         private System.Windows.Forms.TabPage TabPageLogLayouts;
         private Log.UserControlLogLayoutConfig userControlLogLayoutConfig;
         private System.Windows.Forms.TabPage TabPageAbout;
-        private UserControlAbout userControlAbout1;
         private UserControlAbout userControlAbout;
     }
 }
