@@ -652,7 +652,7 @@
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "FormLogScraper";
-            Text = "Log Scraper - GEBRUIK OP EIGEN RISICO - NIET GEBRUIKEN OP PRODUCTIE OMGEVINGEN";
+            Text = "Log Scraper";
             Load += FormLogScraper_Load;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();

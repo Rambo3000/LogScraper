@@ -97,7 +97,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FormMain_Title" xml:space="preserve">
-    <value>Log Scraper - GEBRUIK OP EIGEN RISICO - NIET GEBRUIKEN OP PRODUCTIE OMGEVINGEN</value>
+  <data name="UserControlAbout_LblGnuLicense" xml:space="preserve">
+    <value>Deze applicatie valt onder de GNU General Public License v3.0. Je bent vrij om de software te gebruiken, aan te passen en te verspreiden onder de voorwaarden van deze licentie.</value>
+  </data>
+  <data name="UserControlAbout_LblDisclaimerFullText" xml:space="preserve">
+    <value>Disclaimer:
+Deze applicatie wordt geleverd "zoals deze is", zonder enige vorm van garantie, expliciet of impliciet, waaronder maar niet beperkt tot garanties van verhandelbaarheid, geschiktheid voor een bepaald doel of het niet schenden van rechten van derden.
+In geen geval kunnen de auteur of bijdragers aansprakelijk worden gesteld voor enige aanspraak, schade of andere aansprakelijkheid – hetzij uit hoofde van een contract, onrechtmatige daad of anderszins – voortvloeiend uit, of in verband met, de software of het gebruik ervan, of andere handelingen met betrekking tot de software.
+
+Gebruik deze applicatie op eigen risico.</value>
+  </data>
+  <data name="UserControlAbout_LblDisclaimer" xml:space="preserve">
+    <value>Disclaimer</value>
+  </data>
+  <data name="UserControlAbout_LblAuthor" xml:space="preserve">
+    <value>Auteur: Robert de Volder</value>
+  </data>
+  <data name="UserControlAbout_BtnCheckForUpdates" xml:space="preserve">
+    <value>Controleer op updates</value>
+  </data>
+  <data name="UserControlAbout_LinkGitHub" xml:space="preserve">
+    <value>GitHub project pagina</value>
+  </data>
+  <data name="UserControlAbout_LblRuntime" xml:space="preserve">
+    <value>Runtime: {0}</value>
   </data>
 </root>

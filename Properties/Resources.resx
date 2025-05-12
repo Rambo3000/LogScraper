@@ -154,7 +154,29 @@
   <data name="timer-record-outline-24x24" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\timer-record-outline-24x24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FormMain_Title" xml:space="preserve">
-    <value>Log Scraper - USE AT YOUR OWN RISK - DO NOT USE IN PRODUCTION ENVIRONMENTS</value>
+  <data name="UserControlAbout_LblDisclaimerFullText" xml:space="preserve">
+    <value>Disclaimer:
+This application is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the author or contributors be held liable for any claim, damages, or other liability -whether in an action of contract, tort, or otherwise-
+ arising from, out of, or in connection with the software or the use or other dealings in the software.
+
+Use this application at your own risk.</value>
+  </data>
+  <data name="UserControlAbout_LblGnuLicense" xml:space="preserve">
+    <value>This application is licensed under the GNU General Public License v3.0. You are free to use, modify, and distribute it under the terms of that license.</value>
+  </data>
+  <data name="UserControlAbout_LblDisclaimer" xml:space="preserve">
+    <value>Disclaimer</value>
+  </data>
+  <data name="UserControlAbout_LblAuthor" xml:space="preserve">
+    <value>Author: Robert de Volder</value>
+  </data>
+  <data name="UserControlAbout_BtnCheckForUpdates" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="UserControlAbout_LinkGitHub" xml:space="preserve">
+    <value>GitHub project page</value>
+  </data>
+  <data name="UserControlAbout_LblRuntime" xml:space="preserve">
+    <value>Runtime: {0}</value>
   </data>
 </root>

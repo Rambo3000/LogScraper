@@ -131,15 +131,6 @@ namespace LogScraper.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log Scraper - USE AT YOUR OWN RISK - DO NOT USE IN PRODUCTION ENVIRONMENTS.
-        /// </summary>
-        internal static string FormMain_Title {
-            get {
-                return ResourceManager.GetString("FormMain_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap help {
@@ -186,6 +177,73 @@ namespace LogScraper.Properties {
             get {
                 object obj = ResourceManager.GetObject("up", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        internal static string UserControlAbout_BtnCheckForUpdates {
+            get {
+                return ResourceManager.GetString("UserControlAbout_BtnCheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author: Robert de Volder.
+        /// </summary>
+        internal static string UserControlAbout_LblAuthor {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LblAuthor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disclaimer.
+        /// </summary>
+        internal static string UserControlAbout_LblDisclaimer {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LblDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disclaimer:
+        ///This application is provided &quot;as is&quot;, without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the author or contributors be held liable for any claim, damages, or other liability -whether in an action of contract, tort, or otherwise-
+        /// arising from, out of, or in connection with the software or the use or other dealings in the software.
+        ///
+        ///Use this application at y [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string UserControlAbout_LblDisclaimerFullText {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LblDisclaimerFullText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application is licensed under the GNU General Public License v3.0. You are free to use, modify, and distribute it under the terms of that license..
+        /// </summary>
+        internal static string UserControlAbout_LblGnuLicense {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LblGnuLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runtime: {0}.
+        /// </summary>
+        internal static string UserControlAbout_LblRuntime {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LblRuntime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub project page.
+        /// </summary>
+        internal static string UserControlAbout_LinkGitHub {
+            get {
+                return ResourceManager.GetString("UserControlAbout_LinkGitHub", resourceCulture);
             }
         }
     }

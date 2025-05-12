@@ -18,13 +18,13 @@ namespace LogScraper
         /// <remarks>
         /// This method runs the update check on a background thread to avoid blocking the UI thread.
         /// </remarks>
-        public static void CheckForUpdateAsync()
+        public static void CheckForUpdateInSeperateThread()
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    await GitHubUpdateChecker.CheckForUpdateAsyncTask();
+                    await GitHubUpdateChecker.CheckForUpdateAsync();
                 }
                 catch
                 {
@@ -36,7 +36,7 @@ namespace LogScraper
         /// <summary>
         /// Performs the actual update check by comparing the current version with the latest version available on GitHub.
         /// </summary>
-        private static async Task CheckForUpdateAsyncTask()
+        public static async Task CheckForUpdateAsync(bool ShowMessageNoNewVersionFound = false)
         {
             string githubUser = "Rambo3000"; // GitHub username
             string githubRepo = "LogScraper"; // GitHub repository name
@@ -61,6 +61,10 @@ namespace LogScraper
                 {
                     OpenReleasePage(githubUser, githubRepo); // Open the GitHub release page
                 }
+            }
+            else if (ShowMessageNoNewVersionFound)
+            {
+                MessageBox.Show("Your version is up to date.", "No Update Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

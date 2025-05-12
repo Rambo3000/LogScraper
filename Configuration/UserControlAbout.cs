@@ -1,0 +1,54 @@
+﻿using System;
+using System.Windows.Forms;
+using LogScraper.Properties;
+
+namespace LogScraper.Configuration
+{
+    public partial class UserControlAbout : UserControl
+    {
+        public UserControlAbout()
+        {
+            InitializeComponent();
+
+            string version = Application.ProductVersion;
+            if (version.Contains('+')) version = version[..version.IndexOf('+')];
+
+            lblVersion.Text = "v" + version;
+
+            ApplyLocalization();
+        }
+
+        public void ApplyLocalization()
+        {
+            string runtime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+            LblRuntime.Text = string.Format(Resources.UserControlAbout_LblRuntime, runtime);
+            LblAuthor.Text = Resources.UserControlAbout_LblAuthor;
+            BtnUpdate.Text = Resources.UserControlAbout_BtnCheckForUpdates;
+            LinkGitHub.Text = Resources.UserControlAbout_LinkGitHub;
+            LinkGitHub.Links.Clear();
+            LinkGitHub.Links.Add(0, LinkGitHub.Text.Length, "https://github.com/Rambo3000/LogScraper");
+            LblDisclaimer.Text = Resources.UserControlAbout_LblDisclaimer;
+            LblDisclaimerFullText.Text = Resources.UserControlAbout_LblDisclaimerFullText;
+            LblGnuLicense.Text = Resources.UserControlAbout_LblGnuLicense;
+        }
+
+        private void LinkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = e.Link.LinkData.ToString(),
+                UseShellExecute = true
+            });
+        }
+
+        private async void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            BtnUpdate.Enabled = false;
+            Application.DoEvents();
+            await GitHubUpdateChecker.CheckForUpdateAsync(true);
+
+            Application.DoEvents();
+            BtnUpdate.Enabled = true;
+        }
+    }
+}

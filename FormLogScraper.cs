@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Export;
@@ -23,6 +25,9 @@ namespace LogScraper
         public FormLogScraper()
         {
             InitializeComponent();
+
+            CultureInfo culture = new("nl"); // of "en", "fr", etc.
+            Thread.CurrentThread.CurrentUICulture = culture;
 
             FormRecord.Instance.SetFormLogScraper(this);
 
@@ -57,6 +62,8 @@ namespace LogScraper
             catch (Exception ex) { MessageBox.Show(ex.Message); }
 
             RefreshLogStatistics();
+
+            GitHubUpdateChecker.CheckForUpdateInSeperateThread();
         }
         #endregion
 

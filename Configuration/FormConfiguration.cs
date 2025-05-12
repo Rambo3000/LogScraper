@@ -21,10 +21,6 @@ namespace LogScraper.Configuration
         {
             InitializeComponent();
 
-            string version = Application.ProductVersion;
-            if (version.Contains('+')) version = version[..version.IndexOf('+')];
-
-            lblVersion.Text = "v" + version;
         }
 
         public void GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out bool fileChanged)
