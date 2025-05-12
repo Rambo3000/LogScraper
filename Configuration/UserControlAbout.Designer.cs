@@ -43,7 +43,7 @@
             // lblVersion
             // 
             lblVersion.AutoSize = true;
-            lblVersion.Location = new System.Drawing.Point(8, 21);
+            lblVersion.Location = new System.Drawing.Point(8, 41);
             lblVersion.Name = "lblVersion";
             lblVersion.Size = new System.Drawing.Size(13, 15);
             lblVersion.TabIndex = 1;
@@ -52,7 +52,7 @@
             // LblAuthor
             // 
             LblAuthor.AutoSize = true;
-            LblAuthor.Location = new System.Drawing.Point(8, 59);
+            LblAuthor.Location = new System.Drawing.Point(8, 79);
             LblAuthor.Name = "LblAuthor";
             LblAuthor.Size = new System.Drawing.Size(137, 15);
             LblAuthor.TabIndex = 2;
@@ -80,7 +80,7 @@
             // LblDisclaimer
             // 
             LblDisclaimer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            LblDisclaimer.Location = new System.Drawing.Point(8, 186);
+            LblDisclaimer.Location = new System.Drawing.Point(3, 214);
             LblDisclaimer.Name = "LblDisclaimer";
             LblDisclaimer.Size = new System.Drawing.Size(75, 16);
             LblDisclaimer.TabIndex = 7;
@@ -89,7 +89,7 @@
             // LblRuntime
             // 
             LblRuntime.AutoSize = true;
-            LblRuntime.Location = new System.Drawing.Point(8, 40);
+            LblRuntime.Location = new System.Drawing.Point(8, 60);
             LblRuntime.Name = "LblRuntime";
             LblRuntime.Size = new System.Drawing.Size(52, 15);
             LblRuntime.TabIndex = 6;
@@ -97,14 +97,16 @@
             // 
             // LblDisclaimerFullText
             // 
-            LblDisclaimerFullText.Location = new System.Drawing.Point(8, 186);
+            LblDisclaimerFullText.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblDisclaimerFullText.Location = new System.Drawing.Point(3, 214);
             LblDisclaimerFullText.Name = "LblDisclaimerFullText";
             LblDisclaimerFullText.Size = new System.Drawing.Size(712, 118);
             LblDisclaimerFullText.TabIndex = 5;
             // 
             // LblGnuLicense
             // 
-            LblGnuLicense.Location = new System.Drawing.Point(8, 147);
+            LblGnuLicense.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblGnuLicense.Location = new System.Drawing.Point(3, 175);
             LblGnuLicense.Name = "LblGnuLicense";
             LblGnuLicense.Size = new System.Drawing.Size(707, 39);
             LblGnuLicense.TabIndex = 5;
@@ -112,7 +114,7 @@
             // 
             // BtnUpdate
             // 
-            BtnUpdate.Location = new System.Drawing.Point(8, 100);
+            BtnUpdate.Location = new System.Drawing.Point(8, 120);
             BtnUpdate.Name = "BtnUpdate";
             BtnUpdate.Size = new System.Drawing.Size(165, 34);
             BtnUpdate.TabIndex = 4;
@@ -123,7 +125,7 @@
             // LinkGitHub
             // 
             LinkGitHub.AutoSize = true;
-            LinkGitHub.Location = new System.Drawing.Point(8, 78);
+            LinkGitHub.Location = new System.Drawing.Point(8, 98);
             LinkGitHub.Name = "LinkGitHub";
             LinkGitHub.Size = new System.Drawing.Size(114, 15);
             LinkGitHub.TabIndex = 3;
@@ -138,6 +140,7 @@
             Controls.Add(GrpAbout);
             Name = "UserControlAbout";
             Size = new System.Drawing.Size(723, 422);
+            SizeChanged += UserControlAbout_SizeChanged;
             GrpAbout.ResumeLayout(false);
             GrpAbout.PerformLayout();
             ResumeLayout(false);

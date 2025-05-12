@@ -51,5 +51,15 @@ namespace LogScraper.Configuration
             Application.DoEvents();
             BtnUpdate.Enabled = true;
         }
+
+        private void UserControlAbout_SizeChanged(object sender, EventArgs e)
+        {
+            int center = GrpAbout.ClientSize.Width / 2;
+            lblVersion.Left = center - lblVersion.Width / 2;
+            LblRuntime.Left = center - LblRuntime.Width / 2;
+            LblAuthor.Left = center - LblAuthor.Width / 2;
+            LinkGitHub.Left = center - LinkGitHub.Width / 2;
+            BtnUpdate.Left = center - BtnUpdate.Width / 2;
+        }
     }
 }

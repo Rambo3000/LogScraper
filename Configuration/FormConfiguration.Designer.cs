@@ -235,7 +235,7 @@
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MinimumSize = new System.Drawing.Size(850, 700);
             Name = "FormConfiguration";
-            Text = "Logscraper instellingen";
+            Text = "Log Scraper instellingen";
             Load += FormConfiguration_Load;
             TabLogProviders.ResumeLayout(false);
             tabKubernetes.ResumeLayout(false);
