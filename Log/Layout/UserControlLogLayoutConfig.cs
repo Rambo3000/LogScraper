@@ -599,8 +599,8 @@ namespace LogScraper.Log
                     information += "Content begin en eind filters:" + Environment.NewLine;
                     foreach (var property in logLayout.LogContentProperties)
                     {
-                        logEntry.LogContentProperties.TryGetValue(property, out string value);
-                        information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
+                        logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
+                        information += $"   {property.Description}: {contentValue.Value ??= "<niet gevonden>"}" + Environment.NewLine;
                     }
                     TxtTestResponse.ForeColor = System.Drawing.Color.Black;
                     TxtTestResponse.Text = information;

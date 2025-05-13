@@ -39,7 +39,7 @@ namespace LogScraper.Log
         /// <summary>
         /// Content properties associated with the log entry, represented as key-value pairs.
         /// </summary>
-        public Dictionary<LogContentProperty, string> LogContentProperties { get; set; }
+        public Dictionary<LogContentProperty, LogContentValue> LogContentProperties { get; set; }
 
         /// <summary>
         /// Determines whether the current log entry is equal to another log entry.

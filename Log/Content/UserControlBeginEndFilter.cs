@@ -129,28 +129,28 @@ namespace LogScraper
                 if (logEntry.LogContentProperties == null) continue;
 
                 // Try to get the content for the selected log content property
-                logEntry.LogContentProperties.TryGetValue(logContentProperty, out string content);
+                logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
                 bool isError = false;
 
                 // If the content is null, check for errors if the "Show Errors" checkbox is checked
-                if (content == null)
+                if (contentValue == null)
                 {
-                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out content);
-                    if (content == null) continue;
+                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out contentValue);
+                    if (contentValue == null) continue;
                     isError = true;
                 }
 
                 // If the content is not an error and a filter is applied, check if the content contains the filter text
                 if (!isError && !string.IsNullOrEmpty(filter))
                 {
-                    if (!content.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (!contentValue.Value.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
                 }
 
                 // Create a new LogEntryWithToStringOverride object and add it to the list
                 LogEntryWithToStringOverride logEntryWithToStringOverride = new()
                 {
                     OriginalLogEntry = logEntry,
-                    Content = isError ? content[0..8] + " ERROR" : content,
+                    Content = isError ? contentValue.TimeDescription + " ERROR" : contentValue.ToString(),
                     IsError = isError
                 };
                 logEntryWithToStringOverrides.Add(logEntryWithToStringOverride);
