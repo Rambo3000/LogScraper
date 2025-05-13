@@ -1,18 +1,12 @@
-{
+﻿{
   "layouts": [
     {
       "description": "Blueriq",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
-      "removeMetaDataCriteria": {
-        "startPosition": 23,
-        "beforePhrase": " ",
-        "afterPhrase": " -"
-      },
       "logMetadataProperties": [
         {
           "description": "Log level",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": " ",
             "afterPhrase": " "
           }
@@ -20,7 +14,6 @@
         {
           "description": "Project",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": "projectName=\"",
             "afterPhrase": "\""
           }
@@ -28,7 +21,6 @@
         {
           "description": "Gebruiker",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": "userId=\"",
             "afterPhrase": "\""
           }
@@ -36,7 +28,6 @@
         {
           "description": "Branch",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": "projectVersion=\"",
             "afterPhrase": "\""
           }
@@ -44,7 +35,6 @@
         {
           "description": "Pagina",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": "currentPageName=\"",
             "afterPhrase": "\""
           }
@@ -53,57 +43,66 @@
       "logContentBeginEndFilters": [
         {
           "description": "Begin flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Starting flow: "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "Starting flow: ",
+              "afterPhrase": null
+            },
+            {
+              "beforePhrase": "Starting flow on refresh: ",
+              "afterPhrase": null
+            }
+          ]
         },
         {
           "description": "Einde flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Completed flow: "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "Completed flow: ",
+              "afterPhrase": null
+            },
+            {
+              "beforePhrase": "flow '",
+              "afterPhrase": "' failed"
+            }
+          ]
         },
         {
           "description": "Composed path",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Composed path "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "Composed path ",
+              "afterPhrase": null
+            }
+          ]
         },
         {
           "description": "Errors",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": " ERROR",
-            "endPhrase": " "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": " ERROR",
+              "afterPhrase": null
+            }
+          ]
         }
-      ]
+      ],
+      "removeMetaDataCriteria": {
+        "beforePhrase": " ",
+        "afterPhrase": " -"
+      },
+      "transformers": []
     },
     {
       "description": "Blueriq vanuit splunk in JSON",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
-      "transformers": [
-        {
-          "type": "ReverseOrder"
-        },
-        {
-          "type": "ExtractJsonPathFromEachLine",
-          "jsonPath": "$.log"
-        }
-      ],
-      "removeMetaDataCriteria": {
-        "startPosition": 23,
-        "beforePhrase": " ",
-        "afterPhrase": " -"
-      },
       "logMetadataProperties": [
         {
           "description": "Log level",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": " ",
             "afterPhrase": " "
           }
@@ -111,7 +110,6 @@
         {
           "description": "Project",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": "projectName=\"",
             "afterPhrase": "\""
           }
@@ -120,41 +118,57 @@
       "logContentBeginEndFilters": [
         {
           "description": "Begin flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Starting flow: "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "Starting flow: ",
+              "afterPhrase": null
+            }
+          ]
         },
         {
           "description": "Einde flow",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": "Completed flow: "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "Completed flow: ",
+              "afterPhrase": null
+            }
+          ]
         },
         {
           "description": "Errors",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": " ERROR",
-            "endPhrase": " "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": " ERROR",
+              "afterPhrase": null
+            }
+          ]
+        }
+      ],
+      "removeMetaDataCriteria": {
+        "beforePhrase": " ",
+        "afterPhrase": " -"
+      },
+      "transformers": [
+        {
+          "type": "ReverseOrder",
+          "jsonPath": null
+        },
+        {
+          "type": "ExtractJsonPathFromEachLine",
+          "jsonPath": "$.log"
         }
       ]
     },
     {
       "description": "Blueriq ORM",
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
-      "removeMetaDataCriteria": {
-        "startPosition": 23,
-        "beforePhrase": " ",
-        "afterPhrase": "]"
-      },
       "logMetadataProperties": [
         {
           "description": "Log level",
           "criteria": {
-            "startPosition": 23,
             "beforePhrase": " ",
             "afterPhrase": " "
           }
@@ -163,13 +177,20 @@
       "logContentBeginEndFilters": [
         {
           "description": "Errors",
-          "criteria": {
-            "startPosition": 23,
-            "beforePhrase": " ERROR",
-            "endPhrase": " "
-          }
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": " ERROR",
+              "afterPhrase": null
+            }
+          ]
         }
-      ]
+      ],
+      "removeMetaDataCriteria": {
+        "beforePhrase": " ",
+        "afterPhrase": "]"
+      },
+      "transformers": []
     }
   ]
 }

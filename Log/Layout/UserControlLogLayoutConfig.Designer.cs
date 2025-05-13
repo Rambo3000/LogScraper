@@ -80,14 +80,11 @@ namespace LogScraper.Log
             BtnMetadataUp = new System.Windows.Forms.Button();
             tabPageContentFilters = new System.Windows.Forms.TabPage();
             GrpContent = new System.Windows.Forms.GroupBox();
-            pictureBox8 = new System.Windows.Forms.PictureBox();
             pictureBox9 = new System.Windows.Forms.PictureBox();
             pictureBox10 = new System.Windows.Forms.PictureBox();
             pictureBox6 = new System.Windows.Forms.PictureBox();
-            LblLblContentAfterPhrase = new System.Windows.Forms.Label();
-            TxtContentAfterPhrase = new ValidatedTextBox();
             LblContentBeforePhrase = new System.Windows.Forms.Label();
-            TxtContentBeforePhrase = new ValidatedTextBox();
+            TxtContentBeforeAndAfterPhrases = new ValidatedTextBox();
             LblContentDescription = new System.Windows.Forms.Label();
             TxtContentDescription = new ValidatedTextBox();
             LstContent = new System.Windows.Forms.ListBox();
@@ -127,7 +124,6 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabPageContentFilters.SuspendLayout();
             GrpContent.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -291,7 +287,7 @@ namespace LogScraper.Log
             splitContainer1.SplitterDistance = 258;
             splitContainer1.TabIndex = 33;
             // 
-            // GrpAbout
+            // groupBox1
             // 
             groupBox1.Controls.Add(pictureBox13);
             groupBox1.Controls.Add(pictureBox11);
@@ -301,7 +297,7 @@ namespace LogScraper.Log
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(TxtMetadataBegin);
             groupBox1.Location = new System.Drawing.Point(4, 97);
-            groupBox1.Name = "GrpAbout";
+            groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(288, 115);
             groupBox1.TabIndex = 29;
             groupBox1.TabStop = false;
@@ -687,14 +683,11 @@ namespace LogScraper.Log
             // 
             // GrpContent
             // 
-            GrpContent.Controls.Add(pictureBox8);
             GrpContent.Controls.Add(pictureBox9);
             GrpContent.Controls.Add(pictureBox10);
             GrpContent.Controls.Add(pictureBox6);
-            GrpContent.Controls.Add(LblLblContentAfterPhrase);
-            GrpContent.Controls.Add(TxtContentAfterPhrase);
             GrpContent.Controls.Add(LblContentBeforePhrase);
-            GrpContent.Controls.Add(TxtContentBeforePhrase);
+            GrpContent.Controls.Add(TxtContentBeforeAndAfterPhrases);
             GrpContent.Controls.Add(LblContentDescription);
             GrpContent.Controls.Add(TxtContentDescription);
             GrpContent.Controls.Add(LstContent);
@@ -710,16 +703,6 @@ namespace LogScraper.Log
             GrpContent.TabStop = false;
             GrpContent.Text = "Content begin en eind filters";
             // 
-            // pictureBox8
-            // 
-            pictureBox8.Image = Properties.Resources.help;
-            pictureBox8.Location = new System.Drawing.Point(498, 109);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new System.Drawing.Size(16, 16);
-            pictureBox8.TabIndex = 32;
-            pictureBox8.TabStop = false;
-            toolTip.SetToolTip(pictureBox8, "Geef de tekst die net na de content waarde staat.\r\nBijvoorbeeld ! indien in de logregel staat API call: X!\r\n\r\nLaat dit veld leeg indien er geen tekst na de content waarde staat\r\n");
-            // 
             // pictureBox9
             // 
             pictureBox9.Image = Properties.Resources.help;
@@ -728,7 +711,7 @@ namespace LogScraper.Log
             pictureBox9.Size = new System.Drawing.Size(16, 16);
             pictureBox9.TabIndex = 31;
             pictureBox9.TabStop = false;
-            toolTip.SetToolTip(pictureBox9, "Geef de tekst die net voor de content waarde staat\r\nBijvoorbeeld API call: indien in de logregel staat API call: X");
+            toolTip.SetToolTip(pictureBox9, resources.GetString("pictureBox9.ToolTip"));
             // 
             // pictureBox10
             // 
@@ -750,47 +733,28 @@ namespace LogScraper.Log
             pictureBox6.TabStop = false;
             toolTip.SetToolTip(pictureBox6, resources.GetString("pictureBox6.ToolTip"));
             // 
-            // LblLblContentAfterPhrase
-            // 
-            LblLblContentAfterPhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblLblContentAfterPhrase.AutoSize = true;
-            LblLblContentAfterPhrase.Location = new System.Drawing.Point(241, 110);
-            LblLblContentAfterPhrase.Name = "LblLblContentAfterPhrase";
-            LblLblContentAfterPhrase.Size = new System.Drawing.Size(107, 15);
-            LblLblContentAfterPhrase.TabIndex = 24;
-            LblLblContentAfterPhrase.Text = "Tekst na de waarde";
-            // 
-            // TxtContentAfterPhrase
-            // 
-            TxtContentAfterPhrase.BackColor = System.Drawing.SystemColors.Window;
-            TxtContentAfterPhrase.IsRequired = false;
-            TxtContentAfterPhrase.IsWhiteSpaceAllowed = true;
-            TxtContentAfterPhrase.Location = new System.Drawing.Point(241, 128);
-            TxtContentAfterPhrase.Name = "TxtContentAfterPhrase";
-            TxtContentAfterPhrase.Size = new System.Drawing.Size(273, 23);
-            TxtContentAfterPhrase.TabIndex = 23;
-            TxtContentAfterPhrase.TextChanged += TxtContentAfterPhrase_TextChanged;
-            // 
             // LblContentBeforePhrase
             // 
             LblContentBeforePhrase.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblContentBeforePhrase.AutoSize = true;
             LblContentBeforePhrase.Location = new System.Drawing.Point(241, 66);
             LblContentBeforePhrase.Name = "LblContentBeforePhrase";
-            LblContentBeforePhrase.Size = new System.Drawing.Size(118, 15);
+            LblContentBeforePhrase.Size = new System.Drawing.Size(163, 15);
             LblContentBeforePhrase.TabIndex = 22;
-            LblContentBeforePhrase.Text = "Tekst voor de waarde";
+            LblContentBeforePhrase.Text = "Teksten voor en na de waarde";
             // 
-            // TxtContentBeforePhrase
+            // TxtContentBeforeAndAfterPhrases
             // 
-            TxtContentBeforePhrase.BackColor = System.Drawing.Color.MistyRose;
-            TxtContentBeforePhrase.IsRequired = true;
-            TxtContentBeforePhrase.IsWhiteSpaceAllowed = true;
-            TxtContentBeforePhrase.Location = new System.Drawing.Point(241, 84);
-            TxtContentBeforePhrase.Name = "TxtContentBeforePhrase";
-            TxtContentBeforePhrase.Size = new System.Drawing.Size(273, 23);
-            TxtContentBeforePhrase.TabIndex = 21;
-            TxtContentBeforePhrase.TextChanged += TxtContentBeforePhrase_TextChanged;
+            TxtContentBeforeAndAfterPhrases.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            TxtContentBeforeAndAfterPhrases.BackColor = System.Drawing.Color.MistyRose;
+            TxtContentBeforeAndAfterPhrases.IsRequired = true;
+            TxtContentBeforeAndAfterPhrases.IsWhiteSpaceAllowed = true;
+            TxtContentBeforeAndAfterPhrases.Location = new System.Drawing.Point(241, 84);
+            TxtContentBeforeAndAfterPhrases.Multiline = true;
+            TxtContentBeforeAndAfterPhrases.Name = "TxtContentBeforeAndAfterPhrases";
+            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(273, 130);
+            TxtContentBeforeAndAfterPhrases.TabIndex = 21;
+            TxtContentBeforeAndAfterPhrases.TextChanged += TxtContentBeforeAndAfterPhrases_TextChanged;
             // 
             // LblContentDescription
             // 
@@ -1001,7 +965,6 @@ namespace LogScraper.Log
             tabPageContentFilters.ResumeLayout(false);
             GrpContent.ResumeLayout(false);
             GrpContent.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
@@ -1041,10 +1004,8 @@ namespace LogScraper.Log
         private System.Windows.Forms.Label LblMetadataDescription;
         private ValidatedTextBox TxtMetadataDescription;
         private System.Windows.Forms.GroupBox GrpContent;
-        private System.Windows.Forms.Label LblLblContentAfterPhrase;
-        private ValidatedTextBox TxtContentAfterPhrase;
         private System.Windows.Forms.Label LblContentBeforePhrase;
-        private ValidatedTextBox TxtContentBeforePhrase;
+        private ValidatedTextBox TxtContentBeforeAndAfterPhrases;
         private System.Windows.Forms.Label LblContentDescription;
         private ValidatedTextBox TxtContentDescription;
         private System.Windows.Forms.ListBox LstContent;
@@ -1060,7 +1021,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.PictureBox pictureBox6;
-        private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.PictureBox pictureBox10;
         private System.Windows.Forms.TabPage tabPageMetadata;

@@ -64,12 +64,15 @@ namespace LogScraper.Log
                         LogContentProperty newProperty = new()
                         {
                             Description = property.Description,
-                            Criteria = new FilterCriteria()
-                            {
-                                BeforePhrase = property.Criteria.BeforePhrase,
-                                AfterPhrase = property.Criteria.AfterPhrase
-                            }
                         };
+                        foreach (FilterCriteria criteria in property.Criterias)
+                        {
+                            newProperty.Criterias.Add(new FilterCriteria()
+                            {
+                                BeforePhrase = criteria.BeforePhrase,
+                                AfterPhrase = criteria.AfterPhrase
+                            });
+                        }
                         layoutNew.LogContentProperties.Add(newProperty);
                     }
                     if (layout.LogTransformers != null)
@@ -118,10 +121,16 @@ namespace LogScraper.Log
 
                 foreach (LogContentProperty property in layout.LogContentProperties)
                 {
-                    if (string.IsNullOrWhiteSpace(property.Description) ||
-                        string.IsNullOrWhiteSpace(property.Criteria.BeforePhrase))
+                    if (string.IsNullOrWhiteSpace(property.Description))
                     {
                         errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' is niet compleet ingevuld.");
+                    }
+                    foreach (FilterCriteria criteria in property.Criterias)
+                    {
+                        if (string.IsNullOrWhiteSpace(criteria.BeforePhrase))
+                        {
+                            errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft een missende \"voor\" waarde.");
+                        }
                     }
                 }
                 foreach (ILogTransformer transformer in layout.LogTransformers)
@@ -185,7 +194,7 @@ namespace LogScraper.Log
         }
         private static LogContentProperty CreateLogContentProperty()
         {
-            return new() { Description = "Nieuwe metadata", Criteria = new() };
+            return new() { Description = "Nieuwe metadata", Criterias = [] };
         }
 
         private void BtnRemoveLayout_Click(object sender, EventArgs e)
@@ -220,12 +229,10 @@ namespace LogScraper.Log
             if (LstContent.Items.Count == 0)
             {
                 TxtContentDescription.Text = string.Empty;
-                TxtContentBeforePhrase.Text = string.Empty;
-                TxtContentAfterPhrase.Text = string.Empty;
+                TxtContentBeforeAndAfterPhrases.Text = string.Empty;
             }
             TxtContentDescription.Enabled = LstContent.Items.Count > 0;
-            TxtContentBeforePhrase.Enabled = LstContent.Items.Count > 0;
-            TxtContentAfterPhrase.Enabled = LstContent.Items.Count > 0;
+            TxtContentBeforeAndAfterPhrases.Enabled = LstContent.Items.Count > 0;
         }
         private void ButtonRemove<T>(ListBox listbox, BindingList<T> bindingList)
         {
@@ -354,8 +361,7 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selected)
             {
                 TxtContentDescription.Text = selected.Description;
-                TxtContentBeforePhrase.Text = selected.Criteria.BeforePhrase;
-                TxtContentAfterPhrase.Text = selected.Criteria.AfterPhrase;
+                TxtContentBeforeAndAfterPhrases.Text = GenerateFilterCriteriaText(selected.Criterias);
             }
             UpdateButtons();
         }
@@ -460,18 +466,11 @@ namespace LogScraper.Log
 
         }
 
-        private void TxtContentBeforePhrase_TextChanged(object sender, EventArgs e)
+        private void TxtContentBeforeAndAfterPhrases_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
 
-            if (LstContent.SelectedItem is LogContentProperty selected) selected.Criteria.BeforePhrase = TxtContentBeforePhrase.Text;
-        }
-
-        private void TxtContentAfterPhrase_TextChanged(object sender, EventArgs e)
-        {
-            if (UpdatingInformation) return;
-
-            if (LstContent.SelectedItem is LogContentProperty selected) selected.Criteria.AfterPhrase = TxtContentAfterPhrase.Text;
+            if (LstContent.SelectedItem is LogContentProperty selected) selected.Criterias = ParseFilterCriteria(TxtContentBeforeAndAfterPhrases.Text);
         }
 
         private void TxtMetadataBegin_TextChanged(object sender, EventArgs e)
@@ -653,12 +652,15 @@ namespace LogScraper.Log
                 LogContentProperty newProperty = new()
                 {
                     Description = property.Description,
-                    Criteria = new FilterCriteria()
-                    {
-                        BeforePhrase = property.Criteria.BeforePhrase,
-                        AfterPhrase = property.Criteria.AfterPhrase
-                    }
                 };
+                foreach (FilterCriteria criteria in property.Criterias)
+                {
+                    newProperty.Criterias.Add(new FilterCriteria()
+                    {
+                        BeforePhrase = criteria.BeforePhrase,
+                        AfterPhrase = criteria.AfterPhrase
+                    });
+                }
                 logLayoutCopy.LogContentProperties.Add(newProperty);
             }
             foreach (ILogTransformer transformer in logLayout.LogTransformers)
@@ -676,5 +678,68 @@ namespace LogScraper.Log
             }
             _layouts.Add(logLayoutCopy);
         }
+        private static List<FilterCriteria> ParseFilterCriteria(string input)
+        {
+            List<FilterCriteria> result = [];
+
+            string[] lines = input.Split(["\r\n", "\n"], StringSplitOptions.None);
+
+            foreach (string line in lines)
+            {
+
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                string before;
+                string after;
+
+                int separatorIndex = line.IndexOf("=>");
+
+                if (separatorIndex >= 0)
+                {
+                    before = line[..separatorIndex];
+                    after = line[(separatorIndex + 2)..];
+                }
+                else
+                {
+                    before = line;
+                    after = null;
+                }
+
+                if (!string.IsNullOrEmpty(before))
+                {
+                    result.Add(new FilterCriteria
+                    {
+                        BeforePhrase = before,
+                        AfterPhrase = after
+                    });
+                }
+            }
+
+            return result;
+        }
+        private static string GenerateFilterCriteriaText(List<FilterCriteria> criteriaList)
+        {
+            List<string> lines = [];
+
+            foreach (FilterCriteria criteria in criteriaList)
+            {
+                string before = criteria.BeforePhrase ?? string.Empty;
+                string after = criteria.AfterPhrase ?? string.Empty;
+
+                if (!string.IsNullOrEmpty(before))
+                {
+                    string line = string.IsNullOrEmpty(after)
+                        ? before
+                        : $"{before}=>{after}";
+
+                    lines.Add(line);
+                }
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+
     }
 }

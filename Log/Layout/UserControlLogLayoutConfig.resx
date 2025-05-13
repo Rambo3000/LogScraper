@@ -141,6 +141,17 @@ Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY
 
 Let op! De applicatie kan langzamer worden indien metadata wordt gebruikt die vaak wijzigd (bijvoorbeeld een trace-id). Probeer voor deze gevallen het in te lezen log klein te houden.</value>
   </data>
+  <data name="pictureBox9.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die net voor de content waarde staat en (optioneel) de tekst die net na de content waarde staat.
+Zet tussen de voor en na tekst: =&gt;
+Het is mogelijk meerdere voor en na teksten op te geven, zet elk op een eigen regel.
+
+Voorbeeld: indien in de logregel staat API call: X
+Geef dan op: API call: 
+
+Voorbeeld: indien in de logregel staat API call: X is being started
+Geef dan op: API call: =&gt; is being started</value>
+  </data>
   <data name="pictureBox6.ToolTip" xml:space="preserve">
     <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
 In de applicatie verschijnt dit bij de begin en eind filters

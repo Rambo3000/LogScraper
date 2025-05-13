@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LogScraper.Log.Content
 {
@@ -16,7 +17,15 @@ namespace LogScraper.Log.Content
         /// <summary>
         /// Criteria used to filter or identify this log content property.
         /// </summary>
+        /// <remarks>Do nu use this single criteria as it is absolete, use the <see cref="Criterias"/> instead.</remarks>
+        [Obsolete("Use Criterias instead.")]
         public FilterCriteria Criteria { get; set; }
+
+        /// <summary>
+        /// List of criteria used to filter or identify this log content property. 
+        /// If one of the criteria is met, the log content property is considered valid.
+        /// </summary>
+        public List<FilterCriteria> Criterias { get; set; } = [];
 
         /// <summary>
         /// Cached hash code for the log content property, calculated from the description.

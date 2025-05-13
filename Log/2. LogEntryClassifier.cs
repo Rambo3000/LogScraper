@@ -128,13 +128,17 @@ namespace LogScraper.Log
                 // Determine and add content properties and their values to the log entry.
                 foreach (var LogContent in logLayout.LogContentProperties)
                 {
-                    // Extract the content value based on the criteria.
-                    string value = ExtractValue(logEntry.Entry, LogContent.Criteria, false, logLayout.StartPosition);
-
-                    // Add the content value to the log entry if it exists.
-                    if (value != null)
+                    string value = null;
+                    foreach (FilterCriteria filterCriteria in LogContent.Criterias)
                     {
-                        logEntry.LogContentProperties[LogContent] = logEntry.TimeStamp.ToString("HH:mm:ss") + " " + value;
+                        // Extract the content value based on the criteria.
+                        value = ExtractValue(logEntry.Entry, filterCriteria, false, logLayout.StartPosition);
+                        // Add the content value to the log entry if it exists.
+                        if (value != null)
+                        {
+                            logEntry.LogContentProperties[LogContent] = logEntry.TimeStamp.ToString("HH:mm:ss") + " " + value;
+                            break; // Exit the loop after finding a valid value.
+                        }
                     }
                 }
             }

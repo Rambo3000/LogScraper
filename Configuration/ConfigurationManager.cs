@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using LogScraper.Configuration.Generic;
+using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
@@ -35,6 +37,10 @@ namespace LogScraper.Configuration
             logLayoutsConfig = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
             logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
 
+#pragma warning disable CS0612 // Type or member is obsolete
+            // Set multiple content criterias if only the single (obsolete) content criteria is set
+            ConvertSingleToMultipleCriterias(logLayoutsConfig);
+#pragma warning restore CS0612 // Type or member is obsolete
             SetAllLayoutsTransformers();
 
             // Limit the automatic read time to a maximum of 5 minutes
@@ -44,6 +50,28 @@ namespace LogScraper.Configuration
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.FileConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig);
+        }
+
+        /// <summary>
+        /// Sets the content criterias for log layouts if only the single (absolete) content criteria is set.
+        /// </summary>
+        /// <param name="logLayoutsConfig"></param>
+        [Obsolete]
+        private static void ConvertSingleToMultipleCriterias(LogLayoutsConfig logLayoutsConfig)
+        {
+            foreach (LogLayout logLayout in logLayoutsConfig.layouts)
+            {
+                foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
+                {
+                    // If the content criteria is empty, skip
+                    if (logContentProperty.Criteria == null) continue;
+                    // If the content criteria is not empty, skip
+                    if (logContentProperty.Criterias != null && logContentProperty.Criterias.Count > 0) continue;
+                    // Create a new list for multiple content criteria
+                    logContentProperty.Criterias = [logContentProperty.Criteria];
+                    logContentProperty.Criteria = null;
+                }
+            }
         }
 
         /// <summary>
