@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using LogScraper.Log.Content;
 
-namespace LogScraper.Log.Flow
+namespace LogScraper.Log.FlowTree
 {
     /// <summary>
     /// Represents a node in a nested log flow tree.
     /// Each node tracks a begin log entry, an optional end log entry, a key for identification, and any nested child nodes.
     /// </summary>
-    public class LogFlowNode
+    public class LogFlowTreeNode
     {
         /// <summary>
         /// The log entry that marks the beginning of this flow node.
@@ -27,6 +27,6 @@ namespace LogScraper.Log.Flow
         /// <summary>
         /// The list of child flow nodes nested within this node.
         /// </summary>
-        public List<LogFlowNode> Children { get; set; } = [];
+        public List<LogFlowTreeNode> Children { get; set; } = [];
     }
 }
