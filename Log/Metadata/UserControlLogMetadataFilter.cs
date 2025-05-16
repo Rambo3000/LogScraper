@@ -151,5 +151,17 @@ namespace LogScraper
             }
             FlowLayoutPanelItems.ResumeDrawing();
         }
+
+        internal void EnableDisableFilterOnSpecificMetdataValue(string value, bool isEnabled)
+        {
+            foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
+            {
+                if (((LogMetadataValue)item.Tag).Value == value)
+                {
+                    item.IsChecked = isEnabled;
+                    break;
+                }
+            }
+        }
     }
 }

@@ -41,6 +41,7 @@ namespace LogScraper
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
             UsrLogContentBegin.FilterChanged += HandleLogContentFilterUpdateBegin;
+            UsrLogContentBegin.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UsrLogContentEnd.FilterChanged += HandleLogContentFilterUpdateEnd;
             UsrLogContentEnd.SelectedItemBackColor = Brushes.GreenYellow;
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
@@ -49,6 +50,12 @@ namespace LogScraper
 
             SetDynamicToolTips();
         }
+
+        private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
+        {
+            UsrMetadataFilterOverview.EnableFilterOnSpecificMetdataValues(logMetadataPropertiesAndValues, isEnabled);
+        }
+
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
             try
@@ -473,8 +480,8 @@ namespace LogScraper
         {
             if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UsrLogContentBegin.UpdateFilterTypes(logLayout.LogContentProperties);
-            UsrLogContentEnd.UpdateFilterTypes(logLayout.LogContentProperties);
+            UsrLogContentBegin.UpdateLogLayout(logLayout);
+            UsrLogContentEnd.UpdateLogLayout(logLayout);
             UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();

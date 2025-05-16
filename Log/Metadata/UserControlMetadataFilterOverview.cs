@@ -142,6 +142,28 @@ namespace LogScraper.Log.Metadata
         }
 
         /// <summary>
+        /// Enables filtering on a specific metadata value for a given metadata property.
+        /// </summary>
+        /// <param name="logMetadataPropertiesAndValues">The metadata properties and their values to enable filtering on.</param>
+        public void EnableFilterOnSpecificMetdataValues (Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
+        {
+            // Check if the control for the specified metadata property exists
+            foreach (KeyValuePair<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> control in logMetadataPropertyControls)
+            {
+                foreach (KeyValuePair<LogMetadataProperty, string> kvp in logMetadataPropertiesAndValues)
+                {
+                    // Check if the control's metadata property matches the specified one
+                    if (control.Key.LogMetadataProperty == kvp.Key)
+                    {
+                        // Enable the filter on the specific metadata value
+                        control.Value.EnableDisableFilterOnSpecificMetdataValue(kvp.Value, isEnabled);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Resets the filter controls by clearing all child controls and their event handlers.
         /// </summary>
         public void Reset()

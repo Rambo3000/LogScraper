@@ -9,42 +9,48 @@
           "criteria": {
             "beforePhrase": " ",
             "afterPhrase": " "
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Project",
           "criteria": {
             "beforePhrase": "projectName=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Gebruiker",
           "criteria": {
             "beforePhrase": "userId=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Branch",
           "criteria": {
             "beforePhrase": "projectVersion=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Pagina",
           "criteria": {
             "beforePhrase": "currentPageName=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Sessie",
           "criteria": {
             "beforePhrase": "runtimeSessionId=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": true
         }
       ],
       "logContentBeginEndFilters": [
@@ -126,14 +132,16 @@
           "criteria": {
             "beforePhrase": " ",
             "afterPhrase": " "
-          }
+          },
+          "isSessionData": false
         },
         {
           "description": "Project",
           "criteria": {
             "beforePhrase": "projectName=\"",
             "afterPhrase": "\""
-          }
+          },
+          "isSessionData": false
         }
       ],
       "logContentBeginEndFilters": [
@@ -192,7 +200,8 @@
           "criteria": {
             "beforePhrase": " ",
             "afterPhrase": " "
-          }
+          },
+          "isSessionData": false
         }
       ],
       "logContentBeginEndFilters": [

@@ -20,6 +20,12 @@ namespace LogScraper.Log.Metadata
         public FilterCriteria Criteria { get; set; }
 
         /// <summary>
+        /// Indicates whether the metadata property is related to session data.
+        /// This is used to quickly filter on session-related properties.
+        /// </summary>
+        public bool IsSessionData { get; set; } = false;
+
+        /// <summary>
         /// Cached hash code for the metadata property, calculated from the description.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>

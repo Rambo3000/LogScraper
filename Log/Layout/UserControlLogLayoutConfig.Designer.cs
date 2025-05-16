@@ -102,6 +102,8 @@ namespace LogScraper.Log
             chkTransformReverse = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            ChkMetadataIsSessionData = new System.Windows.Forms.CheckBox();
+            pictureBox8 = new System.Windows.Forms.PictureBox();
             GrpLayouts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
@@ -132,6 +134,7 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox15).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox14).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             SuspendLayout();
             // 
             // LstLayouts
@@ -489,6 +492,8 @@ namespace LogScraper.Log
             // 
             // grpMetadata
             // 
+            grpMetadata.Controls.Add(pictureBox8);
+            grpMetadata.Controls.Add(ChkMetadataIsSessionData);
             grpMetadata.Controls.Add(pictureBox5);
             grpMetadata.Controls.Add(pictureBox4);
             grpMetadata.Controls.Add(pictureBox3);
@@ -931,6 +936,27 @@ namespace LogScraper.Log
             pictureBox2.TabStop = false;
             toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
             // 
+            // ChkMetadataIsSessionData
+            // 
+            ChkMetadataIsSessionData.AutoSize = true;
+            ChkMetadataIsSessionData.Location = new System.Drawing.Point(241, 157);
+            ChkMetadataIsSessionData.Name = "ChkMetadataIsSessionData";
+            ChkMetadataIsSessionData.Size = new System.Drawing.Size(321, 19);
+            ChkMetadataIsSessionData.TabIndex = 30;
+            ChkMetadataIsSessionData.Text = "Deze metadata identificeerd een unieke gebruiker/sessie";
+            ChkMetadataIsSessionData.UseVisualStyleBackColor = true;
+            ChkMetadataIsSessionData.CheckedChanged += ChkMetadataIsSessionData_CheckedChanged;
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Image = Properties.Resources.help;
+            pictureBox8.Location = new System.Drawing.Point(568, 157);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new System.Drawing.Size(16, 16);
+            pictureBox8.TabIndex = 31;
+            pictureBox8.TabStop = false;
+            toolTip.SetToolTip(pictureBox8, "Vink aan als de metadatawaarde gebruikt kan worden om een gebruikerssessie te identificeren, zoals een gebruikersnaam, sessie-ID of trace-ID.");
+            // 
             // UserControlLogLayoutConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -975,6 +1001,7 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox15).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox14).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ResumeLayout(false);
         }
 
@@ -1050,5 +1077,7 @@ namespace LogScraper.Log
         private System.Windows.Forms.PictureBox pictureBox16;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button BtnCopy;
+        private System.Windows.Forms.CheckBox ChkMetadataIsSessionData;
+        private System.Windows.Forms.PictureBox pictureBox8;
     }
 }

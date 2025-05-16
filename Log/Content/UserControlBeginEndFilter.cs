@@ -7,6 +7,8 @@ using LogScraper.Configuration;
 using LogScraper.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Content;
+using LogScraper.Log.Layout;
+using LogScraper.Log.Metadata;
 
 namespace LogScraper
 {
@@ -19,6 +21,10 @@ namespace LogScraper
         ///     Used for showing the error log entries for non-error LogContentProperties
         /// </summary>
         private LogContentProperty LogContentPropertyError;
+
+        private List<LogMetadataProperty> LogMetadataPropertiesUserSession;
+
+        public event Action<Dictionary<LogMetadataProperty, string>, bool> FilterOnMetadata;
 
         public UserControlBeginEndFilter()
         {
@@ -33,12 +39,12 @@ namespace LogScraper
 
         private List<LogEntry> LogEntriesLatestVersion;
 
-        public void UpdateFilterTypes(List<LogContentProperty> logContentProperties)
+        public void UpdateLogLayout(LogLayout logLayout)
         {
             CboLogContentType.Items.Clear();
-            if (logContentProperties == null || logContentProperties.Count == 0) return;
-            CboLogContentType.Items.AddRange([.. logContentProperties]);
-            foreach (LogContentProperty logContentProperty in logContentProperties)
+            if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
+            CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties]);
+            foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
             {
                 if (logContentProperty.Description == "Errors")
                 {
@@ -46,7 +52,16 @@ namespace LogScraper
                     break;
                 }
             }
+            LogMetadataPropertiesUserSession = [];
+            foreach (LogMetadataProperty logMetadataProperty in logLayout.LogMetadataProperties)
+            {
+                if (logMetadataProperty.IsSessionData)
+                {
+                    LogMetadataPropertiesUserSession.Add(logMetadataProperty);
+                }
+            }
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
+            FilterOnMetadataProperties(false);
         }
 
         public void UpdateLogEntries(List<LogEntry> logEntries)
@@ -257,7 +272,11 @@ namespace LogScraper
 
         private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ignoreSelectedItemChanged == false) OnFilterChanged(EventArgs.Empty);
+            if (ignoreSelectedItemChanged == false)
+            {
+                OnFilterChanged(EventArgs.Empty);
+                BtnFilterOnSameMetadata.Enabled = LstLogContent.SelectedIndex != -1 && LogMetadataPropertiesUserSession.Count > 0;
+            }
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
@@ -369,6 +388,44 @@ namespace LogScraper
                 UpdateLogContentList();
                 lastSearch = searchString;
             }
+        }
+        private Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = null;
+        private void BtnFilterOnSameMetadata_Click(object sender, EventArgs e)
+        {
+            FilterOnMetadataProperties(true);
+        }
+        private void FilterOnMetadataProperties(bool enableFilter)
+        {
+            BtnFilterOnSameMetadata.Visible = !enableFilter;
+            BtnResetMetadataFilter.Visible = enableFilter;
+            if (enableFilter)
+            {
+                if (LstLogContent.SelectedIndex == -1) return;
+                FilterOnMetadataPropertiesAndValues = [];
+                foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
+                {
+                    foreach (var logMetadataProperty in LogMetadataPropertiesUserSession)
+                    {
+                        if (item.Key == logMetadataProperty)
+                        {
+                            FilterOnMetadataPropertiesAndValues.Add(item.Key, item.Value);
+                            break;
+                        }
+                    }
+                }
+                FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, true);
+            }
+            else
+            {
+                if (FilterOnMetadataPropertiesAndValues == null) return;
+                FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);
+                FilterOnMetadataPropertiesAndValues = null;
+            }
+        }
+
+        private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
+        {
+            FilterOnMetadataProperties(false);
         }
     }
 }

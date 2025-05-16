@@ -120,48 +120,20 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="pictureBox7.ToolTip" xml:space="preserve">
     <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
 - de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
 - de metadata die per logregel weggeschreven wordt en waarop gefilterd kan worden.
 - eventuele inhoudelijke gegevens (content) waarop gezocht kan worden. Dit wordt gebruikt voor de begin en eind filters.</value>
   </data>
-  <data name="pictureBox13.ToolTip" xml:space="preserve">
-    <value>Geef de tekst die het begin van de metadata identficeerd. Redeneer na de timestamp aan het begin van de regel
-
-Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
-In dit voorbeeld is er geen specifiek teken voor de metadata, dus laat deze leeg
-
-Bijvoorbeeld 2025-01-01T01:02:03.123 - INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
-Gebruik in dit voorbeeld: "- "</value>
-  </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
     <value>Metadata zijn gegevens die bij elke logregel aanwezig zijn en waarop gefilterd kan worden. 
 Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY
 
 Let op! De applicatie kan langzamer worden indien metadata wordt gebruikt die vaak wijzigd (bijvoorbeeld een trace-id). Probeer voor deze gevallen het in te lezen log klein te houden.</value>
-  </data>
-  <data name="pictureBox9.ToolTip" xml:space="preserve">
-    <value>Geef de tekst die net voor de content waarde staat en (optioneel) de tekst die net na de content waarde staat.
-Zet tussen de voor en na tekst: =&gt;
-Het is mogelijk meerdere voor en na teksten op te geven, zet elk op een eigen regel.
-
-Voorbeeld: indien in de logregel staat API call: X
-Geef dan op: API call: 
-
-Voorbeeld: indien in de logregel staat API call: X is being started
-Geef dan op: API call: =&gt; is being started</value>
-  </data>
-  <data name="pictureBox6.ToolTip" xml:space="preserve">
-    <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
-In de applicatie verschijnt dit bij de begin en eind filters
-
-Bijvoorbeeld:
-2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
-Dan kan de tekst voor de waarde zijn: API call: 
-De tekst na de waarde mag leeg blijven.
-
-Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
   </data>
   <data name="pictureBox2.ToolTip" xml:space="preserve">
     <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.
@@ -197,5 +169,36 @@ ddd dd MMM yyyy	ma 14 apr 2025	Leesbare datum, afgekorte dag/maand
 dddd dd MMMM yyyy	maandag 14 april 2025	Volledig uitgeschreven datum
 yyyy-MM-dd HH:mm:ss.fff	2025-04-14 13:45:30.123	Inclusief milliseconden
 yyyy-MM-dd HH:mm:ss zzz	2025-04-14 13:45:30 +02:00	Met tijdzone offset</value>
+  </data>
+  <data name="pictureBox13.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die het begin van de metadata identficeerd. Redeneer na de timestamp aan het begin van de regel
+
+Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
+In dit voorbeeld is er geen specifiek teken voor de metadata, dus laat deze leeg
+
+Bijvoorbeeld 2025-01-01T01:02:03.123 - INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
+Gebruik in dit voorbeeld: "- "</value>
+  </data>
+  <data name="pictureBox9.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die net voor de content waarde staat en (optioneel) de tekst die net na de content waarde staat.
+Zet tussen de voor en na tekst: =&gt;
+Het is mogelijk meerdere voor en na teksten op te geven, zet elk op een eigen regel.
+
+Voorbeeld: indien in de logregel staat API call: X
+Geef dan op: API call: 
+
+Voorbeeld: indien in de logregel staat API call: X is being started
+Geef dan op: API call: =&gt; is being started</value>
+  </data>
+  <data name="pictureBox6.ToolTip" xml:space="preserve">
+    <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
+In de applicatie verschijnt dit bij de begin en eind filters
+
+Bijvoorbeeld:
+2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
+Dan kan de tekst voor de waarde zijn: API call: 
+De tekst na de waarde mag leeg blijven.
+
+Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
   </data>
 </root>

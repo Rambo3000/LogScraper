@@ -34,6 +34,8 @@
             ChkShowExtraLogEntries = new System.Windows.Forms.CheckBox();
             TxtExtraLogEntries = new System.Windows.Forms.TextBox();
             txtSearch = new System.Windows.Forms.TextBox();
+            BtnFilterOnSameMetadata = new System.Windows.Forms.Button();
+            BtnResetMetadataFilter = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // LstLogContent
@@ -45,7 +47,7 @@
             LstLogContent.IntegralHeight = false;
             LstLogContent.Location = new System.Drawing.Point(0, 62);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(216, 93);
+            LstLogContent.Size = new System.Drawing.Size(243, 159);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -57,14 +59,14 @@
             CboLogContentType.FormattingEnabled = true;
             CboLogContentType.Location = new System.Drawing.Point(0, 4);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(154, 23);
+            CboLogContentType.Size = new System.Drawing.Size(181, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
             // BtnReset
             // 
             BtnReset.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnReset.Location = new System.Drawing.Point(160, 3);
+            BtnReset.Location = new System.Drawing.Point(187, 3);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(53, 25);
             BtnReset.TabIndex = 2;
@@ -76,7 +78,7 @@
             // 
             ChkShowExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             ChkShowExtraLogEntries.AutoSize = true;
-            ChkShowExtraLogEntries.Location = new System.Drawing.Point(5, 161);
+            ChkShowExtraLogEntries.Location = new System.Drawing.Point(5, 251);
             ChkShowExtraLogEntries.Name = "ChkShowExtraLogEntries";
             ChkShowExtraLogEntries.Size = new System.Drawing.Size(115, 19);
             ChkShowExtraLogEntries.TabIndex = 3;
@@ -87,7 +89,7 @@
             // TxtExtraLogEntries
             // 
             TxtExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            TxtExtraLogEntries.Location = new System.Drawing.Point(126, 159);
+            TxtExtraLogEntries.Location = new System.Drawing.Point(126, 249);
             TxtExtraLogEntries.Name = "TxtExtraLogEntries";
             TxtExtraLogEntries.Size = new System.Drawing.Size(53, 23);
             TxtExtraLogEntries.TabIndex = 4;
@@ -100,12 +102,36 @@
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtSearch.Location = new System.Drawing.Point(0, 33);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(213, 23);
+            txtSearch.Size = new System.Drawing.Size(240, 23);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
             txtSearch.KeyDown += TxtSearch_KeyDown;
             txtSearch.Leave += TxtSearch_Leave;
+            // 
+            // BtnFilterOnSameMetadata
+            // 
+            BtnFilterOnSameMetadata.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            BtnFilterOnSameMetadata.Enabled = false;
+            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(0, 227);
+            BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
+            BtnFilterOnSameMetadata.Size = new System.Drawing.Size(240, 23);
+            BtnFilterOnSameMetadata.TabIndex = 8;
+            BtnFilterOnSameMetadata.Text = "Filter dezelfde sessie";
+            BtnFilterOnSameMetadata.UseVisualStyleBackColor = true;
+            BtnFilterOnSameMetadata.Click += BtnFilterOnSameMetadata_Click;
+            // 
+            // BtnResetMetadataFilter
+            // 
+            BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            BtnResetMetadataFilter.Location = new System.Drawing.Point(0, 227);
+            BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
+            BtnResetMetadataFilter.Size = new System.Drawing.Size(240, 23);
+            BtnResetMetadataFilter.TabIndex = 9;
+            BtnResetMetadataFilter.Text = "Reset de filter op sessie";
+            BtnResetMetadataFilter.UseVisualStyleBackColor = true;
+            BtnResetMetadataFilter.Visible = false;
+            BtnResetMetadataFilter.Click += BtnResetMetadataFilter_Click;
             // 
             // UserControlBeginEndFilter
             // 
@@ -113,6 +139,8 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
+            Controls.Add(BtnResetMetadataFilter);
+            Controls.Add(BtnFilterOnSameMetadata);
             Controls.Add(txtSearch);
             Controls.Add(TxtExtraLogEntries);
             Controls.Add(ChkShowExtraLogEntries);
@@ -120,7 +148,7 @@
             Controls.Add(CboLogContentType);
             Controls.Add(LstLogContent);
             Name = "UserControlBeginEndFilter";
-            Size = new System.Drawing.Size(216, 182);
+            Size = new System.Drawing.Size(243, 272);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -133,5 +161,7 @@
         private System.Windows.Forms.CheckBox ChkShowExtraLogEntries;
         private System.Windows.Forms.TextBox TxtExtraLogEntries;
         private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button BtnFilterOnSameMetadata;
+        private System.Windows.Forms.Button BtnResetMetadataFilter;
     }
 }
