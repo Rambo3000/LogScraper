@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using LogScraper.Log.Content;
 
 namespace LogScraper.Log.FlowTree
@@ -58,15 +59,18 @@ namespace LogScraper.Log.FlowTree
                 {
                     // Use a temporary stack to hold nodes that do not match the current end value.
                     Stack<(LogContentValue, LogFlowTreeNode)> temp = new();
+                    bool matched = false;
 
                     while (stack.Count > 0)
                     {
                         var top = stack.Pop();
+
                         // Use EqualsValue to compare keys for matching begin/end.
                         if (top.Key.EqualsValue(endValue))
                         {
                             // Found the matching begin node; set its end and stop searching.
                             top.Node.End = entry;
+                            matched = true;
                             break;
                         }
                         else
@@ -76,11 +80,15 @@ namespace LogScraper.Log.FlowTree
                         }
                     }
 
-                    // Restore any unmatched nodes back to the main stack.
-                    //while (temp.Count > 0)
-                    //{
-                    //    stack.Push(temp.Pop());
-                    //}
+                    // If a matching begin node was found, discard the unmatched nodes in the temp stack.
+                    // This follows the principle that if a begin node is closed, all nodes above it in the stack (child nodes) are also closed.
+                    if (matched) continue;
+
+                    // Restore any unmatched nodes back to the main stack in case no match can be made
+                    while (temp.Count > 0)
+                    {
+                        stack.Push(temp.Pop());
+                    }
 
                     // Orphan end nodes (without a matching begin) are ignored for tree cleanliness.
                 }
