@@ -38,6 +38,13 @@
             "beforePhrase": "currentPageName=\"",
             "afterPhrase": "\""
           }
+        },
+        {
+          "description": "Sessie",
+          "criteria": {
+            "beforePhrase": "runtimeSessionId=\"",
+            "afterPhrase": "\""
+          }
         }
       ],
       "logContentBeginEndFilters": [
@@ -46,7 +53,7 @@
           "criteria": null,
           "criterias": [
             {
-              "beforePhrase": "Starting flow: ",
+              "beforePhrase": "[onFlowStart] Starting flow: ",
               "afterPhrase": null
             },
             {
@@ -62,6 +69,10 @@
             {
               "beforePhrase": "Completed flow: ",
               "afterPhrase": null
+            },
+            {
+              "beforePhrase": "Reached the end of flow '",
+              "afterPhrase": "'"
             },
             {
               "beforePhrase": "flow '",
@@ -85,6 +96,16 @@
           "criterias": [
             {
               "beforePhrase": " ERROR",
+              "afterPhrase": null
+            }
+          ]
+        },
+        {
+          "description": "test",
+          "criteria": null,
+          "criterias": [
+            {
+              "beforePhrase": "[onFlow",
               "afterPhrase": null
             }
           ]

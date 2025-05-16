@@ -600,7 +600,9 @@ namespace LogScraper.Log
                     foreach (var property in logLayout.LogContentProperties)
                     {
                         logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
-                        information += $"   {property.Description}: {contentValue.Value ??= "<niet gevonden>"}" + Environment.NewLine;
+                        bool hasContentValue = contentValue != null && contentValue.Value != null;
+                        string valueToShow = hasContentValue ? contentValue.Value : "<niet gevonden>";
+                        information += $"   {property.Description}: {valueToShow}" + Environment.NewLine;
                     }
                     TxtTestResponse.ForeColor = System.Drawing.Color.Black;
                     TxtTestResponse.Text = information;

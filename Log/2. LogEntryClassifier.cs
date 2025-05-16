@@ -139,7 +139,7 @@ namespace LogScraper.Log
                         {
                             logEntry.LogContentProperties[LogContent] = new LogContentValue()
                             {
-                                Value = value,
+                                Value = value.Trim(),
                                 TimeDescription = logEntry.TimeStamp.ToString("HH:mm:ss")
                             };
                             break; // Exit the loop after finding a valid value.
