@@ -41,11 +41,13 @@ namespace LogScraper.Log.FlowTree
                     {
                         // If there is an open parent node, nest this node as its child.
                         stack.Peek().Node.Children.Add(node);
+                        node.Parent = stack.Peek().Node;
                     }
                     else
                     {
                         // No open parent node, so this is a root node.
                         roots.Add(node);
+                        node.Parent = null;
                     }
 
                     // Push the new node onto the stack for future matching with end entries.

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Content;
+using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using Newtonsoft.Json.Linq;
 
 namespace LogScraper
 {
@@ -39,8 +42,11 @@ namespace LogScraper
 
         private List<LogEntry> LogEntriesLatestVersion;
 
+        private LogLayout ActiveLogLayout;
+
         public void UpdateLogLayout(LogLayout logLayout)
         {
+            ActiveLogLayout = logLayout;
             CboLogContentType.Items.Clear();
             if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties]);
@@ -100,7 +106,7 @@ namespace LogScraper
 
             for (int i = 0; i < compareCount; i++)
             {
-                if (!newLogEntries[i].Content.Equals(((LogEntryWithToStringOverride)LstLogContent.Items[i]).Content))
+                if (!newLogEntries[i].ContentValue.Equals(((LogEntryWithToStringOverride)LstLogContent.Items[i]).ContentValue))
                 {
                     startMatches = false;
                     break;
@@ -131,6 +137,25 @@ namespace LogScraper
 
         private List<LogEntryWithToStringOverride> GetLogEntryWithToStringOverridesList(LogContentProperty logContentProperty)
         {
+            if (logContentProperty == null) return null;
+
+            List<LogFlowTreeNode> treeNodes = [];
+            // TODO: make configurable
+            if (logContentProperty.Description == "Begin flow")
+            {
+
+                LogContentProperty endProperty = null;
+                foreach (LogContentProperty logContentPropertyLoop in ActiveLogLayout.LogContentProperties)
+                {
+                    if (logContentPropertyLoop.Description == "Einde flow")
+                    {
+                        endProperty = logContentPropertyLoop;
+                        break;
+                    }
+                }
+                if (endProperty != null) treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, endProperty);
+            }
+
             List<LogEntryWithToStringOverride> logEntryWithToStringOverrides = [];
 
             // Get the search filter text
@@ -155,6 +180,18 @@ namespace LogScraper
                     isError = true;
                 }
 
+                LogFlowTreeNode flowtreeNode = null;
+                if (contentValue != null)
+                {
+                    foreach (LogFlowTreeNode node in treeNodes)
+                    {
+                        if (TryFindDepthRecursive(node, contentValue, out flowtreeNode))
+                        {
+                            break;
+                        }
+                    }
+                }
+
                 // If the content is not an error and a filter is applied, check if the content contains the filter text
                 if (!isError && !string.IsNullOrEmpty(filter))
                 {
@@ -165,12 +202,34 @@ namespace LogScraper
                 LogEntryWithToStringOverride logEntryWithToStringOverride = new()
                 {
                     OriginalLogEntry = logEntry,
-                    Content = isError ? contentValue.TimeDescription + " ERROR" : contentValue.ToString(),
-                    IsError = isError
+                    ContentValue = contentValue,
+                    IsError = isError,
+                    FlowTreeNode = flowtreeNode
+
                 };
                 logEntryWithToStringOverrides.Add(logEntryWithToStringOverride);
             }
             return logEntryWithToStringOverrides;
+        }
+
+        private static bool TryFindDepthRecursive(LogFlowTreeNode root, LogContentValue contentValue, out LogFlowTreeNode foundNode)
+        {
+            if (root.Key.Equals(contentValue))
+            {
+                foundNode = root;
+                return true;
+            }
+
+            foreach (LogFlowTreeNode child in root.Children)
+            {
+                if (TryFindDepthRecursive(child, contentValue, out foundNode))
+                {
+                    return true;
+                }
+            }
+
+            foundNode = null;
+            return false;
         }
 
         private void FullyRedrawList(List<LogEntryWithToStringOverride> newLogEntries)
@@ -225,10 +284,11 @@ namespace LogScraper
         private class LogEntryWithToStringOverride
         {
             public LogEntry OriginalLogEntry { get; set; }
-            public string Content { get; set; }
+            public LogContentValue ContentValue { get; set; }
             public bool IsError { get; set; }
+            public LogFlowTreeNode FlowTreeNode { get; set; }
             public override string ToString()
-            { return Content; }
+            { return ContentValue != null ? ContentValue.Value : string.Empty; }
         }
 
         public LogEntry SelectedLogEntry
@@ -240,12 +300,12 @@ namespace LogScraper
             }
         }
 
-        public string SelectedItem
+        public LogContentValue SelectedItem
         {
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryWithToStringOverride)LstLogContent.SelectedItem).Content;
+                return ((LogEntryWithToStringOverride)LstLogContent.SelectedItem).ContentValue;
             }
         }
         public int ExtraLogEntryCount
@@ -297,38 +357,95 @@ namespace LogScraper
 
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index >= 0)
+            if (e.Index < 0) return;
+
+            // Fetch the item
+            if (LstLogContent.Items[e.Index] is not LogEntryWithToStringOverride item || item.ContentValue == null) return;
+
+            Graphics g = e.Graphics;
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            // Draw background
+            if (isSelected)
             {
-                bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+                g.FillRectangle(SelectedItemBackColor, e.Bounds);
+            }
+            else
+            {
+                g.FillRectangle(SystemBrushes.Window, e.Bounds);
+            }
 
-                // Clear the item's background
-                e.DrawBackground();
-                // Get the item from the ListBox
-                LogEntryWithToStringOverride item = LstLogContent.Items[e.Index] as LogEntryWithToStringOverride;
+            if (item.IsError)
+            {
+                e.Graphics.DrawString(item.ContentValue.TimeDescription + " ERROR", LstLogContent.Font, isSelected ? Brushes.Black : Brushes.DarkRed, e.Bounds);
+                return;
+            }
 
-                // If the item is selected, draw a focus rectangle around it
-                if (isSelected)
+            if (item.FlowTreeNode == null)
+            {
+                string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
+                e.Graphics.DrawString(truncatedValue, LstLogContent.Font, Brushes.Black, e.Bounds);
+                return;
+            }
+
+            DrawFlowTreeNode(e, item, g);
+        }
+
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryWithToStringOverride item, Graphics g)
+        {
+            // Indentation
+            const int indentPerLevel = 10;
+            int timeX = e.Bounds.Left;
+            int treeX = timeX + 56; // fixed width for TimeDescription
+            int treeNodeDepth = item.FlowTreeNode == null ? 0 : item.FlowTreeNode.Depth;
+            int indentPixels = treeNodeDepth * indentPerLevel; // tweak as needed
+            int textX = treeX + indentPixels - indentPerLevel / 2;
+
+            // Draw tree line(s)
+            using (Pen pen = new(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot })
+            {
+                LogFlowTreeNode currentNode = item.FlowTreeNode;
+                for (int i = treeNodeDepth - 1; i >= 0; i--)
                 {
-                    // Set the text color to dark red for items with IsError = true
-                    e.Graphics.FillRectangle(SelectedItemBackColor, e.Bounds);
-                }
-                // Truncate the text to fit within the width of the ListBox
-                string truncatedText = TruncateTextToFit(item.ToString(), e.Graphics, e.Bounds.Width);
-
-                // Check if the item is not null and IsError is true
-                if (item != null && item.IsError)
-                {
-                    // Use the default text color for other items
-                    e.Graphics.DrawString(truncatedText, LstLogContent.Font, Brushes.DarkRed, e.Bounds);
-                }
-                else
-                {
-
-                    // Use the default text color for other items
-                    e.Graphics.DrawString(truncatedText, LstLogContent.Font, SystemBrushes.ControlText, e.Bounds);
+                    if (currentNode.HasOlderSibling)
+                    {
+                        int lineX = treeX + i * indentPerLevel;
+                        g.DrawLine(pen, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom);
+                    }
+                    else if (i == treeNodeDepth - 1 && currentNode.IsLastSibling)
+                    {
+                        int lineX = treeX + i * indentPerLevel;
+                        g.DrawLine(pen, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom - (e.Bounds.Bottom - e.Bounds.Top) / 2);
+                    }
+                    currentNode = currentNode.Parent;
                 }
             }
+            // Draw the line from the tree to the text
+            if (!item.FlowTreeNode.IsRootNode)
+            {
+                int lineY = e.Bounds.Top + e.Bounds.Height / 2;
+                int lineStartX = treeX + indentPixels - 10;
+                int lineEndX = textX; // small gap before text
+
+                using Pen pen = new(Color.Gray) { DashStyle = DashStyle.Dot };
+                g.DrawLine(pen, lineStartX, lineY, lineEndX, lineY);
+            }
+
+            // Prepare fonts and brushes
+            Brush textBrush = item.IsError ? Brushes.DarkRed : SystemBrushes.ControlText;
+            Font font = LstLogContent.Font;
+
+            // Draw TimeDescription
+            g.DrawString(item.ContentValue.TimeDescription, font, textBrush, timeX, e.Bounds.Top);
+
+            // Truncate description if it doesn’t fit
+            string value = item.ContentValue.Value ?? string.Empty;
+            string truncatedValue = TruncateTextToFit(value, g, e.Bounds.Right - textX);
+
+            // Draw text
+            g.DrawString(truncatedValue, font, textBrush, textX, e.Bounds.Top);
         }
+
         private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
         {
             string truncatedText = text;
@@ -336,6 +453,7 @@ namespace LogScraper
 
             while (TextRenderer.MeasureText(graphics, truncatedText, LstLogContent.Font).Width + ellipsisWidth > maxWidth)
             {
+                if (truncatedText.Length == 0) break;
                 truncatedText = truncatedText[..^1];
             }
 
