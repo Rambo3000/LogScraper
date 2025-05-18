@@ -219,9 +219,9 @@ namespace LogScraper
         {
             if (txtLogEntries.Lines.Length > 0)
             {
-                if (UsrLogContentBegin.SelectedItem != null) txtLogEntries.HighlightLine(UsrLogContentBegin.ExtraLogEntryCount, Color.Orange, Color.Black);
+                if (UsrLogContentBegin.SelectedContentValue != null) txtLogEntries.HighlightLine(UsrLogContentBegin.ExtraLogEntryCount, Color.Orange, Color.Black);
                 // Minus two because the index is 0 based and there is always an additional empty log entry (hard to remove)
-                if (UsrLogContentEnd.SelectedItem != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2 - UsrLogContentEnd.ExtraLogEntryCount, Color.GreenYellow, Color.Black);
+                if (UsrLogContentEnd.SelectedContentValue != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2 - UsrLogContentEnd.ExtraLogEntryCount, Color.GreenYellow, Color.Black);
             }
         }
         #endregion

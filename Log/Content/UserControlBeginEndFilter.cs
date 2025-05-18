@@ -91,12 +91,12 @@ namespace LogScraper
             if (logContentProperty == null) return;
 
             // Create a list to store the log entries with overridden ToString method
-            List<LogEntryWithToStringOverride> logEntryWithToStringOverrides = GetLogEntryWithToStringOverridesList(logContentProperty);
+            List<LogEntryDisplayModel> logEntryWithToStringOverrides = GetLogEntryWithToStringOverridesList(logContentProperty);
 
             UpdateOrRedrawList(logEntryWithToStringOverrides);
         }
 
-        private void UpdateOrRedrawList(List<LogEntryWithToStringOverride> newLogEntries)
+        private void UpdateOrRedrawList(List<LogEntryDisplayModel> newLogEntries)
         {
             int currentCount = LstLogContent.Items.Count;
             int newCount = newLogEntries.Count;
@@ -106,7 +106,7 @@ namespace LogScraper
 
             for (int i = 0; i < compareCount; i++)
             {
-                if (!newLogEntries[i].ContentValue.Equals(((LogEntryWithToStringOverride)LstLogContent.Items[i]).ContentValue))
+                if (!newLogEntries[i].ContentValue.Equals(((LogEntryDisplayModel)LstLogContent.Items[i]).ContentValue))
                 {
                     startMatches = false;
                     break;
@@ -135,7 +135,7 @@ namespace LogScraper
             FullyRedrawList(newLogEntries);
         }
 
-        private List<LogEntryWithToStringOverride> GetLogEntryWithToStringOverridesList(LogContentProperty logContentProperty)
+        private List<LogEntryDisplayModel> GetLogEntryWithToStringOverridesList(LogContentProperty logContentProperty)
         {
             if (logContentProperty == null) return null;
 
@@ -156,7 +156,7 @@ namespace LogScraper
                 if (endProperty != null) treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, endProperty);
             }
 
-            List<LogEntryWithToStringOverride> logEntryWithToStringOverrides = [];
+            List<LogEntryDisplayModel> logEntryWithToStringOverrides = [];
 
             // Get the search filter text
             string filter = txtSearch.Text.Trim();
@@ -199,7 +199,7 @@ namespace LogScraper
                 }
 
                 // Create a new LogEntryWithToStringOverride object and add it to the list
-                LogEntryWithToStringOverride logEntryWithToStringOverride = new()
+                LogEntryDisplayModel logEntryWithToStringOverride = new()
                 {
                     OriginalLogEntry = logEntry,
                     ContentValue = contentValue,
@@ -232,10 +232,10 @@ namespace LogScraper
             return false;
         }
 
-        private void FullyRedrawList(List<LogEntryWithToStringOverride> newLogEntries)
+        private void FullyRedrawList(List<LogEntryDisplayModel> newLogEntries)
         {
             // Store the currently selected log entry
-            LogEntryWithToStringOverride selectedLogEntry = (LogEntryWithToStringOverride)LstLogContent.SelectedItem;
+            LogEntryDisplayModel selectedLogEntry = (LogEntryDisplayModel)LstLogContent.SelectedItem;
             // Store the current top index of the list
             int topIndex = LstLogContent.TopIndex;
 
@@ -255,7 +255,7 @@ namespace LogScraper
             }
 
             // Iterate through the new log entries and select the previously selected log entry if it exists
-            foreach (LogEntryWithToStringOverride logEntriestringOverride in newLogEntries)
+            foreach (LogEntryDisplayModel logEntriestringOverride in newLogEntries)
             {
                 if (logEntriestringOverride.OriginalLogEntry == selectedLogEntry.OriginalLogEntry)
                 {
@@ -279,9 +279,10 @@ namespace LogScraper
         {
             UpdateLogContentList();
             OnFilterChanged(EventArgs.Empty);
+            ChkShowFlowTree.Enabled = SelectedLogContentProperty != null && SelectedLogContentProperty.Description == "Begin flow";
         }
 
-        private class LogEntryWithToStringOverride
+        private class LogEntryDisplayModel
         {
             public LogEntry OriginalLogEntry { get; set; }
             public LogContentValue ContentValue { get; set; }
@@ -295,17 +296,34 @@ namespace LogScraper
         {
             get
             {
-                if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryWithToStringOverride)LstLogContent.SelectedItem).OriginalLogEntry;
+                if (SelectedLogEntryDisplayModel == null) return null;
+                return SelectedLogEntryDisplayModel.OriginalLogEntry;
             }
         }
 
-        public LogContentValue SelectedItem
+        private LogEntryDisplayModel SelectedLogEntryDisplayModel
         {
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryWithToStringOverride)LstLogContent.SelectedItem).ContentValue;
+                return ((LogEntryDisplayModel)LstLogContent.SelectedItem);
+            }
+        }
+        private LogContentProperty SelectedLogContentProperty
+        {
+            get
+            {
+                if (CboLogContentType.SelectedItem == null) return null;
+                return ((LogContentProperty)CboLogContentType.SelectedItem);
+            }
+        }
+
+        public LogContentValue SelectedContentValue
+        {
+            get
+            {
+                if (LstLogContent.SelectedItem == null) return null;
+                return ((LogEntryDisplayModel)LstLogContent.SelectedItem).ContentValue;
             }
         }
         public int ExtraLogEntryCount
@@ -360,7 +378,7 @@ namespace LogScraper
             if (e.Index < 0) return;
 
             // Fetch the item
-            if (LstLogContent.Items[e.Index] is not LogEntryWithToStringOverride item || item.ContentValue == null) return;
+            if (LstLogContent.Items[e.Index] is not LogEntryDisplayModel item || item.ContentValue == null) return;
 
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
@@ -381,17 +399,20 @@ namespace LogScraper
                 return;
             }
 
-            if (item.FlowTreeNode == null)
+            // Draw the flow tree node if it exists and the checkbox is checked
+            if (item.FlowTreeNode != null && ChkShowFlowTree.Checked)
             {
+                DrawFlowTreeNode(e, item, g);
+            }
+            else
+            {
+                //Default drawing, without tree
                 string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
                 e.Graphics.DrawString(truncatedValue, LstLogContent.Font, Brushes.Black, e.Bounds);
-                return;
             }
-
-            DrawFlowTreeNode(e, item, g);
         }
 
-        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryWithToStringOverride item, Graphics g)
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayModel item, Graphics g)
         {
             // Indentation
             const int indentPerLevel = 10;
@@ -407,11 +428,13 @@ namespace LogScraper
                 LogFlowTreeNode currentNode = item.FlowTreeNode;
                 for (int i = treeNodeDepth - 1; i >= 0; i--)
                 {
+                    // Draw a vertical line for each parent node if it has older siblings
                     if (currentNode.HasOlderSibling)
                     {
                         int lineX = treeX + i * indentPerLevel;
                         g.DrawLine(pen, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom);
                     }
+                    // Draw half a vertical line for the current value, if it does not have a next sibling
                     else if (i == treeNodeDepth - 1 && currentNode.IsLastSibling)
                     {
                         int lineX = treeX + i * indentPerLevel;
@@ -420,7 +443,7 @@ namespace LogScraper
                     currentNode = currentNode.Parent;
                 }
             }
-            // Draw the line from the tree to the text
+            // Draw the horizontal line just in front of the value text, indicating its connection in the tree
             if (!item.FlowTreeNode.IsRootNode)
             {
                 int lineY = e.Bounds.Top + e.Bounds.Height / 2;
@@ -433,17 +456,16 @@ namespace LogScraper
 
             // Prepare fonts and brushes
             Brush textBrush = item.IsError ? Brushes.DarkRed : SystemBrushes.ControlText;
-            Font font = LstLogContent.Font;
 
             // Draw TimeDescription
-            g.DrawString(item.ContentValue.TimeDescription, font, textBrush, timeX, e.Bounds.Top);
+            g.DrawString(item.ContentValue.TimeDescription, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
 
             // Truncate description if it doesn’t fit
             string value = item.ContentValue.Value ?? string.Empty;
             string truncatedValue = TruncateTextToFit(value, g, e.Bounds.Right - textX);
 
             // Draw text
-            g.DrawString(truncatedValue, font, textBrush, textX, e.Bounds.Top);
+            g.DrawString(truncatedValue, LstLogContent.Font, textBrush, textX, e.Bounds.Top);
         }
 
         private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
@@ -516,6 +538,7 @@ namespace LogScraper
         {
             BtnFilterOnSameMetadata.Visible = !enableFilter;
             BtnResetMetadataFilter.Visible = enableFilter;
+            ChkShowFlowTree.Checked = enableFilter;
             if (enableFilter)
             {
                 if (LstLogContent.SelectedIndex == -1) return;
@@ -544,6 +567,13 @@ namespace LogScraper
         private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
         {
             FilterOnMetadataProperties(false);
+        }
+
+        private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
+        {
+            LstLogContent.SuspendDrawing();
+            LstLogContent.Invalidate();
+            LstLogContent.ResumeDrawing();
         }
     }
 }

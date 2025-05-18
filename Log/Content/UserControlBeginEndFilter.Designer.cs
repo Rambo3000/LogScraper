@@ -36,6 +36,7 @@
             txtSearch = new System.Windows.Forms.TextBox();
             BtnFilterOnSameMetadata = new System.Windows.Forms.Button();
             BtnResetMetadataFilter = new System.Windows.Forms.Button();
+            ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             SuspendLayout();
             // 
             // LstLogContent
@@ -47,7 +48,7 @@
             LstLogContent.IntegralHeight = false;
             LstLogContent.Location = new System.Drawing.Point(0, 62);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(243, 159);
+            LstLogContent.Size = new System.Drawing.Size(243, 129);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -113,7 +114,7 @@
             // 
             BtnFilterOnSameMetadata.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             BtnFilterOnSameMetadata.Enabled = false;
-            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(0, 227);
+            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(0, 197);
             BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
             BtnFilterOnSameMetadata.Size = new System.Drawing.Size(240, 23);
             BtnFilterOnSameMetadata.TabIndex = 8;
@@ -124,7 +125,7 @@
             // BtnResetMetadataFilter
             // 
             BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            BtnResetMetadataFilter.Location = new System.Drawing.Point(0, 227);
+            BtnResetMetadataFilter.Location = new System.Drawing.Point(0, 197);
             BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
             BtnResetMetadataFilter.Size = new System.Drawing.Size(240, 23);
             BtnResetMetadataFilter.TabIndex = 9;
@@ -133,13 +134,25 @@
             BtnResetMetadataFilter.Visible = false;
             BtnResetMetadataFilter.Click += BtnResetMetadataFilter_Click;
             // 
+            // ChkShowFlowTree
+            // 
+            ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            ChkShowFlowTree.AutoSize = true;
+            ChkShowFlowTree.Location = new System.Drawing.Point(5, 226);
+            ChkShowFlowTree.Name = "ChkShowFlowTree";
+            ChkShowFlowTree.Size = new System.Drawing.Size(108, 19);
+            ChkShowFlowTree.TabIndex = 10;
+            ChkShowFlowTree.Text = "Toon hierarchie";
+            ChkShowFlowTree.UseVisualStyleBackColor = true;
+            ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
+            // 
             // UserControlBeginEndFilter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
-            Controls.Add(BtnResetMetadataFilter);
+            Controls.Add(ChkShowFlowTree);
             Controls.Add(BtnFilterOnSameMetadata);
             Controls.Add(txtSearch);
             Controls.Add(TxtExtraLogEntries);
@@ -147,6 +160,7 @@
             Controls.Add(BtnReset);
             Controls.Add(CboLogContentType);
             Controls.Add(LstLogContent);
+            Controls.Add(BtnResetMetadataFilter);
             Name = "UserControlBeginEndFilter";
             Size = new System.Drawing.Size(243, 272);
             ResumeLayout(false);
@@ -163,5 +177,6 @@
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button BtnFilterOnSameMetadata;
         private System.Windows.Forms.Button BtnResetMetadataFilter;
+        private System.Windows.Forms.CheckBox ChkShowFlowTree;
     }
 }
