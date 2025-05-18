@@ -371,7 +371,7 @@ namespace LogScraper.Log
                 TxtContentBeforeAndAfterPhrases.Text = GenerateFilterCriteriaText(selected.Criterias);
                 ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
                 CboContentFilterMarksEnd.Items.Clear();
-                CboContentFilterMarksEnd.Items.AddRange(LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected).ToArray());
+                CboContentFilterMarksEnd.Items.AddRange([.. LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected)]);
                 if (selected.EndFlowTreeContentProperty != null) CboContentFilterMarksEnd.SelectedItem = selected.EndFlowTreeContentProperty;
             }
             UpdateButtons();

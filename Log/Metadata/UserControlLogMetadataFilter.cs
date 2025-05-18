@@ -159,7 +159,11 @@ namespace LogScraper
                 if (((LogMetadataValue)item.Tag).Value == value)
                 {
                     item.IsChecked = isEnabled;
-                    break;
+                }
+                // Only when want to check a filter, we reset the rest
+                else if (isEnabled)
+                {
+                    item.IsChecked = false;
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Net.Http.Headers;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Extensions;
@@ -24,7 +25,9 @@ namespace LogScraper
         /// </summary>
         private LogContentProperty LogContentPropertyError;
 
-        private List<LogMetadataProperty> LogMetadataPropertiesUserSession;
+        private List<LogMetadataProperty> LogMetadataPropertiesUserSession = [];
+
+        private bool LogEntriesAreSingleSession = false;
 
         public event Action<Dictionary<LogMetadataProperty, string>, bool> FilterOnMetadata;
 
@@ -66,7 +69,8 @@ namespace LogScraper
                 }
             }
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
-            FilterOnMetadataProperties(false);
+            BtnResetMetadataFilter_Click(null, null);
+            UpdateFilterOnMetadataControls();
         }
 
         public void UpdateLogEntries(List<LogEntry> logEntries)
@@ -118,6 +122,9 @@ namespace LogScraper
                 return;
             }
 
+            LogEntriesAreSingleSession = HasOnlyOneSession(LogEntriesLatestVersion);
+            UpdateFilterOnMetadataControls();
+
             // Case 2: New list extends existing — add only new items
             if (startMatches && newCount > currentCount)
             {
@@ -133,7 +140,28 @@ namespace LogScraper
             // In all other cases: Mismatch — full redraw
             FullyRedrawList(newLogEntries);
         }
+        private bool HasOnlyOneSession(List<LogEntry> logEntries)
+        {
+            foreach (LogMetadataProperty metadataProperty in LogMetadataPropertiesUserSession)
+            {
+                HashSet<string> values = [];
 
+                foreach (LogEntry logEntry in logEntries)
+                {
+                    if (logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(metadataProperty, out string value))
+                    {
+                        values.Add(value);
+
+                        if (values.Count > 1)
+                        {
+                            return false; // meerdere sessies gevonden
+                        }
+                    }
+                }
+            }
+
+            return true; // alle properties hebben maximaal 1 waarde
+        }
         private List<LogEntryDisplayModel> CreateLogEntryDisplayModels(LogContentProperty logContentProperty)
         {
             if (logContentProperty == null) return null;
@@ -341,7 +369,7 @@ namespace LogScraper
             if (ignoreSelectedItemChanged == false)
             {
                 OnFilterChanged(EventArgs.Empty);
-                BtnFilterOnSameMetadata.Enabled = LstLogContent.SelectedIndex != -1 && LogMetadataPropertiesUserSession.Count > 0;
+                UpdateFilterOnMetadataControls();
             }
         }
 
@@ -517,44 +545,50 @@ namespace LogScraper
                 lastSearch = searchString;
             }
         }
-        private Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = null;
         private void BtnFilterOnSameMetadata_Click(object sender, EventArgs e)
         {
-            FilterOnMetadataProperties(true);
-        }
-        private void FilterOnMetadataProperties(bool enableFilter)
-        {
-            BtnFilterOnSameMetadata.Visible = !enableFilter;
-            BtnResetMetadataFilter.Visible = enableFilter;
-            ChkShowFlowTree.Checked = enableFilter;
-            if (enableFilter)
+            ChkShowFlowTree.Checked = true;
+
+            if (LstLogContent.SelectedIndex == -1) return;
+            Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
+            foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
             {
-                if (LstLogContent.SelectedIndex == -1) return;
-                FilterOnMetadataPropertiesAndValues = [];
-                foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
+                foreach (var logMetadataProperty in LogMetadataPropertiesUserSession)
                 {
-                    foreach (var logMetadataProperty in LogMetadataPropertiesUserSession)
+                    if (item.Key == logMetadataProperty)
                     {
-                        if (item.Key == logMetadataProperty)
-                        {
-                            FilterOnMetadataPropertiesAndValues.Add(item.Key, item.Value);
-                            break;
-                        }
+                        FilterOnMetadataPropertiesAndValues.Add(item.Key, item.Value);
+                        break;
                     }
                 }
-                FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, true);
             }
-            else
-            {
-                if (FilterOnMetadataPropertiesAndValues == null) return;
-                FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);
-                FilterOnMetadataPropertiesAndValues = null;
-            }
+            FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, true);
         }
 
         private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
         {
-            FilterOnMetadataProperties(false);
+            ChkShowFlowTree.Checked = false;
+
+            if (LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0) return;
+
+            Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
+            foreach (LogMetadataProperty logMetadataProperty in LogMetadataPropertiesUserSession)
+            {
+                foreach (KeyValuePair<LogMetadataProperty, string> kvp in LogEntriesLatestVersion[0].LogMetadataPropertiesWithStringValue)
+                {
+                    if (kvp.Key == logMetadataProperty)
+                    {
+                        FilterOnMetadataPropertiesAndValues.Add(logMetadataProperty, kvp.Value);
+                    }
+                }
+            }
+            if (FilterOnMetadataPropertiesAndValues.Count > 0) FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);
+        }
+        private void UpdateFilterOnMetadataControls()
+        {
+            BtnFilterOnSameMetadata.Enabled = LogMetadataPropertiesUserSession.Count > 0 && SelectedContentValue != null;
+            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession;
+            BtnResetMetadataFilter.Visible = LogEntriesAreSingleSession;
         }
 
         private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)

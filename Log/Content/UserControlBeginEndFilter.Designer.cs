@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlBeginEndFilter));
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             BtnReset = new System.Windows.Forms.Button();
@@ -114,22 +115,28 @@
             // 
             BtnFilterOnSameMetadata.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             BtnFilterOnSameMetadata.Enabled = false;
+            BtnFilterOnSameMetadata.Image = (System.Drawing.Image)resources.GetObject("BtnFilterOnSameMetadata.Image");
+            BtnFilterOnSameMetadata.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             BtnFilterOnSameMetadata.Location = new System.Drawing.Point(0, 197);
             BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
             BtnFilterOnSameMetadata.Size = new System.Drawing.Size(240, 23);
             BtnFilterOnSameMetadata.TabIndex = 8;
             BtnFilterOnSameMetadata.Text = "Filter dezelfde sessie";
+            BtnFilterOnSameMetadata.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             BtnFilterOnSameMetadata.UseVisualStyleBackColor = true;
             BtnFilterOnSameMetadata.Click += BtnFilterOnSameMetadata_Click;
             // 
             // BtnResetMetadataFilter
             // 
             BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            BtnResetMetadataFilter.Image = (System.Drawing.Image)resources.GetObject("BtnResetMetadataFilter.Image");
+            BtnResetMetadataFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             BtnResetMetadataFilter.Location = new System.Drawing.Point(0, 197);
             BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
             BtnResetMetadataFilter.Size = new System.Drawing.Size(240, 23);
             BtnResetMetadataFilter.TabIndex = 9;
             BtnResetMetadataFilter.Text = "Reset de filter op sessie";
+            BtnResetMetadataFilter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             BtnResetMetadataFilter.UseVisualStyleBackColor = true;
             BtnResetMetadataFilter.Visible = false;
             BtnResetMetadataFilter.Click += BtnResetMetadataFilter_Click;
