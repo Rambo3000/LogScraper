@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
@@ -65,6 +66,9 @@ namespace LogScraper.Log
                         LogContentProperty newProperty = new()
                         {
                             Description = property.Description,
+                            IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
+                            EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
+                            EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
                         };
                         foreach (FilterCriteria criteria in property.Criterias)
                         {
@@ -365,6 +369,10 @@ namespace LogScraper.Log
             {
                 TxtContentDescription.Text = selected.Description;
                 TxtContentBeforeAndAfterPhrases.Text = GenerateFilterCriteriaText(selected.Criterias);
+                ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
+                CboContentFilterMarksEnd.Items.Clear();
+                CboContentFilterMarksEnd.Items.AddRange(LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected).ToArray());
+                if (selected.EndFlowTreeContentProperty != null) CboContentFilterMarksEnd.SelectedItem = selected.EndFlowTreeContentProperty;
             }
             UpdateButtons();
         }
@@ -658,6 +666,9 @@ namespace LogScraper.Log
                 LogContentProperty newProperty = new()
                 {
                     Description = property.Description,
+                    IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
+                    EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
+                    EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
                 };
                 foreach (FilterCriteria criteria in property.Criterias)
                 {
@@ -751,6 +762,29 @@ namespace LogScraper.Log
             if (UpdatingInformation) return;
 
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsSessionData = ChkMetadataIsSessionData.Checked;
+        }
+
+        private void ChkContentFilterMarksBegin_CheckedChanged(object sender, EventArgs e)
+        {
+            CboContentFilterMarksEnd.Enabled = ChkContentFilterMarksBegin.Checked;
+            LblContentFilterMarksEnd.Enabled = ChkContentFilterMarksBegin.Checked;
+            if (UpdatingInformation) return;
+
+            if (LstContent.SelectedItem is LogContentProperty selected) selected.IsBeginFlowTreeFilter = ChkContentFilterMarksBegin.Checked;
+        }
+
+        private void CboContentFilterMarksEnd_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
+            {
+                if (CboContentFilterMarksEnd.SelectedItem is LogContentProperty selectedEndFilter)
+                {
+                    selectedContentProperty.EndFlowTreeContentProperty = selectedEndFilter;
+                    selectedContentProperty.EndFlowTreeContentPropertyDescription = selectedEndFilter.Description;
+                }
+            }
         }
     }
 }

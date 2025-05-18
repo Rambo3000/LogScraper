@@ -63,6 +63,8 @@ namespace LogScraper.Log
             TabControl = new System.Windows.Forms.TabControl();
             tabPageMetadata = new System.Windows.Forms.TabPage();
             grpMetadata = new System.Windows.Forms.GroupBox();
+            pictureBox8 = new System.Windows.Forms.PictureBox();
+            ChkMetadataIsSessionData = new System.Windows.Forms.CheckBox();
             pictureBox5 = new System.Windows.Forms.PictureBox();
             pictureBox4 = new System.Windows.Forms.PictureBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -80,6 +82,10 @@ namespace LogScraper.Log
             BtnMetadataUp = new System.Windows.Forms.Button();
             tabPageContentFilters = new System.Windows.Forms.TabPage();
             GrpContent = new System.Windows.Forms.GroupBox();
+            pictureBox17 = new System.Windows.Forms.PictureBox();
+            LblContentFilterMarksEnd = new System.Windows.Forms.Label();
+            ChkContentFilterMarksBegin = new System.Windows.Forms.CheckBox();
+            CboContentFilterMarksEnd = new System.Windows.Forms.ComboBox();
             pictureBox9 = new System.Windows.Forms.PictureBox();
             pictureBox10 = new System.Windows.Forms.PictureBox();
             pictureBox6 = new System.Windows.Forms.PictureBox();
@@ -102,8 +108,6 @@ namespace LogScraper.Log
             chkTransformReverse = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            ChkMetadataIsSessionData = new System.Windows.Forms.CheckBox();
-            pictureBox8 = new System.Windows.Forms.PictureBox();
             GrpLayouts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
@@ -120,12 +124,14 @@ namespace LogScraper.Log
             TabControl.SuspendLayout();
             tabPageMetadata.SuspendLayout();
             grpMetadata.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabPageContentFilters.SuspendLayout();
             GrpContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox17).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -134,7 +140,6 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox15).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox14).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             SuspendLayout();
             // 
             // LstLayouts
@@ -517,6 +522,27 @@ namespace LogScraper.Log
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
             // 
+            // pictureBox8
+            // 
+            pictureBox8.Image = Properties.Resources.help;
+            pictureBox8.Location = new System.Drawing.Point(568, 157);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new System.Drawing.Size(16, 16);
+            pictureBox8.TabIndex = 31;
+            pictureBox8.TabStop = false;
+            toolTip.SetToolTip(pictureBox8, "Vink aan als de metadatawaarde gebruikt kan worden om een gebruikerssessie te identificeren, zoals een gebruikersnaam, sessie-ID of trace-ID.");
+            // 
+            // ChkMetadataIsSessionData
+            // 
+            ChkMetadataIsSessionData.AutoSize = true;
+            ChkMetadataIsSessionData.Location = new System.Drawing.Point(241, 157);
+            ChkMetadataIsSessionData.Name = "ChkMetadataIsSessionData";
+            ChkMetadataIsSessionData.Size = new System.Drawing.Size(321, 19);
+            ChkMetadataIsSessionData.TabIndex = 30;
+            ChkMetadataIsSessionData.Text = "Deze metadata identificeerd een unieke gebruiker/sessie";
+            ChkMetadataIsSessionData.UseVisualStyleBackColor = true;
+            ChkMetadataIsSessionData.CheckedChanged += ChkMetadataIsSessionData_CheckedChanged;
+            // 
             // pictureBox5
             // 
             pictureBox5.Image = Properties.Resources.help;
@@ -688,6 +714,10 @@ namespace LogScraper.Log
             // 
             // GrpContent
             // 
+            GrpContent.Controls.Add(pictureBox17);
+            GrpContent.Controls.Add(LblContentFilterMarksEnd);
+            GrpContent.Controls.Add(ChkContentFilterMarksBegin);
+            GrpContent.Controls.Add(CboContentFilterMarksEnd);
             GrpContent.Controls.Add(pictureBox9);
             GrpContent.Controls.Add(pictureBox10);
             GrpContent.Controls.Add(pictureBox6);
@@ -707,6 +737,49 @@ namespace LogScraper.Log
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
             GrpContent.Text = "Content begin en eind filters";
+            // 
+            // pictureBox17
+            // 
+            pictureBox17.Image = Properties.Resources.help;
+            pictureBox17.Location = new System.Drawing.Point(498, 157);
+            pictureBox17.Name = "pictureBox17";
+            pictureBox17.Size = new System.Drawing.Size(16, 16);
+            pictureBox17.TabIndex = 35;
+            pictureBox17.TabStop = false;
+            toolTip.SetToolTip(pictureBox17, resources.GetString("pictureBox17.ToolTip"));
+            // 
+            // LblContentFilterMarksEnd
+            // 
+            LblContentFilterMarksEnd.AutoSize = true;
+            LblContentFilterMarksEnd.Enabled = false;
+            LblContentFilterMarksEnd.Location = new System.Drawing.Point(260, 179);
+            LblContentFilterMarksEnd.Name = "LblContentFilterMarksEnd";
+            LblContentFilterMarksEnd.Size = new System.Drawing.Size(100, 15);
+            LblContentFilterMarksEnd.TabIndex = 34;
+            LblContentFilterMarksEnd.Text = "En het einde door";
+            // 
+            // ChkContentFilterMarksBegin
+            // 
+            ChkContentFilterMarksBegin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            ChkContentFilterMarksBegin.AutoSize = true;
+            ChkContentFilterMarksBegin.Location = new System.Drawing.Point(241, 157);
+            ChkContentFilterMarksBegin.Name = "ChkContentFilterMarksBegin";
+            ChkContentFilterMarksBegin.Size = new System.Drawing.Size(223, 19);
+            ChkContentFilterMarksBegin.TabIndex = 33;
+            ChkContentFilterMarksBegin.Text = "Markeert het begin van een (sub)flow";
+            ChkContentFilterMarksBegin.UseVisualStyleBackColor = true;
+            ChkContentFilterMarksBegin.CheckedChanged += ChkContentFilterMarksBegin_CheckedChanged;
+            // 
+            // CboContentFilterMarksEnd
+            // 
+            CboContentFilterMarksEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            CboContentFilterMarksEnd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CboContentFilterMarksEnd.FormattingEnabled = true;
+            CboContentFilterMarksEnd.Location = new System.Drawing.Point(393, 176);
+            CboContentFilterMarksEnd.Name = "CboContentFilterMarksEnd";
+            CboContentFilterMarksEnd.Size = new System.Drawing.Size(121, 23);
+            CboContentFilterMarksEnd.TabIndex = 32;
+            CboContentFilterMarksEnd.SelectedIndexChanged += CboContentFilterMarksEnd_SelectedIndexChanged;
             // 
             // pictureBox9
             // 
@@ -757,7 +830,7 @@ namespace LogScraper.Log
             TxtContentBeforeAndAfterPhrases.Location = new System.Drawing.Point(241, 84);
             TxtContentBeforeAndAfterPhrases.Multiline = true;
             TxtContentBeforeAndAfterPhrases.Name = "TxtContentBeforeAndAfterPhrases";
-            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(273, 130);
+            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(273, 67);
             TxtContentBeforeAndAfterPhrases.TabIndex = 21;
             TxtContentBeforeAndAfterPhrases.TextChanged += TxtContentBeforeAndAfterPhrases_TextChanged;
             // 
@@ -936,27 +1009,6 @@ namespace LogScraper.Log
             pictureBox2.TabStop = false;
             toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
             // 
-            // ChkMetadataIsSessionData
-            // 
-            ChkMetadataIsSessionData.AutoSize = true;
-            ChkMetadataIsSessionData.Location = new System.Drawing.Point(241, 157);
-            ChkMetadataIsSessionData.Name = "ChkMetadataIsSessionData";
-            ChkMetadataIsSessionData.Size = new System.Drawing.Size(321, 19);
-            ChkMetadataIsSessionData.TabIndex = 30;
-            ChkMetadataIsSessionData.Text = "Deze metadata identificeerd een unieke gebruiker/sessie";
-            ChkMetadataIsSessionData.UseVisualStyleBackColor = true;
-            ChkMetadataIsSessionData.CheckedChanged += ChkMetadataIsSessionData_CheckedChanged;
-            // 
-            // pictureBox8
-            // 
-            pictureBox8.Image = Properties.Resources.help;
-            pictureBox8.Location = new System.Drawing.Point(568, 157);
-            pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new System.Drawing.Size(16, 16);
-            pictureBox8.TabIndex = 31;
-            pictureBox8.TabStop = false;
-            toolTip.SetToolTip(pictureBox8, "Vink aan als de metadatawaarde gebruikt kan worden om een gebruikerssessie te identificeren, zoals een gebruikersnaam, sessie-ID of trace-ID.");
-            // 
             // UserControlLogLayoutConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -984,6 +1036,7 @@ namespace LogScraper.Log
             tabPageMetadata.ResumeLayout(false);
             grpMetadata.ResumeLayout(false);
             grpMetadata.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
@@ -991,6 +1044,7 @@ namespace LogScraper.Log
             tabPageContentFilters.ResumeLayout(false);
             GrpContent.ResumeLayout(false);
             GrpContent.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox17).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox10).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
@@ -1001,7 +1055,6 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox15).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox14).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ResumeLayout(false);
         }
 
@@ -1079,5 +1132,9 @@ namespace LogScraper.Log
         private System.Windows.Forms.Button BtnCopy;
         private System.Windows.Forms.CheckBox ChkMetadataIsSessionData;
         private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.CheckBox ChkContentFilterMarksBegin;
+        private System.Windows.Forms.ComboBox CboContentFilterMarksEnd;
+        private System.Windows.Forms.PictureBox pictureBox17;
+        private System.Windows.Forms.Label LblContentFilterMarksEnd;
     }
 }

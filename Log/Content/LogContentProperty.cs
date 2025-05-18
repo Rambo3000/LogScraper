@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace LogScraper.Log.Content
 {
@@ -26,6 +27,24 @@ namespace LogScraper.Log.Content
         /// If one of the criteria is met, the log content property is considered valid.
         /// </summary>
         public List<FilterCriteria> Criterias { get; set; } = [];
+
+        /// <summary>
+        /// Indicates whether the log content property is a filter for the beginning of a flow tree.
+        /// </summary>
+        public bool IsBeginFlowTreeFilter { get; set; }
+
+        /// <summary>
+        /// Description of the content property which is a filter for the end of a flow tree.
+        /// Used for JSON serilization and only when <see cref="IsBeginFlowTreeFilter"/> is true.
+        /// </summary>
+        public string EndFlowTreeContentPropertyDescription { get; set; }
+
+        /// <summary>
+        /// Content property which is a filter for the end of a flow tree.
+        /// Only when <see cref="IsBeginFlowTreeFilter"/> is true, this property is used.
+        /// </summary>
+        [JsonIgnore]
+        public LogContentProperty EndFlowTreeContentProperty { get; set; }
 
         /// <summary>
         /// Cached hash code for the log content property, calculated from the description.

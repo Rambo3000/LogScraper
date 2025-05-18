@@ -41,7 +41,9 @@ namespace LogScraper.Configuration
             // Set multiple content criterias if only the single (obsolete) content criteria is set
             ConvertSingleToMultipleCriterias(logLayoutsConfig);
 #pragma warning restore CS0612 // Type or member is obsolete
+            SetEndFlowTreeContentProperties(logLayoutsConfig);
             SetAllLayoutsTransformers();
+
 
             // Limit the automatic read time to a maximum of 5 minutes
             if (genericConfig.AutomaticReadTimeMinutes > 5) genericConfig.AutomaticReadTimeMinutes = 1;
@@ -55,7 +57,7 @@ namespace LogScraper.Configuration
         /// <summary>
         /// Sets the content criterias for log layouts if only the single (absolete) content criteria is set.
         /// </summary>
-        /// <param name="logLayoutsConfig"></param>
+        /// <param name="logLayoutsConfig">The log layouts configuration to update.</param>
         [Obsolete]
         private static void ConvertSingleToMultipleCriterias(LogLayoutsConfig logLayoutsConfig)
         {
@@ -70,6 +72,36 @@ namespace LogScraper.Configuration
                     // Create a new list for multiple content criteria
                     logContentProperty.Criterias = [logContentProperty.Criteria];
                     logContentProperty.Criteria = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the end flow tree content properties for log layouts based on their descriptions.
+        /// </summary>
+        /// <param name="logLayoutsConfig">The log layouts configuration to update.</param>
+        private static void SetEndFlowTreeContentProperties(LogLayoutsConfig logLayoutsConfig)
+        {
+            foreach (LogLayout logLayout in logLayoutsConfig.layouts)
+            {
+                foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
+                {
+                    if (!logContentProperty.IsBeginFlowTreeFilter ||
+                        string.IsNullOrWhiteSpace(logContentProperty.EndFlowTreeContentPropertyDescription))
+                    {
+                        logContentProperty.EndFlowTreeContentProperty = null;
+                        logContentProperty.EndFlowTreeContentPropertyDescription = string.Empty;
+                        continue;
+                    }
+
+                    foreach (LogContentProperty logContentPropertyEnd in logLayout.LogContentProperties)
+                    {
+                        if (logContentPropertyEnd.Description == logContentProperty.EndFlowTreeContentPropertyDescription)
+                        {
+                            logContentProperty.EndFlowTreeContentProperty = logContentPropertyEnd;
+                            break;
+                        }
+                    }
                 }
             }
         }

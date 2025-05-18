@@ -66,7 +66,9 @@
               "beforePhrase": "Starting flow on refresh: ",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": true,
+          "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
           "description": "Einde flow",
@@ -84,7 +86,9 @@
               "beforePhrase": "flow '",
               "afterPhrase": "' failed"
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "Composed path",
@@ -94,7 +98,9 @@
               "beforePhrase": "Composed path ",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "Errors",
@@ -104,7 +110,9 @@
               "beforePhrase": " ERROR",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "test",
@@ -114,7 +122,9 @@
               "beforePhrase": "[onFlow",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {
@@ -153,7 +163,9 @@
               "beforePhrase": "Starting flow: ",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "Einde flow",
@@ -163,7 +175,9 @@
               "beforePhrase": "Completed flow: ",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "Errors",
@@ -173,7 +187,9 @@
               "beforePhrase": " ERROR",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {
@@ -213,7 +229,9 @@
               "beforePhrase": " ERROR",
               "afterPhrase": null
             }
-          ]
+          ],
+          "isBeginFlowTreeFilter": false,
+          "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {

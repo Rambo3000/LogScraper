@@ -11,7 +11,6 @@ using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
-using Newtonsoft.Json.Linq;
 
 namespace LogScraper
 {
@@ -91,7 +90,7 @@ namespace LogScraper
             if (logContentProperty == null) return;
 
             // Create a list to store the log entries with overridden ToString method
-            List<LogEntryDisplayModel> logEntryWithToStringOverrides = GetLogEntryWithToStringOverridesList(logContentProperty);
+            List<LogEntryDisplayModel> logEntryWithToStringOverrides = CreateLogEntryDisplayModels(logContentProperty);
 
             UpdateOrRedrawList(logEntryWithToStringOverrides);
         }
@@ -135,28 +134,17 @@ namespace LogScraper
             FullyRedrawList(newLogEntries);
         }
 
-        private List<LogEntryDisplayModel> GetLogEntryWithToStringOverridesList(LogContentProperty logContentProperty)
+        private List<LogEntryDisplayModel> CreateLogEntryDisplayModels(LogContentProperty logContentProperty)
         {
             if (logContentProperty == null) return null;
 
             List<LogFlowTreeNode> treeNodes = [];
-            // TODO: make configurable
-            if (logContentProperty.Description == "Begin flow")
+            if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
             {
-
-                LogContentProperty endProperty = null;
-                foreach (LogContentProperty logContentPropertyLoop in ActiveLogLayout.LogContentProperties)
-                {
-                    if (logContentPropertyLoop.Description == "Einde flow")
-                    {
-                        endProperty = logContentPropertyLoop;
-                        break;
-                    }
-                }
-                if (endProperty != null) treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, endProperty);
+                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
             }
 
-            List<LogEntryDisplayModel> logEntryWithToStringOverrides = [];
+            List<LogEntryDisplayModel> logEntryDisplayModels = [];
 
             // Get the search filter text
             string filter = txtSearch.Text.Trim();
@@ -207,9 +195,9 @@ namespace LogScraper
                     FlowTreeNode = flowtreeNode
 
                 };
-                logEntryWithToStringOverrides.Add(logEntryWithToStringOverride);
+                logEntryDisplayModels.Add(logEntryWithToStringOverride);
             }
-            return logEntryWithToStringOverrides;
+            return logEntryDisplayModels;
         }
 
         private static bool TryFindDepthRecursive(LogFlowTreeNode root, LogContentValue contentValue, out LogFlowTreeNode foundNode)
