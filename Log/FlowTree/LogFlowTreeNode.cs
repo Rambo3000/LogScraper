@@ -137,5 +137,43 @@ namespace LogScraper.Log.FlowTree
                 return depth;
             }
         }
+
+        /// <summary>
+        /// Attempts to find a child node with the specified content value in the tree.
+        /// </summary>
+        /// <param name="contentValue">The content value to search for.</param>
+        /// <param name="foundNode">The found node, if any.</param>
+        /// <returns>True if the node was found; otherwise, false.</returns>
+        public bool TryGetContentValueNodeFromTree(LogContentValue contentValue, out LogFlowTreeNode foundNode)
+        {
+            return TryFindContentValueNodeInTreeRecursive(this, contentValue, out foundNode);
+        }
+
+        /// <summary>
+        /// Attempts to find a child node with the specified root node and content value in the tree.
+        /// </summary>
+        /// <param name="root">The root node to start the search from.</param>
+        /// <param name="contentValue">The content value to search for.</param>
+        /// <param name="foundNode">The found node, if any.</param>
+        /// <returns>True if the node was found; otherwise, false.</returns>
+        private static bool TryFindContentValueNodeInTreeRecursive(LogFlowTreeNode root, LogContentValue contentValue, out LogFlowTreeNode foundNode)
+        {
+            if (root.Key.Equals(contentValue))
+            {
+                foundNode = root;
+                return true;
+            }
+
+            foreach (LogFlowTreeNode child in root.Children)
+            {
+                if (TryFindContentValueNodeInTreeRecursive(child, contentValue, out foundNode))
+                {
+                    return true;
+                }
+            }
+
+            foundNode = null;
+            return false;
+        }
     }
 }

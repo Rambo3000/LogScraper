@@ -525,7 +525,7 @@ namespace LogScraper.Log
             // pictureBox8
             // 
             pictureBox8.Image = Properties.Resources.help;
-            pictureBox8.Location = new System.Drawing.Point(568, 157);
+            pictureBox8.Location = new System.Drawing.Point(498, 157);
             pictureBox8.Name = "pictureBox8";
             pictureBox8.Size = new System.Drawing.Size(16, 16);
             pictureBox8.TabIndex = 31;
@@ -537,16 +537,16 @@ namespace LogScraper.Log
             ChkMetadataIsSessionData.AutoSize = true;
             ChkMetadataIsSessionData.Location = new System.Drawing.Point(241, 157);
             ChkMetadataIsSessionData.Name = "ChkMetadataIsSessionData";
-            ChkMetadataIsSessionData.Size = new System.Drawing.Size(321, 19);
+            ChkMetadataIsSessionData.Size = new System.Drawing.Size(240, 19);
             ChkMetadataIsSessionData.TabIndex = 30;
-            ChkMetadataIsSessionData.Text = "Deze metadata identificeerd een unieke gebruiker/sessie";
+            ChkMetadataIsSessionData.Text = "Identificeerd een unieke gebruiker/sessie";
             ChkMetadataIsSessionData.UseVisualStyleBackColor = true;
             ChkMetadataIsSessionData.CheckedChanged += ChkMetadataIsSessionData_CheckedChanged;
             // 
             // pictureBox5
             // 
             pictureBox5.Image = Properties.Resources.help;
-            pictureBox5.Location = new System.Drawing.Point(498, 109);
+            pictureBox5.Location = new System.Drawing.Point(498, 110);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new System.Drawing.Size(16, 16);
             pictureBox5.TabIndex = 29;
@@ -556,7 +556,7 @@ namespace LogScraper.Log
             // pictureBox4
             // 
             pictureBox4.Image = Properties.Resources.help;
-            pictureBox4.Location = new System.Drawing.Point(498, 65);
+            pictureBox4.Location = new System.Drawing.Point(498, 66);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new System.Drawing.Size(16, 16);
             pictureBox4.TabIndex = 28;
@@ -566,7 +566,7 @@ namespace LogScraper.Log
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.help;
-            pictureBox3.Location = new System.Drawing.Point(498, 21);
+            pictureBox3.Location = new System.Drawing.Point(498, 22);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new System.Drawing.Size(16, 16);
             pictureBox3.TabIndex = 27;

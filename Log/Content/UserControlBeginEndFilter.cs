@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Net.Http.Headers;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Extensions;
@@ -17,19 +16,16 @@ namespace LogScraper
 {
     internal partial class UserControlBeginEndFilter : UserControl
     {
+        #region Private objects and initialization
         private const string DefaulSearchtText = "Filteren...";
 
-        public event EventHandler FilterChanged;
-        /// <summary>
-        ///     Used for showing the error log entries for non-error LogContentProperties
-        /// </summary>
         private LogContentProperty LogContentPropertyError;
 
         private List<LogMetadataProperty> LogMetadataPropertiesUserSession = [];
 
         private bool LogEntriesAreSingleSession = false;
 
-        public event Action<Dictionary<LogMetadataProperty, string>, bool> FilterOnMetadata;
+        private List<LogEntry> LogEntriesLatestVersion;
 
         public UserControlBeginEndFilter()
         {
@@ -38,17 +34,11 @@ namespace LogScraper
             //Preset the default search text
             TxtSearch_Leave(null, null);
         }
+        #endregion
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Brush SelectedItemBackColor { get; set; }
-
-        private List<LogEntry> LogEntriesLatestVersion;
-
-        private LogLayout ActiveLogLayout;
-
+        #region Update log layout
         public void UpdateLogLayout(LogLayout logLayout)
         {
-            ActiveLogLayout = logLayout;
             CboLogContentType.Items.Clear();
             if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties]);
@@ -72,13 +62,15 @@ namespace LogScraper
             BtnResetMetadataFilter_Click(null, null);
             UpdateFilterOnMetadataControls();
         }
+        #endregion
 
+        #region Update the log entries in the listbox
         public void UpdateLogEntries(List<LogEntry> logEntries)
         {
             LogEntriesLatestVersion = logEntries;
-            UpdateLogContentList();
+            UpdateDisplayedLogEntries();
         }
-        private void UpdateLogContentList()
+        private void UpdateDisplayedLogEntries()
         {
             // If there are no log entries, clear the list and return
             if (LogEntriesLatestVersion == null)
@@ -93,13 +85,77 @@ namespace LogScraper
             // If no log content property is selected, return
             if (logContentProperty == null) return;
 
-            // Create a list to store the log entries with overridden ToString method
-            List<LogEntryDisplayModel> logEntryWithToStringOverrides = CreateLogEntryDisplayModels(logContentProperty);
+            // Create display objects for the log entries containing the log entry, content value, treenode, and error status
+            List<LogEntryDisplayObject> LogEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty);
 
-            UpdateOrRedrawList(logEntryWithToStringOverrides);
+            UpdateDisplayedLogEntriesUsingNewLogEntries(LogEntryDisplayObjects);
         }
+        private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty)
+        {
+            if (logContentProperty == null) return null;
 
-        private void UpdateOrRedrawList(List<LogEntryDisplayModel> newLogEntries)
+            List<LogFlowTreeNode> treeNodes = null;
+            if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
+            {
+                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
+            }
+
+            List<LogEntryDisplayObject> logEntryDisplayObjects = [];
+
+            // Get the search filter text
+            string filter = txtSearch.Text.Trim();
+            if (filter == DefaulSearchtText) filter = null;
+
+            // Iterate through the latest version of log entries
+            foreach (LogEntry logEntry in LogEntriesLatestVersion)
+            {
+                // If the log entry has no content properties, continue to the next log entry
+                if (logEntry.LogContentProperties == null) continue;
+
+                // Try to get the content for the selected log content property
+                logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
+                bool isError = false;
+
+                // If the content is null, check for errors if the "Show Errors" checkbox is checked
+                if (contentValue == null)
+                {
+                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out contentValue);
+                    if (contentValue == null) continue;
+                    isError = true;
+                }
+
+                // Skip the log entry if it is not an error and the content value does not match the filter
+                if (!isError && !string.IsNullOrEmpty(filter))
+                {
+                    if (!contentValue.Value.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
+                }
+
+                // In order to show the flow tree, we need to find the corresponding node in the tree
+                LogFlowTreeNode flowtreeNode = null;
+                if (contentValue != null && treeNodes != null)
+                {
+                    foreach (LogFlowTreeNode node in treeNodes)
+                    {
+                        if (node.TryGetContentValueNodeFromTree(contentValue, out flowtreeNode))
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                LogEntryDisplayObject logEntryDisplayObject = new()
+                {
+                    OriginalLogEntry = logEntry,
+                    ContentValue = contentValue,
+                    FlowTreeNode = flowtreeNode,
+                    IsError = isError
+
+                };
+                logEntryDisplayObjects.Add(logEntryDisplayObject);
+            }
+            return logEntryDisplayObjects;
+        }
+        private void UpdateDisplayedLogEntriesUsingNewLogEntries(List<LogEntryDisplayObject> newLogEntries)
         {
             int currentCount = LstLogContent.Items.Count;
             int newCount = newLogEntries.Count;
@@ -109,7 +165,7 @@ namespace LogScraper
 
             for (int i = 0; i < compareCount; i++)
             {
-                if (!newLogEntries[i].ContentValue.Equals(((LogEntryDisplayModel)LstLogContent.Items[i]).ContentValue))
+                if (!newLogEntries[i].ContentValue.Equals(((LogEntryDisplayObject)LstLogContent.Items[i]).ContentValue))
                 {
                     startMatches = false;
                     break;
@@ -162,96 +218,11 @@ namespace LogScraper
 
             return true; // alle properties hebben maximaal 1 waarde
         }
-        private List<LogEntryDisplayModel> CreateLogEntryDisplayModels(LogContentProperty logContentProperty)
-        {
-            if (logContentProperty == null) return null;
 
-            List<LogFlowTreeNode> treeNodes = [];
-            if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
-            {
-                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
-            }
-
-            List<LogEntryDisplayModel> logEntryDisplayModels = [];
-
-            // Get the search filter text
-            string filter = txtSearch.Text.Trim();
-            if (filter == DefaulSearchtText) filter = null;
-
-            // Iterate through the latest version of log entries
-            foreach (LogEntry logEntry in LogEntriesLatestVersion)
-            {
-                // If the log entry has no content properties, continue to the next log entry
-                if (logEntry.LogContentProperties == null) continue;
-
-                // Try to get the content for the selected log content property
-                logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
-                bool isError = false;
-
-                // If the content is null, check for errors if the "Show Errors" checkbox is checked
-                if (contentValue == null)
-                {
-                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out contentValue);
-                    if (contentValue == null) continue;
-                    isError = true;
-                }
-
-                LogFlowTreeNode flowtreeNode = null;
-                if (contentValue != null)
-                {
-                    foreach (LogFlowTreeNode node in treeNodes)
-                    {
-                        if (TryFindDepthRecursive(node, contentValue, out flowtreeNode))
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                // If the content is not an error and a filter is applied, check if the content contains the filter text
-                if (!isError && !string.IsNullOrEmpty(filter))
-                {
-                    if (!contentValue.Value.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
-                }
-
-                // Create a new LogEntryWithToStringOverride object and add it to the list
-                LogEntryDisplayModel logEntryWithToStringOverride = new()
-                {
-                    OriginalLogEntry = logEntry,
-                    ContentValue = contentValue,
-                    IsError = isError,
-                    FlowTreeNode = flowtreeNode
-
-                };
-                logEntryDisplayModels.Add(logEntryWithToStringOverride);
-            }
-            return logEntryDisplayModels;
-        }
-
-        private static bool TryFindDepthRecursive(LogFlowTreeNode root, LogContentValue contentValue, out LogFlowTreeNode foundNode)
-        {
-            if (root.Key.Equals(contentValue))
-            {
-                foundNode = root;
-                return true;
-            }
-
-            foreach (LogFlowTreeNode child in root.Children)
-            {
-                if (TryFindDepthRecursive(child, contentValue, out foundNode))
-                {
-                    return true;
-                }
-            }
-
-            foundNode = null;
-            return false;
-        }
-
-        private void FullyRedrawList(List<LogEntryDisplayModel> newLogEntries)
+        private void FullyRedrawList(List<LogEntryDisplayObject> newLogEntries)
         {
             // Store the currently selected log entry
-            LogEntryDisplayModel selectedLogEntry = (LogEntryDisplayModel)LstLogContent.SelectedItem;
+            LogEntryDisplayObject selectedLogEntry = (LogEntryDisplayObject)LstLogContent.SelectedItem;
             // Store the current top index of the list
             int topIndex = LstLogContent.TopIndex;
 
@@ -271,14 +242,14 @@ namespace LogScraper
             }
 
             // Iterate through the new log entries and select the previously selected log entry if it exists
-            foreach (LogEntryDisplayModel logEntriestringOverride in newLogEntries)
+            foreach (LogEntryDisplayObject logEntryDisplayObject in newLogEntries)
             {
-                if (logEntriestringOverride.OriginalLogEntry == selectedLogEntry.OriginalLogEntry)
+                if (logEntryDisplayObject.OriginalLogEntry == selectedLogEntry.OriginalLogEntry)
                 {
                     try
                     {
                         ignoreSelectedItemChanged = true;
-                        LstLogContent.SelectedItem = logEntriestringOverride;
+                        LstLogContent.SelectedItem = logEntryDisplayObject;
                     }
                     finally
                     {
@@ -290,15 +261,10 @@ namespace LogScraper
             // Resume drawing of the list
             LstLogContent.ResumeDrawing();
         }
+        #endregion
 
-        private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateLogContentList();
-            OnFilterChanged(EventArgs.Empty);
-            ChkShowFlowTree.Enabled = SelectedLogContentProperty != null && SelectedLogContentProperty.Description == "Begin flow";
-        }
-
-        private class LogEntryDisplayModel
+        #region Private class LogEntryDisplayObject
+        private class LogEntryDisplayObject
         {
             public LogEntry OriginalLogEntry { get; set; }
             public LogContentValue ContentValue { get; set; }
@@ -307,22 +273,26 @@ namespace LogScraper
             public override string ToString()
             { return ContentValue != null ? ContentValue.Value : string.Empty; }
         }
+        #endregion
 
+        #region Public properties
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Brush SelectedItemBackColor { get; set; }
         public LogEntry SelectedLogEntry
         {
             get
             {
-                if (SelectedLogEntryDisplayModel == null) return null;
-                return SelectedLogEntryDisplayModel.OriginalLogEntry;
+                if (SelectedLogEntryDisplayObject == null) return null;
+                return SelectedLogEntryDisplayObject.OriginalLogEntry;
             }
         }
 
-        private LogEntryDisplayModel SelectedLogEntryDisplayModel
+        private LogEntryDisplayObject SelectedLogEntryDisplayObject
         {
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryDisplayModel)LstLogContent.SelectedItem);
+                return ((LogEntryDisplayObject)LstLogContent.SelectedItem);
             }
         }
         private LogContentProperty SelectedLogContentProperty
@@ -339,7 +309,7 @@ namespace LogScraper
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryDisplayModel)LstLogContent.SelectedItem).ContentValue;
+                return ((LogEntryDisplayObject)LstLogContent.SelectedItem).ContentValue;
             }
         }
         public int ExtraLogEntryCount
@@ -353,48 +323,19 @@ namespace LogScraper
                 return 0;
             }
         }
-
-        public bool FilterIsEnabled { get { return LstLogContent.SelectedIndex != -1; } }
-
-        // Method to raise the custom FilterChanged event.
-        protected virtual void OnFilterChanged(EventArgs e)
+        public bool FilterIsEnabled
         {
-            FilterChanged?.Invoke(this, e);
+            get { return LstLogContent.SelectedIndex != -1; }
         }
+        #endregion
 
-        private bool ignoreSelectedItemChanged = false;
-
-        private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ignoreSelectedItemChanged == false)
-            {
-                OnFilterChanged(EventArgs.Empty);
-                UpdateFilterOnMetadataControls();
-            }
-        }
-
-        private void BtnReset_Click(object sender, EventArgs e)
-        {
-            if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
-        }
-
-        private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
-        {
-            TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
-            OnFilterChanged(EventArgs.Empty);
-        }
-
-        private void TxtExtraLogEntries_TextChanged(object sender, EventArgs e)
-        {
-            OnFilterChanged(EventArgs.Empty);
-        }
-
+        #region Draw listbox items
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return;
 
             // Fetch the item
-            if (LstLogContent.Items[e.Index] is not LogEntryDisplayModel item || item.ContentValue == null) return;
+            if (LstLogContent.Items[e.Index] is not LogEntryDisplayObject item || item.ContentValue == null) return;
 
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
@@ -428,7 +369,7 @@ namespace LogScraper
             }
         }
 
-        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayModel item, Graphics g)
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g)
         {
             // Indentation
             const int indentPerLevel = 10;
@@ -502,7 +443,47 @@ namespace LogScraper
 
             return truncatedText;
         }
+        #endregion
 
+        #region Search
+        private string lastSearch = string.Empty;
+        private void PerformSearch()
+        {
+            string searchString = txtSearch.Text.Trim();
+            if (searchString == DefaulSearchtText) return;
+            if (searchString != lastSearch)
+            {
+                UpdateDisplayedLogEntries();
+                lastSearch = searchString;
+            }
+        }
+        #endregion
+
+        #region Events
+        /// Event to filter log entries based on metadata properties
+        public event Action<Dictionary<LogMetadataProperty, string>, bool> FilterOnMetadata;
+
+        /// Event to filter log entries based on the selected log content property
+        public event EventHandler FilterChanged;
+        protected virtual void OnFilterChanged(EventArgs e)
+        {
+            FilterChanged?.Invoke(this, e);
+        }
+        #endregion
+
+        #region Control events
+        private void TxtSearch_TextChanged(object sender, EventArgs e)
+        {
+            PerformSearch();
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                PerformSearch();
+            }
+        }
         private void TxtSearch_Enter(object sender, EventArgs e)
         {
             if (txtSearch.Text == DefaulSearchtText)
@@ -510,6 +491,10 @@ namespace LogScraper
                 txtSearch.Text = string.Empty;
                 txtSearch.ForeColor = SystemColors.ControlText;
             }
+        }
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
         }
 
         private void TxtSearch_Leave(object sender, EventArgs e)
@@ -520,36 +505,30 @@ namespace LogScraper
                 txtSearch.ForeColor = Color.DarkGray;
             }
         }
-
-        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        
+        private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            UpdateDisplayedLogEntries();
+            OnFilterChanged(EventArgs.Empty);
+            ChkShowFlowTree.Enabled = SelectedLogContentProperty != null && SelectedLogContentProperty.IsBeginFlowTreeFilter;
+        }
+        private bool ignoreSelectedItemChanged = false;
+
+        private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ignoreSelectedItemChanged == false)
             {
-                PerformSearch();
+                OnFilterChanged(EventArgs.Empty);
+                UpdateFilterOnMetadataControls();
             }
         }
 
-        private void TxtSearch_TextChanged(object sender, EventArgs e)
-        {
-            PerformSearch();
-        }
-
-        private string lastSearch = string.Empty;
-        private void PerformSearch()
-        {
-            string searchString = txtSearch.Text.Trim();
-            if (searchString == DefaulSearchtText) return;
-            if (searchString != lastSearch)
-            {
-                UpdateLogContentList();
-                lastSearch = searchString;
-            }
-        }
         private void BtnFilterOnSameMetadata_Click(object sender, EventArgs e)
         {
+            if (LstLogContent.SelectedIndex == -1) return;
+
             ChkShowFlowTree.Checked = true;
 
-            if (LstLogContent.SelectedIndex == -1) return;
             Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
             foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
             {
@@ -584,6 +563,12 @@ namespace LogScraper
             }
             if (FilterOnMetadataPropertiesAndValues.Count > 0) FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);
         }
+        private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
+        {
+            LstLogContent.SuspendDrawing();
+            LstLogContent.Invalidate();
+            LstLogContent.ResumeDrawing();
+        }
         private void UpdateFilterOnMetadataControls()
         {
             BtnFilterOnSameMetadata.Enabled = LogMetadataPropertiesUserSession.Count > 0 && SelectedContentValue != null;
@@ -591,11 +576,16 @@ namespace LogScraper
             BtnResetMetadataFilter.Visible = LogEntriesAreSingleSession;
         }
 
-        private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
+        private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
         {
-            LstLogContent.SuspendDrawing();
-            LstLogContent.Invalidate();
-            LstLogContent.ResumeDrawing();
+            TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
+            OnFilterChanged(EventArgs.Empty);
         }
+
+        private void TxtExtraLogEntries_TextChanged(object sender, EventArgs e)
+        {
+            OnFilterChanged(EventArgs.Empty);
+        }
+        #endregion
     }
 }
