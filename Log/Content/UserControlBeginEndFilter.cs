@@ -532,6 +532,12 @@ namespace LogScraper
                 UpdateFilterOnMetadataControls();
             }
         }
+        private void LstLogContent_DoubleClick(object sender, EventArgs e)
+        {
+            if (SelectedContentValue == null) return;
+
+            if (!LogEntriesAreSingleSession) BtnFilterOnSameMetadata_Click(null, null);
+        }
 
         private void BtnFilterOnSameMetadata_Click(object sender, EventArgs e)
         {
@@ -582,9 +588,9 @@ namespace LogScraper
         private void UpdateFilterOnMetadataControls()
         {
             BtnFilterOnSameMetadata.Enabled = LogMetadataPropertiesUserSession.Count > 0 && SelectedContentValue != null;
-            // In case there is no session filtering, still show the filter button
-            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || LogMetadataPropertiesUserSession.Count == 0;
-            BtnResetMetadataFilter.Visible = LogEntriesAreSingleSession;
+            // In case there is no session filtering or no log entries, still show the filter button
+            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || LogMetadataPropertiesUserSession.Count == 0 || LogEntriesLatestVersion.Count == 0;
+            BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
         }
 
         private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
@@ -598,5 +604,6 @@ namespace LogScraper
             OnFilterChanged(EventArgs.Empty);
         }
         #endregion
+
     }
 }

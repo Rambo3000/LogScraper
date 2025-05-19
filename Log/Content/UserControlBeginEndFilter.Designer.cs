@@ -53,6 +53,7 @@
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
+            LstLogContent.DoubleClick += LstLogContent_DoubleClick;
             // 
             // CboLogContentType
             // 

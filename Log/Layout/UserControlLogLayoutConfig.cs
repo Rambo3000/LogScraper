@@ -137,6 +137,11 @@ namespace LogScraper.Log
                             errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft een missende \"voor\" waarde.");
                         }
                     }
+                    if (property.IsBeginFlowTreeFilter && property.EndFlowTreeContentProperty == null)
+                    {
+                        errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft geen einde flow geselecteerd.");
+
+                    }
                 }
                 foreach (ILogTransformer transformer in layout.LogTransformers)
                 {
