@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Extensions;
@@ -86,18 +87,18 @@ namespace LogScraper
             if (logContentProperty == null) return;
 
             // Create display objects for the log entries containing the log entry, content value, treenode, and error status
-            List<LogEntryDisplayObject> LogEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty);
+            List<LogEntryDisplayObject> LogEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogEntriesLatestVersion);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(LogEntryDisplayObjects);
         }
-        private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty)
+        private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
         {
             if (logContentProperty == null) return null;
 
             List<LogFlowTreeNode> treeNodes = null;
             if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
             {
-                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(LogEntriesLatestVersion, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
+                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(logEntries, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
             }
 
             List<LogEntryDisplayObject> logEntryDisplayObjects = [];
@@ -107,7 +108,7 @@ namespace LogScraper
             if (filter == DefaulSearchtText) filter = null;
 
             // Iterate through the latest version of log entries
-            foreach (LogEntry logEntry in LogEntriesLatestVersion)
+            foreach (LogEntry logEntry in logEntries)
             {
                 // If the log entry has no content properties, continue to the next log entry
                 if (logEntry.LogContentProperties == null) continue;
@@ -185,6 +186,15 @@ namespace LogScraper
             if (startMatches && newCount > currentCount)
             {
                 LstLogContent.SuspendDrawing();
+
+                //Update the flow tree nodes for the existing items since they may have changed
+                foreach (var item in LstLogContent.Items)
+                {
+                    if (item is not LogEntryDisplayObject logEntryDisplayObject) continue;
+                    logEntryDisplayObject.FlowTreeNode = newLogEntries.Where(entry => entry.OriginalLogEntry.Equals(logEntryDisplayObject.OriginalLogEntry)).Single().FlowTreeNode;
+                }
+                if (ChkShowFlowTree.Checked) LstLogContent.Invalidate();
+
                 for (int i = currentCount; i < newCount; i++)
                 {
                     LstLogContent.Items.Add(newLogEntries[i]);
