@@ -120,6 +120,12 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="pictureBox3.ToolTip" xml:space="preserve">
+    <value>Wanneer er op één enkele sessie-metadata wordt gefilterd, wordt de content automatisch hiërarchisch weergegeven.
+Zodra er meerdere sessies geselecteerd zijn, schakelt de weergave automatisch terug naar een vlakke structuur.
+
+Geef in de log-layout aan welke metadata bij een sessie hoort.</value>
+  </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
     <value>Toont bij de begin- en eindfilters een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type content waarop gefilterd wordt.
 

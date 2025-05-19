@@ -50,11 +50,14 @@
             pictureBox16 = new System.Windows.Forms.PictureBox();
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
+            pictureBox3 = new System.Windows.Forms.PictureBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // LblDefaultLogProviderType
@@ -76,7 +79,7 @@
             GrpExportSettings.Controls.Add(TxtEditorLocation);
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Enabled = false;
-            GrpExportSettings.Location = new System.Drawing.Point(29, 153);
+            GrpExportSettings.Location = new System.Drawing.Point(29, 178);
             GrpExportSettings.Name = "GrpExportSettings";
             GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
@@ -148,7 +151,7 @@
             // ChkExportToFile
             // 
             ChkExportToFile.AutoSize = true;
-            ChkExportToFile.Location = new System.Drawing.Point(6, 128);
+            ChkExportToFile.Location = new System.Drawing.Point(6, 153);
             ChkExportToFile.Name = "ChkExportToFile";
             ChkExportToFile.Size = new System.Drawing.Size(241, 19);
             ChkExportToFile.TabIndex = 5;
@@ -204,6 +207,8 @@
             // 
             // GrpGeneralSettings
             // 
+            GrpGeneralSettings.Controls.Add(pictureBox3);
+            GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
             GrpGeneralSettings.Controls.Add(pictureBox2);
             GrpGeneralSettings.Controls.Add(pictureBox1);
             GrpGeneralSettings.Controls.Add(pictureBox16);
@@ -219,7 +224,7 @@
             GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
-            GrpGeneralSettings.Size = new System.Drawing.Size(848, 248);
+            GrpGeneralSettings.Size = new System.Drawing.Size(848, 304);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
@@ -227,7 +232,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.help;
-            pictureBox2.Location = new System.Drawing.Point(253, 128);
+            pictureBox2.Location = new System.Drawing.Point(253, 153);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new System.Drawing.Size(16, 16);
             pictureBox2.TabIndex = 38;
@@ -264,13 +269,33 @@
             ChkShowErrorsInBeginAndEndFilters.Text = "Toon regels met ERROR altijd in de begin en eind filters";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
             // 
+            // ChkAutoToggleHierarchy
+            // 
+            ChkAutoToggleHierarchy.AutoSize = true;
+            ChkAutoToggleHierarchy.Location = new System.Drawing.Point(6, 128);
+            ChkAutoToggleHierarchy.Name = "ChkAutoToggleHierarchy";
+            ChkAutoToggleHierarchy.Size = new System.Drawing.Size(425, 19);
+            ChkAutoToggleHierarchy.TabIndex = 39;
+            ChkAutoToggleHierarchy.Text = "Schakel hierarchisch tonen automatisch in zodra er op sessie wordt gefilterd";
+            ChkAutoToggleHierarchy.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = Properties.Resources.help;
+            pictureBox3.Location = new System.Drawing.Point(431, 128);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new System.Drawing.Size(16, 16);
+            pictureBox3.TabIndex = 40;
+            pictureBox3.TabStop = false;
+            toolTip.SetToolTip(pictureBox3, resources.GetString("pictureBox3.ToolTip"));
+            // 
             // UserControlGenericConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(GrpGeneralSettings);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(848, 248);
+            Size = new System.Drawing.Size(848, 304);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
@@ -278,6 +303,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -303,5 +329,7 @@
         private System.Windows.Forms.PictureBox pictureBox16;
         private System.Windows.Forms.Button BtnBrowseExportFIle;
         private System.Windows.Forms.Button BtnBrowseEditor;
+        private System.Windows.Forms.CheckBox ChkAutoToggleHierarchy;
+        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }

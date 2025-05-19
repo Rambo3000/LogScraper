@@ -505,7 +505,7 @@ namespace LogScraper
                 txtSearch.ForeColor = Color.DarkGray;
             }
         }
-        
+
         private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateDisplayedLogEntries();
@@ -527,7 +527,7 @@ namespace LogScraper
         {
             if (LstLogContent.SelectedIndex == -1) return;
 
-            ChkShowFlowTree.Checked = true;
+            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowFlowTree.Checked = SelectedLogContentProperty.IsBeginFlowTreeFilter;
 
             Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
             foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
@@ -546,7 +546,7 @@ namespace LogScraper
 
         private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
         {
-            ChkShowFlowTree.Checked = false;
+            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowFlowTree.Checked = false;
 
             if (LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0) return;
 

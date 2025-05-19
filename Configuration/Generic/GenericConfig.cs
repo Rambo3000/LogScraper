@@ -51,6 +51,11 @@ namespace LogScraper.Configuration.Generic
         /// Default value is <c>true</c>.
         /// </summary>
         public bool ShowErrorLinesInBeginAndEndFilters { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to automatically toggle the hierarchy when the session filter is applied
+        /// </summary>
+        public bool AutoToggleHierarchy  { get; set; } = true;
     }
 
     /// <summary>
