@@ -572,7 +572,8 @@ namespace LogScraper
         private void UpdateFilterOnMetadataControls()
         {
             BtnFilterOnSameMetadata.Enabled = LogMetadataPropertiesUserSession.Count > 0 && SelectedContentValue != null;
-            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession;
+            // In case there is no session filtering, still show the filter button
+            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || LogMetadataPropertiesUserSession.Count == 0;
             BtnResetMetadataFilter.Visible = LogEntriesAreSingleSession;
         }
 
