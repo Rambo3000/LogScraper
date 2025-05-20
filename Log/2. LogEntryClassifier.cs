@@ -137,11 +137,7 @@ namespace LogScraper.Log
                         // Add the content value to the log entry if it exists.
                         if (value != null)
                         {
-                            logEntry.LogContentProperties[LogContent] = new LogContentValue()
-                            {
-                                Value = value.Trim(),
-                                TimeDescription = logEntry.TimeStamp.ToString("HH:mm:ss")
-                            };
+                            logEntry.LogContentProperties[LogContent] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
                             break; // Exit the loop after finding a valid value.
                         }
                     }

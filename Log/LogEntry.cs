@@ -8,17 +8,28 @@ namespace LogScraper.Log
     /// <summary>
     /// Represents a single log entry with its associated metadata and content properties.
     /// </summary>
-    public class LogEntry(string entry, DateTime timestamp) : IEquatable<LogEntry>
+    public class LogEntry: IEquatable<LogEntry>
     {
         /// <summary>
-        /// The content of the log entry. The input is trimmed to remove leading and trailing whitespace.
+        /// Initializes a new instance of the LogEntry class with the specified entry content and timestamp.
         /// </summary>
-        public string Entry { get; set; } = entry.Trim();
+        /// <param name="entry">The content of the log entry.</param>
+        /// <param name="timestamp">The timestamp associated with the log entry.</param>
+        public LogEntry(string entry, DateTime timestamp)
+        {
+            Entry =  entry.Trim();
+            TimeStamp = timestamp;
+            HashCodeCache = Entry.GetHashCode();
+        }
+        /// <summary>
+        /// The content of the log entry.
+        /// </summary>
+        public string Entry { get; private set; }
 
         /// <summary>
         /// The timestamp associated with the log entry.
         /// </summary>
-        public DateTime TimeStamp { get; set; } = timestamp;
+        public DateTime TimeStamp { get; set; } 
 
         /// <summary>
         /// Additional log entries that are related to this log entry. These are typically stack traces or other kind of log output which spans multiple log entries.
@@ -29,7 +40,7 @@ namespace LogScraper.Log
         /// Cached hash code for the log entry, calculated from the log entry content.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>
-        private int HashCodeCache { get; set; } = entry.GetHashCode();
+        private int HashCodeCache { get; set; }
 
         /// <summary>
         /// Metadata properties associated with the log entry, represented as key-value pairs.

@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Headers;
+using System.Security.Policy;
 
 namespace LogScraper.Log.Content
 {
-    public class LogContentValue : IEquatable<LogContentValue>
+    public class LogContentValue(string contentValue, string timeDescription) : IEquatable<LogContentValue>
     {
-        public string Value { get; set; }
-        public string TimeDescription { get; set; }
+        public string Value { get; set; } = contentValue;
+        public string TimeDescription { get; set; } = timeDescription;
 
         /// <summary>
         /// Cached hash code for the log content property, calculated from the description.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>
-        private int HashCodeCache { get; set; }
+        private int HashCodeCache { get; set; } = HashCode.Combine(timeDescription, contentValue);
 
         /// <summary>
         /// Cached hash code for the log content property, calculated from the description.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>
-        private int ValueHashCodeCache { get; set; }
+        private int ValueHashCodeCache { get; set; } = contentValue.GetHashCode();
 
         /// <summary>
         /// Determines whether the current log content property is equal to another log content property.
@@ -62,14 +60,6 @@ namespace LogScraper.Log.Content
         /// <returns>The hash code for the log content property.</returns>
         public override int GetHashCode()
         {
-            // Double-checked locking to ensure thread safety when initializing the hash code cache.
-            if (HashCodeCache == 0)
-            {
-                lock (this)
-                {
-                    if (HashCodeCache == 0) HashCodeCache = ToString().GetHashCode();
-                }
-            }
             return HashCodeCache;
         }
 
@@ -80,14 +70,6 @@ namespace LogScraper.Log.Content
         /// <returns>The hash code for the log content property.</returns>
         public int GetHashCodeValue()
         {
-            // Double-checked locking to ensure thread safety when initializing the hash code cache.
-            if (ValueHashCodeCache == 0)
-            {
-                lock (this)
-                {
-                    if (ValueHashCodeCache == 0) ValueHashCodeCache = Value.ToString().GetHashCode();
-                }
-            }
             return ValueHashCodeCache;
         }
 
