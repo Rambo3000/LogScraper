@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LogScraper
+namespace LogScraper.Utilities
 {
     /// <summary>
     /// Provides functionality to check for updates to the application by querying the latest release information from GitHub.
@@ -24,7 +24,7 @@ namespace LogScraper
             {
                 try
                 {
-                    await GitHubUpdateChecker.CheckForUpdateAsync();
+                    await CheckForUpdateAsync();
                 }
                 catch
                 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using LogScraper.Extensions;
 using LogScraper.Log.Layout;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Log.Metadata
 {
@@ -145,7 +145,7 @@ namespace LogScraper.Log.Metadata
         /// Enables filtering on a specific metadata value for a given metadata property.
         /// </summary>
         /// <param name="logMetadataPropertiesAndValues">The metadata properties and their values to enable filtering on.</param>
-        public void EnableFilterOnSpecificMetdataValues (Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
+        public void EnableFilterOnSpecificMetdataValues(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
         {
             // Check if the control for the specified metadata property exists
             foreach (KeyValuePair<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> control in logMetadataPropertyControls)

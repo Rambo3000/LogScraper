@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using LogScraper.Properties;
+using LogScraper.Utilities;
 
 namespace LogScraper.Configuration
 {

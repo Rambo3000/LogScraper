@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace LogScraper.Extensions
+namespace LogScraper.Utilities.Extensions
 {
     /// <summary>
     /// Provides extension methods for object comparison.

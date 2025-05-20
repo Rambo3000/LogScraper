@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.ComponentModel;
-using LogScraper.Extensions;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {

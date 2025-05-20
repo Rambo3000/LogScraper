@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace LogScraper.Extensions
+namespace LogScraper.Utilities.Extensions
 {
     /// <summary>
     /// Provides extension methods for the <see cref="Exception"/> class to enhance its functionality.

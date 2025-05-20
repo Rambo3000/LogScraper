@@ -6,15 +6,16 @@ using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Export;
-using LogScraper.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
-using static LogScraper.Extensions.RichTextBoxExtensions;
+using LogScraper.Utilities.Extensions;
+using static LogScraper.Utilities.Extensions.RichTextBoxExtensions;
 using static LogScraper.UserControlSearch;
+using LogScraper.Utilities;
 
 namespace LogScraper
 {

@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.Extensions;
+using LogScraper.Utilities.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace LogScraper.Extensions
+namespace LogScraper.Utilities.Extensions
 {
     /// <summary>
     /// Provides extension methods for Windows Forms controls to manage drawing operations.
@@ -29,16 +29,16 @@ namespace LogScraper.Extensions
 #pragma warning restore IDE0060 // Remove unused parameter
         {
             // Unlock the window to allow drawing updates.
-            LockWindowUpdate(IntPtr.Zero);
+            LockWindowUpdate(nint.Zero);
         }
 
         /// <summary>
         /// Locks or unlocks the window for drawing updates.
         /// </summary>
-        /// <param name="hWndLock">The handle of the window to lock or unlock. Pass <see cref="IntPtr.Zero"/> to unlock.</param>
+        /// <param name="hWndLock">The handle of the window to lock or unlock. Pass <see cref="nint.Zero"/> to unlock.</param>
         /// <returns>True if the operation succeeds; otherwise, false.</returns>
         [LibraryImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool LockWindowUpdate(IntPtr hWndLock);
+        private static partial bool LockWindowUpdate(nint hWndLock);
     }
 }

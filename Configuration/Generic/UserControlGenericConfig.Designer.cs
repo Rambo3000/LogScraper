@@ -1,4 +1,6 @@
-﻿namespace LogScraper.Configuration
+﻿using LogScraper.Utilities.Extensions;
+
+namespace LogScraper.Configuration
 {
     partial class UserControlGenericConfig
     {
@@ -36,12 +38,12 @@
             BtnBrowseExportFIle = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
-            TxtEditorLocation = new LogScraper.Extensions.ValidatedTextBox();
-            TxtExportFileName = new LogScraper.Extensions.ValidatedTextBox();
+            TxtEditorLocation = new LogScraper.Utilities.Extensions.ValidatedTextBox();
+            TxtExportFileName = new LogScraper.Utilities.Extensions.ValidatedTextBox();
             ChkExportToFile = new System.Windows.Forms.CheckBox();
             CboLogProviderType = new System.Windows.Forms.ComboBox();
             LblTimeout = new System.Windows.Forms.Label();
-            TxtTimeOut = new LogScraper.Extensions.ValidatedTextBox();
+            TxtTimeOut = new LogScraper.Utilities.Extensions.ValidatedTextBox();
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
@@ -313,11 +315,11 @@
         private System.Windows.Forms.GroupBox GrpExportSettings;
         private System.Windows.Forms.ComboBox CboLogProviderType;
         private System.Windows.Forms.Label LblTimeout;
-        private Extensions.ValidatedTextBox TxtTimeOut;
+        private ValidatedTextBox TxtTimeOut;
         private System.Windows.Forms.CheckBox ChkExportToFile;
         private System.Windows.Forms.Label label2;
-        private Extensions.ValidatedTextBox TxtEditorLocation;
-        private Extensions.ValidatedTextBox TxtExportFileName;
+        private ValidatedTextBox TxtEditorLocation;
+        private ValidatedTextBox TxtExportFileName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox CboAutomaticReadTime;
         private System.Windows.Forms.Label LblAutomaticReadTimea;

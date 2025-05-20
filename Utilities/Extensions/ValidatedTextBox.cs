@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace LogScraper.Extensions
+namespace LogScraper.Utilities.Extensions
 {
 
     public class ValidatedTextBox : TextBox

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace LogScraper.Extensions
+namespace LogScraper.Utilities.Extensions
 {
     /// <summary>
     /// Provides extension methods for the <see cref="RichTextBox"/> control to enhance its functionality.
