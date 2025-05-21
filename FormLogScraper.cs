@@ -128,9 +128,7 @@ namespace LogScraper
                     throw;
                 }
 
-                LogEntryClassifier.ClassifyLogEntryMetadataProperties(logLayout, LogCollection.Instance);
-
-                LogEntryClassifier.ClassifyLogEntryContentProperties(logLayout, LogCollection.Instance);
+                LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, LogCollection.Instance);
 
                 UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
                 FilterLogEntries();

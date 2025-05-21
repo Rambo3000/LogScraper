@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
@@ -81,70 +82,76 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Classifies metadata properties for each log entry in the log collection based on the provided log layout and adds this to each log entry.
+        /// Classifies the metadata and content properties of log entries in the specified log collection based on the
+        /// provided log layout.
         /// </summary>
-        /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
+        /// <remarks>This method processes each log entry in the collection in parallel, applying
+        /// classification rules for both metadata and content properties. The classification results are stored within
+        /// the log entries.</remarks>
+        /// <param name="logLayout">The layout definition that specifies the structure and classification rules for log entries.</param>
         /// <param name="logCollection">The collection of log entries to classify.</param>
-        public static void ClassifyLogEntryMetadataProperties(LogLayout logLayout, LogCollection logCollection)
+        public static void ClassifyMetadataAndContentProperties(LogLayout logLayout, LogCollection logCollection)
         {
-            if (logCollection == null || logLayout.LogMetadataProperties == null) return;
+            if (logCollection == null) return;
 
-            int numberOfMetadataProperties = logLayout.LogMetadataProperties.Count;
-
-            foreach (var logEntry in logCollection.LogEntries)
+            Parallel.ForEach(logCollection.LogEntries, logEntry =>
             {
-                // Skip log entries that already have metadata properties classified.
-                if (logEntry.LogMetadataPropertiesWithStringValue != null) continue;
+                ClassifyLogEntryMetadataProperties(logEntry, logLayout, logCollection);
+                ClassifyLogEntryContentProperties(logEntry, logLayout);
+            });
+        }
+        /// <summary>
+        /// Classifies metadata properties for a log entry based on the provided log layout and adds this to the log entry.
+        /// </summary>
+        /// <param name="logEntry">The log entry to classify metadata properties for.</param>
+        /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
+        /// <param name="logCollection">The collection of log entries, the number of errors found is updated here.</param>
+        private static void ClassifyLogEntryMetadataProperties(LogEntry logEntry, LogLayout logLayout, LogCollection logCollection)
+        {
+            // Skip log entries that already have metadata properties classified.
+            if (logLayout.LogMetadataProperties == null || logEntry.LogMetadataPropertiesWithStringValue != null) return;
 
-                logEntry.LogMetadataPropertiesWithStringValue = new IndexDictionary<LogMetadataProperty, string>(numberOfMetadataProperties);
+            logEntry.LogMetadataPropertiesWithStringValue = new IndexDictionary<LogMetadataProperty, string>(logLayout.LogMetadataProperties.Count);
 
-                // Determine and add metadata properties and their values to the log entry.
-                foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
-                {
-                    // Extract the property value based on the criteria.
-                    string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartPosition);
+            // Determine and add metadata properties and their values to the log entry.
+            foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
+            {
+                // Extract the property value based on the criteria.
+                string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartPosition);
 
-                    // Add the property value to the log entry if it exists.
-                    if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
+                // Add the property value to the log entry if it exists.
+                if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
 
-                    // Increment the error count if the property value is "ERROR".
-                    if (propertyValue == "ERROR") logCollection.ErrorCount++;
-                }
+                // Increment the error count if the property value is "ERROR".
+                if (propertyValue == "ERROR") logCollection.ErrorCount++;
             }
         }
 
         /// <summary>
-        /// Classifies content properties for each log entry in the log collection based on the provided log layout and adds this to each log entry.
+        /// Classifies content properties for a log entry based on the provided log layout and adds this to the log entry.
         /// </summary>
+        /// <param name="logEntry">The log entry to classify content properties for.</param>
         /// <param name="logLayout">The layout defining content properties and their criteria.</param>
-        /// <param name="logCollection">The collection of log entries to classify.</param>
-        public static void ClassifyLogEntryContentProperties(LogLayout logLayout, LogCollection logCollection)
+        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout)
         {
-            if (logCollection == null || logLayout.LogContentProperties == null) return;
+            // Skip log entries that already have content properties classified.
+            if (logLayout.LogMetadataProperties == null || logEntry.LogContentProperties != null) return;
 
-            int numberOfContentProperties = logLayout.LogContentProperties.Count;
+            logEntry.LogContentProperties = new IndexDictionary<LogContentProperty, LogContentValue>(logLayout.LogContentProperties.Count);
 
-            foreach (var logEntry in logCollection.LogEntries)
+            // Determine and add content properties and their values to the log entry.
+            foreach (var LogContent in logLayout.LogContentProperties)
             {
-                // Skip log entries that already have content properties classified.
-                if (logEntry.LogContentProperties != null) continue;
-
-                logEntry.LogContentProperties = new IndexDictionary<LogContentProperty, LogContentValue>(numberOfContentProperties);
-
-                // Determine and add content properties and their values to the log entry.
-                foreach (var LogContent in logLayout.LogContentProperties)
+                string value = null;
+                foreach (FilterCriteria filterCriteria in LogContent.Criterias)
                 {
-                    string value = null;
-                    foreach (FilterCriteria filterCriteria in LogContent.Criterias)
+                    // Extract the content value based on the criteria.
+                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logLayout.StartPosition);
+                    // Add the content value to the log entry if it exists.
+                    if (value != null)
                     {
-                        // Extract the content value based on the criteria.
-                        value = ExtractValue(logEntry.Entry, filterCriteria, false, logLayout.StartPosition);
-                        // Add the content value to the log entry if it exists.
-                        if (value != null)
-                        {
-                            logEntry.LogContentProperties[LogContent] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
-                            break; // Exit the loop after finding a valid value.
-                        }
+                        logEntry.LogContentProperties[LogContent] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
+                        break; // Exit the loop after finding a valid value.
                     }
                 }
             }

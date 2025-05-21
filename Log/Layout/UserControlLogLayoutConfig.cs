@@ -599,8 +599,7 @@ namespace LogScraper.Log
                     }
 
                     RawLogParser.ParseLogEntriesIntoCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
-                    LogEntryClassifier.ClassifyLogEntryMetadataProperties(logLayout, logCollection);
-                    LogEntryClassifier.ClassifyLogEntryContentProperties(logLayout, logCollection);
+                    LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
 
                     string information = string.Empty;
                     LogEntry logEntry = logCollection.LogEntries[0];
