@@ -546,15 +546,12 @@ namespace LogScraper
             if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowFlowTree.Checked = SelectedLogContentProperty.IsBeginFlowTreeFilter;
 
             Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
-            foreach (var item in SelectedLogEntry.LogMetadataPropertiesWithStringValue)
+            foreach (var logMetadataProperty in LogMetadataPropertiesUserSession)
             {
-                foreach (var logMetadataProperty in LogMetadataPropertiesUserSession)
+                if (SelectedLogEntry.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value))
                 {
-                    if (item.Key == logMetadataProperty)
-                    {
-                        FilterOnMetadataPropertiesAndValues.Add(item.Key, item.Value);
-                        break;
-                    }
+                    FilterOnMetadataPropertiesAndValues.Add(logMetadataProperty, value);
+                    break;
                 }
             }
             FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, true);
@@ -569,12 +566,9 @@ namespace LogScraper
             Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
             foreach (LogMetadataProperty logMetadataProperty in LogMetadataPropertiesUserSession)
             {
-                foreach (KeyValuePair<LogMetadataProperty, string> kvp in LogEntriesLatestVersion[0].LogMetadataPropertiesWithStringValue)
+                if (LogEntriesLatestVersion[0].LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value))
                 {
-                    if (kvp.Key == logMetadataProperty)
-                    {
-                        FilterOnMetadataPropertiesAndValues.Add(logMetadataProperty, kvp.Value);
-                    }
+                    FilterOnMetadataPropertiesAndValues.Add(logMetadataProperty, value);
                 }
             }
             if (FilterOnMetadataPropertiesAndValues.Count > 0) FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);

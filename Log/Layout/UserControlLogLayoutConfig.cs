@@ -8,6 +8,7 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {
@@ -150,6 +151,10 @@ namespace LogScraper.Log
                         errorMessages.Add($"Voor layout '{layout.Description}' is de JSON transformer geselecteerd maar er is geen JSON path ingevuld");
                     }
                 }
+
+                //Reindex the properties for the index dictionary.
+                layout.LogMetadataProperties?.AssignIndexes();
+                layout.LogContentProperties?.AssignIndexes();
             }
 
             config = null;

@@ -1,12 +1,18 @@
 ﻿using System;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Metadata
 {
     /// <summary>
     /// Represents the definition of a metadata property of a log, including its description and filtering criteria.
     /// </summary>
-    public class LogMetadataProperty : IEquatable<LogMetadataProperty>
+    public class LogMetadataProperty : IEquatable<LogMetadataProperty>, IHasIndex
     {
+        /// <summary>
+        /// Index of the metadata property in the list of metadata properties. Used for using the <see cref="IndexDictionary{TKey,TValue}"/> class.
+        /// </summary>
+        public int Index { get; set; } = -1;
+
         /// <summary>
         /// A description of the metadata property.
         /// This provides a human-readable explanation of the property.

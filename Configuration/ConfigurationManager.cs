@@ -8,6 +8,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
+using LogScraper.Utilities.IndexDictionary;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -42,8 +43,8 @@ namespace LogScraper.Configuration
             ConvertSingleToMultipleCriterias(logLayoutsConfig);
 #pragma warning restore CS0612 // Type or member is obsolete
             SetEndFlowTreeContentProperties(logLayoutsConfig);
+            AssignLogPropertyIndexes(logLayoutsConfig);
             SetAllLayoutsTransformers();
-
 
             // Limit the automatic read time to a maximum of 5 minutes
             if (genericConfig.AutomaticReadTimeMinutes > 5) genericConfig.AutomaticReadTimeMinutes = 1;
@@ -73,6 +74,19 @@ namespace LogScraper.Configuration
                     logContentProperty.Criterias = [logContentProperty.Criteria];
                     logContentProperty.Criteria = null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Assigns indexes to log metadata and content properties for each log layout.
+        /// </summary>
+        /// <param name="logLayoutsConfig">The log layouts configuration to update.</param>
+        private static void AssignLogPropertyIndexes(LogLayoutsConfig logLayoutsConfig)
+        {
+            foreach (LogLayout logLayout in logLayoutsConfig.layouts)
+            {
+                logLayout.LogMetadataProperties?.AssignIndexes();
+                logLayout.LogContentProperties?.AssignIndexes();
             }
         }
 

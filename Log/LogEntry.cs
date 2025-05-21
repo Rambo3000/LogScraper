@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {
@@ -45,12 +46,12 @@ namespace LogScraper.Log
         /// <summary>
         /// Metadata properties associated with the log entry, represented as key-value pairs.
         /// </summary>
-        public Dictionary<LogMetadataProperty, string> LogMetadataPropertiesWithStringValue { get; set; }
+        public IndexDictionary<LogMetadataProperty, string> LogMetadataPropertiesWithStringValue { get; set; }
 
         /// <summary>
         /// Content properties associated with the log entry, represented as key-value pairs.
         /// </summary>
-        public Dictionary<LogContentProperty, LogContentValue> LogContentProperties { get; set; }
+        public IndexDictionary<LogContentProperty, LogContentValue> LogContentProperties { get; set; }
 
         /// <summary>
         /// Determines whether the current log entry is equal to another log entry.

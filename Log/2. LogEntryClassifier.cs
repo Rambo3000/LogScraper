@@ -3,6 +3,7 @@ using System.Linq;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {
@@ -88,12 +89,14 @@ namespace LogScraper.Log
         {
             if (logCollection == null || logLayout.LogMetadataProperties == null) return;
 
+            int numberOfMetadataProperties = logLayout.LogMetadataProperties.Count;
+
             foreach (var logEntry in logCollection.LogEntries)
             {
                 // Skip log entries that already have metadata properties classified.
                 if (logEntry.LogMetadataPropertiesWithStringValue != null) continue;
 
-                logEntry.LogMetadataPropertiesWithStringValue = [];
+                logEntry.LogMetadataPropertiesWithStringValue = new IndexDictionary<LogMetadataProperty, string>(numberOfMetadataProperties);
 
                 // Determine and add metadata properties and their values to the log entry.
                 foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
@@ -119,12 +122,14 @@ namespace LogScraper.Log
         {
             if (logCollection == null || logLayout.LogContentProperties == null) return;
 
+            int numberOfContentProperties = logLayout.LogContentProperties.Count;
+
             foreach (var logEntry in logCollection.LogEntries)
             {
                 // Skip log entries that already have content properties classified.
                 if (logEntry.LogContentProperties != null) continue;
 
-                logEntry.LogContentProperties = [];
+                logEntry.LogContentProperties = new IndexDictionary<LogContentProperty, LogContentValue>(numberOfContentProperties);
 
                 // Determine and add content properties and their values to the log entry.
                 foreach (var LogContent in logLayout.LogContentProperties)

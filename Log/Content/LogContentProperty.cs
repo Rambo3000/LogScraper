@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LogScraper.Utilities.IndexDictionary;
 using Newtonsoft.Json;
 
 namespace LogScraper.Log.Content
@@ -8,7 +9,7 @@ namespace LogScraper.Log.Content
     /// Represents a property of log content, including its description and filtering criteria.
     /// This is used to identify and filter log entries based on specific content properties.
     /// </summary>
-    public class LogContentProperty : IEquatable<LogContentProperty>
+    public class LogContentProperty() : IEquatable<LogContentProperty>, IHasIndex
     {
         /// <summary>
         /// A description of the log content property.
@@ -45,6 +46,12 @@ namespace LogScraper.Log.Content
         /// </summary>
         [JsonIgnore]
         public LogContentProperty EndFlowTreeContentProperty { get; set; }
+
+        /// <summary>
+        /// Index of the log content property in the list of log content properties. Used for using the <see cref="IndexDictionary{TKey,TValue}"/> class.
+        /// </summary>
+        [JsonIgnore]
+        public int Index { get; set; } = -1;
 
         /// <summary>
         /// Cached hash code for the log content property, calculated from the description.

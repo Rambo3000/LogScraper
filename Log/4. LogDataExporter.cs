@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using LogScraper.Export;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {
@@ -156,7 +157,7 @@ namespace LogScraper.Log
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
         /// <returns>The log entry with added metadata.</returns>
-        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, Dictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettings logExportSettings)
+        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettings logExportSettings)
         {
             if (startIndex <= 0 ||
                 logExportSettings.SelectedMetadataProperties == null ||
