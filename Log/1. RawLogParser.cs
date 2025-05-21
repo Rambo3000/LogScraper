@@ -13,6 +13,15 @@ namespace LogScraper.Log
     /// </summary>
     public static class RawLogParser
     {
+        /// <summary>
+        /// Represents a parsed log line, including its raw content and optional timestamp information.
+        /// </summary>
+        /// <remarks>This class encapsulates the details of a single log entry, including whether it
+        /// contains a timestamp and the timestamp value if present. It is intended for internal use in log processing
+        /// scenarios.</remarks>
+        /// <param name="rawEntry"></param>
+        /// <param name="hasTimestamp"></param>
+        /// <param name="timestamp"></param>
         private class ParsedLogLine(string rawEntry, bool hasTimestamp, DateTime timestamp)
         {
             public string RawEntry = rawEntry;
@@ -66,7 +75,6 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="rawLogEntries">Array of log entries to process.</param>
         /// <param name="logCollection">The collection containing existing log entries.</param>
-        /// <param name="lastLogEntry">The last log entry in the collection, if any.</param>
         /// <param name="logEntriesStartIndex">The index in the rawLogEntries array where new log entries start.</param>
         private static void GetLastLogEntryAndNewBeginningIndex(string[] rawLogEntries, LogCollection logCollection, out int logEntriesStartIndex)
         {
