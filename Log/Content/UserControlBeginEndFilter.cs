@@ -26,6 +26,8 @@ namespace LogScraper
 
         private bool LogEntriesAreSingleSession = false;
 
+        private bool IsSessionMetadataFilteringActive = false;
+
         private List<LogEntry> LogEntriesLatestVersion;
 
         public UserControlBeginEndFilter()
@@ -67,8 +69,23 @@ namespace LogScraper
         #endregion
 
         #region Update the log entries in the listbox
-        public void UpdateLogEntries(List<LogEntry> logEntries)
+        public void UpdateLogEntries(List<LogEntry> logEntries, List<LogMetadataPropertyAndValues> filteredLogMetadataPropertyAndValues)
         {
+            // Determine if the session metadata filtering is active, to control the session filtering button
+            IsSessionMetadataFilteringActive = false;
+            foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValues in filteredLogMetadataPropertyAndValues)
+            {
+                if (logMetadataPropertyAndValues.LogMetadataProperty.IsSessionData)
+                {
+                    int numberOfEnabledFilters = logMetadataPropertyAndValues.LogMetadataValues.Keys.Where(value => value.IsFilterEnabled).ToList().Count;
+                    if (numberOfEnabledFilters > 0)
+                    {
+                        IsSessionMetadataFilteringActive = true;
+                        break;
+                    }
+                }
+            }
+
             LogEntriesLatestVersion = logEntries;
             UpdateDisplayedLogEntries();
         }
@@ -591,9 +608,19 @@ namespace LogScraper
         }
         private void UpdateFilterOnMetadataControls()
         {
-            BtnFilterOnSameMetadata.Enabled = LogMetadataPropertiesUserSession.Count > 0 && SelectedContentValue != null;
-            // In case there is no session filtering or no log entries, still show the filter button
-            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || LogMetadataPropertiesUserSession.Count == 0 || LogEntriesLatestVersion.Count == 0;
+            // In case there is no session filtering or no log entries, disable the filter button
+            if (LogMetadataPropertiesUserSession.Count == 0 || LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0)
+            {
+                BtnFilterOnSameMetadata.Enabled = false;
+                BtnFilterOnSameMetadata.Visible = true;
+                BtnResetMetadataFilter.Visible = false;
+                return;
+            }
+            //Enable the filter button if there is a selected log entry and the log entries are not from a single session
+            BtnFilterOnSameMetadata.Enabled = SelectedContentValue != null && !LogEntriesAreSingleSession;
+            // Show the filter button if the log entries are not from a single session or the session metadata filtering is not active
+            // In case the metadata filtering is not active, the button will be disabled as there is no action to perform
+            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || !IsSessionMetadataFilteringActive;
             BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
         }
 

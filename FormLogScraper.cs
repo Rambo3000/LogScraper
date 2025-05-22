@@ -169,8 +169,8 @@ namespace LogScraper
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList);
 
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
-            UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
-            UsrLogContentEnd.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
+            UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
+            UsrLogContentEnd.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
 
             WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
