@@ -35,6 +35,11 @@ namespace LogScraper.Log.Content
         public bool IsBeginFlowTreeFilter { get; set; }
 
         /// <summary>
+        /// Indicates whether an error is logged in the log entry if this log content property is present.
+        /// </summary>
+        public bool IsErrorProperty { get; set; } = false;
+
+        /// <summary>
         /// Description of the content property which is a filter for the end of a flow tree.
         /// Used for JSON serilization and only when <see cref="IsBeginFlowTreeFilter"/> is true.
         /// </summary>

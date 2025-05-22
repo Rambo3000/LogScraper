@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pictureBox6.ToolTip" xml:space="preserve">
+    <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
+In de applicatie verschijnt dit bij de begin en eind filters
+
+Bijvoorbeeld:
+2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
+Dan kan de tekst voor de waarde zijn: API call: 
+De tekst na de waarde mag leeg blijven.
+
+Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
+  </data>
+  <data name="pictureBox9.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die net voor de content waarde staat en (optioneel) de tekst die net na de content waarde staat.
+Zet tussen de voor en na tekst: =&gt;
+Het is mogelijk meerdere voor en na teksten op te geven, zet elk op een eigen regel.
+
+Voorbeeld: indien in de logregel staat API call: X
+Geef dan op: API call: 
+
+Voorbeeld: indien in de logregel staat API call: X is being started
+Geef dan op: API call: =&gt; is being started</value>
+  </data>
+  <data name="pictureBox17.ToolTip" xml:space="preserve">
+    <value>Het is mogelijk om een hiërarchische weergave van logregels te tonen die een flow en eventuele subflows beschrijven. Selecteer deze optie als deze contentfilter het begin van een (sub)flow markeert.
+Kies vervolgens in de dropdown de contentfilter die het bijbehorende einde van de (sub)flow aanduidt.
+
+De applicatie herkent hiermee beginnen en eindes van aangegeven flows en hoe deze genest zijn in elkaar. Dit wordt omgezet naar een hiërarchische weergave.
+
+Zodra deze optie is ingeschakeld, kan de geselecteerde contentfilter hiërarchisch weergegeven worden.
+
+Let op: Als de hiërarchische weergave erg groot of (deels) onjuist is, moet het logbestand mogelijk verder worden gefilterd. Beperk de log tot de sessie waarin je geïnteresseerd bent om ruis te voorkomen.</value>
+  </data>
+  <data name="pictureBox13.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die het begin van de metadata identficeerd. Redeneer na de timestamp aan het begin van de regel
+
+Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
+In dit voorbeeld is er geen specifiek teken voor de metadata, dus laat deze leeg
+
+Bijvoorbeeld 2025-01-01T01:02:03.123 - INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
+Gebruik in dit voorbeeld: "- "</value>
+  </data>
+  <data name="pictureBox2.ToolTip" xml:space="preserve">
+    <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.
+
+Specifier Voorbeeld Betekenis
+yyyy 2025 Volledig jaartal (4 cijfers)
+yy 25 Jaar in 2 cijfers
+MM 04 Maand (met voorloopnul)
+M 4 Maand (zonder voorloopnul)
+dd 14 Dag van de maand (met nul)
+d 14 Dag van de maand (zonder nul)
+dddd maandag Volledige naam van de dag
+ddd ma Afgekorte dagnaam
+
+HH 09 Uur (24-uurs, met nul)
+H 9 Uur (24-uurs, zonder nul)
+hh 09 Uur (12-uurs, met nul)
+h 9 Uur (12-uurs, zonder nul)
+mm 07 Minuten (met nul)
+m 7 Minuten (zonder nul)
+ss 04 Seconden (met nul)
+s 4 Seconden (zonder nul)
+tt AM / PM Voormiddag / namiddag
+
+fff 123 Milliseconden
+zz +02 Tijdzone offset in uren
+zzz +02:00 Tijdzone offset met minuten
+
+Voorbeelden
+yyyy-MM-dd HH:mm:ss 2025-04-14 13:45:30 Volledige datum + tijd (24-uurs)
+yyyy-MM-ddTHH:mm:ss 2025-04-14T13:45:30 ISO 8601 notatie (bijv. voor JSON)
+ddd dd MMM yyyy ma 14 apr 2025 Leesbare datum, afgekorte dag/maand
+dddd dd MMMM yyyy maandag 14 april 2025 Volledig uitgeschreven datum
+yyyy-MM-dd HH:mm:ss.fff 2025-04-14 13:45:30.123 Inclusief milliseconden
+yyyy-MM-dd HH:mm:ss zzz 2025-04-14 13:45:30 +02:00 Met tijdzone offset</value>
+  </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value>Metadata zijn gegevens die bij elke logregel aanwezig zijn en waarop gefilterd kan worden. 
+Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY
+
+Let op! De applicatie kan langzamer worden indien metadata wordt gebruikt die vaak wijzigd (bijvoorbeeld een trace-id). Probeer voor deze gevallen het in te lezen log klein te houden.</value>
+  </data>
+  <data name="pictureBox7.ToolTip" xml:space="preserve">
+    <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
+- de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
+- de metadata die per logregel weggeschreven wordt en waarop gefilterd kan worden.
+- eventuele inhoudelijke gegevens (content) waarop gezocht kan worden. Dit wordt gebruikt voor de begin en eind filters.</value>
+  </data>
+  <data name="pictureBox18.ToolTip" xml:space="preserve">
+    <value>Als deze optie is ingeschakeld en de opgegeven content wordt gevonden, wordt de betreffende logregel als een fout gemarkeerd.
+
+Deze fouten worden geteld en teruggekoppeld, en binnen de contentfilters worden fouten apart in rood weergegeven tussen de andere content (dit is configureerbaar).</value>
+  </data>
+</root>

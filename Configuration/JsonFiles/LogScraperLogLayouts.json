@@ -68,6 +68,7 @@
             }
           ],
           "isBeginFlowTreeFilter": true,
+          "isErrorProperty": false,
           "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
@@ -88,6 +89,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
+          "isErrorProperty": false,
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -100,6 +102,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
+          "isErrorProperty": false,
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -112,18 +115,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
-          "endFlowTreeContentPropertyDescription": ""
-        },
-        {
-          "description": "test",
-          "criteria": null,
-          "criterias": [
-            {
-              "beforePhrase": "[onFlow",
-              "afterPhrase": null
-            }
-          ],
-          "isBeginFlowTreeFilter": false,
+          "isErrorProperty": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
@@ -164,8 +156,9 @@
               "afterPhrase": null
             }
           ],
-          "isBeginFlowTreeFilter": false,
-          "endFlowTreeContentPropertyDescription": ""
+          "isBeginFlowTreeFilter": true,
+          "isErrorProperty": false,
+          "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
           "description": "Einde flow",
@@ -177,6 +170,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
+          "isErrorProperty": false,
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -189,6 +183,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
+          "isErrorProperty": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
@@ -231,6 +226,7 @@
             }
           ],
           "isBeginFlowTreeFilter": false,
+          "isErrorProperty": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],

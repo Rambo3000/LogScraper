@@ -67,6 +67,7 @@ namespace LogScraper.Log
                         LogContentProperty newProperty = new()
                         {
                             Description = property.Description,
+                            IsErrorProperty = property.IsErrorProperty,
                             IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
                             EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
                             EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
@@ -379,6 +380,7 @@ namespace LogScraper.Log
             {
                 TxtContentDescription.Text = selected.Description;
                 TxtContentBeforeAndAfterPhrases.Text = GenerateFilterCriteriaText(selected.Criterias);
+                ChkContentPropertyIsError.Checked = selected.IsErrorProperty;
                 ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
                 CboContentFilterMarksEnd.Items.Clear();
                 CboContentFilterMarksEnd.Items.AddRange([.. LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected)]);
@@ -599,6 +601,8 @@ namespace LogScraper.Log
                     }
 
                     RawLogParser.ParseLogEntriesIntoCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
+                    logLayout.LogContentProperties.AssignIndexes();
+                    logLayout.LogMetadataProperties.AssignIndexes();
                     LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
 
                     string information = string.Empty;
@@ -675,6 +679,7 @@ namespace LogScraper.Log
                 LogContentProperty newProperty = new()
                 {
                     Description = property.Description,
+                    IsErrorProperty = property.IsErrorProperty,
                     IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
                     EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
                     EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
@@ -794,6 +799,14 @@ namespace LogScraper.Log
                     selectedContentProperty.EndFlowTreeContentPropertyDescription = selectedEndFilter.Description;
                 }
             }
+        }
+
+        private void ChkContentPropertyIsError_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstContent.SelectedItem is LogContentProperty selected) selected.IsErrorProperty = ChkContentPropertyIsError.Checked;
+
         }
     }
 }

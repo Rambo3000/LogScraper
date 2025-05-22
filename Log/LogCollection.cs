@@ -17,7 +17,7 @@ namespace LogScraper.Log
         /// <summary>
         /// Gets or sets the count of errors in the log collection.
         /// </summary>
-        public int ErrorCount { get; set; }
+        public int ErrorCount;
 
         /// <summary>
         /// Clears the log collection by removing all log entries and resetting the error count.

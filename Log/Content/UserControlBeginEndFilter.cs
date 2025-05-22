@@ -20,7 +20,7 @@ namespace LogScraper
         #region Private objects and initialization
         private const string DefaulSearchtText = "Filteren...";
 
-        private LogContentProperty LogContentPropertyError;
+        private List<LogContentProperty> LogContentPropertiesError = [];
 
         private List<LogMetadataProperty> LogMetadataPropertiesUserSession = [];
 
@@ -43,11 +43,12 @@ namespace LogScraper
             CboLogContentType.Items.Clear();
             if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties]);
+            LogContentPropertiesError = [];
             foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
             {
-                if (logContentProperty.Description == "Errors")
+                if (logContentProperty.IsErrorProperty)
                 {
-                    LogContentPropertyError = logContentProperty;
+                    LogContentPropertiesError.Add(logContentProperty);
                     break;
                 }
             }
@@ -95,6 +96,11 @@ namespace LogScraper
         {
             if (logContentProperty == null) return null;
 
+            // Get the search filter text
+            string filter = txtSearch.Text.Trim();
+            if (filter == DefaulSearchtText) filter = null;
+
+            // Build the log tree flow beforehand, so we can use it to find the corresponding node for each log entry.
             List<LogFlowTreeNode> treeNodes = null;
             if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
             {
@@ -102,10 +108,6 @@ namespace LogScraper
             }
 
             List<LogEntryDisplayObject> logEntryDisplayObjects = [];
-
-            // Get the search filter text
-            string filter = txtSearch.Text.Trim();
-            if (filter == DefaulSearchtText) filter = null;
 
             // Iterate through the latest version of log entries
             foreach (LogEntry logEntry in logEntries)
@@ -117,12 +119,20 @@ namespace LogScraper
                 logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
                 bool isError = false;
 
-                // If the content is null, check for errors if the "Show Errors" checkbox is checked
+                // If no normal content is found, check for error content if the "Show Errors" checkbox is checked
                 if (contentValue == null)
                 {
-                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters) logEntry.LogContentProperties.TryGetValue(LogContentPropertyError, out contentValue);
-                    if (contentValue == null) continue;
-                    isError = true;
+                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters)
+                    {
+                        foreach (LogContentProperty logContentPropertyError in LogContentPropertiesError)
+                        {
+                            //If the log entry has an error content property, get the content value and continue using this value
+                            if (logEntry.LogContentProperties.TryGetValue(logContentPropertyError, out contentValue)) break;
+                        }
+                        //If no error content is found, continue to the next log entry
+                        if (contentValue == null) continue;
+                        isError = true;
+                    }
                 }
 
                 // Skip the log entry if it is not an error and the content value does not match the filter

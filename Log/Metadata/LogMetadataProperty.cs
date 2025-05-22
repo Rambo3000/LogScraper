@@ -1,5 +1,6 @@
 ﻿using System;
 using LogScraper.Utilities.IndexDictionary;
+using Newtonsoft.Json;
 
 namespace LogScraper.Log.Metadata
 {
@@ -11,6 +12,7 @@ namespace LogScraper.Log.Metadata
         /// <summary>
         /// Index of the metadata property in the list of metadata properties. Used for using the <see cref="IndexDictionary{TKey,TValue}"/> class.
         /// </summary>
+        [JsonIgnore]
         public int Index { get; set; } = -1;
 
         /// <summary>

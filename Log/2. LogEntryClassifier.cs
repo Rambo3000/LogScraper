@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
@@ -96,8 +97,9 @@ namespace LogScraper.Log
 
             Parallel.ForEach(logCollection.LogEntries, logEntry =>
             {
-                ClassifyLogEntryMetadataProperties(logEntry, logLayout, logCollection);
-                ClassifyLogEntryContentProperties(logEntry, logLayout);
+                ClassifyLogEntryMetadataProperties(logEntry, logLayout);
+                ClassifyLogEntryContentProperties(logEntry, logLayout, out bool errorFound);
+                if (errorFound) Interlocked.Increment(ref logCollection.ErrorCount);
             });
         }
         /// <summary>
@@ -106,7 +108,7 @@ namespace LogScraper.Log
         /// <param name="logEntry">The log entry to classify metadata properties for.</param>
         /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
         /// <param name="logCollection">The collection of log entries, the number of errors found is updated here.</param>
-        private static void ClassifyLogEntryMetadataProperties(LogEntry logEntry, LogLayout logLayout, LogCollection logCollection)
+        private static void ClassifyLogEntryMetadataProperties(LogEntry logEntry, LogLayout logLayout)
         {
             // Skip log entries that already have metadata properties classified.
             if (logLayout.LogMetadataProperties == null || logEntry.LogMetadataPropertiesWithStringValue != null) return;
@@ -121,9 +123,6 @@ namespace LogScraper.Log
 
                 // Add the property value to the log entry if it exists.
                 if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
-
-                // Increment the error count if the property value is "ERROR".
-                if (propertyValue == "ERROR") logCollection.ErrorCount++;
             }
         }
 
@@ -132,25 +131,28 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="logEntry">The log entry to classify content properties for.</param>
         /// <param name="logLayout">The layout defining content properties and their criteria.</param>
-        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout)
+        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout, out bool errorFound)
         {
+            errorFound = false;
+
             // Skip log entries that already have content properties classified.
             if (logLayout.LogMetadataProperties == null || logEntry.LogContentProperties != null) return;
 
             logEntry.LogContentProperties = new IndexDictionary<LogContentProperty, LogContentValue>(logLayout.LogContentProperties.Count);
 
             // Determine and add content properties and their values to the log entry.
-            foreach (var LogContent in logLayout.LogContentProperties)
+            foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
             {
                 string value = null;
-                foreach (FilterCriteria filterCriteria in LogContent.Criterias)
+                foreach (FilterCriteria filterCriteria in logContentProperty.Criterias)
                 {
                     // Extract the content value based on the criteria.
                     value = ExtractValue(logEntry.Entry, filterCriteria, false, logLayout.StartPosition);
                     // Add the content value to the log entry if it exists.
                     if (value != null)
                     {
-                        logEntry.LogContentProperties[LogContent] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
+                        logEntry.LogContentProperties[logContentProperty] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
+                        if (logContentProperty.IsErrorProperty) errorFound = true;
                         break; // Exit the loop after finding a valid value.
                     }
                 }
