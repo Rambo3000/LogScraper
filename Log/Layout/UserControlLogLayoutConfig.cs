@@ -304,7 +304,6 @@ namespace LogScraper.Log
                 UpdatingInformation = true;
                 TxtDescription.Text = selected.Description;
                 TxtDateTimeFormat.Text = selected.DateTimeFormat;
-                TxtMetadataBegin.Text = selected.RemoveMetaDataCriteria.BeforePhrase;
                 TxtMetadataEnd.Text = selected.RemoveMetaDataCriteria.AfterPhrase;
 
                 _metadataProperties.Clear();
@@ -496,13 +495,6 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selected) selected.Criterias = ParseFilterCriteria(TxtContentBeforeAndAfterPhrases.Text);
         }
 
-        private void TxtMetadataBegin_TextChanged(object sender, EventArgs e)
-        {
-            if (UpdatingInformation) return;
-
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.BeforePhrase = TxtMetadataBegin.Text;
-        }
-
         private void TxtMetadataEnd_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
@@ -611,7 +603,7 @@ namespace LogScraper.Log
                     information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += $"Log regel zonder metadata:" + Environment.NewLine;
-                    information += $"   {LogDataExporter.RemoveTextByCriteria(logEntry.Entry, logLayout.RemoveMetaDataCriteria, logLayout.StartPosition)}" + Environment.NewLine;
+                    information += $"   {LogDataExporter.RemoveTextByCriteria(logEntry.Entry, logLayout.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += "Metadata:" + Environment.NewLine;
                     foreach (var property in logLayout.LogMetadataProperties)

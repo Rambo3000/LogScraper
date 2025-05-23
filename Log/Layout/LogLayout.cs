@@ -52,7 +52,7 @@ namespace LogScraper.Log.Layout
         /// This is derived from the DateTimeFormat length.
         /// </summary>
         [JsonIgnore]
-        public int StartPosition { get { return StartPositionCache; } }
+        public int StartIndexMetadata { get { return StartPositionCache; } }
 
         /// <summary>
         /// A list of metadata properties associated with the log layout.

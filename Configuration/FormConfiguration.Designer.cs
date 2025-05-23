@@ -150,8 +150,8 @@
             // 
             tabMain.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabMain.Controls.Add(TabPageGeneral);
-            tabMain.Controls.Add(TabPageLogProviders);
             tabMain.Controls.Add(TabPageLogLayouts);
+            tabMain.Controls.Add(TabPageLogProviders);
             tabMain.Controls.Add(TabPageAbout);
             tabMain.Location = new System.Drawing.Point(2, 2);
             tabMain.Name = "tabMain";

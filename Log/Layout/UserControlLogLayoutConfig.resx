@@ -120,20 +120,22 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="pictureBox7.ToolTip" xml:space="preserve">
     <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
 - de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
 - de metadata die per logregel weggeschreven wordt en waarop gefilterd kan worden.
 - eventuele inhoudelijke gegevens (content) waarop gezocht kan worden. Dit wordt gebruikt voor de begin en eind filters.</value>
   </data>
-  <data name="pictureBox13.ToolTip" xml:space="preserve">
-    <value>Geef de tekst die het begin van de metadata identficeerd. Redeneer na de timestamp aan het begin van de regel
+  <data name="pictureBox11.ToolTip" xml:space="preserve">
+    <value>Geef de tekst die het einde van de metadata, en het begin van de daadwerkelijke log regel content identificeerd.
 
 Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
-In dit voorbeeld is er geen specifiek teken voor de metadata, dus laat deze leeg
+Gebruik in dit voorbeeld: " -"
 
-Bijvoorbeeld 2025-01-01T01:02:03.123 - INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
-Gebruik in dit voorbeeld: "- "</value>
+De applicatie gebruikt deze informatie o.a. om de metadata te verwijderen en een meer leesbaar log te tonen</value>
   </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
     <value>Metadata zijn gegevens die bij elke logregel aanwezig zijn en waarop gefilterd kan worden. 

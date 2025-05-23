@@ -131,10 +131,10 @@ namespace LogScraper.Log
             {
                 if (logExportSettings.LogLayout.RemoveMetaDataCriteria != null)
                 {
-                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Entry, logExportSettings.LogLayout.RemoveMetaDataCriteria, logExportSettings.LogLayout.StartPosition);
+                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Entry, logExportSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
                 }
                 // Insert metadata at the original metadata position.
-                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettings.LogLayout.StartPosition, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
+                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
             }
 
             stringbuilder.AppendLine(logEntryMetadataFormatted);
@@ -186,43 +186,15 @@ namespace LogScraper.Log
         /// <param name="criteria">The criteria for removing text.</param>
         /// <param name="startPosition">The starting position on the input text after which the filter criteria should be applied.</param>
         /// <returns>The modified string with the specified text removed.</returns>
-        public static string RemoveTextByCriteria(string inputText, FilterCriteria criteria, int startPosition)
+        public static string RemoveTextByCriteria(string inputText, int beforeIndex, int afterIndex)
         {
-            int startIndex = startPosition;
 
-            if (string.IsNullOrEmpty(inputText) || criteria == null)
+            if (string.IsNullOrEmpty(inputText) || beforeIndex == -1 || afterIndex == -1)
             {
                 return inputText;
             }
-
-            if (!string.IsNullOrEmpty(criteria.BeforePhrase))
-            {
-                // Find the index of the BeforePhrase.
-                int beforeIndex = inputText.IndexOf(criteria.BeforePhrase, startIndex, StringComparison.Ordinal);
-
-                if (beforeIndex != -1)
-                {
-                    // Find the index of the AfterPhrase.
-                    int afterIndex = inputText.IndexOf(criteria.AfterPhrase, beforeIndex + 1, StringComparison.Ordinal);
-
-                    if (afterIndex != -1)
-                    {
-                        // Remove the portion of text from BeforePhrase to AfterPhrase.
-                        inputText = inputText.Remove(beforeIndex, afterIndex - beforeIndex + criteria.AfterPhrase.Length);
-                    }
-                }
-            }
-            else
-            {
-                // BeforePhrase is null, use the StartPosition and always use AfterPhrase.
-                int afterIndex = inputText.IndexOf(criteria.AfterPhrase, startIndex, StringComparison.Ordinal);
-
-                if (afterIndex != -1)
-                {
-                    // Remove the portion of text from StartPosition to AfterPhrase.
-                    inputText = inputText.Remove(startIndex, afterIndex - startIndex + criteria.AfterPhrase.Length);
-                }
-            }
+            // Remove the portion of text from StartPosition to AfterPhrase.
+            inputText = inputText.Remove(beforeIndex, afterIndex - beforeIndex);
 
             return inputText;
         }

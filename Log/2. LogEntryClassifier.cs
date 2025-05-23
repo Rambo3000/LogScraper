@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
@@ -97,10 +99,36 @@ namespace LogScraper.Log
 
             Parallel.ForEach(logCollection.LogEntries, logEntry =>
             {
+                SetLogEntryStartPositionContent(logEntry, logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata);
                 ClassifyLogEntryMetadataProperties(logEntry, logLayout);
                 ClassifyLogEntryContentProperties(logEntry, logLayout, out bool errorFound);
                 if (errorFound) Interlocked.Increment(ref logCollection.ErrorCount);
             });
+        }
+
+        /// <summary>
+        /// Sets the starting position of the content within a log entry based on a specified metadata content
+        /// separator.
+        /// </summary>
+        /// <remarks>If the specified metadata content separator is not found in the log entry starting
+        /// from <paramref name="startIndex"/>, the content start position is set to <paramref name="startIndex"/>.
+        /// Otherwise, the position is set to the index immediately following the separator.</remarks>
+        /// <param name="logEntry">The log entry object whose content start position is to be set.</param>
+        /// <param name="metadataContentSeperator">The string used to separate metadata from content within the log entry.</param>
+        /// <param name="startIndex">The index at which to begin searching for the metadata content separator.</param>
+        private static void SetLogEntryStartPositionContent(LogEntry logEntry, string metadataContentSeperator, int startIndex)
+        {
+            int index = logEntry.Entry.IndexOf(metadataContentSeperator, startIndex);
+            if (index == -1)
+            {
+                // If the seperator is not found, start searching after the startIndex
+                index = startIndex;
+            }
+            else
+            {
+                index += metadataContentSeperator.Length;
+            }
+            logEntry.StartIndexContent = index;
         }
         /// <summary>
         /// Classifies metadata properties for a log entry based on the provided log layout and adds this to the log entry.
@@ -119,7 +147,7 @@ namespace LogScraper.Log
             foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
             {
                 // Extract the property value based on the criteria.
-                string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartPosition);
+                string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartIndexMetadata);
 
                 // Add the property value to the log entry if it exists.
                 if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
@@ -147,7 +175,7 @@ namespace LogScraper.Log
                 foreach (FilterCriteria filterCriteria in logContentProperty.Criterias)
                 {
                     // Extract the content value based on the criteria.
-                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logLayout.StartPosition);
+                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logEntry.StartIndexContent);
                     // Add the content value to the log entry if it exists.
                     if (value != null)
                     {

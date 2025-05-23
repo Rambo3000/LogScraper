@@ -38,6 +38,12 @@ namespace LogScraper.Log
         public List<string> AdditionalLogEntries { get; set; }
 
         /// <summary>
+        /// The starting position of the content of the log entry based. This excludes the timestamp and metadata (if applicable)
+        /// This is derived from the position of the metadata-content seperator
+        /// </summary>
+        public int StartIndexContent { get; set; }
+
+        /// <summary>
         /// Cached hash code for the log entry, calculated from the log entry content.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>
