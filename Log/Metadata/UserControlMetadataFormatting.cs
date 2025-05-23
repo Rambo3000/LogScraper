@@ -36,8 +36,8 @@ namespace LogScraper.Log.Metadata
                     Text = logMetadataProperty.Description,
                     Tag = logMetadataProperty,
                     Padding = new() { All = 0 },
-                    Margin = new() { Top = 0, Bottom = 0, Left = 5, Right = 0 }
-
+                    Margin = new() { Top = 0, Bottom = 0, Left = 5, Right = 0 },
+                    Checked = logMetadataProperty.IsDefaultVisibleInLog
                 };
                 checkBox.CheckedChanged += ChkPanelControls_CheckedChanged;
                 pnlCheckBoxes.Controls.Add(checkBox);

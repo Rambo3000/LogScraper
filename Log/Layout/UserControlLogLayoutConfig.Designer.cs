@@ -58,6 +58,7 @@ namespace LogScraper.Log
             TabControl = new System.Windows.Forms.TabControl();
             tabPageMetadata = new System.Windows.Forms.TabPage();
             grpMetadata = new System.Windows.Forms.GroupBox();
+            ChkShowMetadataByDefault = new System.Windows.Forms.CheckBox();
             pictureBox8 = new System.Windows.Forms.PictureBox();
             ChkMetadataIsSessionData = new System.Windows.Forms.CheckBox();
             pictureBox5 = new System.Windows.Forms.PictureBox();
@@ -437,6 +438,7 @@ namespace LogScraper.Log
             // 
             // grpMetadata
             // 
+            grpMetadata.Controls.Add(ChkShowMetadataByDefault);
             grpMetadata.Controls.Add(pictureBox8);
             grpMetadata.Controls.Add(ChkMetadataIsSessionData);
             grpMetadata.Controls.Add(pictureBox5);
@@ -461,6 +463,17 @@ namespace LogScraper.Log
             grpMetadata.TabIndex = 19;
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
+            // 
+            // ChkShowMetadataByDefault
+            // 
+            ChkShowMetadataByDefault.AutoSize = true;
+            ChkShowMetadataByDefault.Location = new System.Drawing.Point(241, 182);
+            ChkShowMetadataByDefault.Name = "ChkShowMetadataByDefault";
+            ChkShowMetadataByDefault.Size = new System.Drawing.Size(241, 19);
+            ChkShowMetadataByDefault.TabIndex = 32;
+            ChkShowMetadataByDefault.Text = "Toon deze metadata standaard in het log";
+            ChkShowMetadataByDefault.UseVisualStyleBackColor = true;
+            ChkShowMetadataByDefault.CheckedChanged += ChkShowMetadataByDefault_CheckedChanged;
             // 
             // pictureBox8
             // 
@@ -884,7 +897,7 @@ namespace LogScraper.Log
             tabPageTransformers.Controls.Add(chkTransformReverse);
             tabPageTransformers.Location = new System.Drawing.Point(4, 24);
             tabPageTransformers.Name = "tabPageTransformers";
-            tabPageTransformers.Size = new System.Drawing.Size(699, 269);
+            tabPageTransformers.Size = new System.Drawing.Size(699, 337);
             tabPageTransformers.TabIndex = 2;
             tabPageTransformers.Text = "Transformeren";
             tabPageTransformers.UseVisualStyleBackColor = true;
@@ -1098,5 +1111,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.Label LblContentFilterMarksEnd;
         private System.Windows.Forms.PictureBox pictureBox18;
         private System.Windows.Forms.CheckBox ChkContentPropertyIsError;
+        private System.Windows.Forms.CheckBox ChkShowMetadataByDefault;
     }
 }

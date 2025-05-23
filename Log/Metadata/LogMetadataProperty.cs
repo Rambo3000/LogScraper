@@ -34,6 +34,11 @@ namespace LogScraper.Log.Metadata
         public bool IsSessionData { get; set; } = false;
 
         /// <summary>
+        /// Indicates whether the metadata property should always be shown in the log.
+        /// </summary>
+        public bool IsDefaultVisibleInLog { get; set; } = false;
+
+        /// <summary>
         /// Cached hash code for the metadata property, calculated from the description.
         /// This ensures consistent and efficient hash code generation.
         /// </summary>

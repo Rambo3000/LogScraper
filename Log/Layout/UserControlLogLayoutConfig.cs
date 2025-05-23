@@ -54,6 +54,7 @@ namespace LogScraper.Log
                         {
                             Description = property.Description,
                             IsSessionData = property.IsSessionData,
+                            IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
                             Criteria = new FilterCriteria()
                             {
                                 BeforePhrase = property.Criteria.BeforePhrase,
@@ -369,6 +370,7 @@ namespace LogScraper.Log
                 TxtMetadataBeforePhrase.Text = selected.Criteria.BeforePhrase;
                 TxtMetadataAfterPhrase.Text = selected.Criteria.AfterPhrase;
                 ChkMetadataIsSessionData.Checked = selected.IsSessionData;
+                ChkShowMetadataByDefault.Checked = selected.IsDefaultVisibleInLog;
             }
             UpdateButtons();
         }
@@ -658,6 +660,7 @@ namespace LogScraper.Log
                 {
                     Description = property.Description,
                     IsSessionData = property.IsSessionData,
+                    IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
                     Criteria = new FilterCriteria()
                     {
                         BeforePhrase = property.Criteria.BeforePhrase,
@@ -799,6 +802,13 @@ namespace LogScraper.Log
 
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsErrorProperty = ChkContentPropertyIsError.Checked;
 
+        }
+
+        private void ChkShowMetadataByDefault_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsDefaultVisibleInLog = ChkShowMetadataByDefault.Checked;
         }
     }
 }
