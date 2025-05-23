@@ -173,7 +173,8 @@ namespace LogScraper.Log
                 foreach (FilterCriteria filterCriteria in logContentProperty.Criterias)
                 {
                     // Extract the content value based on the criteria.
-                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logEntry.StartIndexContent);
+                    // For error content items search the entire line
+                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logContentProperty.IsErrorProperty ? logLayout.StartIndexMetadata : logEntry.StartIndexContent);
                     // Add the content value to the log entry if it exists.
                     if (value != null)
                     {
