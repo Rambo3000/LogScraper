@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
+using LogScraper.LogTransformers.Implementations;
 using Newtonsoft.Json;
 
 namespace LogScraper.Log.Layout
@@ -122,6 +123,80 @@ namespace LogScraper.Log.Layout
         public override string ToString()
         {
             return Description.ToString();
+        }
+
+        /// <summary>
+        /// Creates a deep copy of the current LogLayout instance.
+        /// </summary>
+        /// <returns>A new LogLayout instance that is a copy of the current instance.</returns>
+        public LogLayout Copy()
+        {
+            LogLayout layoutCopy = new()
+            {
+                Description = Description,
+                DateTimeFormat = DateTimeFormat,
+                RemoveMetaDataCriteria = new()
+                {
+                    AfterPhrase = RemoveMetaDataCriteria.AfterPhrase,
+                    BeforePhrase = RemoveMetaDataCriteria.BeforePhrase,
+                },
+                LogMetadataProperties = [],
+                LogContentProperties = [],
+                LogTransformers = [],
+            };
+
+            foreach (LogMetadataProperty property in LogMetadataProperties)
+            {
+                LogMetadataProperty newProperty = new()
+                {
+                    Description = property.Description,
+                    IsSessionData = property.IsSessionData,
+                    IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
+                    Criteria = new FilterCriteria()
+                    {
+                        BeforePhrase = property.Criteria.BeforePhrase,
+                        AfterPhrase = property.Criteria.AfterPhrase
+                    }
+                };
+                layoutCopy.LogMetadataProperties.Add(newProperty);
+            }
+            foreach (LogContentProperty property in LogContentProperties)
+            {
+                LogContentProperty newProperty = new()
+                {
+                    Description = property.Description,
+                    IsErrorProperty = property.IsErrorProperty,
+                    IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
+                    EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
+                    EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
+                };
+                foreach (FilterCriteria criteria in property.Criterias)
+                {
+                    newProperty.Criterias.Add(new FilterCriteria()
+                    {
+                        BeforePhrase = criteria.BeforePhrase,
+                        AfterPhrase = criteria.AfterPhrase
+                    });
+                }
+                layoutCopy.LogContentProperties.Add(newProperty);
+            }
+            if (LogTransformers != null)
+            {
+                foreach (ILogTransformer transformer in LogTransformers)
+                {
+                    if (transformer is OrderReversalTransformer)
+                    {
+                        ILogTransformer newTransformer = new OrderReversalTransformer();
+                        layoutCopy.LogTransformers.Add(newTransformer);
+                    }
+                    if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
+                    {
+                        ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);
+                        layoutCopy.LogTransformers.Add(newTransformer);
+                    }
+                }
+            }
+            return layoutCopy;
         }
     }
 }

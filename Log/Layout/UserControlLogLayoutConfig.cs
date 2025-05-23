@@ -34,72 +34,7 @@ namespace LogScraper.Log
             {
                 foreach (var layout in layouts)
                 {
-                    LogLayout layoutNew = new()
-                    {
-                        Description = layout.Description,
-                        DateTimeFormat = layout.DateTimeFormat,
-                        RemoveMetaDataCriteria = new()
-                        {
-                            AfterPhrase = layout.RemoveMetaDataCriteria.AfterPhrase,
-                            BeforePhrase = layout.RemoveMetaDataCriteria.BeforePhrase,
-                        },
-                        LogMetadataProperties = [],
-                        LogContentProperties = [],
-                        LogTransformers = [],
-                    };
-
-                    foreach (LogMetadataProperty property in layout.LogMetadataProperties)
-                    {
-                        LogMetadataProperty newProperty = new()
-                        {
-                            Description = property.Description,
-                            IsSessionData = property.IsSessionData,
-                            IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
-                            Criteria = new FilterCriteria()
-                            {
-                                BeforePhrase = property.Criteria.BeforePhrase,
-                                AfterPhrase = property.Criteria.AfterPhrase
-                            }
-                        };
-                        layoutNew.LogMetadataProperties.Add(newProperty);
-                    }
-                    foreach (LogContentProperty property in layout.LogContentProperties)
-                    {
-                        LogContentProperty newProperty = new()
-                        {
-                            Description = property.Description,
-                            IsErrorProperty = property.IsErrorProperty,
-                            IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
-                            EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
-                            EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
-                        };
-                        foreach (FilterCriteria criteria in property.Criterias)
-                        {
-                            newProperty.Criterias.Add(new FilterCriteria()
-                            {
-                                BeforePhrase = criteria.BeforePhrase,
-                                AfterPhrase = criteria.AfterPhrase
-                            });
-                        }
-                        layoutNew.LogContentProperties.Add(newProperty);
-                    }
-                    if (layout.LogTransformers != null)
-                    {
-                        foreach (ILogTransformer transformer in layout.LogTransformers)
-                        {
-                            if (transformer is OrderReversalTransformer)
-                            {
-                                ILogTransformer newTransformer = new OrderReversalTransformer();
-                                layoutNew.LogTransformers.Add(newTransformer);
-                            }
-                            if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
-                            {
-                                ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);
-                                layoutNew.LogTransformers.Add(newTransformer);
-                            }
-                        }
-                    }
-                    _layouts.Add(layoutNew);
+                    _layouts.Add(layout.Copy());
                 }
                 if (layouts.Count > 0) LstLayouts.SelectedIndex = 0;
             }
@@ -641,67 +576,8 @@ namespace LogScraper.Log
         private void BtnCopy_Click(object sender, EventArgs e)
         {
             if (LstLayouts.SelectedItem is not LogLayout logLayout) return;
-            LogLayout logLayoutCopy = new()
-            {
-                Description = logLayout.Description + " (kopie)",
-                DateTimeFormat = logLayout.DateTimeFormat,
-                RemoveMetaDataCriteria = new()
-                {
-                    AfterPhrase = logLayout.RemoveMetaDataCriteria.AfterPhrase,
-                    BeforePhrase = logLayout.RemoveMetaDataCriteria.BeforePhrase,
-                },
-                LogMetadataProperties = [],
-                LogContentProperties = [],
-                LogTransformers = []
-            };
-            foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
-            {
-                LogMetadataProperty newProperty = new()
-                {
-                    Description = property.Description,
-                    IsSessionData = property.IsSessionData,
-                    IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
-                    Criteria = new FilterCriteria()
-                    {
-                        BeforePhrase = property.Criteria.BeforePhrase,
-                        AfterPhrase = property.Criteria.AfterPhrase
-                    }
-                };
-                logLayoutCopy.LogMetadataProperties.Add(newProperty);
-            }
-            foreach (LogContentProperty property in logLayout.LogContentProperties)
-            {
-                LogContentProperty newProperty = new()
-                {
-                    Description = property.Description,
-                    IsErrorProperty = property.IsErrorProperty,
-                    IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
-                    EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
-                    EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
-                };
-                foreach (FilterCriteria criteria in property.Criterias)
-                {
-                    newProperty.Criterias.Add(new FilterCriteria()
-                    {
-                        BeforePhrase = criteria.BeforePhrase,
-                        AfterPhrase = criteria.AfterPhrase
-                    });
-                }
-                logLayoutCopy.LogContentProperties.Add(newProperty);
-            }
-            foreach (ILogTransformer transformer in logLayout.LogTransformers)
-            {
-                if (transformer is OrderReversalTransformer)
-                {
-                    ILogTransformer newTransformer = new OrderReversalTransformer();
-                    logLayoutCopy.LogTransformers.Add(newTransformer);
-                }
-                if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
-                {
-                    ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);
-                    logLayoutCopy.LogTransformers.Add(newTransformer);
-                }
-            }
+            LogLayout logLayoutCopy = logLayout.Copy();
+            logLayoutCopy.Description += " (kopie)";
             _layouts.Add(logLayoutCopy);
         }
         private static List<FilterCriteria> ParseFilterCriteria(string input)
