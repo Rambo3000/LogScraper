@@ -43,8 +43,6 @@ namespace LogScraper
 
             UsrLogContentBegin.FilterChanged += HandleLogContentFilterUpdateBegin;
             UsrLogContentBegin.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
-            UsrLogContentEnd.FilterChanged += HandleLogContentFilterUpdateEnd;
-            UsrLogContentEnd.SelectedItemBackColor = Brushes.GreenYellow;
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
             usrSearch.Search += UsrSearch_Search;
@@ -170,7 +168,6 @@ namespace LogScraper
 
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
-            UsrLogContentEnd.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
 
             WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
@@ -178,10 +175,8 @@ namespace LogScraper
         {
             LogExportSettings logExportSettings = new()
             {
-                LogEntryBegin = UsrLogContentBegin.SelectedLogEntry,
-                LogEntryEnd = UsrLogContentEnd.SelectedLogEntry,
-                ExtraLogEntriesBegin = UsrLogContentBegin.ExtraLogEntryCount,
-                ExtraLogEntriesEnd = UsrLogContentEnd.ExtraLogEntryCount,
+                LogEntryBegin = UsrLogContentBegin.SelectedTopLogEntry,
+                LogEntryEnd = UsrLogContentBegin.SelectedEndLogEntry,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
@@ -218,9 +213,9 @@ namespace LogScraper
         {
             if (txtLogEntries.Lines.Length > 0)
             {
-                if (UsrLogContentBegin.SelectedContentValue != null) txtLogEntries.HighlightLine(UsrLogContentBegin.ExtraLogEntryCount, Color.Orange, Color.Black);
+                if (UsrLogContentBegin.SelectedTopLogEntry != null) txtLogEntries.HighlightLine(1, Color.Orange, Color.Black);
                 // Minus two because the index is 0 based and there is always an additional empty log entry (hard to remove)
-                if (UsrLogContentEnd.SelectedContentValue != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2 - UsrLogContentEnd.ExtraLogEntryCount, Color.GreenYellow, Color.Black);
+                if (UsrLogContentBegin.SelectedEndLogEntry != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2, Color.GreenYellow, Color.Black);
             }
         }
         #endregion
@@ -312,8 +307,8 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
-            lblBeginFilterEnabled.Visible = UsrLogContentBegin.FilterIsEnabled;
-            lblEndFilterEnabled.Visible = UsrLogContentEnd.FilterIsEnabled;
+            lblBeginFilterEnabled.Visible = UsrLogContentBegin.SelectedTopLogEntry != null;
+            lblEndFilterEnabled.Visible = UsrLogContentBegin.SelectedEndLogEntry != null;
 
             if (currentLogMetadataFilterResult != null) WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
@@ -480,7 +475,6 @@ namespace LogScraper
             if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             UsrLogContentBegin.UpdateLogLayout(logLayout);
-            UsrLogContentEnd.UpdateLogLayout(logLayout);
             UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();

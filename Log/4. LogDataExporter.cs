@@ -46,7 +46,7 @@ namespace LogScraper.Log
             int startindex = 0;
             int endindex = numberOfLogEntriesTotal;
 
-            // Adjust the start index based on the LogEntryBegin setting and extra log entries to include.
+            // Adjust the start index based on the LogEntryBegin setting
             if (logExportSettings.LogEntryBegin != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
@@ -57,11 +57,10 @@ namespace LogScraper.Log
                         break;
                     }
                 }
-                startindex -= logExportSettings.ExtraLogEntriesBegin;
                 if (startindex < 0) startindex = 0; // Ensure the start index is not negative.
             }
 
-            // Adjust the end index based on the LogEntryEnd setting and extra log entries to include.
+            // Adjust the end index based on the LogEntryEnd setting
             if (logExportSettings.LogEntryEnd != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
@@ -72,7 +71,6 @@ namespace LogScraper.Log
                         break;
                     }
                 }
-                endindex += logExportSettings.ExtraLogEntriesEnd;
                 if (endindex > numberOfLogEntriesTotal) endindex = numberOfLogEntriesTotal; // Ensure the end index does not exceed the total log entries.
             }
 

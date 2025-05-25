@@ -16,19 +16,9 @@ namespace LogScraper.Export
         public LogEntry LogEntryBegin { get; set; }
 
         /// <summary>
-        /// The number of additional log entries to include before the beginning log entry.
-        /// </summary>
-        public int ExtraLogEntriesBegin { get; set; }
-
-        /// <summary>
         /// The log entry that marks the end of the export range.
         /// </summary>
         public LogEntry LogEntryEnd { get; set; }
-
-        /// <summary>
-        /// The number of additional log entries to include after the ending log entry.
-        /// </summary>
-        public int ExtraLogEntriesEnd { get; set; }
 
         /// <summary>
         /// The layout of the log file, including metadata and content properties.

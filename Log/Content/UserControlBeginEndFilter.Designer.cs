@@ -32,12 +32,13 @@
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             BtnReset = new System.Windows.Forms.Button();
-            ChkShowExtraLogEntries = new System.Windows.Forms.CheckBox();
-            TxtExtraLogEntries = new System.Windows.Forms.TextBox();
             txtSearch = new System.Windows.Forms.TextBox();
             BtnFilterOnSameMetadata = new System.Windows.Forms.Button();
             BtnResetMetadataFilter = new System.Windows.Forms.Button();
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
+            ChkShowNoTree = new System.Windows.Forms.CheckBox();
+            BtnSelectTop = new System.Windows.Forms.Button();
+            BtnSelectEnd = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // LstLogContent
@@ -47,9 +48,9 @@
             LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             LstLogContent.FormattingEnabled = true;
             LstLogContent.IntegralHeight = false;
-            LstLogContent.Location = new System.Drawing.Point(0, 62);
+            LstLogContent.Location = new System.Drawing.Point(0, 93);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(243, 129);
+            LstLogContent.Size = new System.Drawing.Size(243, 140);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -62,43 +63,20 @@
             CboLogContentType.FormattingEnabled = true;
             CboLogContentType.Location = new System.Drawing.Point(0, 4);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(181, 23);
+            CboLogContentType.Size = new System.Drawing.Size(243, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
             // BtnReset
             // 
             BtnReset.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnReset.Location = new System.Drawing.Point(187, 3);
+            BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
+            BtnReset.Location = new System.Drawing.Point(215, 62);
             BtnReset.Name = "BtnReset";
-            BtnReset.Size = new System.Drawing.Size(53, 25);
+            BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 2;
-            BtnReset.Text = "Reset";
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
-            // 
-            // ChkShowExtraLogEntries
-            // 
-            ChkShowExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkShowExtraLogEntries.AutoSize = true;
-            ChkShowExtraLogEntries.Location = new System.Drawing.Point(5, 251);
-            ChkShowExtraLogEntries.Name = "ChkShowExtraLogEntries";
-            ChkShowExtraLogEntries.Size = new System.Drawing.Size(115, 19);
-            ChkShowExtraLogEntries.TabIndex = 3;
-            ChkShowExtraLogEntries.Text = "Toon extra regels";
-            ChkShowExtraLogEntries.UseVisualStyleBackColor = true;
-            ChkShowExtraLogEntries.CheckedChanged += ChkShowExtraLogEntries_CheckedChanged;
-            // 
-            // TxtExtraLogEntries
-            // 
-            TxtExtraLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            TxtExtraLogEntries.Location = new System.Drawing.Point(126, 249);
-            TxtExtraLogEntries.Name = "TxtExtraLogEntries";
-            TxtExtraLogEntries.Size = new System.Drawing.Size(53, 23);
-            TxtExtraLogEntries.TabIndex = 4;
-            TxtExtraLogEntries.Text = "20";
-            TxtExtraLogEntries.Visible = false;
-            TxtExtraLogEntries.TextChanged += TxtExtraLogEntries_TextChanged;
             // 
             // txtSearch
             // 
@@ -118,9 +96,9 @@
             BtnFilterOnSameMetadata.Enabled = false;
             BtnFilterOnSameMetadata.Image = (System.Drawing.Image)resources.GetObject("BtnFilterOnSameMetadata.Image");
             BtnFilterOnSameMetadata.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(0, 197);
+            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(3, 244);
             BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
-            BtnFilterOnSameMetadata.Size = new System.Drawing.Size(240, 23);
+            BtnFilterOnSameMetadata.Size = new System.Drawing.Size(237, 25);
             BtnFilterOnSameMetadata.TabIndex = 8;
             BtnFilterOnSameMetadata.Text = "Filter dezelfde sessie";
             BtnFilterOnSameMetadata.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -132,9 +110,9 @@
             BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             BtnResetMetadataFilter.Image = (System.Drawing.Image)resources.GetObject("BtnResetMetadataFilter.Image");
             BtnResetMetadataFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnResetMetadataFilter.Location = new System.Drawing.Point(0, 197);
+            BtnResetMetadataFilter.Location = new System.Drawing.Point(3, 244);
             BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
-            BtnResetMetadataFilter.Size = new System.Drawing.Size(240, 23);
+            BtnResetMetadataFilter.Size = new System.Drawing.Size(237, 25);
             BtnResetMetadataFilter.TabIndex = 9;
             BtnResetMetadataFilter.Text = "Reset de filter op sessie";
             BtnResetMetadataFilter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -144,15 +122,49 @@
             // 
             // ChkShowFlowTree
             // 
-            ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkShowFlowTree.AutoSize = true;
-            ChkShowFlowTree.Location = new System.Drawing.Point(5, 226);
+            ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
+            ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
+            ChkShowFlowTree.Location = new System.Drawing.Point(25, 62);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
-            ChkShowFlowTree.Size = new System.Drawing.Size(108, 19);
-            ChkShowFlowTree.TabIndex = 10;
-            ChkShowFlowTree.Text = "Toon hierarchie";
+            ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
+            ChkShowFlowTree.TabIndex = 17;
+            ChkShowFlowTree.Tag = "asd";
             ChkShowFlowTree.UseVisualStyleBackColor = true;
             ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
+            // 
+            // ChkShowNoTree
+            // 
+            ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
+            ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
+            ChkShowNoTree.Location = new System.Drawing.Point(0, 62);
+            ChkShowNoTree.Name = "ChkShowNoTree";
+            ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
+            ChkShowNoTree.TabIndex = 18;
+            ChkShowNoTree.Tag = "asd";
+            ChkShowNoTree.UseVisualStyleBackColor = true;
+            ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
+            // 
+            // BtnSelectTop
+            // 
+            BtnSelectTop.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnSelectTop.Image = (System.Drawing.Image)resources.GetObject("BtnSelectTop.Image");
+            BtnSelectTop.Location = new System.Drawing.Point(162, 62);
+            BtnSelectTop.Name = "BtnSelectTop";
+            BtnSelectTop.Size = new System.Drawing.Size(25, 25);
+            BtnSelectTop.TabIndex = 21;
+            BtnSelectTop.UseVisualStyleBackColor = true;
+            BtnSelectTop.Click += BtnSelectBegin_Click;
+            // 
+            // BtnSelectEnd
+            // 
+            BtnSelectEnd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnSelectEnd.Image = (System.Drawing.Image)resources.GetObject("BtnSelectEnd.Image");
+            BtnSelectEnd.Location = new System.Drawing.Point(187, 62);
+            BtnSelectEnd.Name = "BtnSelectEnd";
+            BtnSelectEnd.Size = new System.Drawing.Size(25, 25);
+            BtnSelectEnd.TabIndex = 22;
+            BtnSelectEnd.UseVisualStyleBackColor = true;
+            BtnSelectEnd.Click += BtnSelectEnd_Click;
             // 
             // UserControlBeginEndFilter
             // 
@@ -160,11 +172,12 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
+            Controls.Add(BtnSelectEnd);
+            Controls.Add(BtnSelectTop);
+            Controls.Add(ChkShowNoTree);
             Controls.Add(ChkShowFlowTree);
             Controls.Add(BtnFilterOnSameMetadata);
             Controls.Add(txtSearch);
-            Controls.Add(TxtExtraLogEntries);
-            Controls.Add(ChkShowExtraLogEntries);
             Controls.Add(BtnReset);
             Controls.Add(CboLogContentType);
             Controls.Add(LstLogContent);
@@ -180,11 +193,12 @@
         private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Button BtnReset;
-        private System.Windows.Forms.CheckBox ChkShowExtraLogEntries;
-        private System.Windows.Forms.TextBox TxtExtraLogEntries;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button BtnFilterOnSameMetadata;
         private System.Windows.Forms.Button BtnResetMetadataFilter;
         private System.Windows.Forms.CheckBox ChkShowFlowTree;
+        private System.Windows.Forms.CheckBox ChkShowNoTree;
+        private System.Windows.Forms.Button BtnSelectTop;
+        private System.Windows.Forms.Button BtnSelectEnd;
     }
 }

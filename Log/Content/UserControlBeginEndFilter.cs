@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.Utilities.Extensions;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
     internal partial class UserControlBeginEndFilter : UserControl
     {
         #region Private objects and initialization
-        private const string DefaulSearchtText = "Filteren...";
+        private const string DefaulSearchtTextFormat = "Filter {0}...";
+        private string DefaulSearchtText = "Filter...";
 
         private List<LogContentProperty> LogContentPropertiesError = [];
 
@@ -30,10 +31,13 @@ namespace LogScraper
 
         private List<LogEntry> LogEntriesLatestVersion;
 
+        private LogEntryDisplayObject selectedBeginEntryDisplayObject = null;
+
+        private LogEntryDisplayObject selectedEndEntryDisplayObject = null;
+
         public UserControlBeginEndFilter()
         {
             InitializeComponent();
-            SelectedItemBackColor = Brushes.Orange;
             //Preset the default search text
             TxtSearch_Leave(null, null);
         }
@@ -65,6 +69,20 @@ namespace LogScraper
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
             BtnResetMetadataFilter_Click(null, null);
             UpdateFilterOnMetadataControls();
+            UpdateTopBottomControls();
+        }
+        #endregion
+
+        #region Private class LogEntryDisplayObject
+        private class LogEntryDisplayObject
+        {
+            public int Index { get; set; }
+            public LogEntry OriginalLogEntry { get; set; }
+            public LogContentValue ContentValue { get; set; }
+            public bool IsError { get; set; }
+            public LogFlowTreeNode FlowTreeNode { get; set; }
+            public override string ToString()
+            { return ContentValue != null ? ContentValue.Value : string.Empty; }
         }
         #endregion
 
@@ -125,10 +143,13 @@ namespace LogScraper
             }
 
             List<LogEntryDisplayObject> logEntryDisplayObjects = [];
-
+            int index = 0;
             // Iterate through the latest version of log entries
             foreach (LogEntry logEntry in logEntries)
             {
+                //Track the in order to be able to show the correct disabled (grayed out) lines when setting the top and bottom values
+                index++;
+
                 // If the log entry has no content properties, continue to the next log entry
                 if (logEntry.LogContentProperties == null) continue;
 
@@ -173,6 +194,7 @@ namespace LogScraper
 
                 LogEntryDisplayObject logEntryDisplayObject = new()
                 {
+                    Index = index,
                     OriginalLogEntry = logEntry,
                     ContentValue = contentValue,
                     FlowTreeNode = flowtreeNode,
@@ -300,21 +322,7 @@ namespace LogScraper
         }
         #endregion
 
-        #region Private class LogEntryDisplayObject
-        private class LogEntryDisplayObject
-        {
-            public LogEntry OriginalLogEntry { get; set; }
-            public LogContentValue ContentValue { get; set; }
-            public bool IsError { get; set; }
-            public LogFlowTreeNode FlowTreeNode { get; set; }
-            public override string ToString()
-            { return ContentValue != null ? ContentValue.Value : string.Empty; }
-        }
-        #endregion
-
         #region Public properties
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Brush SelectedItemBackColor { get; set; }
         public LogEntry SelectedLogEntry
         {
             get
@@ -324,6 +332,31 @@ namespace LogScraper
             }
         }
 
+
+        public LogContentValue SelectedContentValue
+        {
+            get
+            {
+                if (LstLogContent.SelectedItem == null) return null;
+                return ((LogEntryDisplayObject)LstLogContent.SelectedItem).ContentValue;
+            }
+        }
+
+        public LogEntry SelectedTopLogEntry
+        {
+            get
+            {
+                return selectedBeginEntryDisplayObject?.OriginalLogEntry;
+            }
+        }
+
+        public LogEntry SelectedEndLogEntry
+        {
+            get
+            {
+                return selectedEndEntryDisplayObject?.OriginalLogEntry;
+            }
+        }
         private LogEntryDisplayObject SelectedLogEntryDisplayObject
         {
             get
@@ -340,36 +373,15 @@ namespace LogScraper
                 return ((LogContentProperty)CboLogContentType.SelectedItem);
             }
         }
-
-        public LogContentValue SelectedContentValue
-        {
-            get
-            {
-                if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryDisplayObject)LstLogContent.SelectedItem).ContentValue;
-            }
-        }
-        public int ExtraLogEntryCount
-        {
-            get
-            {
-                if (!ChkShowExtraLogEntries.Checked) return 0;
-
-                if (int.TryParse(TxtExtraLogEntries.Text, out int extraLogEntryCount)) return extraLogEntryCount;
-
-                return 0;
-            }
-        }
-        public bool FilterIsEnabled
-        {
-            get { return LstLogContent.SelectedIndex != -1; }
-        }
         #endregion
 
         #region Draw listbox items
+        private readonly SolidBrush LighterBrush = new(Color.FromArgb(240, 240, 240));
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return;
+
+            e.DrawBackground();
 
             // Fetch the item
             if (LstLogContent.Items[e.Index] is not LogEntryDisplayObject item || item.ContentValue == null) return;
@@ -377,36 +389,51 @@ namespace LogScraper
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
+            bool isOutOfScope = (selectedBeginEntryDisplayObject != null && item.Index < selectedBeginEntryDisplayObject.Index) ||
+                (selectedEndEntryDisplayObject != null && item.Index > selectedEndEntryDisplayObject.Index);
+
             // Draw background
-            if (isSelected)
+            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.OriginalLogEntry == item.OriginalLogEntry)
             {
-                g.FillRectangle(SelectedItemBackColor, e.Bounds);
+                if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+                else g.FillRectangle(LogScraperBrushes.GraySelectedBeginOrEnd, e.Bounds);
+            }
+            else if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.OriginalLogEntry == item.OriginalLogEntry)
+            {
+                if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+                else g.FillRectangle(LogScraperBrushes.GraySelectedBeginOrEnd, e.Bounds);
             }
             else
             {
-                g.FillRectangle(SystemBrushes.Window, e.Bounds);
+                if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
+                else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+                else g.FillRectangle(SystemBrushes.Window, e.Bounds);
             }
 
             if (item.IsError)
             {
-                e.Graphics.DrawString(item.ContentValue.TimeDescription + " ERROR", LstLogContent.Font, isSelected ? Brushes.Black : Brushes.DarkRed, e.Bounds);
+                e.Graphics.DrawString(item.ContentValue.TimeDescription + " ERROR", LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
+
+                e.DrawFocusRectangle();
                 return;
             }
 
             // Draw the flow tree node if it exists and the checkbox is checked
             if (item.FlowTreeNode != null && ChkShowFlowTree.Checked)
             {
-                DrawFlowTreeNode(e, item, g);
+                DrawFlowTreeNode(e, item, g, isSelected, isOutOfScope);
             }
             else
             {
                 //Default drawing, without tree
                 string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
-                e.Graphics.DrawString(truncatedValue, LstLogContent.Font, Brushes.Black, e.Bounds);
+                e.Graphics.DrawString(truncatedValue, LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
             }
+
+            e.DrawFocusRectangle();
         }
 
-        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g)
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g, bool isSelected, bool isOutOfScope)
         {
             // Indentation
             const int indentPerLevel = 10;
@@ -449,7 +476,7 @@ namespace LogScraper
             }
 
             // Prepare fonts and brushes
-            Brush textBrush = item.IsError ? Brushes.DarkRed : SystemBrushes.ControlText;
+            Brush textBrush = DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope);
 
             // Draw TimeDescription
             g.DrawString(item.ContentValue.TimeDescription, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
@@ -479,6 +506,15 @@ namespace LogScraper
             }
 
             return truncatedText;
+        }
+
+        private Brush DetermineTextColorBasedOnLogEntryPosition(LogEntryDisplayObject logEntryDisplayObject, bool isSelected, bool isOutOfScope)
+        {
+            if (isOutOfScope)
+            {
+                return isSelected ? Brushes.Gray : LogScraperBrushes.GrayLogEntriesOutOfScope;
+            }
+            return logEntryDisplayObject.IsError ? Brushes.DarkRed : SystemBrushes.ControlText; // Default text color
         }
         #endregion
 
@@ -531,7 +567,17 @@ namespace LogScraper
         }
         private void BtnReset_Click(object sender, EventArgs e)
         {
+            this.SuspendDrawing();
             if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
+
+            //Reset the top end end filters
+            selectedBeginEntryDisplayObject = null;
+            selectedEndEntryDisplayObject = null;
+            OnFilterChanged(e);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+
+            this.ResumeDrawing();
         }
 
         private void TxtSearch_Leave(object sender, EventArgs e)
@@ -547,7 +593,14 @@ namespace LogScraper
         {
             UpdateDisplayedLogEntries();
             OnFilterChanged(EventArgs.Empty);
-            ChkShowFlowTree.Enabled = SelectedLogContentProperty != null && SelectedLogContentProperty.IsBeginFlowTreeFilter;
+            UpdateShowTreeControls(false);
+
+            if (SelectedLogContentProperty != null)
+            {
+                bool resetText = (txtSearch.Text == DefaulSearchtText);
+                DefaulSearchtText = string.Format(DefaulSearchtTextFormat, SelectedLogContentProperty.Description.ToLower());
+                if (resetText) txtSearch.Text = DefaulSearchtText;
+            }
         }
         private bool ignoreSelectedItemChanged = false;
 
@@ -557,8 +610,10 @@ namespace LogScraper
             {
                 OnFilterChanged(EventArgs.Empty);
                 UpdateFilterOnMetadataControls();
+                UpdateTopBottomControls();
             }
         }
+
         private void LstLogContent_DoubleClick(object sender, EventArgs e)
         {
             if (SelectedContentValue == null) return;
@@ -602,9 +657,34 @@ namespace LogScraper
         }
         private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
         {
+            UpdateShowTreeControls(true);
+        }
+        private bool updateShowTreeInProgress = false;
+        private void UpdateShowTreeControls(bool showTree)
+        {
+            if (updateShowTreeInProgress) return;
+
+            updateShowTreeInProgress = true;
+            if (SelectedLogContentProperty == null || !SelectedLogContentProperty.IsBeginFlowTreeFilter)
+            {
+                ChkShowNoTree.Checked = false;
+                ChkShowFlowTree.Checked = false;
+                ChkShowNoTree.Enabled = false;
+                ChkShowFlowTree.Enabled = false;
+
+                updateShowTreeInProgress = false;
+                return;
+            }
+
+            //Also show no tree if previously no tree was available
+            ChkShowFlowTree.Checked = showTree;
+            ChkShowFlowTree.Enabled = !showTree;
+            ChkShowNoTree.Checked = !showTree;
+            ChkShowNoTree.Enabled = showTree;
             LstLogContent.SuspendDrawing();
             LstLogContent.Invalidate();
             LstLogContent.ResumeDrawing();
+            updateShowTreeInProgress = false;
         }
         private void UpdateFilterOnMetadataControls()
         {
@@ -626,7 +706,7 @@ namespace LogScraper
 
         private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
         {
-            TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
+            //TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
             OnFilterChanged(EventArgs.Empty);
         }
 
@@ -636,5 +716,46 @@ namespace LogScraper
         }
         #endregion
 
+        private void ChkShowNoTree_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateShowTreeControls(false);
+        }
+        private void UpdateTopBottomControls()
+        {
+            BtnSelectTop.Enabled = LstLogContent.SelectedIndex != -1;
+            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1;
+            BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
+        }
+
+        private void BtnSelectBegin_Click(object sender, EventArgs e)
+        {
+            if (SelectedLogEntryDisplayObject == null) return;
+
+            selectedBeginEntryDisplayObject = SelectedLogEntryDisplayObject;
+
+            if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index)
+            {
+                selectedEndEntryDisplayObject = null;
+            }
+            OnFilterChanged(e);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+        }
+
+        private void BtnSelectEnd_Click(object sender, EventArgs e)
+        {
+            if (SelectedLogEntryDisplayObject == null) return;
+
+            selectedEndEntryDisplayObject = SelectedLogEntryDisplayObject;
+
+            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index)
+            {
+                selectedBeginEntryDisplayObject = null;
+            }
+
+            OnFilterChanged(e);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+        }
     }
 }

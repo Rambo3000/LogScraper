@@ -9,7 +9,7 @@ namespace LogScraper.Log
     /// <summary>
     /// Represents a single log entry with its associated metadata and content properties.
     /// </summary>
-    public class LogEntry: IEquatable<LogEntry>
+    public class LogEntry: IEquatable<LogEntry>, IComparable<LogEntry>
     {
         /// <summary>
         /// Initializes a new instance of the LogEntry class with the specified entry content and timestamp.
@@ -97,6 +97,80 @@ namespace LogScraper.Log
         public override string ToString()
         {
             return Entry;
+        }
+
+        /// <summary>
+        /// Compares the current <see cref="LogEntry"/> instance to another <see cref="LogEntry"/> based on their
+        /// timestamps.
+        /// </summary>
+        /// <remarks>This method compares <see cref="LogEntry"/> instances based solely on their <see
+        /// cref="TimeStamp"/> property.</remarks>
+        /// <param name="other">The <see cref="LogEntry"/> to compare to the current instance. Can be <see langword="null"/>.</param>
+        /// <returns>A value indicating the relative order of the <see cref="LogEntry"/> instances: <list type="bullet">
+        public int CompareTo(LogEntry other)
+        {
+            if (other == null) return 1;
+            return this.TimeStamp.CompareTo(other.TimeStamp);
+        }
+
+        /// <summary>
+        /// Determines whether one <see cref="LogEntry"/> instance is greater than another based on their
+        /// timestamps.
+        /// </summary>
+        /// <remarks>This operator uses the <see cref="LogEntry.CompareTo(LogEntry)"/> method to perform
+        /// the comparison.</remarks>
+        /// <param name="left">The first <see cref="LogEntry"/> instance to compare.</param>
+        /// <param name="right">The second <see cref="LogEntry"/> instance to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise, <see
+        /// langword="false"/>.</returns>
+        public static bool operator >(LogEntry left, LogEntry right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        /// <summary>
+        /// Determines whether one <see cref="LogEntry"/> instance is less than another based on their
+        /// timestamps.
+        /// </summary>
+        /// <remarks>This operator uses the <see cref="LogEntry.CompareTo(LogEntry)"/> method to perform
+        /// the comparison.</remarks>
+        /// <param name="left">The first <see cref="LogEntry"/> instance to compare.</param>
+        /// <param name="right">The second <see cref="LogEntry"/> instance to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is less than <paramref name="right"/>;  otherwise, <see
+        /// langword="false"/>.</returns>
+        public static bool operator <(LogEntry left, LogEntry right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        /// <summary>
+        /// Determines whether the first <see cref="LogEntry"/> is greater than or equal to the second <see
+        /// cref="LogEntry"/> based on their timestamps.
+        /// </summary>
+        /// <remarks>This operator uses the <see cref="LogEntry.CompareTo(LogEntry)"/> method to perform
+        /// the comparison.</remarks>
+        /// <param name="left">The first <see cref="LogEntry"/> instance to compare.</param>
+        /// <param name="right">The second <see cref="LogEntry"/> instance to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; 
+        /// otherwise, <see langword="false"/>.</returns>
+        public static bool operator >=(LogEntry left, LogEntry right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
+        /// <summary>
+        /// Determines whether one <see cref="LogEntry"/> instance is less than or equal to another based on their
+        /// timestamps.
+        /// </summary>
+        /// <remarks>This operator uses the <see cref="LogEntry.CompareTo(LogEntry)"/> method to perform
+        /// the comparison.</remarks>
+        /// <param name="left">The first <see cref="LogEntry"/> instance to compare.</param>
+        /// <param name="right">The second <see cref="LogEntry"/> instance to compare.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is less than or equal to <paramref name="right"/>; 
+        /// otherwise, <see langword="false"/>.</returns>
+        public static bool operator <=(LogEntry left, LogEntry right)
+        {
+            return left.CompareTo(right) <= 0;
         }
     }
 }

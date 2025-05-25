@@ -62,11 +62,7 @@
             groupBox5 = new System.Windows.Forms.GroupBox();
             usrSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
-            tabControl1 = new System.Windows.Forms.TabControl();
-            tabPage1 = new System.Windows.Forms.TabPage();
             UsrLogContentBegin = new UserControlBeginEndFilter();
-            tabPage2 = new System.Windows.Forms.TabPage();
-            UsrLogContentEnd = new UserControlBeginEndFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
@@ -87,9 +83,6 @@
             groupBox2.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
-            tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
-            tabPage2.SuspendLayout();
             groupBox1.SuspendLayout();
             tabControl2.SuspendLayout();
             tabPage3.SuspendLayout();
@@ -455,73 +448,30 @@
             // groupBox6
             // 
             groupBox6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBox6.Controls.Add(tabControl1);
+            groupBox6.Controls.Add(UsrLogContentBegin);
             groupBox6.Location = new System.Drawing.Point(0, 85);
             groupBox6.Name = "groupBox6";
             groupBox6.Size = new System.Drawing.Size(246, 362);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
-            groupBox6.Text = "Kies begin en einde";
-            // 
-            // tabControl1
-            // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            tabControl1.Location = new System.Drawing.Point(3, 19);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(240, 340);
-            tabControl1.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Controls.Add(UsrLogContentBegin);
-            tabPage1.Location = new System.Drawing.Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            tabPage1.Size = new System.Drawing.Size(232, 312);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "Tonen vanaf";
-            tabPage1.UseVisualStyleBackColor = true;
+            groupBox6.Text = "Filter op inhoud";
             // 
             // UsrLogContentBegin
             // 
             UsrLogContentBegin.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             UsrLogContentBegin.BackColor = System.Drawing.SystemColors.Window;
             UsrLogContentBegin.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrLogContentBegin.Location = new System.Drawing.Point(3, 3);
+            UsrLogContentBegin.Location = new System.Drawing.Point(3, 19);
             UsrLogContentBegin.Name = "UsrLogContentBegin";
-            UsrLogContentBegin.Size = new System.Drawing.Size(226, 306);
+            UsrLogContentBegin.Size = new System.Drawing.Size(240, 340);
             UsrLogContentBegin.TabIndex = 0;
             // 
-            // tabPage2
-            // 
-            tabPage2.Controls.Add(UsrLogContentEnd);
-            tabPage2.Location = new System.Drawing.Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            tabPage2.Size = new System.Drawing.Size(232, 312);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "Tonen tot";
-            tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // UsrLogContentEnd
-            // 
-            UsrLogContentEnd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            UsrLogContentEnd.BackColor = System.Drawing.SystemColors.Window;
-            UsrLogContentEnd.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrLogContentEnd.Location = new System.Drawing.Point(3, 3);
-            UsrLogContentEnd.Name = "UsrLogContentEnd";
-            UsrLogContentEnd.Size = new System.Drawing.Size(226, 306);
-            UsrLogContentEnd.TabIndex = 0;
-            // 
-            // GrpAbout
+            // groupBox1
             // 
             groupBox1.Controls.Add(tabControl2);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
-            groupBox1.Name = "GrpAbout";
+            groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(211, 447);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
@@ -664,9 +614,6 @@
             groupBox2.PerformLayout();
             groupBox5.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
-            tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            tabPage2.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             tabControl2.ResumeLayout(false);
             tabPage3.ResumeLayout(false);
@@ -704,11 +651,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private UserControlBeginEndFilter UsrLogContentBegin;
-        private UserControlBeginEndFilter UsrLogContentEnd;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TabControl tabControl2;
