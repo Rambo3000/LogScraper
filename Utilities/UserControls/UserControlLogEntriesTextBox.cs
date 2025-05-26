@@ -27,9 +27,7 @@ namespace LogScraper.Utilities.UserControls
         public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, LogExportSettings logExportSettings)
         {
             visibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
-            TxtLogEntries.ReadOnly = false;
-            TxtLogEntries.Text = LogDataExporter.GetLogEntriesAsString(visibleLogEntries, logExportSettings);
-            TxtLogEntries.ReadOnly = true;
+            ShowRawLog(LogDataExporter.GetLogEntriesAsString(visibleLogEntries, logExportSettings));
             HighlightLines();
         }
 
@@ -57,7 +55,7 @@ namespace LogScraper.Utilities.UserControls
         {
             logEntryEnd = logEntryEndNew;
             HighlightLines();
-            if (logEntryEndNew!=null) TxtLogEntries.ScrollToLine(TxtLogEntries.Lines.Count - 1);
+            if (logEntryEndNew != null) TxtLogEntries.ScrollToLine(TxtLogEntries.Lines.Count - 1);
         }
         public void SelectLogEntry(LogEntry selectedLogEntry)
         {
@@ -95,6 +93,7 @@ namespace LogScraper.Utilities.UserControls
         {
             TxtLogEntries.ReadOnly = false;
             TxtLogEntries.Text = rawLog;
+            TxtLogEntries.EmptyUndoBuffer();
             TxtLogEntries.ReadOnly = true;
         }
 
