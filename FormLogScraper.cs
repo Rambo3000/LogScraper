@@ -122,7 +122,7 @@ namespace LogScraper
                 catch (Exception)
                 {
                     //Write the raw log to the text box to not leave the user completely in the dark
-                    txtLogEntries.Text = RawLogParser.JoinRawLogIntoString(rawLog);
+                    UserControlLogEntriesTextBox.ShowRawLog(RawLogParser.JoinRawLogIntoString(rawLog));
                     throw;
                 }
 
