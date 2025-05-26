@@ -129,6 +129,8 @@ namespace LogScraper
             ValidateBeginEndContentFiltersOnNewLogEnties(LogEntriesLatestVersion);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
+            
+            UpdateBeginEndFilterDisplayObjectsIndex();
         }
 
         /// <summary>
@@ -287,10 +289,13 @@ namespace LogScraper
                 LstLogContent.SuspendDrawing();
 
                 //Update the flow tree nodes for the existing items since they may have changed
+                int index = 0;
                 foreach (var item in LstLogContent.Items)
                 {
                     if (item is not LogEntryDisplayObject logEntryDisplayObject) continue;
                     logEntryDisplayObject.FlowTreeNode = newLogEntries.Where(entry => entry.OriginalLogEntry.Equals(logEntryDisplayObject.OriginalLogEntry)).Single().FlowTreeNode;
+                    logEntryDisplayObject.Index = index;
+                    index++;
                 }
                 if (ChkShowFlowTree.Checked) LstLogContent.Invalidate();
 
@@ -369,6 +374,38 @@ namespace LogScraper
             }
             // Resume drawing of the list
             LstLogContent.ResumeDrawing();
+        }
+
+        private void UpdateBeginEndFilterDisplayObjectsIndex()
+        {
+            if (LogEntriesLatestVersion == null)
+            {
+                selectedBeginEntryDisplayObject = null;
+                selectedEndEntryDisplayObject = null;
+                return;
+            }
+            if (selectedBeginEntryDisplayObject != null)
+            {
+                foreach (LogEntryDisplayObject logEntryDisplayObject in LstLogContent.Items)
+                {
+                    if (logEntryDisplayObject.OriginalLogEntry == selectedBeginEntryDisplayObject.OriginalLogEntry)
+                    {
+                        selectedBeginEntryDisplayObject.Index = logEntryDisplayObject.Index;
+                        break;
+                    }
+                }
+            }
+            if (selectedEndEntryDisplayObject != null)
+            {
+                foreach (LogEntryDisplayObject logEntryDisplayObject in LstLogContent.Items)
+                {
+                    if (logEntryDisplayObject.OriginalLogEntry == selectedEndEntryDisplayObject.OriginalLogEntry)
+                    {
+                        selectedEndEntryDisplayObject.Index = logEntryDisplayObject.Index;
+                        break;
+                    }
+                }
+            }
         }
         #endregion
 
@@ -726,7 +763,7 @@ namespace LogScraper
 
         private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
         {
-            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowFlowTree.Checked = false;
+            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
 
             if (LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0) return;
 
