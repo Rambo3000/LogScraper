@@ -36,7 +36,7 @@ namespace LogScraper.Export
                 OnStatusUpdate("Bezig met wegschrijven...", true);
 
                 // Generate the log content based on the filter result and export settings.
-                string exportedLog = LogDataExporter.CreateExportedLog(filterResult, logExportSettings, false, out int _);
+                string exportedLog = LogDataExporter.CreateExportedLog(filterResult, logExportSettings, out int _);
 
                 // Write the generated log content to the specified file asynchronously.
                 await File.WriteAllTextAsync(logFilePath, exportedLog);

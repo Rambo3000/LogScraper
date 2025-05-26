@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using LogScraper.Export;
 using LogScraper.Log.Metadata;
@@ -19,7 +18,7 @@ namespace LogScraper.Log
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
         /// <returns>A single string containing the processed log data.</returns>
-        public static string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, bool reduceNumberOfLogEntriesForDisplaying, out int entryCount)
+        public static string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, out int entryCount)
         {
             entryCount = 0;
             // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
@@ -30,7 +29,24 @@ namespace LogScraper.Log
 
             entryCount = endIndex - startIndex;
 
-            return GetLogEntriesAsString(filterResult, reduceNumberOfLogEntriesForDisplaying, startIndex, endIndex, logExportSettings);
+            return GetLogEntriesAsString(filterResult, startIndex, endIndex, logExportSettings);
+        }
+
+        /// <summary>
+        /// Gets the log entries within a specified range.
+        /// </summary>
+        /// <param name="filterResult">The result of filtering log metadata.</param>
+        /// <param name="logExportSettings">Settings for exporting the log data.</param>
+        /// <returns>A string containing the formatted log entries.</returns>
+        public static List<LogEntry> GetLogEntriesActiveRange(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        {
+            // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
+            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logExportSettings);
+
+            // If the calculated indices are invalid, return an empty ExportedLogData object.
+            if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return [];
+
+            return filterResult.LogEntries[startIndex..endIndex];
         }
 
         /// <summary>
@@ -81,36 +97,38 @@ namespace LogScraper.Log
         /// Converts the specified range of log entries into a single string, optionally reducing the number of log entries for display.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="reduceNumberOfLog entriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
+        /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
         /// <param name="startIndex">The starting index of the log entries to include.</param>
         /// <param name="endIndex">The ending index of the log entries to include.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
         /// <returns>A string containing the formatted log entries.</returns>
-        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, bool reduceNumberOfLogEntriesForDisplaying, int startIndex, int endIndex, LogExportSettings logExportSettings)
+        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, int startIndex, int endIndex, LogExportSettings logExportSettings)
         {
             StringBuilder stringBuilder = new();
-            const int maxNrOfRecordsShown = 1000;
-            bool dottedLogEntriesAdded = false;
 
             for (int i = startIndex; i < endIndex; i++)
             {
-                // Skip log entries in the middle if reducing the number of log entries for display.
-                if (reduceNumberOfLogEntriesForDisplaying && i - startIndex > maxNrOfRecordsShown && endIndex - i > maxNrOfRecordsShown)
-                {
-                    if (!dottedLogEntriesAdded)
-                    {
-                        // Add placeholder log entries to indicate skipped content.
-                        for (int j = 0; j < 10; j++)
-                        {
-                            stringBuilder.AppendLine("... <log is ingekort>");
-                        }
-                        dottedLogEntriesAdded = true;
-                    }
-                    continue;
-                }
-
-                AppendLogEntryToBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings);
+                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings);
             }
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Converts a collection of log entries into a single formatted string based on the specified export
+        /// settings.
+        /// </summary>
+        /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
+        /// <param name="logExportSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
+        /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
+        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings)
+        {
+            StringBuilder stringBuilder = new();
+
+            foreach (LogEntry logEntry in logEntries)
+            {
+                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings);
+            }
+
             return stringBuilder.ToString();
         }
 
@@ -120,7 +138,7 @@ namespace LogScraper.Log
         /// <param name="stringbuilder">The StringBuilder to append to.</param>
         /// <param name="logEntry">The log entry to append.</param>
         /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        private static void AppendLogEntryToBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettings logExportSettings)
+        private static void AppendLogEntryToStringBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettings logExportSettings)
         {
             string logEntryMetadataFormatted = logEntry.Entry;
 

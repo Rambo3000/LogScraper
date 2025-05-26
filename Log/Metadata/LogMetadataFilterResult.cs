@@ -6,7 +6,7 @@ namespace LogScraper.Log.Metadata
     /// Represents the result of filtering log metadata.
     /// This class contains the filtered log entries and their associated metadata properties.
     /// </summary>
-    internal class LogMetadataFilterResult
+    public class LogMetadataFilterResult
     {
         /// <summary>
         /// A list of log entries that match the filtering criteria.

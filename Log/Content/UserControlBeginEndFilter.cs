@@ -15,7 +15,7 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    internal partial class UserControlBeginEndFilter : UserControl
+    internal partial class UserControlLogContentFilter : UserControl
     {
         #region Private objects and initialization
         private const string DefaulSearchtTextFormat = "Filter {0}...";
@@ -35,7 +35,7 @@ namespace LogScraper
 
         private LogEntryDisplayObject selectedEndEntryDisplayObject = null;
 
-        public UserControlBeginEndFilter()
+        public UserControlLogContentFilter()
         {
             InitializeComponent();
             //Preset the default search text
@@ -113,20 +113,70 @@ namespace LogScraper
             if (LogEntriesLatestVersion == null)
             {
                 LstLogContent.Items.Clear();
+                BtnResetMetadataFilter_Click(null, null);
                 return;
             }
 
             // Get the selected log content property
-            LogContentProperty logContentProperty = (LogContentProperty)CboLogContentType.SelectedItem;
+            LogContentProperty logContentProperty = SelectedLogContentProperty;
 
             // If no log content property is selected, return
             if (logContentProperty == null) return;
 
             // Create display objects for the log entries containing the log entry, content value, treenode, and error status
-            List<LogEntryDisplayObject> LogEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogEntriesLatestVersion);
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogEntriesLatestVersion);
 
-            UpdateDisplayedLogEntriesUsingNewLogEntries(LogEntryDisplayObjects);
+            ValidateBeginEndContentFiltersOnNewLogEnties(LogEntriesLatestVersion);
+
+            UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
+
+        /// <summary>
+        /// Validates the currently selected begin and end content filters against a list of new log entries.
+        /// </summary>
+        /// <remarks>This method ensures that the selected begin and end content filters remain valid by
+        /// checking if their corresponding log entries exist in the provided list. If a filter's associated log entry
+        /// is not found, the filter is reset to null.</remarks>
+        /// <param name="logEntries">A list of <see cref="LogEntry"/> objects representing the new log entries to check against.</param>
+        private void ValidateBeginEndContentFiltersOnNewLogEnties(List<LogEntry> logEntries)
+        {
+            if (selectedBeginEntryDisplayObject != null)
+            {
+                bool beginFilterFound = false;
+                foreach (LogEntry logEntry in logEntries)
+                {
+                    if (logEntry == selectedBeginEntryDisplayObject.OriginalLogEntry)
+                    {
+                        beginFilterFound = true;
+                        break;
+                    }
+                }
+                if (!beginFilterFound)
+                {
+                    // If the begin filter is not found, reset the begin filter
+                    selectedBeginEntryDisplayObject = null;
+                }
+            }
+
+
+            if (selectedEndEntryDisplayObject == null) return;
+            
+            bool endFilterFound = false;
+            foreach (LogEntry logEntry in logEntries)
+            {
+                if (logEntry == selectedEndEntryDisplayObject.OriginalLogEntry)
+                {
+                    endFilterFound = true;
+                    break;
+                }
+            }
+            if (!endFilterFound)
+            {
+                // If the begin filter is not found, reset the begin filter
+                selectedBeginEntryDisplayObject = null;
+            }
+        }
+
         private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
         {
             if (logContentProperty == null) return null;
@@ -342,7 +392,7 @@ namespace LogScraper
             }
         }
 
-        public LogEntry SelectedTopLogEntry
+        public LogEntry SelectedBeginLogEntry
         {
             get
             {
@@ -389,8 +439,7 @@ namespace LogScraper
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
-            bool isOutOfScope = (selectedBeginEntryDisplayObject != null && item.Index < selectedBeginEntryDisplayObject.Index) ||
-                (selectedEndEntryDisplayObject != null && item.Index > selectedEndEntryDisplayObject.Index);
+            bool isOutOfScope = IslogEntryDisplayObjectOutOfScope(item);
 
             // Draw background
             if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.OriginalLogEntry == item.OriginalLogEntry)
@@ -508,13 +557,32 @@ namespace LogScraper
             return truncatedText;
         }
 
-        private Brush DetermineTextColorBasedOnLogEntryPosition(LogEntryDisplayObject logEntryDisplayObject, bool isSelected, bool isOutOfScope)
+        private static Brush DetermineTextColorBasedOnLogEntryPosition(LogEntryDisplayObject logEntryDisplayObject, bool isSelected, bool isOutOfScope)
         {
             if (isOutOfScope)
             {
                 return isSelected ? Brushes.Gray : LogScraperBrushes.GrayLogEntriesOutOfScope;
             }
             return logEntryDisplayObject.IsError ? Brushes.DarkRed : SystemBrushes.ControlText; // Default text color
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="LogEntryDisplayObject"/> is outside the currently selected
+        /// range.
+        /// </summary>
+        /// <remarks>A <see cref="LogEntryDisplayObject"/> is considered out of scope if its <c>Index</c>
+        /// is less than the  <c>Index</c> of the selected begin entry display object, or greater than the <c>Index</c>
+        /// of the selected  end entry display object. If either the selected begin or end entry display object is
+        /// <c>null</c>, the  corresponding boundary is considered unbounded.</remarks>
+        /// <param name="logEntryDisplayObject">The <see cref="LogEntryDisplayObject"/> to evaluate. Must not be <c>null</c>.</param>
+        /// <returns><see langword="true"/> if the <paramref name="logEntryDisplayObject"/> is outside the range defined by  the
+        /// selected begin and end entry display objects; otherwise, <see langword="false"/>.</returns>
+        private bool IslogEntryDisplayObjectOutOfScope(LogEntryDisplayObject logEntryDisplayObject)
+        {
+            if (logEntryDisplayObject == null) return true;
+
+            return (selectedBeginEntryDisplayObject != null && logEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index) ||
+                (selectedEndEntryDisplayObject != null && logEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index);
         }
         #endregion
 
@@ -537,10 +605,24 @@ namespace LogScraper
         public event Action<Dictionary<LogMetadataProperty, string>, bool> FilterOnMetadata;
 
         /// Event to filter log entries based on the selected log content property
-        public event EventHandler FilterChanged;
-        protected virtual void OnFilterChanged(EventArgs e)
+        public event EventHandler EndEntryChanged;
+        protected virtual void OnEndEntryChanged(EventArgs e)
         {
-            FilterChanged?.Invoke(this, e);
+            EndEntryChanged?.Invoke(this, e);
+        }
+
+        /// Event to filter log entries based on the selected log content property
+        public event EventHandler BeginEntryChanged;
+        protected virtual void OnBeginEntryChanged(EventArgs e)
+        {
+            BeginEntryChanged?.Invoke(this, e);
+        }
+
+        /// Event to filter log entries based on the selected log content property
+        public event EventHandler SelectedItemChanged;
+        protected virtual void OnSelectedItemChanged(EventArgs e)
+        {
+            SelectedItemChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -573,7 +655,8 @@ namespace LogScraper
             //Reset the top end end filters
             selectedBeginEntryDisplayObject = null;
             selectedEndEntryDisplayObject = null;
-            OnFilterChanged(e);
+            OnBeginEntryChanged(e);
+            OnEndEntryChanged(e);
             LstLogContent.Invalidate();
             UpdateTopBottomControls();
 
@@ -592,7 +675,6 @@ namespace LogScraper
         private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateDisplayedLogEntries();
-            OnFilterChanged(EventArgs.Empty);
             UpdateShowTreeControls(false);
 
             if (SelectedLogContentProperty != null)
@@ -608,7 +690,10 @@ namespace LogScraper
         {
             if (ignoreSelectedItemChanged == false)
             {
-                OnFilterChanged(EventArgs.Empty);
+                // If the item is out of scope, do not trigger an update, there is nothing to do as the selected item is out of scope
+                if (SelectedLogEntryDisplayObject != null && IslogEntryDisplayObjectOutOfScope(SelectedLogEntryDisplayObject)) return;
+                OnSelectedItemChanged(EventArgs.Empty);
+
                 UpdateFilterOnMetadataControls();
                 UpdateTopBottomControls();
             }
@@ -703,17 +788,6 @@ namespace LogScraper
             BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || !IsSessionMetadataFilteringActive;
             BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
         }
-
-        private void ChkShowExtraLogEntries_CheckedChanged(object sender, EventArgs e)
-        {
-            //TxtExtraLogEntries.Visible = ChkShowExtraLogEntries.Checked;
-            OnFilterChanged(EventArgs.Empty);
-        }
-
-        private void TxtExtraLogEntries_TextChanged(object sender, EventArgs e)
-        {
-            OnFilterChanged(EventArgs.Empty);
-        }
         #endregion
 
         private void ChkShowNoTree_CheckedChanged(object sender, EventArgs e)
@@ -722,8 +796,8 @@ namespace LogScraper
         }
         private void UpdateTopBottomControls()
         {
-            BtnSelectTop.Enabled = LstLogContent.SelectedIndex != -1;
-            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1;
+            BtnSelectTop.Enabled = LstLogContent.SelectedIndex > 0;
+            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1 && LstLogContent.SelectedIndex != LstLogContent.Items.Count - 1;
             BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
         }
 
@@ -737,7 +811,7 @@ namespace LogScraper
             {
                 selectedEndEntryDisplayObject = null;
             }
-            OnFilterChanged(e);
+            OnBeginEntryChanged(e);
             LstLogContent.Invalidate();
             UpdateTopBottomControls();
         }
@@ -753,7 +827,7 @@ namespace LogScraper
                 selectedBeginEntryDisplayObject = null;
             }
 
-            OnFilterChanged(e);
+            OnEndEntryChanged(e);
             LstLogContent.Invalidate();
             UpdateTopBottomControls();
         }

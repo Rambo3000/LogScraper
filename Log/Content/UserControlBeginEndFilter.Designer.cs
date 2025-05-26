@@ -1,6 +1,8 @@
-﻿namespace LogScraper
+﻿using LogScraper.Utilities;
+
+namespace LogScraper
 {
-    partial class UserControlBeginEndFilter
+    partial class UserControlLogContentFilter
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +30,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlBeginEndFilter));
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogContentFilter));
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             BtnReset = new System.Windows.Forms.Button();
@@ -39,6 +42,7 @@
             ChkShowNoTree = new System.Windows.Forms.CheckBox();
             BtnSelectTop = new System.Windows.Forms.Button();
             BtnSelectEnd = new System.Windows.Forms.Button();
+            toolTip = new System.Windows.Forms.ToolTip(components);
             SuspendLayout();
             // 
             // LstLogContent
@@ -75,6 +79,7 @@
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 2;
+            toolTip.SetToolTip(BtnReset, "Reset selecties");
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
@@ -129,6 +134,7 @@
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 17;
             ChkShowFlowTree.Tag = "asd";
+            toolTip.SetToolTip(ChkShowFlowTree, "Toon hiërarchie");
             ChkShowFlowTree.UseVisualStyleBackColor = true;
             ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
             // 
@@ -141,6 +147,7 @@
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 18;
             ChkShowNoTree.Tag = "asd";
+            toolTip.SetToolTip(ChkShowNoTree, "Toon als een lijst");
             ChkShowNoTree.UseVisualStyleBackColor = true;
             ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
             // 
@@ -152,6 +159,7 @@
             BtnSelectTop.Name = "BtnSelectTop";
             BtnSelectTop.Size = new System.Drawing.Size(25, 25);
             BtnSelectTop.TabIndex = 21;
+            toolTip.SetToolTip(BtnSelectTop, "Selecteer begin");
             BtnSelectTop.UseVisualStyleBackColor = true;
             BtnSelectTop.Click += BtnSelectBegin_Click;
             // 
@@ -163,10 +171,11 @@
             BtnSelectEnd.Name = "BtnSelectEnd";
             BtnSelectEnd.Size = new System.Drawing.Size(25, 25);
             BtnSelectEnd.TabIndex = 22;
+            toolTip.SetToolTip(BtnSelectEnd, "Selecteer eind");
             BtnSelectEnd.UseVisualStyleBackColor = true;
             BtnSelectEnd.Click += BtnSelectEnd_Click;
             // 
-            // UserControlBeginEndFilter
+            // UserControlLogContentFilter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -182,7 +191,7 @@
             Controls.Add(CboLogContentType);
             Controls.Add(LstLogContent);
             Controls.Add(BtnResetMetadataFilter);
-            Name = "UserControlBeginEndFilter";
+            Name = "UserControlLogContentFilter";
             Size = new System.Drawing.Size(243, 272);
             ResumeLayout(false);
             PerformLayout();
@@ -200,5 +209,6 @@
         private System.Windows.Forms.CheckBox ChkShowNoTree;
         private System.Windows.Forms.Button BtnSelectTop;
         private System.Windows.Forms.Button BtnSelectEnd;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

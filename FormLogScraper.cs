@@ -13,7 +13,7 @@ using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using LogScraper.Utilities.Extensions;
-using static LogScraper.Utilities.Extensions.RichTextBoxExtensions;
+using static LogScraper.Utilities.Extensions.ScintillaRichTextBoxExtensions;
 using static LogScraper.UserControlSearch;
 using LogScraper.Utilities;
 
@@ -41,8 +41,11 @@ namespace LogScraper
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
-            UsrLogContentBegin.FilterChanged += HandleLogContentFilterUpdateBegin;
-            UsrLogContentBegin.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
+            UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdateBegin;
+            UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
+            UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
+            UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
+
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
             usrSearch.Search += UsrSearch_Search;
@@ -167,7 +170,7 @@ namespace LogScraper
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList);
 
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
-            UsrLogContentBegin.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
+            UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
 
             WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
@@ -175,81 +178,30 @@ namespace LogScraper
         {
             LogExportSettings logExportSettings = new()
             {
-                LogEntryBegin = UsrLogContentBegin.SelectedTopLogEntry,
-                LogEntryEnd = UsrLogContentBegin.SelectedEndLogEntry,
+                LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
+                LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
+            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, logExportSettings);
 
-            string exportedLog = LogDataExporter.CreateExportedLog(logMetadataFilterResult, logExportSettings, !chkShowAllLogEntries.Checked, out int entryCount);
-
-            if (chkShowAllLogEntries.Checked || entryCount < 2000)
-            {
-                lblNumberOfLogEntriesShown.Text = entryCount.ToString() + " (alle)";
-                lblNumberOfLogEntriesShown.ForeColor = Color.Black;
-            }
-            else
-            {
-                lblNumberOfLogEntriesShown.Text = "2000/" + entryCount.ToString();
-                lblNumberOfLogEntriesShown.ForeColor = Color.DarkRed;
-            }
-
-            lblNumberOfLogEntriesFiltered.Text = entryCount.ToString();
-
-            int initialSelectionStart = txtLogEntries.SelectionStart;
-            int initialSelectionLength = txtLogEntries.SelectionLength;
-
-            txtLogEntries.SuspendDrawing();
-            txtLogEntries.Text = exportedLog;
-            HighlightBeginAndEndFilterLines();
-            txtLogEntries.Select(initialSelectionStart, initialSelectionLength);
-            txtLogEntries.ResumeDrawing();
-
+            lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
             LogExportWorkerManager.WriteToFile(logMetadataFilterResult, logExportSettings);
         }
 
-        private void HighlightBeginAndEndFilterLines()
-        {
-            if (txtLogEntries.Lines.Length > 0)
-            {
-                if (UsrLogContentBegin.SelectedTopLogEntry != null) txtLogEntries.HighlightLine(1, Color.Orange, Color.Black);
-                // Minus two because the index is 0 based and there is always an additional empty log entry (hard to remove)
-                if (UsrLogContentBegin.SelectedEndLogEntry != null) txtLogEntries.HighlightLine(txtLogEntries.Lines.Length - 2, Color.GreenYellow, Color.Black);
-            }
-        }
         #endregion
 
         #region Search
         private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
         {
-            int scrollPosition = txtLogEntries.GetCharIndexFromPosition(new Point(0, 0));
-            int selectionStart = txtLogEntries.SelectionStart;
-            int selectionLenght = txtLogEntries.SelectionLength;
-
-            txtLogEntries.SuspendDrawing();
             usrSearch.Enabled = false;
             Application.DoEvents();
             try
             {
-                if (!chkShowAllLogEntries.Checked)
-                {
-                    chkShowAllLogEntries.Checked = true;
-                    Application.DoEvents();
-                }
-
-                //Clean the logentry background and reinster begin and end filters
-                txtLogEntries.ClearHighlighting();
-                HighlightBeginAndEndFilterLines();
-
-                //Return the scrolling to its original position
-                txtLogEntries.Select(scrollPosition, 0);
-                txtLogEntries.ScrollToCaret();
-                txtLogEntries.Select(selectionStart, selectionLenght);
-
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-                bool found = txtLogEntries.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
 
+                bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection );
                 usrSearch.SetResultsFound(found);
             }
             catch (Exception ex)
@@ -261,7 +213,6 @@ namespace LogScraper
                 Application.DoEvents();
                 usrSearch.Enabled = true;
                 usrSearch.Focus();
-                txtLogEntries.ResumeDrawing();
             }
         }
         #endregion
@@ -270,7 +221,7 @@ namespace LogScraper
         private void Erase()
         {
             LogCollection.Instance.Clear();
-            txtLogEntries.Text = string.Empty;
+            UserControlLogEntriesTextBox.Clear();
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
@@ -307,24 +258,22 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
-            lblBeginFilterEnabled.Visible = UsrLogContentBegin.SelectedTopLogEntry != null;
-            lblEndFilterEnabled.Visible = UsrLogContentBegin.SelectedEndLogEntry != null;
-
             if (currentLogMetadataFilterResult != null) WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
         private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)
         {
             HandleLogContentFilterUpdate(sender, e);
-            txtLogEntries.SelectionStart = 1;
-            txtLogEntries.ScrollToCaret();
+            UserControlLogEntriesTextBox.ApplyBeginFilter(UserControlContentFilter.SelectedBeginLogEntry);
         }
         private void HandleLogContentFilterUpdateEnd(object sender, EventArgs e)
         {
-            UsrControlMetadataFormating.SuspendDrawing();
             HandleLogContentFilterUpdate(sender, e);
-            txtLogEntries.SelectionStart = txtLogEntries.Text.Length;
-            txtLogEntries.ScrollToCaret();
-            UsrControlMetadataFormating.ResumeDrawing();
+            UserControlLogEntriesTextBox.ApplyEndFilter(UserControlContentFilter.SelectedEndLogEntry);
+        }
+
+        private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
+        {
+            UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
@@ -474,7 +423,7 @@ namespace LogScraper
         {
             if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UsrLogContentBegin.UpdateLogLayout(logLayout);
+            UserControlContentFilter.UpdateLogLayout(logLayout);
             UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
 
             Reset();

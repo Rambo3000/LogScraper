@@ -33,6 +33,13 @@
     <Compile Remove="LogFilter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="C:\Users\rober\.nuget\packages\scintillanet.core\3.6.51\contentFiles\any\netcoreapp3.1\SciLexer.dll" />
+    <Content Remove="C:\Users\rober\.nuget\packages\scintillanet.core\3.6.51\contentFiles\any\netcoreapp3.1\SciLexer.exp" />
+    <Content Remove="C:\Users\rober\.nuget\packages\scintillanet.core\3.6.51\contentFiles\any\netcoreapp3.1\SciLexer.lib" />
+    <Content Remove="C:\Users\rober\.nuget\packages\scintillanet.core\3.6.51\contentFiles\any\netcoreapp3.1\SciLexer.pdb" />
+    <Content Remove="C:\Users\rober\.nuget\packages\scintillanet.core\3.6.51\contentFiles\any\netcoreapp3.1\version.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove=".gitignore" />
     <None Remove="CODE_OF_CONDUCT.md" />
     <None Remove="CONTRIBUTING.md" />
@@ -65,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ScintillaNET.Core" Version="3.6.51" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="LogProviders\File\UserControlFileConfig.cs">

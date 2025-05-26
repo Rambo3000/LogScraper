@@ -52,17 +52,11 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
-            lblEndFilterEnabled = new System.Windows.Forms.Label();
-            lblBeginFilterEnabled = new System.Windows.Forms.Label();
-            chkShowAllLogEntries = new System.Windows.Forms.CheckBox();
-            lblNumberOfLogEntriesShown = new System.Windows.Forms.Label();
-            label1 = new System.Windows.Forms.Label();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
-            txtLogEntries = new System.Windows.Forms.RichTextBox();
             groupBox5 = new System.Windows.Forms.GroupBox();
             usrSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
-            UsrLogContentBegin = new UserControlBeginEndFilter();
+            UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
@@ -75,6 +69,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
@@ -328,13 +323,8 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(lblEndFilterEnabled);
-            groupBox2.Controls.Add(lblBeginFilterEnabled);
-            groupBox2.Controls.Add(chkShowAllLogEntries);
-            groupBox2.Controls.Add(lblNumberOfLogEntriesShown);
-            groupBox2.Controls.Add(label1);
             groupBox2.Controls.Add(TxtErrorMessage);
-            groupBox2.Controls.Add(txtLogEntries);
+            groupBox2.Controls.Add(UserControlLogEntriesTextBox);
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(0, 0);
             groupBox2.Name = "groupBox2";
@@ -342,61 +332,6 @@
             groupBox2.TabIndex = 4;
             groupBox2.TabStop = false;
             groupBox2.Text = "Log";
-            // 
-            // lblEndFilterEnabled
-            // 
-            lblEndFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            lblEndFilterEnabled.AutoSize = true;
-            lblEndFilterEnabled.BackColor = System.Drawing.Color.GreenYellow;
-            lblEndFilterEnabled.Location = new System.Drawing.Point(593, 427);
-            lblEndFilterEnabled.Name = "lblEndFilterEnabled";
-            lblEndFilterEnabled.Size = new System.Drawing.Size(86, 15);
-            lblEndFilterEnabled.TabIndex = 37;
-            lblEndFilterEnabled.Text = "Eindfilter actief";
-            lblEndFilterEnabled.Visible = false;
-            // 
-            // lblBeginFilterEnabled
-            // 
-            lblBeginFilterEnabled.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            lblBeginFilterEnabled.AutoSize = true;
-            lblBeginFilterEnabled.BackColor = System.Drawing.Color.Orange;
-            lblBeginFilterEnabled.Location = new System.Drawing.Point(498, 427);
-            lblBeginFilterEnabled.Name = "lblBeginFilterEnabled";
-            lblBeginFilterEnabled.Size = new System.Drawing.Size(93, 15);
-            lblBeginFilterEnabled.TabIndex = 36;
-            lblBeginFilterEnabled.Text = "Beginfilter actief";
-            lblBeginFilterEnabled.Visible = false;
-            // 
-            // chkShowAllLogEntries
-            // 
-            chkShowAllLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            chkShowAllLogEntries.AutoSize = true;
-            chkShowAllLogEntries.Location = new System.Drawing.Point(172, 426);
-            chkShowAllLogEntries.Name = "chkShowAllLogEntries";
-            chkShowAllLogEntries.Size = new System.Drawing.Size(180, 19);
-            chkShowAllLogEntries.TabIndex = 35;
-            chkShowAllLogEntries.Text = "Alle regels tonen (langzamer)";
-            chkShowAllLogEntries.UseVisualStyleBackColor = true;
-            chkShowAllLogEntries.CheckedChanged += ChkShowAllLogEntries_CheckedChanged;
-            // 
-            // lblNumberOfLogEntriesShown
-            // 
-            lblNumberOfLogEntriesShown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            lblNumberOfLogEntriesShown.Location = new System.Drawing.Point(96, 427);
-            lblNumberOfLogEntriesShown.Name = "lblNumberOfLogEntriesShown";
-            lblNumberOfLogEntriesShown.Size = new System.Drawing.Size(80, 15);
-            lblNumberOfLogEntriesShown.TabIndex = 34;
-            lblNumberOfLogEntriesShown.Text = "-";
-            // 
-            // label1
-            // 
-            label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(6, 427);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(92, 15);
-            label1.TabIndex = 33;
-            label1.Text = "Regels getoond:";
             // 
             // TxtErrorMessage
             // 
@@ -411,20 +346,6 @@
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
-            // 
-            // txtLogEntries
-            // 
-            txtLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtLogEntries.BackColor = System.Drawing.Color.White;
-            txtLogEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtLogEntries.DetectUrls = false;
-            txtLogEntries.Location = new System.Drawing.Point(6, 15);
-            txtLogEntries.Name = "txtLogEntries";
-            txtLogEntries.ReadOnly = true;
-            txtLogEntries.Size = new System.Drawing.Size(673, 409);
-            txtLogEntries.TabIndex = 3;
-            txtLogEntries.Text = "";
-            txtLogEntries.WordWrap = false;
             // 
             // groupBox5
             // 
@@ -448,7 +369,7 @@
             // groupBox6
             // 
             groupBox6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBox6.Controls.Add(UsrLogContentBegin);
+            groupBox6.Controls.Add(UserControlContentFilter);
             groupBox6.Location = new System.Drawing.Point(0, 85);
             groupBox6.Name = "groupBox6";
             groupBox6.Size = new System.Drawing.Size(246, 362);
@@ -456,15 +377,15 @@
             groupBox6.TabStop = false;
             groupBox6.Text = "Filter op inhoud";
             // 
-            // UsrLogContentBegin
+            // UserControlLogContentFilter
             // 
-            UsrLogContentBegin.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            UsrLogContentBegin.BackColor = System.Drawing.SystemColors.Window;
-            UsrLogContentBegin.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrLogContentBegin.Location = new System.Drawing.Point(3, 19);
-            UsrLogContentBegin.Name = "UsrLogContentBegin";
-            UsrLogContentBegin.Size = new System.Drawing.Size(240, 340);
-            UsrLogContentBegin.TabIndex = 0;
+            UserControlContentFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            UserControlContentFilter.BackColor = System.Drawing.SystemColors.Window;
+            UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
+            UserControlContentFilter.Name = "UserControlLogContentFilter";
+            UserControlContentFilter.Size = new System.Drawing.Size(240, 340);
+            UserControlContentFilter.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -590,6 +511,14 @@
             label2.TabIndex = 24;
             label2.Text = "Layout";
             // 
+            // UserControlLogEntriesTextBox
+            // 
+            UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            UserControlLogEntriesTextBox.Location = new System.Drawing.Point(3, 19);
+            UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(679, 425);
+            UserControlLogEntriesTextBox.TabIndex = 38;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -647,11 +576,10 @@
         private System.Windows.Forms.Label lblLogEntriesFiltered;
         private System.Windows.Forms.Button BtnFormRecord;
         private System.Windows.Forms.ComboBox cboLogProvider;
-        private System.Windows.Forms.RichTextBox txtLogEntries;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private UserControlBeginEndFilter UsrLogContentBegin;
+        private UserControlLogContentFilter UserControlContentFilter;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TabControl tabControl2;
@@ -668,15 +596,11 @@
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
         private UserControlSearch usrSearch;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Label lblNumberOfLogEntriesShown;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox chkShowAllLogEntries;
-        private System.Windows.Forms.Label lblEndFilterEnabled;
-        private System.Windows.Forms.Label lblBeginFilterEnabled;
         private System.Windows.Forms.Button BtnConfig;
         private System.Windows.Forms.Label label2;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;
         private UserControlMemoryUsage userControlMemoryUsage1;
+        private Utilities.UserControls.UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
     }
 }
