@@ -56,6 +56,7 @@ namespace LogScraper
         private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
         {
             UsrMetadataFilterOverview.EnableFilterOnSpecificMetdataValues(logMetadataPropertiesAndValues, isEnabled);
+            UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
         }
 
         private void FormLogScraper_Load(object sender, EventArgs e)
