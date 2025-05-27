@@ -4,7 +4,7 @@ using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.Extensions;
-using static LogScraper.Utilities.Extensions.ScintillaRichTextBoxExtensions;
+using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper.Utilities.UserControls
 {

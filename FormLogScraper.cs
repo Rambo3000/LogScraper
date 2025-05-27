@@ -13,7 +13,7 @@ using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using LogScraper.Utilities.Extensions;
-using static LogScraper.Utilities.Extensions.ScintillaRichTextBoxExtensions;
+using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 using static LogScraper.UserControlSearch;
 using LogScraper.Utilities;
 
