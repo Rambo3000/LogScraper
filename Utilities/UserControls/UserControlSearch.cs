@@ -31,13 +31,11 @@ namespace LogScraper
 
         private void BtnSearchNext_Click(object sender, EventArgs e)
         {
-            if (IsSearchEmpty()) return;
             Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Forward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
         }
 
         private void BtnSearchPrevious_Click(object sender, EventArgs e)
         {
-            if (IsSearchEmpty()) return;
             Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Backward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
         }
 

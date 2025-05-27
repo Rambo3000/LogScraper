@@ -99,30 +99,7 @@ namespace LogScraper.Utilities.UserControls
 
         internal bool TrySearch(string searchQuery, bool wholeWord, bool caseSensitive, bool wrapAround, SearchDirection searchDirection)
         {
-            //int scrollPosition = TxtLogEntries.GetCharIndexFromPosition(new Point(0, 0));
-            //int selectionStart = TxtLogEntries.SelectionStart;
-            //int selectionLenght = TxtLogEntries.SelectionLength;
-
-            //TxtLogEntries.SuspendDrawing();
-
-            //if (!ChkShowAllLogEntries.Checked)
-            //{
-            //    ChkShowAllLogEntries.Checked = true;
-            //    Application.DoEvents();
-            //}
-
-            ////Clean the logentry background and reinster begin and end filters
-            //TxtLogEntries.ClearHighlighting();
-            //HighlightLines();
-
-            ////Return the scrolling to its original position
-            //TxtLogEntries.Select(scrollPosition, 0);
-            //TxtLogEntries.ScrollToCaret();
-            //TxtLogEntries.Select(selectionStart, selectionLenght);
-
-            bool found = TxtLogEntries.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
-            //txtLogETxtLogEntriesntries.ResumeDrawing();
-            return found;
+            return TxtLogEntries.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
         }
     }
 }

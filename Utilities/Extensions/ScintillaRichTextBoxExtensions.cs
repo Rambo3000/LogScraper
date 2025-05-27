@@ -143,116 +143,114 @@ namespace LogScraper.Utilities.Extensions
         /// <returns>True if a match is found; otherwise, false.</returns>
         public static bool Find(this Scintilla textBox, string searchText, SearchDirection direction, bool wholeWord, bool caseSensitive, bool wrapAround)
         {
-            // Stel zoekflags in
-            var flags = SearchFlags.None;
-            if (wholeWord) flags |= SearchFlags.WholeWord;
-            if (caseSensitive) flags |= SearchFlags.MatchCase;
-
-            int start, end;
-
-            if (direction == SearchDirection.Forward)
+            if (string.IsNullOrWhiteSpace(searchText))
             {
-                start = textBox.CurrentPosition;
-                end = textBox.TextLength;
-                if (textBox.CurrentPosition + searchText.Length <= textBox.TextLength)
-                {
-                    if (textBox.Text.Substring(start, searchText.Length) == searchText)
-                    {
-                        start += searchText.Length;
-                    }
-                }
-            }
-            else
-            {
-                start = textBox.CurrentPosition;
-                end = 0;
+                textBox.IndicatorCurrent = INDICATOR_SEARCH;
+                textBox.IndicatorClearRange(0, textBox.TextLength);
+                return false;
             }
 
-            // Stel target in
-            textBox.TargetStart =  start;
-            textBox.TargetEnd = end;
+            SearchFlags flags = GetSearchFlags(wholeWord, caseSensitive);
+
+            SetInitialSearchRange(textBox, searchText, direction);
+
             textBox.SearchFlags = flags;
-
-            // Zoek
             int pos = textBox.SearchInTarget(searchText);
             if (pos >= 0)
             {
-
-                // Voeg nieuwe highlight toe
-                if (searchText.Length <= 3)
-                {
-                    // Verwijder vorige zoekmarkering
-                    textBox.IndicatorCurrent = INDICATOR_SEARCH;
-                    textBox.IndicatorClearRange(0, textBox.TextLength);
-                    textBox.IndicatorCurrent = INDICATOR_SEARCH;
-                    textBox.IndicatorFillRange(textBox.TargetStart, textBox.TargetEnd - textBox.TargetStart);
-                }
-                else
-                {
-                    HighlightAllOccurrences(textBox, searchText, wholeWord, caseSensitive);
-                }
+                Highlight(textBox, searchText, wholeWord, caseSensitive);
                 textBox.GotoPosition(pos);
                 return true;
             }
 
-            // Wrap-around als nodig
             if (wrapAround)
             {
-                textBox.TargetStart = (direction == SearchDirection.Forward) ? 0 : textBox.TextLength;
-                textBox.TargetEnd = (direction == SearchDirection.Forward) ? textBox.TextLength : 0;
+                SetWrapAroundRange(textBox, direction);
                 textBox.SearchFlags = flags;
-
                 pos = textBox.SearchInTarget(searchText);
                 if (pos >= 0)
                 {
-                    textBox.IndicatorCurrent = INDICATOR_SEARCH;
-                    textBox.IndicatorClearRange(0, textBox.TextLength);
-                    // Voeg nieuwe highlight toe
-                    if (searchText.Length <= 3)
-                    {
-                        textBox.IndicatorCurrent = INDICATOR_SEARCH;
-                        textBox.IndicatorFillRange(textBox.TargetStart, textBox.TargetEnd - textBox.TargetStart);
-                    }
-                    else
-                    {
-                        HighlightAllOccurrences(textBox, searchText, wholeWord, caseSensitive);
-                    }
+                    Highlight(textBox, searchText, wholeWord, caseSensitive);
                     textBox.GotoPosition(pos);
                     return true;
                 }
             }
 
+            textBox.IndicatorCurrent = INDICATOR_SEARCH;
+            textBox.IndicatorClearRange(0, textBox.TextLength);
             return false;
         }
+        private static SearchFlags GetSearchFlags(bool wholeWord, bool caseSensitive)
+        {
+            SearchFlags flags = SearchFlags.None;
+            if (wholeWord) flags |= SearchFlags.WholeWord;
+            if (caseSensitive) flags |= SearchFlags.MatchCase;
+            return flags;
+        }
 
-        public static void HighlightAllOccurrences(this ScintillaNET.Scintilla sci, string searchText, bool wholeWord = false, bool caseSensitive = false)
+        private static void SetInitialSearchRange(Scintilla textBox, string searchText, SearchDirection direction)
+        {
+            if (direction == SearchDirection.Forward)
+            {
+                int start = textBox.CurrentPosition;
+                if (start + searchText.Length <= textBox.TextLength &&
+                    textBox.Text.Substring(start, searchText.Length) == searchText)
+                {
+                    start += searchText.Length;
+                }
+                textBox.TargetStart = start;
+                textBox.TargetEnd = textBox.TextLength;
+            }
+            else
+            {
+                textBox.TargetStart = textBox.CurrentPosition;
+                textBox.TargetEnd = 0;
+            }
+        }
+
+        private static void SetWrapAroundRange(Scintilla textBox, SearchDirection direction)
+        {
+            textBox.TargetStart = direction == SearchDirection.Forward ? 0 : textBox.TextLength;
+            textBox.TargetEnd = direction == SearchDirection.Forward ? textBox.TextLength : 0;
+        }
+        public static void HighlightAllOccurrences(this Scintilla textBox, string searchText, bool wholeWord = false, bool caseSensitive = false)
         {
             if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 3)
                 return;
 
-            var flags = SearchFlags.None;
-            if (wholeWord) flags |= SearchFlags.WholeWord;
-            if (caseSensitive) flags |= SearchFlags.MatchCase;
+            SearchFlags flags = GetSearchFlags(wholeWord, caseSensitive);
 
-            // Maak oude zoekmarkering leeg
-            sci.IndicatorCurrent = INDICATOR_SEARCH;
-            sci.IndicatorClearRange(0, sci.TextLength);
+            textBox.IndicatorCurrent = INDICATOR_SEARCH;
+            textBox.IndicatorClearRange(0, textBox.TextLength);
 
-            // Zoek alle matches
-            sci.TargetStart = 0;
-            sci.TargetEnd = sci.TextLength;
-            sci.SearchFlags = flags;
+            textBox.TargetStart = 0;
+            textBox.TargetEnd = textBox.TextLength;
+            textBox.SearchFlags = flags;
 
-            int pos = sci.SearchInTarget(searchText);
+            int pos = textBox.SearchInTarget(searchText);
             while (pos >= 0)
             {
-                sci.IndicatorFillRange(sci.TargetStart, sci.TargetEnd - sci.TargetStart);
-
-                sci.TargetStart = sci.TargetEnd;
-                sci.TargetEnd = sci.TextLength;
-
-                pos = sci.SearchInTarget(searchText);
+                textBox.IndicatorFillRange(textBox.TargetStart, textBox.TargetEnd - textBox.TargetStart);
+                textBox.TargetStart = textBox.TargetEnd;
+                textBox.TargetEnd = textBox.TextLength;
+                pos = textBox.SearchInTarget(searchText);
             }
         }
+
+        private static void Highlight(Scintilla textBox, string searchText, bool wholeWord, bool caseSensitive)
+        {
+            textBox.IndicatorCurrent = INDICATOR_SEARCH;
+            textBox.IndicatorClearRange(0, textBox.TextLength);
+
+            if (searchText.Length <= 3)
+            {
+                textBox.IndicatorFillRange(textBox.TargetStart, textBox.TargetEnd - textBox.TargetStart);
+            }
+            else
+            {
+                HighlightAllOccurrences(textBox, searchText, wholeWord, caseSensitive);
+            }
+        }
+
     }
 }
