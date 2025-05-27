@@ -727,8 +727,6 @@ namespace LogScraper
         {
             if (ignoreSelectedItemChanged == false)
             {
-                // If the item is out of scope, do not trigger an update, there is nothing to do as the selected item is out of scope
-                if (SelectedLogEntryDisplayObject != null && IslogEntryDisplayObjectOutOfScope(SelectedLogEntryDisplayObject)) return;
                 OnSelectedItemChanged(EventArgs.Empty);
 
                 UpdateFilterOnMetadataControls();
@@ -838,7 +836,7 @@ namespace LogScraper
             BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
         }
 
-        private void BtnSelectBegin_Click(object sender, EventArgs e)
+        public void ActivatieLogEntryBegin()
         {
             if (SelectedLogEntryDisplayObject == null) return;
 
@@ -848,12 +846,16 @@ namespace LogScraper
             {
                 selectedEndEntryDisplayObject = null;
             }
-            OnBeginEntryChanged(e);
+            OnBeginEntryChanged(null);
             LstLogContent.Invalidate();
             UpdateTopBottomControls();
         }
+        private void BtnSelectBegin_Click(object sender, EventArgs e)
+        {
+            ActivatieLogEntryBegin();
+        }
 
-        private void BtnSelectEnd_Click(object sender, EventArgs e)
+        public void ActivatieLogEntryEnd()
         {
             if (SelectedLogEntryDisplayObject == null) return;
 
@@ -864,9 +866,14 @@ namespace LogScraper
                 selectedBeginEntryDisplayObject = null;
             }
 
-            OnEndEntryChanged(e);
+            OnEndEntryChanged(null);
             LstLogContent.Invalidate();
             UpdateTopBottomControls();
+        }
+
+        private void BtnSelectEnd_Click(object sender, EventArgs e)
+        {
+            ActivatieLogEntryEnd();
         }
     }
 }

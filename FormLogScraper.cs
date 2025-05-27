@@ -472,21 +472,34 @@ namespace LogScraper
         /// </remarks>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // Check for Ctrl+R key combination
             if (keyData == (Keys.Control | Keys.R))
             {
                 BtnFormRecord_Click(this, EventArgs.Empty);
-                return true; // Indicate that the key combination has been handled
+                return true;
             }
 
-            // Check for Ctrl+F key combination
+            // CTRL-F focusses the search textbox
             if (keyData == (Keys.Control | Keys.F))
             {
-                usrSearch.Focus(); // Set focus to the search control
-                return true; // Indicate that the key combination has been handled
+                usrSearch.Focus();
+                return true;
             }
 
-            // Check for Ctrl+S key combination
+            // CTRL-B enables the begin content filter
+            if (keyData == (Keys.Control | Keys.B))
+            {
+                UserControlContentFilter.ActivatieLogEntryBegin();
+                return true; 
+            }
+
+            // CTRL-E enables the end content filter
+            if (keyData == (Keys.Control | Keys.E))
+            {
+                UserControlContentFilter.ActivatieLogEntryEnd();
+                return true;
+            }
+
+            // CTRL-E starts ans stops the download
             if (keyData == (Keys.Control | Keys.S))
             {
                 if (SourceProcessingManager.Instance.IsWorkerActive)

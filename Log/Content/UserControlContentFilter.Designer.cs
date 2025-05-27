@@ -52,9 +52,9 @@ namespace LogScraper
             LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             LstLogContent.FormattingEnabled = true;
             LstLogContent.IntegralHeight = false;
-            LstLogContent.Location = new System.Drawing.Point(0, 93);
+            LstLogContent.Location = new System.Drawing.Point(0, 81);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(243, 140);
+            LstLogContent.Size = new System.Drawing.Size(243, 159);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -65,7 +65,7 @@ namespace LogScraper
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(0, 4);
+            CboLogContentType.Location = new System.Drawing.Point(0, 1);
             CboLogContentType.Name = "CboLogContentType";
             CboLogContentType.Size = new System.Drawing.Size(243, 23);
             CboLogContentType.TabIndex = 1;
@@ -75,9 +75,9 @@ namespace LogScraper
             // 
             BtnReset.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(215, 62);
+            BtnReset.Location = new System.Drawing.Point(215, 52);
             BtnReset.Name = "BtnReset";
-            BtnReset.Size = new System.Drawing.Size(25, 25);
+            BtnReset.Size = new System.Drawing.Size(26, 25);
             BtnReset.TabIndex = 2;
             toolTip.SetToolTip(BtnReset, "Reset selecties");
             BtnReset.UseVisualStyleBackColor = true;
@@ -86,9 +86,9 @@ namespace LogScraper
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(0, 33);
+            txtSearch.Location = new System.Drawing.Point(0, 27);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(240, 23);
+            txtSearch.Size = new System.Drawing.Size(243, 23);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
@@ -129,7 +129,7 @@ namespace LogScraper
             // 
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(25, 62);
+            ChkShowFlowTree.Location = new System.Drawing.Point(27, 52);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 17;
@@ -142,7 +142,7 @@ namespace LogScraper
             // 
             ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(0, 62);
+            ChkShowNoTree.Location = new System.Drawing.Point(2, 52);
             ChkShowNoTree.Name = "ChkShowNoTree";
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 18;
@@ -155,11 +155,11 @@ namespace LogScraper
             // 
             BtnSelectTop.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSelectTop.Image = (System.Drawing.Image)resources.GetObject("BtnSelectTop.Image");
-            BtnSelectTop.Location = new System.Drawing.Point(162, 62);
+            BtnSelectTop.Location = new System.Drawing.Point(162, 52);
             BtnSelectTop.Name = "BtnSelectTop";
-            BtnSelectTop.Size = new System.Drawing.Size(25, 25);
+            BtnSelectTop.Size = new System.Drawing.Size(26, 25);
             BtnSelectTop.TabIndex = 21;
-            toolTip.SetToolTip(BtnSelectTop, "Selecteer begin");
+            toolTip.SetToolTip(BtnSelectTop, "Selecteer begin [CTRL-B]");
             BtnSelectTop.UseVisualStyleBackColor = true;
             BtnSelectTop.Click += BtnSelectBegin_Click;
             // 
@@ -167,11 +167,11 @@ namespace LogScraper
             // 
             BtnSelectEnd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSelectEnd.Image = (System.Drawing.Image)resources.GetObject("BtnSelectEnd.Image");
-            BtnSelectEnd.Location = new System.Drawing.Point(187, 62);
+            BtnSelectEnd.Location = new System.Drawing.Point(187, 52);
             BtnSelectEnd.Name = "BtnSelectEnd";
-            BtnSelectEnd.Size = new System.Drawing.Size(25, 25);
+            BtnSelectEnd.Size = new System.Drawing.Size(26, 25);
             BtnSelectEnd.TabIndex = 22;
-            toolTip.SetToolTip(BtnSelectEnd, "Selecteer eind");
+            toolTip.SetToolTip(BtnSelectEnd, "Selecteer eind [CTRL-E]");
             BtnSelectEnd.UseVisualStyleBackColor = true;
             BtnSelectEnd.Click += BtnSelectEnd_Click;
             // 
