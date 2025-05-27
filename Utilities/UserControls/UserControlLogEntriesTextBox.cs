@@ -19,7 +19,7 @@ namespace LogScraper.Utilities.UserControls
         public UserControlLogEntriesTextBox()
         {
             InitializeComponent();
-            TxtLogEntries.InitLineHighlighting();
+            TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
         }
