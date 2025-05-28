@@ -6,12 +6,6 @@
 
 ---
 
-## 📦 Download
-
-Get the latest release from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
-
----
-
 ## 🔍 Key Features
 
 - ✅ Retrieve logs from HTTP endpoints, Kubernetes, and local file systems  
@@ -26,6 +20,12 @@ Get the latest release from the [Releases section](https://github.com/Rambo3000/
 - 🔔 Automatic update checks  
 - 📌 Mini Controls: compact always-on-top UI for quick log access  
 - 🔐 Secure credential storage using Windows Credential Manager 
+
+---
+
+## 📦 Download
+
+Get the latest release from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
 
 ---
 
@@ -61,13 +61,14 @@ You can configure:
 2. (optional) Select a log layout, or use the default
 3. Click **Record** or **Record for several minutes** to start loading logs
 4. (optional) Filter on specified metadata
-5. (optional) Search for a specific word or use the 
+5. (optional) Search for a specific word or use the content filter to the right of the screen to quickly navigate to a specific line in the log or to pick a specific beginn and end of the log
 
 ---
 
 ## 💡 Tips & Recommendations
 
 - 🪟 Use **Mini Controls**: a compact always-on-top window for easy log reading without switching apps  
+- 🌲 Enable hierarchical navigation by setting up Begin/End Content Filters in the layout section of Settings. This groups related log lines into a hierarchical view/tree, making large logs easier to scan and explore.
 - 👁️ By default, metadata is hidden — enable it via the **Metadata** section, or change the defaults in Settings
 - ✂️ Keep logs readable by selectively showing metadata values inline  
 - ⚠️ Ensure the correct **log layout** is selected to avoid parsing issues  
