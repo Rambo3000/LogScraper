@@ -8,9 +8,9 @@
     <SignAssembly>False</SignAssembly>
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2025 Robert de Volder</Copyright>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.2.0</FileVersion>
-    <Version>2.2.0</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.1</FileVersion>
+    <Version>3.0.1</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -18,12 +18,15 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="docs\**" />
     <Compile Remove="Example files\**" />
     <Compile Remove="Icons\**" />
     <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="docs\**" />
     <EmbeddedResource Remove="Example files\**" />
     <EmbeddedResource Remove="Icons\**" />
     <EmbeddedResource Remove="Properties\**" />
+    <None Remove="docs\**" />
     <None Remove="Example files\**" />
     <None Remove="Icons\**" />
     <None Remove="Properties\**" />
