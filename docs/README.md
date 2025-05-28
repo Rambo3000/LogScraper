@@ -2,6 +2,8 @@
 
 **LogScraper** is a powerful, standalone tool for retrieving, filtering, and analyzing logs from HTTP endpoints, Kubernetes clusters, or local files. It's designed to help developers and operators inspect logs quickly and efficiently.
 
+![image](https://github.com/user-attachments/assets/c7456868-1467-4328-9c84-00ee562c32c0)
+
 ---
 
 ## 🔍 Key Features
