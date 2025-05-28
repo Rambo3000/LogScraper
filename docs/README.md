@@ -6,6 +6,12 @@
 
 ---
 
+## 📦 Download
+
+Get the latest release from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
+
+---
+
 ## 🔍 Key Features
 
 - ✅ Retrieve logs from HTTP endpoints, Kubernetes, and local file systems  
@@ -19,13 +25,7 @@
 - 🗃️ Single standalone executable — no installer or .NET Framework required  
 - 🔔 Automatic update checks  
 - 📌 Mini Controls: compact always-on-top UI for quick log access  
-- 🔐 Secure credential storage using Windows Credential Manager  
-
----
-
-## 📦 Download
-
-Get the latest release from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
+- 🔐 Secure credential storage using Windows Credential Manager 
 
 ---
 
