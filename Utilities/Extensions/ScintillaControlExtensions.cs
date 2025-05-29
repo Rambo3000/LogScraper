@@ -251,7 +251,7 @@ namespace LogScraper.Utilities.Extensions
             {
                 int start = scintillaControl.CurrentPosition;
                 if (start + searchText.Length <= scintillaControl.TextLength &&
-                    scintillaControl.Text.Substring(start, searchText.Length) == searchText)
+                    scintillaControl.Text.Substring(start, searchText.Length).Equals(searchText, System.StringComparison.CurrentCultureIgnoreCase))
                 {
                     start += searchText.Length;
                 }

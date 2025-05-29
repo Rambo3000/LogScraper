@@ -193,31 +193,6 @@ namespace LogScraper
 
         #endregion
 
-        #region Search
-        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
-        {
-            usrSearch.Enabled = false;
-            Application.DoEvents();
-            try
-            {
-                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-
-                bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection );
-                usrSearch.SetResultsFound(found);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
-            }
-            finally
-            {
-                Application.DoEvents();
-                usrSearch.Enabled = true;
-                usrSearch.Focus();
-            }
-        }
-        #endregion
-
         #region Erase and reset
         private void Erase()
         {
@@ -293,6 +268,25 @@ namespace LogScraper
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
+            }
+        }
+        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
+        {
+            usrSearch.Enabled = false;
+            try
+            {
+                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
+
+                bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection);
+                usrSearch.SetResultsFound(found);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
+            }
+            finally
+            {
+                usrSearch.Enabled = true;
             }
         }
         private void SetDynamicToolTips()
