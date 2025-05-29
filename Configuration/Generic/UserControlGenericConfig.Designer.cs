@@ -38,28 +38,28 @@ namespace LogScraper.Configuration
             BtnBrowseExportFIle = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
-            TxtEditorLocation = new LogScraper.Utilities.Extensions.ValidatedTextBox();
-            TxtExportFileName = new LogScraper.Utilities.Extensions.ValidatedTextBox();
+            TxtEditorLocation = new ValidatedTextBox();
+            TxtExportFileName = new ValidatedTextBox();
             ChkExportToFile = new System.Windows.Forms.CheckBox();
             CboLogProviderType = new System.Windows.Forms.ComboBox();
             LblTimeout = new System.Windows.Forms.Label();
-            TxtTimeOut = new LogScraper.Utilities.Extensions.ValidatedTextBox();
+            TxtTimeOut = new ValidatedTextBox();
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
+            pictureBox3 = new System.Windows.Forms.PictureBox();
+            ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             pictureBox16 = new System.Windows.Forms.PictureBox();
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
-            pictureBox3 = new System.Windows.Forms.PictureBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // LblDefaultLogProviderType
@@ -231,6 +231,26 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
             // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = Properties.Resources.help;
+            pictureBox3.Location = new System.Drawing.Point(427, 128);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new System.Drawing.Size(16, 16);
+            pictureBox3.TabIndex = 40;
+            pictureBox3.TabStop = false;
+            toolTip.SetToolTip(pictureBox3, resources.GetString("pictureBox3.ToolTip"));
+            // 
+            // ChkAutoToggleHierarchy
+            // 
+            ChkAutoToggleHierarchy.AutoSize = true;
+            ChkAutoToggleHierarchy.Location = new System.Drawing.Point(6, 128);
+            ChkAutoToggleHierarchy.Name = "ChkAutoToggleHierarchy";
+            ChkAutoToggleHierarchy.Size = new System.Drawing.Size(425, 19);
+            ChkAutoToggleHierarchy.TabIndex = 39;
+            ChkAutoToggleHierarchy.Text = "Schakel hierarchisch tonen automatisch in zodra er op sessie wordt gefilterd";
+            ChkAutoToggleHierarchy.UseVisualStyleBackColor = true;
+            // 
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.help;
@@ -244,12 +264,12 @@ namespace LogScraper.Configuration
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(327, 103);
+            pictureBox1.Location = new System.Drawing.Point(292, 103);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 37;
             pictureBox1.TabStop = false;
-            toolTip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            toolTip.SetToolTip(pictureBox1, "Toont bij de begin- en eindfilters een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type content waarop gefilterd wordt.");
             // 
             // pictureBox16
             // 
@@ -266,30 +286,10 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
             ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
             ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
-            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(315, 19);
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(280, 19);
             ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
-            ChkShowErrorsInBeginAndEndFilters.Text = "Toon regels met ERROR altijd in de begin en eind filters";
+            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error regels altijd in de begin en eind filters";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
-            // 
-            // ChkAutoToggleHierarchy
-            // 
-            ChkAutoToggleHierarchy.AutoSize = true;
-            ChkAutoToggleHierarchy.Location = new System.Drawing.Point(6, 128);
-            ChkAutoToggleHierarchy.Name = "ChkAutoToggleHierarchy";
-            ChkAutoToggleHierarchy.Size = new System.Drawing.Size(425, 19);
-            ChkAutoToggleHierarchy.TabIndex = 39;
-            ChkAutoToggleHierarchy.Text = "Schakel hierarchisch tonen automatisch in zodra er op sessie wordt gefilterd";
-            ChkAutoToggleHierarchy.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Image = Properties.Resources.help;
-            pictureBox3.Location = new System.Drawing.Point(431, 128);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new System.Drawing.Size(16, 16);
-            pictureBox3.TabIndex = 40;
-            pictureBox3.TabStop = false;
-            toolTip.SetToolTip(pictureBox3, resources.GetString("pictureBox3.ToolTip"));
             // 
             // UserControlGenericConfig
             // 
@@ -302,10 +302,10 @@ namespace LogScraper.Configuration
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
             GrpGeneralSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
