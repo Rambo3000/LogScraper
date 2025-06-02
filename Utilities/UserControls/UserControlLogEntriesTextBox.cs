@@ -1,16 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Export;
 using LogScraper.Log;
+using LogScraper.Log.Content;
+using LogScraper.Log.FlowTree;
+using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.Extensions;
+using ScintillaNET;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper.Utilities.UserControls
 {
     public partial class UserControlLogEntriesTextBox : UserControl
     {
-        private List<LogEntry> visibleLogEntries;
+        private List<LogEntry> VisibleLogEntries;
+        private LogMetadataFilterResult LogMetadataFilterResult;
+        private LogExportSettings LogExportSettings;
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private LogEntry logEntrySelected = null;
@@ -23,17 +31,64 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
         }
+        public void UpdateLogLayout(LogLayout logLayout)
+        {
+            CboLogContentType.Items.Clear();
+
+            if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
+            {
+                UpdatePnlViewModeSizeAndVisibility();
+                return;
+            }
+
+            List<LogContentProperty> logContentProperties = [.. logLayout.LogContentProperties.Where(item => item.IsBeginFlowTreeFilter)];
+            if (logContentProperties.Count > 0)
+            {
+                CboLogContentType.Items.AddRange([.. logContentProperties]);
+                CboLogContentType.SelectedIndex = 0;
+            }
+            UpdatePnlViewModeSizeAndVisibility();
+        }
 
         public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, LogExportSettings logExportSettings)
         {
-            visibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
-            ShowRawLog(LogDataExporter.GetLogEntriesAsString(visibleLogEntries, logExportSettings));
+            LogMetadataFilterResult = logMetadataFilterResultNew;
+            LogExportSettings = logExportSettings;
+            VisibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
+            ShowLogEntries();
+        }
+        private void ShowLogEntries()
+        {
+            this.SuspendDrawing();
+
+            // Prevent the log from scrolling
+            int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
+
+            if (VisibleLogEntries == null || LogExportSettings == null) return;
+
+            List<LogFlowTreeNode> logFlowTree = null;
+            if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
+            {
+                logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
+            }
+
+            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree));
             HighlightLines();
+
+            try
+            {
+                TxtLogEntries.FirstVisibleLine = firstVisibleLine;
+            }
+            catch
+            {
+                // Do nothing, do not interrupt the user
+            }
+            this.ResumeDrawing();
         }
 
         private void HighlightLines()
         {
-            if (visibleLogEntries != null && visibleLogEntries.Count > 0)
+            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
             {
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
@@ -71,7 +126,7 @@ namespace LogScraper.Utilities.UserControls
 
             int selectedIndexNew = -1;
             bool found = false;
-            foreach (LogEntry logEntry in visibleLogEntries)
+            foreach (LogEntry logEntry in VisibleLogEntries)
             {
                 selectedIndexNew++;
                 if (logEntry == logEntrySelected)
@@ -95,11 +150,90 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.Text = rawLog;
             TxtLogEntries.EmptyUndoBuffer();
             TxtLogEntries.ReadOnly = true;
+            UpdatePnlViewModePosition();
         }
 
         internal bool TrySearch(string searchQuery, bool wholeWord, bool caseSensitive, bool wrapAround, SearchDirection searchDirection)
         {
             return TxtLogEntries.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
+        }
+
+        private void TxtLogEntries_SizeChanged(object sender, System.EventArgs e)
+        {
+            UpdatePnlViewModePosition();
+        }
+        private void UpdatePnlViewModePosition()
+        {
+            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
+
+            // Adjust this offset based on your button size/margin
+            int offsetX = 4;
+
+            // If the vertical scrollbar is visible, adjust for its width
+            bool verticalScrollbarVisible = TxtLogEntries.ClientSize.Width < TxtLogEntries.Width;
+
+            int right = TxtLogEntries.Right - (verticalScrollbarVisible ? scrollbarWidth : 0) - PnlViewMode.Width - offsetX;
+
+            PnlViewMode.Location = new Point(right, TxtLogEntries.Top + offsetX);
+        }
+        private void UpdatePnlViewModeSizeAndVisibility()
+        {
+            PnlViewMode.Visible = CboLogContentType.Items.Count > 0;
+            // Hide the dropdownbox if there's only one item
+            PnlViewMode.Size = new Size((CboLogContentType.Items.Count == 1 ? 0 : CboLogContentType.Width + 4) + ChkShowFlowTree.Width + ChkShowNoTree.Width + 4, PnlViewMode.Height);
+            UpdatePnlViewModePosition();
+        }
+
+        private void ChkShowNoTree_CheckedChanged(object sender, System.EventArgs e)
+        {
+            UpdateShowTreeControls(false);
+        }
+
+        private void ChkShowFlowTree_CheckedChanged(object sender, System.EventArgs e)
+        {
+            UpdateShowTreeControls(true);
+        }
+
+        private void CboLogContentType_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            ShowLogEntries();
+        }
+
+        private LogContentProperty SelectedLogContentProperty
+        {
+            get
+            {
+                if (CboLogContentType.SelectedItem == null) return null;
+                return ((LogContentProperty)CboLogContentType.SelectedItem);
+            }
+        }
+
+        private bool updateShowTreeInProgress = false;
+        private void UpdateShowTreeControls(bool showTree)
+        {
+            if (updateShowTreeInProgress) return;
+
+            updateShowTreeInProgress = true;
+            if (SelectedLogContentProperty == null)
+            {
+                ChkShowNoTree.Checked = false;
+                ChkShowFlowTree.Checked = false;
+                ChkShowNoTree.Enabled = false;
+                ChkShowFlowTree.Enabled = false;
+                CboLogContentType.Enabled = false;
+                updateShowTreeInProgress = false;
+                return;
+            }
+
+            //Also show no tree if previously no tree was available
+            ChkShowFlowTree.Checked = showTree;
+            ChkShowFlowTree.Enabled = !showTree;
+            ChkShowNoTree.Checked = !showTree;
+            ChkShowNoTree.Enabled = showTree;
+            CboLogContentType.Enabled = showTree;
+
+            ShowLogEntries();
+            updateShowTreeInProgress = false;
         }
     }
 }

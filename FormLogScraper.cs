@@ -168,10 +168,10 @@ namespace LogScraper
             List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = UsrMetadataFilterOverview.GetMetadataPropertyAndValues();
 
             // Filter the log entries into the FilterResult and update the count
-            currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList);
+            currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList, (LogLayout)cboLogLayout.SelectedItem);
 
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
-            UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
+            UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
 
             WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
@@ -420,7 +420,7 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             UserControlContentFilter.UpdateLogLayout(logLayout);
             UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
-
+            UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
             Reset();
         }
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)

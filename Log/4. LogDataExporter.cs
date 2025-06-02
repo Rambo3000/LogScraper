@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using LogScraper.Export;
+using LogScraper.Log.Content;
+using LogScraper.Log.FlowTree;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
@@ -108,7 +111,8 @@ namespace LogScraper.Log
 
             for (int i = startIndex; i < endIndex; i++)
             {
-                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings);
+                LogFlowTreeNode logFlowTreeNode = null;
+                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, ref logFlowTreeNode, false);
             }
             return stringBuilder.ToString();
         }
@@ -120,50 +124,113 @@ namespace LogScraper.Log
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
         /// <param name="logExportSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings)
+        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes)
         {
+            bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();
+
+            LogFlowTreeNode currentTreeNode = null;
 
             foreach (LogEntry logEntry in logEntries)
             {
-                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings);
+                // Check if the flow tree content item is available
+                if (showTree && logEntry.LogContentProperties != null && logEntry.LogContentProperties.ContainsKey(logContentPropertyForFlowTree))
+                {
+                    // If the log entry has such a content property, find the corresponding tree node
+                    foreach (LogFlowTreeNode node in logFlowTreeNodes)
+                    {
+                        if (node.TryGetLogEntryNodeFromTree(logEntry, out LogFlowTreeNode matchedNode))
+                        {
+                            currentTreeNode = matchedNode;
+                            break;
+                        }
+                    }
+                }
+
+                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, ref currentTreeNode, showTree);
             }
 
             return stringBuilder.ToString();
         }
 
         /// <summary>
-        /// Appends a log entry and its metadata to the StringBuilder.
+        /// Appends a formatted log entry and its associated metadata to the specified <see cref="StringBuilder"/>.
         /// </summary>
-        /// <param name="stringbuilder">The StringBuilder to append to.</param>
-        /// <param name="logEntry">The log entry to append.</param>
-        /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
-        private static void AppendLogEntryToStringBuilder(StringBuilder stringbuilder, LogEntry logEntry, LogExportSettings logExportSettings)
+        /// <remarks>This method processes the log entry based on the provided export settings, including
+        /// whether to include or modify metadata, and optionally adds tree structure information if <paramref
+        /// name="showTree"/> is <see langword="true"/>. Additional log entries associated with the primary log entry
+        /// are also appended, with formatting applied as needed.</remarks>
+        /// <param name="stringBuilder">The <see cref="StringBuilder"/> to which the log entry will be appended.</param>
+        /// <param name="logEntry">The log entry to append, including its content and metadata.</param>
+        /// <param name="logExportSettings">The settings that control how the log entry is formatted and exported.</param>
+        /// <param name="treeNode">A reference to the current node in the log flow tree, used to determine hierarchical relationships between
+        /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
+        /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
+        /// langword="true"/>, tree-related prefixes are added to the log entry.</param>
+        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, ref LogFlowTreeNode treeNode, bool showTree)
         {
-            string logEntryMetadataFormatted = logEntry.Entry;
+            string text = logEntry.Entry;
 
-            // Modify the log entry metadata if the original metadata is not to be shown.
             if (!logExportSettings.ShowOriginalMetadata)
             {
                 if (logExportSettings.LogLayout.RemoveMetaDataCriteria != null)
                 {
-                    logEntryMetadataFormatted = RemoveTextByCriteria(logEntry.Entry, logExportSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
+                    text = RemoveTextByCriteria(text, logExportSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
                 }
-                // Insert metadata at the original metadata position.
-                logEntryMetadataFormatted = InsertMetadataIntoLogEntry(logEntryMetadataFormatted, logExportSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
+
+                text = InsertMetadataIntoLogEntry(text, logExportSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
             }
 
-            stringbuilder.AppendLine(logEntryMetadataFormatted);
+            string treePrefix = string.Empty;
+            if (showTree)
+            {
+                bool isBeginNode = treeNode != null && treeNode.Begin == logEntry;
+                bool isEndNode = treeNode != null && treeNode.End != null && treeNode.End == logEntry;
+                treePrefix = GetTreePrefix(treeNode, isBeginNode || isEndNode);
+                if (isEndNode) treeNode = treeNode.Parent;
+            }
 
-            // Append any additional log entries associated with the current log entry.
+            text = text.Insert(logExportSettings.LogLayout.StartIndexMetadata, treePrefix);
+
+            stringBuilder.AppendLine(text);
+
             if (logEntry.AdditionalLogEntries != null)
             {
-                for (int j = 0; j < logEntry.AdditionalLogEntries.Count; j++)
+                string additionLogEntryPrefix = string.Concat(logEntry.Entry.AsSpan(0, logExportSettings.LogLayout.StartIndexMetadata), " ", treePrefix);
+                foreach (string extra in logEntry.AdditionalLogEntries)
                 {
-                    stringbuilder.AppendLine(logEntry.AdditionalLogEntries[j]);
+                    if (showTree)
+                    {
+                        stringBuilder.AppendLine(extra.Insert(0, additionLogEntryPrefix));
+                    }
+                    else
+                    {
+                        stringBuilder.AppendLine(extra);
+                    }
                 }
             }
         }
+
+        /// <summary>
+        /// Generates a string prefix representing the depth of a node in a tree structure.
+        /// </summary>
+        /// <param name="node">The tree node for which the prefix is generated. Must not be <see langword="null"/>.</param>
+        /// <param name="isBeginOrEndNode">A value indicating whether the node represents a "begin" or "end" entry.  If <see langword="true"/>, the
+        /// prefix is calculated for the previous depth level.</param>
+        /// <returns>A string consisting of tab characters (<c>'\t'</c>) representing the depth of the node in the tree.  Returns
+        /// an empty string if the node is the root node or if the calculated depth is zero.</returns>
+        public static string GetTreePrefix(LogFlowTreeNode node, bool isBeginOrEndNode)
+        {
+            if (node == null || node.IsRootNode)
+                return string.Empty;
+
+            // Calculate the actual depth, because the begin and end entry we want to show on the previous depth
+            int depth = node.Depth + (isBeginOrEndNode ? -1 : 0);
+            if (depth == 0) return "";
+            return new string('\t', depth * 2);
+        }
+
+
 
         /// <summary>
         /// Inserts metadata to a log entry at the specified position.

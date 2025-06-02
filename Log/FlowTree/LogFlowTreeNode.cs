@@ -175,5 +175,43 @@ namespace LogScraper.Log.FlowTree
             foundNode = null;
             return false;
         }
+
+        /// <summary>
+        /// Attempts to find a child node with the specified log entry in the tree.
+        /// </summary>
+        /// <param name="logEntry">The log entry to search for.</param>
+        /// <param name="foundNode">The found node, if any.</param>
+        /// <returns>True if the node was found; otherwise, false.</returns>
+        public bool TryGetLogEntryNodeFromTree(LogEntry logEntry, out LogFlowTreeNode foundNode)
+        {
+            return TryGetLogEntryNodeFromTree(this, logEntry, out foundNode);
+        }
+
+        /// <summary>
+        /// Attempts to find a child node with the specified root node and content value in the tree.
+        /// </summary>
+        /// <param name="root">The root node to start the search from.</param>
+        /// <param name="logEntry">The log entry to search for.</param>
+        /// <param name="foundNode">The found node, if any.</param>
+        /// <returns>True if the node was found; otherwise, false.</returns>
+        private static bool TryGetLogEntryNodeFromTree(LogFlowTreeNode root, LogEntry logEntry, out LogFlowTreeNode foundNode)
+        {
+            if ((root.Begin.Equals(logEntry)) || (root.End != null && root.End.Equals(logEntry)))
+            {
+                foundNode = root;
+                return true;
+            }
+
+            foreach (LogFlowTreeNode child in root.Children)
+            {
+                if (TryGetLogEntryNodeFromTree(child, logEntry, out foundNode))
+                {
+                    return true;
+                }
+            }
+
+            foundNode = null;
+            return false;
+        }
     }
 }

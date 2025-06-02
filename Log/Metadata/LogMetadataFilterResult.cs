@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using LogScraper.Log.Content;
+using LogScraper.Log.FlowTree;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Metadata
 {
@@ -17,5 +20,12 @@ namespace LogScraper.Log.Metadata
         /// A list of metadata properties and their associated values for the filtered log entries.
         /// </summary>
         public List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValues { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of log flow trees, organized by log content properties.
+        /// </summary>
+        /// <remarks>This property provides a structured representation of log flow data, allowing for
+        /// efficient  access and manipulation of log flow trees based on specific log content properties.</remarks>
+        public IndexDictionary<LogContentProperty, List<LogFlowTreeNode>> LogFlowTrees { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace LogScraper
 
         private bool IsSessionMetadataFilteringActive = false;
 
-        private List<LogEntry> LogEntriesLatestVersion;
+        private LogMetadataFilterResult LogMetadataFilterResult;
 
         private LogEntryDisplayObject selectedBeginEntryDisplayObject = null;
 
@@ -87,11 +87,11 @@ namespace LogScraper
         #endregion
 
         #region Update the log entries in the listbox
-        public void UpdateLogEntries(List<LogEntry> logEntries, List<LogMetadataPropertyAndValues> filteredLogMetadataPropertyAndValues)
+        public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
         {
             // Determine if the session metadata filtering is active, to control the session filtering button
             IsSessionMetadataFilteringActive = false;
-            foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValues in filteredLogMetadataPropertyAndValues)
+            foreach (LogMetadataPropertyAndValues logMetadataPropertyAndValues in logMetadataFilterResult.LogMetadataPropertyAndValues)
             {
                 if (logMetadataPropertyAndValues.LogMetadataProperty.IsSessionData)
                 {
@@ -104,13 +104,13 @@ namespace LogScraper
                 }
             }
 
-            LogEntriesLatestVersion = logEntries;
+            LogMetadataFilterResult = logMetadataFilterResult;
             UpdateDisplayedLogEntries();
         }
         private void UpdateDisplayedLogEntries()
         {
             // If there are no log entries, clear the list and return
-            if (LogEntriesLatestVersion == null)
+            if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
             {
                 LstLogContent.Items.Clear();
                 BtnResetMetadataFilter_Click(null, null);
@@ -124,9 +124,9 @@ namespace LogScraper
             if (logContentProperty == null) return;
 
             // Create display objects for the log entries containing the log entry, content value, treenode, and error status
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogEntriesLatestVersion);
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries);
 
-            ValidateBeginEndContentFiltersOnNewLogEnties(LogEntriesLatestVersion);
+            ValidateBeginEndContentFiltersOnNewLogEnties(LogMetadataFilterResult.LogEntries);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
             
@@ -187,13 +187,6 @@ namespace LogScraper
             string filter = txtSearch.Text.Trim();
             if (filter == DefaulSearchtText) filter = null;
 
-            // Build the log tree flow beforehand, so we can use it to find the corresponding node for each log entry.
-            List<LogFlowTreeNode> treeNodes = null;
-            if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
-            {
-                treeNodes = LogFlowTreeBuilder.BuildLogFlowTree(logEntries, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
-            }
-
             List<LogEntryDisplayObject> logEntryDisplayObjects = [];
             int index = 0;
             // Iterate through the latest version of log entries
@@ -230,6 +223,9 @@ namespace LogScraper
                 {
                     if (!contentValue.Value.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
                 }
+
+                // Get the log tree flow beforehand, so we can use it to find the corresponding node for each log entry.
+                List<LogFlowTreeNode> treeNodes = LogMetadataFilterResult.LogFlowTrees[logContentProperty];
 
                 // In order to show the flow tree, we need to find the corresponding node in the tree
                 LogFlowTreeNode flowtreeNode = null;
@@ -280,7 +276,7 @@ namespace LogScraper
                 return;
             }
 
-            LogEntriesAreSingleSession = HasOnlyOneSession(LogEntriesLatestVersion);
+            LogEntriesAreSingleSession = HasOnlyOneSession(LogMetadataFilterResult.LogEntries);
             UpdateFilterOnMetadataControls();
 
             // Case 2: New list extends existing — add only new items
@@ -378,7 +374,7 @@ namespace LogScraper
 
         private void UpdateBeginEndFilterDisplayObjectsIndex()
         {
-            if (LogEntriesLatestVersion == null)
+            if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
             {
                 selectedBeginEntryDisplayObject = null;
                 selectedEndEntryDisplayObject = null;
@@ -763,12 +759,12 @@ namespace LogScraper
         {
             if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
 
-            if (LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0) return;
+            if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0) return;
 
             Dictionary<LogMetadataProperty, string> FilterOnMetadataPropertiesAndValues = [];
             foreach (LogMetadataProperty logMetadataProperty in LogMetadataPropertiesUserSession)
             {
-                if (LogEntriesLatestVersion[0].LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value))
+                if (LogMetadataFilterResult.LogEntries[0].LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value))
                 {
                     FilterOnMetadataPropertiesAndValues.Add(logMetadataProperty, value);
                 }
@@ -809,7 +805,7 @@ namespace LogScraper
         private void UpdateFilterOnMetadataControls()
         {
             // In case there is no session filtering or no log entries, disable the filter button
-            if (LogMetadataPropertiesUserSession.Count == 0 || LogEntriesLatestVersion == null || LogEntriesLatestVersion.Count == 0)
+            if (LogMetadataPropertiesUserSession.Count == 0 || LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
             {
                 BtnFilterOnSameMetadata.Enabled = false;
                 BtnFilterOnSameMetadata.Visible = true;

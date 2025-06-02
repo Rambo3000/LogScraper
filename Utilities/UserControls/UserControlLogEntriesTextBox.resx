@@ -117,4 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ChkShowNoTree.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAO5JREFUOE9t
+        k4kVhCAMRP9Uo2VY0NqjBVnEPhJywC4+A7kzI0JbCmkH1358Q0pdX1wZvdeQ2fwpY8rVaMHLAKH8q+zb
+        CbyCG+kCPYJn7GjsTJ3UW64NdQhe4CO4Mngr4oWHLitQ6X3FiAYjRg5zxXpeh7RQ0Un4aVF+j7EqxgFw
+        CxWEMXphdjgFr/fTAXpR40B6NLCOfSZ1bmquxNDkhn1H17QOt2XsiWFbSIyDdzsRL9INXIV3vprjGx/O
+        w07t4STqg7iSuEai2l0IEudqldb72yDMr9796Qxt/cPqlMJfi5ohS/zae1+zQHZVDvsFyvgzx7ZKcb8A
+        AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="ChkShowFlowTree.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAARFJREFUOE9t
+        k4sRwyAMQ/XWyRTdLPOQDJHOwxLp+cP3qtSHC7JiBJH+gWWYcv5NOk7QV5oCnSunZSEy6xiKULXCFKqg
+        kvSVDDkXT8Mt6ep0yP9z4djBWhqwgrcF4pW4wMUWcvdikziQPsqwHHG0RdMZ2N/dEO0dwsX2BfPjFXgQ
+        nZbO804jNWKVG0mGaxTgkYgu0ZPcDfGmmoVfIgwF8Yi+TRfo7rRWMDMZ7k/22Xw3Obaia3K0F1gHS2u5
+        aoZ+yA4Ay7vJM/PGzt89yRuX8+OYm4ms9yQRxGwXG12BbWvGawL+BifZz1t1t8mIUyqCaqbm6Vi+n8J8
+        4zL3W+jiZyuO0b8Z/9gGpqOYhcYQXY61wA9RxEeXXIzogQAAAABJRU5ErkJggg==
+</value>
+  </data>
 </root>
