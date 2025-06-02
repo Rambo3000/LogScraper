@@ -351,6 +351,7 @@ namespace LogScraper
                 return;
             }
 
+            bool selectedEntryFound = false;
             // Iterate through the new log entries and select the previously selected log entry if it exists
             foreach (LogEntryDisplayObject logEntryDisplayObject in newLogEntries)
             {
@@ -360,6 +361,7 @@ namespace LogScraper
                     {
                         ignoreSelectedItemChanged = true;
                         LstLogContent.SelectedItem = logEntryDisplayObject;
+                        selectedEntryFound = true;
                     }
                     finally
                     {
@@ -368,8 +370,12 @@ namespace LogScraper
                     break;
                 }
             }
+
             // Resume drawing of the list
             LstLogContent.ResumeDrawing();
+
+            // If the selected item cannot be reselected raise the event that the selection changed
+            if (!selectedEntryFound) SelectedItemChanged(this, EventArgs.Empty);
         }
 
         private void UpdateBeginEndFilterDisplayObjectsIndex()
