@@ -129,7 +129,7 @@ namespace LogScraper
             ValidateBeginEndContentFiltersOnNewLogEnties(LogMetadataFilterResult.LogEntries);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
-            
+
             UpdateBeginEndFilterDisplayObjectsIndex();
         }
 
@@ -162,7 +162,7 @@ namespace LogScraper
 
 
             if (selectedEndEntryDisplayObject == null) return;
-            
+
             bool endFilterFound = false;
             foreach (LogEntry logEntry in logEntries)
             {
@@ -686,21 +686,6 @@ namespace LogScraper
                 txtSearch.ForeColor = SystemColors.ControlText;
             }
         }
-        private void BtnReset_Click(object sender, EventArgs e)
-        {
-            this.SuspendDrawing();
-            if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
-
-            //Reset the top end end filters
-            selectedBeginEntryDisplayObject = null;
-            selectedEndEntryDisplayObject = null;
-            OnBeginEntryChanged(e);
-            OnEndEntryChanged(e);
-            LstLogContent.Invalidate();
-            UpdateTopBottomControls();
-
-            this.ResumeDrawing();
-        }
 
         private void TxtSearch_Leave(object sender, EventArgs e)
         {
@@ -722,6 +707,22 @@ namespace LogScraper
                 DefaulSearchtText = string.Format(DefaulSearchtTextFormat, SelectedLogContentProperty.Description.ToLower());
                 if (resetText) txtSearch.Text = DefaulSearchtText;
             }
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            this.SuspendDrawing();
+            if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
+
+            //Reset the top end end filters
+            selectedBeginEntryDisplayObject = null;
+            selectedEndEntryDisplayObject = null;
+            OnBeginEntryChanged(e);
+            OnEndEntryChanged(e);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+
+            this.ResumeDrawing();
         }
         private bool ignoreSelectedItemChanged = false;
 
@@ -777,10 +778,16 @@ namespace LogScraper
             }
             if (FilterOnMetadataPropertiesAndValues.Count > 0) FilterOnMetadata?.Invoke(FilterOnMetadataPropertiesAndValues, false);
         }
+
         private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
         {
             UpdateShowTreeControls(true);
         }
+        private void ChkShowNoTree_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateShowTreeControls(false);
+        }
+
         private bool updateShowTreeInProgress = false;
         private void UpdateShowTreeControls(bool showTree)
         {
@@ -808,6 +815,52 @@ namespace LogScraper
             LstLogContent.ResumeDrawing();
             updateShowTreeInProgress = false;
         }
+
+        private void BtnSelectBegin_Click(object sender, EventArgs e)
+        {
+            SelectLogEntryBegin();
+        }
+        public void SelectLogEntryBegin()
+        {
+            if (SelectedLogEntryDisplayObject == null) return;
+
+            selectedBeginEntryDisplayObject = SelectedLogEntryDisplayObject;
+
+            if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index)
+            {
+                selectedEndEntryDisplayObject = null;
+            }
+            OnBeginEntryChanged(null);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+        }
+
+        private void BtnSelectEnd_Click(object sender, EventArgs e)
+        {
+            SelectLogEntryEnd();
+        }
+
+        public void SelectLogEntryEnd()
+        {
+            if (SelectedLogEntryDisplayObject == null) return;
+
+            selectedEndEntryDisplayObject = SelectedLogEntryDisplayObject;
+
+            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index)
+            {
+                selectedBeginEntryDisplayObject = null;
+            }
+
+            OnEndEntryChanged(null);
+            LstLogContent.Invalidate();
+            UpdateTopBottomControls();
+        }
+        private void UpdateTopBottomControls()
+        {
+            BtnSelectTop.Enabled = LstLogContent.SelectedIndex > 0;
+            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1 && LstLogContent.SelectedIndex != LstLogContent.Items.Count - 1;
+            BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
+        }
         private void UpdateFilterOnMetadataControls()
         {
             // In case there is no session filtering or no log entries, disable the filter button
@@ -826,56 +879,5 @@ namespace LogScraper
             BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
         }
         #endregion
-
-        private void ChkShowNoTree_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateShowTreeControls(false);
-        }
-        private void UpdateTopBottomControls()
-        {
-            BtnSelectTop.Enabled = LstLogContent.SelectedIndex > 0;
-            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1 && LstLogContent.SelectedIndex != LstLogContent.Items.Count - 1;
-            BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
-        }
-
-        public void ActivatieLogEntryBegin()
-        {
-            if (SelectedLogEntryDisplayObject == null) return;
-
-            selectedBeginEntryDisplayObject = SelectedLogEntryDisplayObject;
-
-            if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index)
-            {
-                selectedEndEntryDisplayObject = null;
-            }
-            OnBeginEntryChanged(null);
-            LstLogContent.Invalidate();
-            UpdateTopBottomControls();
-        }
-        private void BtnSelectBegin_Click(object sender, EventArgs e)
-        {
-            ActivatieLogEntryBegin();
-        }
-
-        public void ActivatieLogEntryEnd()
-        {
-            if (SelectedLogEntryDisplayObject == null) return;
-
-            selectedEndEntryDisplayObject = SelectedLogEntryDisplayObject;
-
-            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index)
-            {
-                selectedBeginEntryDisplayObject = null;
-            }
-
-            OnEndEntryChanged(null);
-            LstLogContent.Invalidate();
-            UpdateTopBottomControls();
-        }
-
-        private void BtnSelectEnd_Click(object sender, EventArgs e)
-        {
-            ActivatieLogEntryEnd();
-        }
     }
 }

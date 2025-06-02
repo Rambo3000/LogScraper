@@ -482,14 +482,14 @@ namespace LogScraper
             // CTRL-B enables the begin content filter
             if (keyData == (Keys.Control | Keys.B))
             {
-                UserControlContentFilter.ActivatieLogEntryBegin();
+                UserControlContentFilter.SelectLogEntryBegin();
                 return true; 
             }
 
             // CTRL-E enables the end content filter
             if (keyData == (Keys.Control | Keys.E))
             {
-                UserControlContentFilter.ActivatieLogEntryEnd();
+                UserControlContentFilter.SelectLogEntryEnd();
                 return true;
             }
 
