@@ -858,8 +858,8 @@ namespace LogScraper
         }
         private void UpdateTopBottomControls()
         {
-            BtnSelectTop.Enabled = LstLogContent.SelectedIndex > 0;
-            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1 && LstLogContent.SelectedIndex != LstLogContent.Items.Count - 1;
+            BtnSelectTop.Enabled = LstLogContent.SelectedIndex != -1;
+            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1;
             BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
         }
         private void UpdateFilterOnMetadataControls()
