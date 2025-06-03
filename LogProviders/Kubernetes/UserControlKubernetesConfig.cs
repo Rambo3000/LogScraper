@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using LogScraper.Credentials;
-using LogScraper.Sources.Adapters.Http;
-using LogScraper.Sources.Adapters;
+using System.Xml.Linq;
 using LogScraper.Configuration;
+using LogScraper.Credentials;
 using LogScraper.Log.Layout;
+using LogScraper.Sources.Adapters;
+using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -387,19 +388,19 @@ namespace LogScraper.LogProviders.Kubernetes
                 Description = selected.Description + " (kopie)",
                 BaseUrl = selected.BaseUrl,
                 ClusterId = selected.ClusterId,
-                Namespaces = [.. selected.Namespaces]
+                Namespaces = []
             };
-            _clusters.Add(cluster);
-
-            foreach (KubernetesNamespace ns in cluster.Namespaces)
+            foreach (KubernetesNamespace kubernetesNamespace in selected.Namespaces)
             {
-                KubernetesNamespace nsNew = new()
+                KubernetesNamespace newSpace = new()
                 {
-                    Description = ns.Description,
-                    Name = ns.Name
+                    Description = kubernetesNamespace.Description,
+                    Name = kubernetesNamespace.Name
                 };
-                _namespaces.Add(nsNew);
+                cluster.Namespaces.Add(newSpace);
+                _namespaces.Add(newSpace);
             }
+            _clusters.Add(cluster);
 
             LstClusters.SelectedItem = cluster;
             LstNamespaces_SelectedIndexChanged(null, null);
