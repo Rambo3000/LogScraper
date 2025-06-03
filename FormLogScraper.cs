@@ -119,9 +119,10 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             try
             {
+                bool newLogEntriesReceived = false;
                 try
                 {
-                    RawLogParser.ParseLogEntriesIntoCollection(rawLog, LogCollection.Instance, logLayout);
+                    newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogCollection.Instance, logLayout);
                 }
                 catch (Exception)
                 {
@@ -130,11 +131,14 @@ namespace LogScraper
                     throw;
                 }
 
-                LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, LogCollection.Instance);
+                if (newLogEntriesReceived)
+                {
+                    LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, LogCollection.Instance);
 
-                UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
-                FilterLogEntries();
-                RefreshLogStatistics();
+                    UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
+                    FilterLogEntries();
+                    RefreshLogStatistics();
+                }
                 HandleErrorMessages(string.Empty, true);
                 FormRecord.Instance.UpdateButtonsFromMainWindow();
                 lastTrailTime = updatedLastTrailTime;
@@ -190,7 +194,6 @@ namespace LogScraper
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
             LogExportWorkerManager.WriteToFile(logMetadataFilterResult, logExportSettings);
         }
-
         #endregion
 
         #region Erase and reset

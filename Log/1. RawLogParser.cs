@@ -30,15 +30,16 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Parses the raw log entries and inserts them into the provided LogCollection based on the specified LogLayout.
+        /// Tries to parse the raw log entries and inserts them into the provided LogCollection based on the specified LogLayout.
         /// </summary>
         /// <param name="rawLogEntries">Array of raw log entries to process.</param>
         /// <param name="logCollection">The collection where processed log entries will be stored.</param>
         /// <param name="logLayout">The layout defining the structure and format of the log entries.</param>
-        public static void ParseLogEntriesIntoCollection(string[] rawLogEntries, LogCollection logCollection, LogLayout logLayout)
+        /// <returns>Returns true if the parsing was successful and log entries were added to the collection; returns false if no entries were added to the collection.</returns>
+        public static bool TryParseAndAppendLogEntries(string[] rawLogEntries, LogCollection logCollection, LogLayout logLayout)
         {
-            if (rawLogEntries == null) return;
-            if (rawLogEntries.Length == 0) return;
+            if (rawLogEntries == null) return false;
+            if (rawLogEntries.Length == 0) return false;
             if (string.IsNullOrEmpty(logLayout.DateTimeFormat)) throw new Exception("The date time format is not provided for the given log layout");
 
             // Transform log entries using the provided transformers in the layout.
@@ -51,10 +52,15 @@ namespace LogScraper.Log
             }
 
             // Determine the last log entry and the starting index for extracting new log entries.
-            GetLastLogEntryAndNewBeginningIndex(rawLogEntries, logCollection, out int logEntriesStartIndex);
+            int startIndex = GetLogEntriesStartIndex(rawLogEntries, logCollection);
 
             // Parse the timestamp in the log entries starting from the determined index.
-            ParsedLogLine[] parsedLogLines = PreParseLogTimestamps(rawLogEntries, logEntriesStartIndex, logLayout.DateTimeFormat);
+            ParsedLogLine[] parsedLogLines = PreParseLogTimestamps(rawLogEntries, startIndex, logLayout.DateTimeFormat);
+
+            if (parsedLogLines.Length == 0)
+            {
+                return false;
+            }
 
             // Combine additional log entries into the last log entry if applicable and add the log entries to the collection.
             BuildLogEntriesFromParsedLines(parsedLogLines, logCollection);
@@ -68,6 +74,7 @@ namespace LogScraper.Log
                 message += $"Expected date time format {logLayout.DateTimeFormat} at the start of log entries but instead found (for example) " + rawLogEntries[0][..maxLength];
                 throw new Exception(message);
             }
+            return true;
         }
 
         /// <summary>
@@ -75,13 +82,12 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="rawLogEntries">Array of log entries to process.</param>
         /// <param name="logCollection">The collection containing existing log entries.</param>
-        /// <param name="logEntriesStartIndex">The index in the rawLogEntries array where new log entries start.</param>
-        private static void GetLastLogEntryAndNewBeginningIndex(string[] rawLogEntries, LogCollection logCollection, out int logEntriesStartIndex)
+        private static int GetLogEntriesStartIndex(string[] rawLogEntries, LogCollection logCollection)
         {
-            logEntriesStartIndex = 0;
-
             // Retrieve the last log entry from the collection, if it exists.
-            if (logCollection.LogEntries.Count == 0) return;
+            if (logCollection.LogEntries.Count == 0) return 0;
+
+            int startIndex = 0;
 
             // Find the index of the last log entry in the new log entries array.
             LogEntry lastLogEntry = logCollection.LogEntries.Last();
@@ -92,10 +98,11 @@ namespace LogScraper.Log
 
                 if (rawLogEntries[i] == lastLogEntry.Entry)
                 {
-                    logEntriesStartIndex = i + 1;
+                    startIndex = i + 1;
                     break;
                 }
             }
+            return startIndex;
         }
         /// <summary>
         /// Parses a subset of raw log entries to extract timestamps based on the specified date-time format.
@@ -120,7 +127,7 @@ namespace LogScraper.Log
                 string rawEntry = rawLogEntries[startIndex + i];
 
                 // Skip empty log entries
-                if (rawEntry == "")
+                if (rawEntry == string.Empty)
                 {
                     parsedLines[i] = null;
                     return;
@@ -135,6 +142,10 @@ namespace LogScraper.Log
                     parsedLines[i] = new ParsedLogLine(rawEntry, false, default);
                 }
             });
+
+            // Handle the case when only a trailing empty line is present in the new set of log entries.
+            // This happens often in logs with incremental reading, where the log is not changed since the last readout
+            if (length == 1 && parsedLines[0] == null) return [];
 
             return parsedLines;
         }

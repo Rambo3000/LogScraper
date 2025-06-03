@@ -529,7 +529,7 @@ namespace LogScraper.Log
                         throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
                     }
 
-                    RawLogParser.ParseLogEntriesIntoCollection([TxtExampleLogEntry.Text], logCollection, logLayout);
+                    RawLogParser.TryParseAndAppendLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout);
                     logLayout.LogContentProperties.AssignIndexes();
                     logLayout.LogMetadataProperties.AssignIndexes();
                     LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
