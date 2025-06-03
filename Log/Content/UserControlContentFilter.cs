@@ -289,7 +289,8 @@ namespace LogScraper
                 foreach (var item in LstLogContent.Items)
                 {
                     if (item is not LogEntryDisplayObject logEntryDisplayObject) continue;
-                    logEntryDisplayObject.FlowTreeNode = newLogEntries.Where(entry => entry.OriginalLogEntry.Equals(logEntryDisplayObject.OriginalLogEntry)).Single().FlowTreeNode;
+                    // Use the first item in the Linq expression as cases have been found where more than one log entry matches
+                    logEntryDisplayObject.FlowTreeNode = newLogEntries.Where(entry => entry.OriginalLogEntry.Equals(logEntryDisplayObject.OriginalLogEntry)).First().FlowTreeNode;
                     logEntryDisplayObject.Index = index;
                     index++;
                 }
