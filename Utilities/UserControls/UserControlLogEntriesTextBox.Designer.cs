@@ -54,6 +54,9 @@
             // 
             ChkShowNoTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
+            ChkShowNoTree.Checked = true;
+            ChkShowNoTree.CheckState = System.Windows.Forms.CheckState.Checked;
+            ChkShowNoTree.Enabled = false;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
             ChkShowNoTree.Location = new System.Drawing.Point(111, 2);
             ChkShowNoTree.Name = "ChkShowNoTree";
