@@ -31,6 +31,7 @@
             lblVersion = new System.Windows.Forms.Label();
             LblAuthor = new System.Windows.Forms.Label();
             GrpAbout = new System.Windows.Forms.GroupBox();
+            LinkComponents = new System.Windows.Forms.LinkLabel();
             LblDisclaimer = new System.Windows.Forms.Label();
             LblRuntime = new System.Windows.Forms.Label();
             LblDisclaimerFullText = new System.Windows.Forms.Label();
@@ -60,6 +61,7 @@
             // 
             // GrpAbout
             // 
+            GrpAbout.Controls.Add(LinkComponents);
             GrpAbout.Controls.Add(LblDisclaimer);
             GrpAbout.Controls.Add(LblRuntime);
             GrpAbout.Controls.Add(LblDisclaimerFullText);
@@ -76,6 +78,18 @@
             GrpAbout.TabIndex = 3;
             GrpAbout.TabStop = false;
             GrpAbout.Text = "Over Log Scraper";
+            // 
+            // LinkComponents
+            // 
+            LinkComponents.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            LinkComponents.AutoSize = true;
+            LinkComponents.Location = new System.Drawing.Point(8, 402);
+            LinkComponents.Name = "LinkComponents";
+            LinkComponents.Size = new System.Drawing.Size(378, 15);
+            LinkComponents.TabIndex = 8;
+            LinkComponents.TabStop = true;
+            LinkComponents.Text = "Gebruikt ScintillaNET (scintilla.org) en iconen van pictogrammers.com";
+            LinkComponents.LinkClicked += LinkComponents_LinkClicked;
             // 
             // LblDisclaimer
             // 
@@ -156,5 +170,6 @@
         private System.Windows.Forms.Label LblRuntime;
         private System.Windows.Forms.Label LblAuthor;
         private System.Windows.Forms.Label LblDisclaimer;
+        private System.Windows.Forms.LinkLabel LinkComponents;
     }
 }

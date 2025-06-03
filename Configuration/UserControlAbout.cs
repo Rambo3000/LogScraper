@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using LogScraper.Properties;
 using LogScraper.Utilities;
@@ -15,6 +16,10 @@ namespace LogScraper.Configuration
             if (version.Contains('+')) version = version[..version.IndexOf('+')];
 
             lblVersion.Text = "v" + version;
+
+            LinkComponents.Links.Clear();
+            LinkComponents.Links.Add(23, 13, "https://scintilla.org");
+            LinkComponents.Links.Add(52, 18, "https://pictogrammers.com/library/mdi/");
 
             ApplyLocalization();
         }
@@ -61,6 +66,11 @@ namespace LogScraper.Configuration
             LblAuthor.Left = center - LblAuthor.Width / 2;
             LinkGitHub.Left = center - LinkGitHub.Width / 2;
             BtnUpdate.Left = center - BtnUpdate.Width / 2;
+        }
+
+        private void LinkComponents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Link.LinkData.ToString()) { UseShellExecute = true });
         }
     }
 }
