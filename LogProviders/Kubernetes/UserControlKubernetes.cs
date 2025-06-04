@@ -186,7 +186,7 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             KubernetesTimespan newTimeSpan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem;
             if (cboKubernetesPod.SelectedIndex != -1 && 
-                previousTimeSpan != null && 
+                previousTimeSpan != null && previousTimeSpan != KubernetesTimespan.Everything &&
                 ( newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
                 MessageBox.Show("Om oudere loggegevens op te halen moeten het log eerst gewist worden, wil je dit doen?", "Log wissen", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
