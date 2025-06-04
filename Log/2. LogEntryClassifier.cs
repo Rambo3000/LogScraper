@@ -196,8 +196,10 @@ namespace LogScraper.Log
         /// <returns>The extracted value, or null if the criteria are not met.</returns>
         private static string ExtractValue(string logEntry, FilterCriteria criteria, bool afterPhraseManditory, int startPosition)
         {
+            bool isAfterPhraseNullOrEmpty = string.IsNullOrEmpty(criteria.AfterPhrase);
+
             // Return null if the criteria are invalid or mandatory phrases are missing.
-            if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && string.IsNullOrEmpty(criteria.AfterPhrase)) return null;
+            if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && isAfterPhraseNullOrEmpty) return null;
 
             // Find the start index of the before phrase.
             int startIndex = logEntry.IndexOf(criteria.BeforePhrase, startPosition);
@@ -208,10 +210,10 @@ namespace LogScraper.Log
             startIndex += criteria.BeforePhrase.Length;
 
             // Find the end index of the after phrase, if it exists.
-            int endIndex = criteria.AfterPhrase == null ? -1 : logEntry.IndexOf(criteria.AfterPhrase, startIndex);
+            int endIndex = isAfterPhraseNullOrEmpty ? -1 : logEntry.IndexOf(criteria.AfterPhrase, startIndex);
 
-            // Handle cases where the after phrase is mandatory but not found.
-            if (afterPhraseManditory && endIndex == -1) return null;
+            // Handle cases where the after phrase is not found but it is mandatory or given.
+            if ((afterPhraseManditory || !isAfterPhraseNullOrEmpty) && endIndex == -1) return null;
 
             // Use the end of the log entry if no after phrase is specified.
             if (endIndex == -1) endIndex = logEntry.Length;
