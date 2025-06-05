@@ -522,6 +522,8 @@ namespace LogScraper
             e.DrawFocusRectangle();
         }
 
+        private static readonly Pen PenForDrawingLines = new(Color.Gray) { DashStyle = DashStyle.Dot };
+
         private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g, bool isSelected, bool isOutOfScope)
         {
             // Indentation
@@ -532,27 +534,24 @@ namespace LogScraper
             int indentPixels = treeNodeDepth * indentPerLevel; // tweak as needed
             int textX = treeX + indentPixels - indentPerLevel / 2;
 
-            // Draw tree line(s)
-            using (Pen pen = new(Color.Gray) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot })
+            LogFlowTreeNode currentNode = item.FlowTreeNode;
+            for (int i = treeNodeDepth - 1; i >= 0; i--)
             {
-                LogFlowTreeNode currentNode = item.FlowTreeNode;
-                for (int i = treeNodeDepth - 1; i >= 0; i--)
+                // Draw a vertical line for each parent node if it has older siblings
+                if (currentNode.HasOlderSibling)
                 {
-                    // Draw a vertical line for each parent node if it has older siblings
-                    if (currentNode.HasOlderSibling)
-                    {
-                        int lineX = treeX + i * indentPerLevel;
-                        g.DrawLine(pen, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom);
-                    }
-                    // Draw half a vertical line for the current value, if it does not have a next sibling
-                    else if (i == treeNodeDepth - 1 && currentNode.IsLastSibling)
-                    {
-                        int lineX = treeX + i * indentPerLevel;
-                        g.DrawLine(pen, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom - (e.Bounds.Bottom - e.Bounds.Top) / 2);
-                    }
-                    currentNode = currentNode.Parent;
+                    int lineX = treeX + i * indentPerLevel;
+                    g.DrawLine(PenForDrawingLines, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom);
                 }
+                // Draw half a vertical line for the current value, if it does not have a next sibling
+                else if (i == treeNodeDepth - 1 && currentNode.IsLastSibling)
+                {
+                    int lineX = treeX + i * indentPerLevel;
+                    g.DrawLine(PenForDrawingLines, lineX, e.Bounds.Top, lineX, e.Bounds.Bottom - (e.Bounds.Bottom - e.Bounds.Top) / 2);
+                }
+                currentNode = currentNode.Parent;
             }
+
             // Draw the horizontal line just in front of the value text, indicating its connection in the tree
             if (!item.FlowTreeNode.IsRootNode)
             {
@@ -560,8 +559,7 @@ namespace LogScraper
                 int lineStartX = treeX + indentPixels - 10;
                 int lineEndX = textX; // small gap before text
 
-                using Pen pen = new(Color.Gray) { DashStyle = DashStyle.Dot };
-                g.DrawLine(pen, lineStartX, lineY, lineEndX, lineY);
+                g.DrawLine(PenForDrawingLines, lineStartX, lineY, lineEndX, lineY);
             }
 
             // Prepare fonts and brushes
