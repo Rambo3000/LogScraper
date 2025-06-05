@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using LogScraper.SourceAdapters;
 
@@ -111,11 +110,7 @@ namespace LogScraper.Sources.Adapters.Http
                 // Retrieve credentials from the credential store if not already set.
                 AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
 
-                using var client = new HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-
-                // Add authentication headers to the HTTP client.
-                CreateAuthenticationHeader(client, AuthenticationData);
+                HttpClient client = await HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, timeoutSeconds);
 
                 return await client.GetAsync(apiUrl + GetTrailQuery());
             }
@@ -174,11 +169,7 @@ namespace LogScraper.Sources.Adapters.Http
                 // Retrieve credentials from the credential store if not already set.
                 AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
 
-                using var client = new HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-
-                // Add authentication headers to the HTTP client.
-                CreateAuthenticationHeader(client, AuthenticationData);
+                HttpClient client = HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, timeoutSeconds).Result;
 
                 return client.GetAsync(apiUrl + GetTrailQuery()).Result;
             }
@@ -187,33 +178,6 @@ namespace LogScraper.Sources.Adapters.Http
                 throw new Exception("Connection failed with error: " + e.Message);
             }
         }
-
-        /// <summary>
-        /// Adds the appropriate authentication headers to the HTTP client based on the authentication data.
-        /// </summary>
-        /// <param name="client">The <see cref="HttpClient"/> to add headers to.</param>
-        /// <param name="authenticationData">The authentication data to use for creating headers.</param>
-        private static void CreateAuthenticationHeader(HttpClient client, HttpAuthenticationData authenticationData)
-        {
-            switch (authenticationData.Type)
-            {
-                case HttpAuthenticationType.ApiKey:
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authenticationData.Key}:{authenticationData.Secret}");
-                    break;
-                case HttpAuthenticationType.BearerToken:
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authenticationData.BearerToken}");
-                    break;
-                case HttpAuthenticationType.BasicAuthentication:
-                    var basicAuth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{authenticationData.UserName}:{authenticationData.Password}"));
-                    client.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
-                    break;
-                case HttpAuthenticationType.None:
-                default:
-                    // No additional headers for None AuthenticationData type.
-                    break;
-            }
-        }
-
         /// <summary>
         /// Converts an HTTP status code to a descriptive string.
         /// </summary>

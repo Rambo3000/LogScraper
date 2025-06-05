@@ -57,5 +57,34 @@
         /// This property is optional and may be used in conjunction with <see cref="Key"/> for certain API key-based authentication schemes.
         /// </remarks>
         public string Secret { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL of the login page.
+        /// </summary>
+        /// <remarks>
+        /// This property is used when <see cref="Type"/> is set to <see cref="HttpAuthenticationType.FormLoginWithCsrf"/>.
+        /// </remarks>
+        public string LoginPageUrl { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the user-defined field.
+        /// </summary>
+        /// <remarks>
+        /// This property is used when <see cref="Type"/> is set to <see cref="HttpAuthenticationType.FormLoginWithCsrf"/>.
+        /// </remarks>
+        public string UserFieldName { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the password field used in authentication forms.
+        /// </summary>
+        /// <remarks>
+        /// This property is used when <see cref="Type"/> is set to <see cref="HttpAuthenticationType.FormLoginWithCsrf"/>.
+        /// </remarks>
+        public string PasswordFieldName { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the CSRF (Cross-Site Request Forgery) field used in form submissions.
+        /// </summary>
+        /// <remarks>
+        /// This property is used when <see cref="Type"/> is set to <see cref="HttpAuthenticationType.FormLoginWithCsrf"/>.
+        /// </remarks>
+        public string CsrfFieldName { get; set; }
     }
 }

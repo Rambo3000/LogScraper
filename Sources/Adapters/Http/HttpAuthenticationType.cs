@@ -37,6 +37,14 @@
         /// <remarks>
         /// Requires the <see cref="HttpAuthenticationData.UserName"/> and <see cref="HttpAuthenticationData.Password"/>.
         /// </remarks>
-        BasicAuthentication
+        BasicAuthentication,
+
+        /// <summary>
+        /// Represents a form-based login mechanism that includes CSRF (Cross-Site Request Forgery) protection.
+        /// </summary>
+        /// <remarks>
+        /// Requires the <see cref="HttpAuthenticationData.UserName"/> and <see cref="HttpAuthenticationData.Password"/>.
+        /// </remarks>
+        FormLoginWithCsrf,
     }
 }
