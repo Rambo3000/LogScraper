@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
-using LogScraper.Log;
-using LogScraper.Sources.Adapters.Http;
 using System.ComponentModel;
+using System.Windows.Forms;
+using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.SourceAdapters
 {
@@ -31,6 +30,7 @@ namespace LogScraper.SourceAdapters
                     HttpAuthenticationType.None => "Geen authenticatie",
                     HttpAuthenticationType.BearerToken => "Bearer token",
                     HttpAuthenticationType.BasicAuthentication => "Basic authentication",
+                    HttpAuthenticationType.FormLoginWithCsrf => "Inloggen via webformulier",
                     _ => string.Empty,
                 };
             }
@@ -45,6 +45,7 @@ namespace LogScraper.SourceAdapters
             //cboAuthenticationType.Items.Add(new AuthenticationTypeWithDescription(HttpAuthenticationType.ApiKey));
             cboAuthenticationType.Items.Add(new AuthenticationTypeWithDescription(HttpAuthenticationType.BasicAuthentication));
             cboAuthenticationType.Items.Add(new AuthenticationTypeWithDescription(HttpAuthenticationType.BearerToken));
+            cboAuthenticationType.Items.Add(new AuthenticationTypeWithDescription(HttpAuthenticationType.FormLoginWithCsrf));
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -107,7 +108,7 @@ namespace LogScraper.SourceAdapters
                 MessageBox.Show("Geef de key en het secret op", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (authenticationType == HttpAuthenticationType.BasicAuthentication && (string.IsNullOrEmpty(txtUsername.Text) || string.IsNullOrEmpty(txtPassword.Text)))
+            if ((authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf) && (string.IsNullOrEmpty(txtUsername.Text) || string.IsNullOrEmpty(txtPassword.Text)))
             {
                 MessageBox.Show("Geef de gebruikersnaam en het wachtwoord op", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -121,6 +122,8 @@ namespace LogScraper.SourceAdapters
         {
             HttpAuthenticationType authenticationType = ((AuthenticationTypeWithDescription)cboAuthenticationType.SelectedItem).AuthenticationType;
 
+            cboAuthenticationType.Enabled = authenticationType != HttpAuthenticationType.FormLoginWithCsrf;
+
             lblBearerToken.Visible = authenticationType == HttpAuthenticationType.BearerToken;
             txtBearerToken.Visible = authenticationType == HttpAuthenticationType.BearerToken;
 
@@ -129,10 +132,10 @@ namespace LogScraper.SourceAdapters
             txtKey.Visible = authenticationType == HttpAuthenticationType.ApiKey;
             txtSecret.Visible = authenticationType == HttpAuthenticationType.ApiKey;
 
-            lblPassword.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication;
-            lblUsername.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication;
-            txtPassword.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication;
-            txtUsername.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication;
+            lblPassword.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf;
+            lblUsername.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf;
+            txtPassword.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf;
+            txtUsername.Visible = authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf;
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)

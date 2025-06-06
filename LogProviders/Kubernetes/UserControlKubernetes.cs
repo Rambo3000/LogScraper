@@ -62,7 +62,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 url = KubernetesHelper.GetUrlForPodLog(kubernetesCluster, kubernetesNamespace, kubernetesPod);
             }
 
-            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.Kubernetes, lastTrailTime);
+            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime);
         }
 
         private void PopulateKubernetesClusters()

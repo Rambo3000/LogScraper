@@ -1,4 +1,6 @@
-﻿namespace LogScraper.LogProviders.Runtime
+﻿using LogScraper.Sources.Adapters.Http;
+
+namespace LogScraper.LogProviders.Runtime
 {
     /// <summary>
     /// Represents a configuration for downloading logs directly from a specific URL.
@@ -15,6 +17,11 @@
         /// Gets or sets the URL for accessing the runtime logs of this instance.
         /// </summary>
         public string UrlRuntimeLog { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HTTP authentication settings used to configure authentication for HTTP requests.
+        /// </summary>
+        public HttpAuthenticationSettings HttpAuthenticationSettings { get; set; }
 
         /// <summary>
         /// Returns the string representation of the endpoint.

@@ -22,9 +22,9 @@ namespace LogScraper.Sources.Adapters
         /// <param name="trailType">The type of trailing log query to use (e.g., Kubernetes).</param>
         /// <param name="lastTrailTime">The timestamp of the last log trail, if applicable.</param>
         /// <returns>An instance of <see cref="HttpSourceAdapter"/>.</returns>
-        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, TrailType trailType, DateTime? lastTrailTime = null)
+        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null)
         {
-            return new HttpSourceAdapter(apiUrl, credentialManagerUri, timeoutSeconds, trailType, lastTrailTime);
+            return new HttpSourceAdapter(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, lastTrailTime);
         }
 
         /// <summary>

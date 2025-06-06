@@ -44,6 +44,18 @@ namespace LogScraper.LogProviders.Kubernetes
                         Description = runtime.Description,
                         UrlRuntimeLog = runtime.UrlRuntimeLog
                     };
+                    if (runtime.HttpAuthenticationSettings != null)
+                    {
+                        runtimeNew.HttpAuthenticationSettings = new HttpAuthenticationSettings
+                        {
+                            EnforcedAuthenticationType = runtime.HttpAuthenticationSettings.EnforcedAuthenticationType,
+                            LoginPageUrl = runtime.HttpAuthenticationSettings.LoginPageUrl,
+                            UserFieldName = runtime.HttpAuthenticationSettings.UserFieldName,
+                            PasswordFieldName = runtime.HttpAuthenticationSettings.PasswordFieldName,
+                            CsrfFieldName = runtime.HttpAuthenticationSettings.CsrfFieldName
+                        };
+                    }
+
                     _instances.Add(runtimeNew);
                 }
                 LstUrls.DataSource = _instances;
@@ -68,6 +80,12 @@ namespace LogScraper.LogProviders.Kubernetes
                 {
                     errorMessages.Add($"Url '{instance.Description}' moet een Description en Url hebben.");
                 }
+
+                if (instance.HttpAuthenticationSettings != null && string.IsNullOrWhiteSpace(instance.HttpAuthenticationSettings.LoginPageUrl))
+                {
+                    errorMessages.Add($"Url '{instance.Description}' moet een login url hebben");
+                }
+
             }
 
             config = null;
@@ -159,6 +177,11 @@ namespace LogScraper.LogProviders.Kubernetes
                 UpdatingUrlInformation = true;
                 TxtDescription.Text = selected.Description;
                 TxtUrl.Text = selected.UrlRuntimeLog;
+                ChkWebFormLogin.Checked = selected.HttpAuthenticationSettings != null && selected.HttpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf;
+                TxtLoginPageUrl.Text = selected.HttpAuthenticationSettings?.LoginPageUrl ?? string.Empty;
+                TxtUserFieldName.Text = selected.HttpAuthenticationSettings?.UserFieldName ?? "username";
+                TxtPasswordFieldName.Text = selected.HttpAuthenticationSettings?.PasswordFieldName ?? "password";
+                TxtCsrfFieldName.Text = selected.HttpAuthenticationSettings?.CsrfFieldName ?? "_csrf";
                 UpdatingUrlInformation = false;
             }
             UpdateButtons();
@@ -191,9 +214,15 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 BtnTest.Enabled = false;
                 url = TxtUrl.Text;
+                HttpAuthenticationSettings httpAuthenticationSettings = null;
+                if (LstUrls.SelectedItem is RuntimeInstance selected)
+                {
+                    httpAuthenticationSettings = selected.HttpAuthenticationSettings;
+                }
 
-                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.None, null);
-                sourceAdapter.GetLog();
+                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null);
+                
+                ((HttpSourceAdapter)sourceAdapter).TestConnectionAndAskForAuthorisation();
 
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
                 TxtTestMessage.Text = "Succes";
@@ -208,6 +237,80 @@ namespace LogScraper.LogProviders.Kubernetes
             finally
             {
                 BtnTest.Enabled = true;
+            }
+        }
+
+        private void ChkWebFormLogin_CheckedChanged(object sender, EventArgs e)
+        {
+            GrpWebFormSettings.Visible = ChkWebFormLogin.Checked;
+
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                if (ChkWebFormLogin.Checked)
+                {
+                    selected.HttpAuthenticationSettings = new()
+                    {
+                        EnforcedAuthenticationType = HttpAuthenticationType.FormLoginWithCsrf
+                    };
+                }
+                else
+                {
+                    selected.HttpAuthenticationSettings = null;
+                }
+            }
+        }
+
+        private void TxtLoginPageUrl_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                if (selected.HttpAuthenticationSettings != null)
+                {
+                    selected.HttpAuthenticationSettings.LoginPageUrl = TxtLoginPageUrl.Text;
+                }
+            }
+        }
+
+        private void TxtUserFieldName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                if (selected.HttpAuthenticationSettings != null)
+                {
+                    selected.HttpAuthenticationSettings.UserFieldName = string.IsNullOrWhiteSpace(TxtUserFieldName.Text) ? "username" : TxtUserFieldName.Text;
+                }
+            }
+        }
+
+        private void TxtPasswordFieldName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                if (selected.HttpAuthenticationSettings != null)
+                {
+                    selected.HttpAuthenticationSettings.PasswordFieldName = string.IsNullOrWhiteSpace(TxtPasswordFieldName.Text) ? "password" : TxtPasswordFieldName.Text;
+                }
+            }
+        }
+
+        private void TxtCsrfFieldName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                if (selected.HttpAuthenticationSettings != null)
+                {
+                    selected.HttpAuthenticationSettings.CsrfFieldName = string.IsNullOrWhiteSpace(TxtCsrfFieldName.Text) ? "_csrf" : TxtCsrfFieldName.Text;
+                }
             }
         }
     }

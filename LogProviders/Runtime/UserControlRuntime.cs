@@ -42,7 +42,7 @@ namespace LogScraper.LogProviders.Runtime
             }
             else
             {
-                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.None);
+                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, RuntimeInstance.HttpAuthenticationSettings, TrailType.None);
             }
             return sourceAdapter;
         }

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LogScraper.Credentials;
 using LogScraper.SourceAdapters;
 
 namespace LogScraper.Sources.Adapters.Http
@@ -13,8 +14,9 @@ namespace LogScraper.Sources.Adapters.Http
     /// This class implements the <see cref="ISourceAdapter"/> interface to fetch logs from an HTTP API.
     /// It supports various authentication methods and handles trailing log queries.
     /// </remarks>
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, TrailType trailType, DateTime? lastLogTrailTime = null) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, DateTime? lastLogTrailTime = null) : ISourceAdapter
     {
+    
         // The base URL of the HTTP API.
         private readonly string apiUrl = apiUrl;
 
@@ -28,6 +30,11 @@ namespace LogScraper.Sources.Adapters.Http
         /// Gets the authentication data used for HTTP requests.
         /// </summary>
         public HttpAuthenticationData AuthenticationData { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the HTTP authentication settings.
+        /// </summary>
+        public HttpAuthenticationSettings httpAuthenticationSettings = httpAuthenticationSettings;
 
         // The type of trailing log query to use (e.g., Kubernetes).
         private readonly TrailType trailType = trailType;
@@ -109,8 +116,9 @@ namespace LogScraper.Sources.Adapters.Http
             {
                 // Retrieve credentials from the credential store if not already set.
                 AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
+                if (httpAuthenticationSettings != null) AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
 
-                HttpClient client = await HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, timeoutSeconds);
+                HttpClient client = await HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, httpAuthenticationSettings, timeoutSeconds);
 
                 return await client.GetAsync(apiUrl + GetTrailQuery());
             }
@@ -162,14 +170,15 @@ namespace LogScraper.Sources.Adapters.Http
         /// Retrieves the HTTP response from the log source synchronously.
         /// </summary>
         /// <returns>An <see cref="HttpResponseMessage"/> representing the HTTP response.</returns>
-        public HttpResponseMessage GetLogWithHttpStatus()
+        private HttpResponseMessage GetLogWithHttpStatus()
         {
             try
             {
                 // Retrieve credentials from the credential store if not already set.
                 AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
+                if (httpAuthenticationSettings != null) AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
 
-                HttpClient client = HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, timeoutSeconds).Result;
+                HttpClient client = HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, httpAuthenticationSettings, timeoutSeconds).Result;
 
                 return client.GetAsync(apiUrl + GetTrailQuery()).Result;
             }

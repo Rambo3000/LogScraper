@@ -282,6 +282,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtClusterBaseUrl.Text = selected.BaseUrl;
                 TxtClusterId.Text = selected.ClusterId;
 
+
                 _namespaces = [.. selected.Namespaces ?? []];
                 LstNamespaces.DataSource = _namespaces;
                 LstNamespaces.DisplayMember = string.Empty;
@@ -360,7 +361,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 KubernetesNamespace kubernetesNamespace = LstNamespaces.SelectedItem as KubernetesNamespace;
                 url = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, kubernetesNamespace);
 
-                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, TrailType.Kubernetes, null);
+                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, null);
                 sourceAdapter.GetLog();
 
                 TxtTestMessage.Text = "Succes";

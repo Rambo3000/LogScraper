@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using LogScraper.Credentials;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace LogScraper.Sources.Adapters.Http
 {
@@ -43,6 +44,10 @@ namespace LogScraper.Sources.Adapters.Http
                     authenticationData.BearerToken = existingToken.Password;
                     break;
                 case HttpAuthenticationType.BasicAuthentication:
+                    authenticationData.UserName = existingToken.UserName;
+                    authenticationData.Password = existingToken.Password;
+                    break;
+                case HttpAuthenticationType.FormLoginWithCsrf:
                     authenticationData.UserName = existingToken.UserName;
                     authenticationData.Password = existingToken.Password;
                     break;

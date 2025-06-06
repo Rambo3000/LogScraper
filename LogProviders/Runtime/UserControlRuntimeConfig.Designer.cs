@@ -39,6 +39,16 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtUrl = new ValidatedTextBox();
             GrpRuntimes = new System.Windows.Forms.GroupBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
+            GrpWebFormSettings = new System.Windows.Forms.GroupBox();
+            LblCsrfFieldName = new System.Windows.Forms.Label();
+            LblPasswordFieldName = new System.Windows.Forms.Label();
+            LblUserFieldName = new System.Windows.Forms.Label();
+            LblLoginPageUrl = new System.Windows.Forms.Label();
+            TxtCsrfFieldName = new ValidatedTextBox();
+            TxtPasswordFieldName = new ValidatedTextBox();
+            TxtUserFieldName = new ValidatedTextBox();
+            TxtLoginPageUrl = new ValidatedTextBox();
+            ChkWebFormLogin = new System.Windows.Forms.CheckBox();
             TxtTestMessage = new System.Windows.Forms.TextBox();
             BtnTest = new System.Windows.Forms.Button();
             LblUrl = new System.Windows.Forms.Label();
@@ -47,6 +57,7 @@ namespace LogScraper.LogProviders.Kubernetes
             lblLogLayout = new System.Windows.Forms.Label();
             GrpRuntimes.SuspendLayout();
             grpRuntime.SuspendLayout();
+            GrpWebFormSettings.SuspendLayout();
             SuspendLayout();
             // 
             // LstUrls
@@ -106,7 +117,9 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // TxtDescription
             // 
+            TxtDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtDescription.IsRequired = true;
+            TxtDescription.IsWhiteSpaceAllowed = false;
             TxtDescription.Location = new System.Drawing.Point(8, 37);
             TxtDescription.Name = "TxtDescription";
             TxtDescription.Size = new System.Drawing.Size(239, 23);
@@ -116,7 +129,9 @@ namespace LogScraper.LogProviders.Kubernetes
             // TxtUrl
             // 
             TxtUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtUrl.BackColor = System.Drawing.Color.MistyRose;
             TxtUrl.IsRequired = true;
+            TxtUrl.IsWhiteSpaceAllowed = false;
             TxtUrl.Location = new System.Drawing.Point(8, 81);
             TxtUrl.Name = "TxtUrl";
             TxtUrl.Size = new System.Drawing.Size(520, 23);
@@ -142,6 +157,8 @@ namespace LogScraper.LogProviders.Kubernetes
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(GrpWebFormSettings);
+            grpRuntime.Controls.Add(ChkWebFormLogin);
             grpRuntime.Controls.Add(TxtTestMessage);
             grpRuntime.Controls.Add(BtnTest);
             grpRuntime.Controls.Add(LblUrl);
@@ -155,23 +172,132 @@ namespace LogScraper.LogProviders.Kubernetes
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Urls";
             // 
+            // GrpWebFormSettings
+            // 
+            GrpWebFormSettings.Controls.Add(LblCsrfFieldName);
+            GrpWebFormSettings.Controls.Add(LblPasswordFieldName);
+            GrpWebFormSettings.Controls.Add(LblUserFieldName);
+            GrpWebFormSettings.Controls.Add(LblLoginPageUrl);
+            GrpWebFormSettings.Controls.Add(TxtCsrfFieldName);
+            GrpWebFormSettings.Controls.Add(TxtPasswordFieldName);
+            GrpWebFormSettings.Controls.Add(TxtUserFieldName);
+            GrpWebFormSettings.Controls.Add(TxtLoginPageUrl);
+            GrpWebFormSettings.Location = new System.Drawing.Point(28, 137);
+            GrpWebFormSettings.Name = "GrpWebFormSettings";
+            GrpWebFormSettings.Size = new System.Drawing.Size(387, 197);
+            GrpWebFormSettings.TabIndex = 37;
+            GrpWebFormSettings.TabStop = false;
+            GrpWebFormSettings.Text = "Webformulier instellingen";
+            GrpWebFormSettings.Visible = false;
+            // 
+            // LblCsrfFieldName
+            // 
+            LblCsrfFieldName.AutoSize = true;
+            LblCsrfFieldName.Location = new System.Drawing.Point(6, 149);
+            LblCsrfFieldName.Name = "LblCsrfFieldName";
+            LblCsrfFieldName.Size = new System.Drawing.Size(96, 15);
+            LblCsrfFieldName.TabIndex = 3;
+            LblCsrfFieldName.Text = "Naam CSRF-veld";
+            // 
+            // LblPasswordFieldName
+            // 
+            LblPasswordFieldName.AutoSize = true;
+            LblPasswordFieldName.Location = new System.Drawing.Point(6, 105);
+            LblPasswordFieldName.Name = "LblPasswordFieldName";
+            LblPasswordFieldName.Size = new System.Drawing.Size(160, 15);
+            LblPasswordFieldName.TabIndex = 2;
+            LblPasswordFieldName.Text = "Naam veld voor wachtwoord";
+            // 
+            // LblUserFieldName
+            // 
+            LblUserFieldName.AutoSize = true;
+            LblUserFieldName.Location = new System.Drawing.Point(6, 61);
+            LblUserFieldName.Name = "LblUserFieldName";
+            LblUserFieldName.Size = new System.Drawing.Size(179, 15);
+            LblUserFieldName.TabIndex = 1;
+            LblUserFieldName.Text = "Naam veld voor gebruikersnaam";
+            // 
+            // LblLoginPageUrl
+            // 
+            LblLoginPageUrl.AutoSize = true;
+            LblLoginPageUrl.Location = new System.Drawing.Point(6, 17);
+            LblLoginPageUrl.Name = "LblLoginPageUrl";
+            LblLoginPageUrl.Size = new System.Drawing.Size(132, 15);
+            LblLoginPageUrl.TabIndex = 0;
+            LblLoginPageUrl.Text = "URL van de inlogpagina";
+            // 
+            // TxtCsrfFieldName
+            // 
+            TxtCsrfFieldName.BackColor = System.Drawing.SystemColors.Window;
+            TxtCsrfFieldName.IsRequired = false;
+            TxtCsrfFieldName.IsWhiteSpaceAllowed = false;
+            TxtCsrfFieldName.Location = new System.Drawing.Point(6, 167);
+            TxtCsrfFieldName.Name = "TxtCsrfFieldName";
+            TxtCsrfFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtCsrfFieldName.TabIndex = 5;
+            TxtCsrfFieldName.TextChanged += TxtCsrfFieldName_TextChanged;
+            // 
+            // TxtPasswordFieldName
+            // 
+            TxtPasswordFieldName.BackColor = System.Drawing.SystemColors.Window;
+            TxtPasswordFieldName.IsRequired = false;
+            TxtPasswordFieldName.IsWhiteSpaceAllowed = false;
+            TxtPasswordFieldName.Location = new System.Drawing.Point(6, 123);
+            TxtPasswordFieldName.Name = "TxtPasswordFieldName";
+            TxtPasswordFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtPasswordFieldName.TabIndex = 5;
+            TxtPasswordFieldName.TextChanged += TxtPasswordFieldName_TextChanged;
+            // 
+            // TxtUserFieldName
+            // 
+            TxtUserFieldName.BackColor = System.Drawing.SystemColors.Window;
+            TxtUserFieldName.IsRequired = false;
+            TxtUserFieldName.IsWhiteSpaceAllowed = false;
+            TxtUserFieldName.Location = new System.Drawing.Point(6, 79);
+            TxtUserFieldName.Name = "TxtUserFieldName";
+            TxtUserFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtUserFieldName.TabIndex = 5;
+            TxtUserFieldName.TextChanged += TxtUserFieldName_TextChanged;
+            // 
+            // TxtLoginPageUrl
+            // 
+            TxtLoginPageUrl.BackColor = System.Drawing.Color.MistyRose;
+            TxtLoginPageUrl.IsRequired = true;
+            TxtLoginPageUrl.IsWhiteSpaceAllowed = false;
+            TxtLoginPageUrl.Location = new System.Drawing.Point(6, 35);
+            TxtLoginPageUrl.Name = "TxtLoginPageUrl";
+            TxtLoginPageUrl.Size = new System.Drawing.Size(375, 23);
+            TxtLoginPageUrl.TabIndex = 5;
+            TxtLoginPageUrl.TextChanged += TxtLoginPageUrl_TextChanged;
+            // 
+            // ChkWebFormLogin
+            // 
+            ChkWebFormLogin.AutoSize = true;
+            ChkWebFormLogin.Location = new System.Drawing.Point(16, 112);
+            ChkWebFormLogin.Name = "ChkWebFormLogin";
+            ChkWebFormLogin.Size = new System.Drawing.Size(411, 19);
+            ChkWebFormLogin.TabIndex = 36;
+            ChkWebFormLogin.Text = "Inloggen via webformulier inschakelen (met CSRF-token en sessiecookie)";
+            ChkWebFormLogin.UseVisualStyleBackColor = true;
+            ChkWebFormLogin.CheckedChanged += ChkWebFormLogin_CheckedChanged;
+            // 
             // TxtTestMessage
             // 
             TxtTestMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtTestMessage.BackColor = System.Drawing.SystemColors.Control;
             TxtTestMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            TxtTestMessage.Location = new System.Drawing.Point(8, 142);
+            TxtTestMessage.Location = new System.Drawing.Point(108, 369);
             TxtTestMessage.Multiline = true;
             TxtTestMessage.Name = "TxtTestMessage";
             TxtTestMessage.ReadOnly = true;
-            TxtTestMessage.Size = new System.Drawing.Size(518, 206);
+            TxtTestMessage.Size = new System.Drawing.Size(418, 27);
             TxtTestMessage.TabIndex = 35;
             TxtTestMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BtnTest
             // 
-            BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            BtnTest.Location = new System.Drawing.Point(190, 110);
+            BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnTest.Location = new System.Drawing.Point(6, 369);
             BtnTest.Name = "BtnTest";
             BtnTest.Size = new System.Drawing.Size(96, 27);
             BtnTest.TabIndex = 16;
@@ -229,6 +355,8 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpRuntimes.ResumeLayout(false);
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
+            GrpWebFormSettings.ResumeLayout(false);
+            GrpWebFormSettings.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -250,5 +378,15 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.Label lblLogLayout;
         private System.Windows.Forms.Button BtnTest;
         private System.Windows.Forms.TextBox TxtTestMessage;
+        private System.Windows.Forms.CheckBox ChkWebFormLogin;
+        private System.Windows.Forms.GroupBox GrpWebFormSettings;
+        private System.Windows.Forms.Label LblCsrfFieldName;
+        private System.Windows.Forms.Label LblPasswordFieldName;
+        private System.Windows.Forms.Label LblUserFieldName;
+        private System.Windows.Forms.Label LblLoginPageUrl;
+        private ValidatedTextBox TxtLoginPageUrl;
+        private ValidatedTextBox TxtCsrfFieldName;
+        private ValidatedTextBox TxtPasswordFieldName;
+        private ValidatedTextBox TxtUserFieldName;
     }
 }

@@ -24,14 +24,17 @@ namespace LogScraper.Sources.Adapters.Http
         /// <param name="timeoutSeconds">The timeout duration, in seconds, for the <see cref="HttpClient"/> requests. Must be a positive integer.</param>
         /// <returns>A configured <see cref="HttpClient"/> instance ready for use with the specified authentication and timeout
         /// settings.</returns>
-        public static async Task<HttpClient> CreateAsyncHttpClient(HttpAuthenticationData authData, int timeoutSeconds)
+        public static async Task<HttpClient> CreateAsyncHttpClient(HttpAuthenticationData authData, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds)
         {
+            if (httpAuthenticationSettings != null && httpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf)
+            {
+                return await CreateFormLoginClientAsync(authData, httpAuthenticationSettings);
+            }
             HttpClient client = authData.Type switch
             {
                 HttpAuthenticationType.ApiKey => CreateApiKeyClient(authData),
                 HttpAuthenticationType.BearerToken => CreateBearerTokenClient(authData),
                 HttpAuthenticationType.BasicAuthentication => CreateBasicAuthClient(authData),
-                HttpAuthenticationType.FormLoginWithCsrf => await CreateFormLoginClientAsync(authData),
                 _ => new HttpClient(),
             };
             client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
@@ -85,9 +88,9 @@ namespace LogScraper.Sources.Adapters.Http
         /// <exception cref="ArgumentException">Thrown if <paramref name="data"/> contains a null or whitespace <see
         /// cref="HttpAuthenticationData.LoginPageUrl"/>.</exception>
         /// <exception cref="Exception">Thrown if the login page cannot be fetched, the CSRF token cannot be extracted, or the login request fails.</exception>
-        private static async Task<HttpClient> CreateFormLoginClientAsync(HttpAuthenticationData data)
+        private static async Task<HttpClient> CreateFormLoginClientAsync(HttpAuthenticationData data, HttpAuthenticationSettings httpAuthenticationSettings)
         {
-            if (string.IsNullOrWhiteSpace(data.LoginPageUrl))
+            if (httpAuthenticationSettings == null || string.IsNullOrWhiteSpace(httpAuthenticationSettings.LoginPageUrl))
                 throw new ArgumentException("Login page url is required for CSRF login.");
 
             CookieContainer cookies = new();
@@ -100,27 +103,25 @@ namespace LogScraper.Sources.Adapters.Http
             HttpClient client = new(handler);
 
             // Step 1: GET login page
-            HttpResponseMessage loginPageResponse = await client.GetAsync(data.LoginPageUrl);
+            HttpResponseMessage loginPageResponse = client.GetAsync(httpAuthenticationSettings.LoginPageUrl).Result;
             if (!loginPageResponse.IsSuccessStatusCode)
                 throw new Exception("Failed to fetch login page");
 
             string loginPageHtml = await loginPageResponse.Content.ReadAsStringAsync();
 
             // Extract CSRF token from HTML
-            string csrfToken = ExtractHiddenInputValue(loginPageHtml, data.CsrfFieldName) ?? throw new Exception("CSRF token not found");
+            string csrfToken = ExtractHiddenInputValue(loginPageHtml, httpAuthenticationSettings.CsrfFieldName) ?? throw new Exception("CSRF token not found");
 
             // Step 2: POST login with Csrf token
             Dictionary<string, string> form = new()
             {
-                { data.UserFieldName, data.UserName },
-                { data.PasswordFieldName, data.Password },
-                { data.CsrfFieldName ?? "", csrfToken ?? "" }
+                { httpAuthenticationSettings.UserFieldName?? "username", data.UserName },
+                { httpAuthenticationSettings.PasswordFieldName?? "password", data.Password },
+                { httpAuthenticationSettings.CsrfFieldName ?? "", csrfToken ?? "" }
             };
 
             HttpContent content = new FormUrlEncodedContent(form);
-            HttpResponseMessage loginResponse = await client.PostAsync(data.LoginPageUrl, content);
-            if (!loginResponse.IsSuccessStatusCode)
-                throw new Exception("Login failed");
+            HttpResponseMessage loginResponse = client.PostAsync(httpAuthenticationSettings.LoginPageUrl, content).Result;
 
             // Now client is authenticated — reuse it
             return client;
@@ -134,6 +135,8 @@ namespace LogScraper.Sources.Adapters.Http
         /// <returns>The value of the hidden input field if found; otherwise, <see langword="null"/>.</returns>
         private static string ExtractHiddenInputValue(string html, string inputName)
         {
+            if (string.IsNullOrEmpty(inputName)) return string.Empty;
+
             string pattern = $"<input[^>]*name=[\"']{Regex.Escape(inputName)}[\"'][^>]*value=[\"']([^\"']+)[\"'][^>]*>";
             Match match = Regex.Match(html, pattern, RegexOptions.IgnoreCase);
             return match.Success ? match.Groups[1].Value : null;
