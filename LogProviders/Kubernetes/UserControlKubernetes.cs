@@ -42,7 +42,7 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             return GetSourceAdapter(null);
         }
-        public ISourceAdapter GetSourceAdapter(string url = null, DateTime? lastTrailTime = null)
+        public ISourceAdapter GetSourceAdapter(string url = null, DateTime? lastTrailTime = null, bool authenticate = true)
         {
             if (Debugger.IsAttached) return SourceAdapterFactory.CreateFileSourceAdapter("Stubs/KubernetesPodLog.txt");
 
@@ -61,7 +61,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 if (kubernetesCluster == null || kubernetesNamespace == null || kubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
                 url = KubernetesHelper.GetUrlForPodLog(kubernetesCluster, kubernetesNamespace, kubernetesPod);
             }
-            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime);
+            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
         }
 
         private void PopulateKubernetesClusters()
@@ -104,7 +104,7 @@ namespace LogScraper.LogProviders.Kubernetes
                     {
                         KubernetesCluster kubernetesCluster = (KubernetesCluster)cboKubernetesCluster.SelectedItem;
                         string urlPodsConfiguration = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, (KubernetesNamespace)cboKubernetesNamespace.SelectedItem);
-                        sourceAdapter = GetSourceAdapter(urlPodsConfiguration);
+                        sourceAdapter = GetSourceAdapter(urlPodsConfiguration, null, false);
 
                         if (!((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage))
                         {
