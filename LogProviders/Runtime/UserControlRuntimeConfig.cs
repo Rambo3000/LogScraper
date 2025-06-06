@@ -179,9 +179,9 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtUrl.Text = selected.UrlRuntimeLog;
                 ChkWebFormLogin.Checked = selected.HttpAuthenticationSettings != null && selected.HttpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf;
                 TxtLoginPageUrl.Text = selected.HttpAuthenticationSettings?.LoginPageUrl ?? string.Empty;
-                TxtUserFieldName.Text = selected.HttpAuthenticationSettings?.UserFieldName ?? "username";
-                TxtPasswordFieldName.Text = selected.HttpAuthenticationSettings?.PasswordFieldName ?? "password";
-                TxtCsrfFieldName.Text = selected.HttpAuthenticationSettings?.CsrfFieldName ?? "_csrf";
+                TxtUserFieldName.Text = selected.HttpAuthenticationSettings?.UserFieldName;
+                TxtPasswordFieldName.Text = selected.HttpAuthenticationSettings?.PasswordFieldName;
+                TxtCsrfFieldName.Text = selected.HttpAuthenticationSettings?.CsrfFieldName;
                 UpdatingUrlInformation = false;
             }
             UpdateButtons();
@@ -222,7 +222,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
                 ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null);
                 
-                ((HttpSourceAdapter)sourceAdapter).TestConnectionAndAskForAuthorisation();
+                ((HttpSourceAdapter)sourceAdapter).InitiateClientAndAuthenticate();
 
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
                 TxtTestMessage.Text = "Succes";
@@ -252,8 +252,12 @@ namespace LogScraper.LogProviders.Kubernetes
                 {
                     selected.HttpAuthenticationSettings = new()
                     {
-                        EnforcedAuthenticationType = HttpAuthenticationType.FormLoginWithCsrf
+                        EnforcedAuthenticationType = HttpAuthenticationType.FormLoginWithCsrf,
                     };
+                    TxtLoginPageUrl.Text = string.Empty;
+                    TxtUserFieldName.Text = "username";
+                    TxtPasswordFieldName.Text = "password";
+                    TxtCsrfFieldName.Text = "_csrf";
                 }
                 else
                 {
@@ -283,7 +287,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 if (selected.HttpAuthenticationSettings != null)
                 {
-                    selected.HttpAuthenticationSettings.UserFieldName = string.IsNullOrWhiteSpace(TxtUserFieldName.Text) ? "username" : TxtUserFieldName.Text;
+                    selected.HttpAuthenticationSettings.UserFieldName = TxtUserFieldName.Text;
                 }
             }
         }
@@ -296,7 +300,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 if (selected.HttpAuthenticationSettings != null)
                 {
-                    selected.HttpAuthenticationSettings.PasswordFieldName = string.IsNullOrWhiteSpace(TxtPasswordFieldName.Text) ? "password" : TxtPasswordFieldName.Text;
+                    selected.HttpAuthenticationSettings.PasswordFieldName = TxtPasswordFieldName.Text;
                 }
             }
         }
@@ -309,7 +313,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 if (selected.HttpAuthenticationSettings != null)
                 {
-                    selected.HttpAuthenticationSettings.CsrfFieldName = string.IsNullOrWhiteSpace(TxtCsrfFieldName.Text) ? "_csrf" : TxtCsrfFieldName.Text;
+                    selected.HttpAuthenticationSettings.CsrfFieldName = TxtCsrfFieldName.Text;
                 }
             }
         }

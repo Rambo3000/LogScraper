@@ -2,99 +2,76 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LogScraper.Credentials;
 using LogScraper.SourceAdapters;
+using LogScraper.Sources.Adapters.Http.Authenticators;
 
 namespace LogScraper.Sources.Adapters.Http
 {
-    /// <summary>
-    /// Provides an adapter for retrieving log data from an HTTP source.
-    /// </summary>
-    /// <remarks>
-    /// This class implements the <see cref="ISourceAdapter"/> interface to fetch logs from an HTTP API.
-    /// It supports various authentication methods and handles trailing log queries.
-    /// </remarks>
     internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, DateTime? lastLogTrailTime = null) : ISourceAdapter
     {
-    
-        // The base URL of the HTTP API.
         private readonly string apiUrl = apiUrl;
-
-        // The URI used to retrieve credentials from the credential manager.
         private readonly string credentialManagerUri = credentialManagerUri;
-
-        // The timeout duration for HTTP requests, in seconds.
         private readonly int timeoutSeconds = timeoutSeconds;
+        private readonly TrailType trailType = trailType;
+        private DateTime? lastLogTrailTime = lastLogTrailTime;
+        HttpClient client = null;
 
-        /// <summary>
-        /// Gets the authentication data used for HTTP requests.
-        /// </summary>
         public HttpAuthenticationData AuthenticationData { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the HTTP authentication settings.
-        /// </summary>
         public HttpAuthenticationSettings httpAuthenticationSettings = httpAuthenticationSettings;
 
-        // The type of trailing log query to use (e.g., Kubernetes).
-        private readonly TrailType trailType = trailType;
+        public DateTime? GetLastTrailTime() => lastLogTrailTime;
 
-        // The timestamp of the last log trail, used for trailing queries.
-        private DateTime? lastLogTrailTime = lastLogTrailTime;
-
-        /// <summary>
-        /// Gets the timestamp of the last log trail.
-        /// </summary>
-        /// <returns>A nullable <see cref="DateTime"/> representing the last trail time.</returns>
-        public DateTime? GetLastTrailTime()
+        public HttpResponseMessage InitiateClientAndAuthenticate()
         {
-            return lastLogTrailTime;
-        }
-
-        /// <summary>
-        /// Tests the connection to the HTTP source and prompts for authorization if needed.
-        /// </summary>
-        /// <returns>An <see cref="HttpResponseMessage"/> representing the response from the HTTP source.</returns>
-        public HttpResponseMessage TestConnectionAndAskForAuthorisation()
-        {
-            HttpResponseMessage httpResponseMessage = GetLogWithHttpStatus();
-            if (httpResponseMessage == null) return null;
-
-            // Handle unauthorized or forbidden responses by prompting for new credentials.
-            if (httpResponseMessage.StatusCode != HttpStatusCode.Unauthorized && httpResponseMessage.StatusCode != HttpStatusCode.Forbidden) return httpResponseMessage;
-
-            FormHttpCredentials formHttpCredentials = new()
+            if ( string.IsNullOrEmpty(apiUrl) )
             {
-                HttpAuthenticationData = AuthenticationData,
-                Url = apiUrl
-            };
-
-            while (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized || httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                throw new ArgumentException("API URL cannot be null or empty.", nameof(apiUrl));
+            }
+            if ( string.IsNullOrEmpty(credentialManagerUri) )
             {
-                formHttpCredentials.ShowDialog();
-                if (formHttpCredentials.CustomDialogResult != System.Windows.Forms.DialogResult.OK) break;
+                throw new ArgumentException("Credential manager URI cannot be null or empty.", nameof(credentialManagerUri));
+            }
+            if (timeoutSeconds <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(timeoutSeconds), "Timeout must be greater than zero.");
+            }
+            
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
+                if (httpAuthenticationSettings != null && httpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf)
+                {
+                    AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
+                }
 
-                // Update the authentication data with new credentials.
-                AuthenticationData = formHttpCredentials.HttpAuthenticationData;
+                IHttpClientAuthenticator clientAuthenticator = HttpAuthenticatorFactory.GetAuthenticator(AuthenticationData.Type);
 
-                httpResponseMessage = GetLogWithHttpStatus();
-                if (httpResponseMessage == null) return null;
+                // Initialize the HTTP client if not already done
+                client ??= clientAuthenticator.GetHttpClient(timeoutSeconds);
+
+                bool isAuthenticated = clientAuthenticator.AuthenticateAsync(client, httpAuthenticationSettings, AuthenticationData, apiUrl).Result;
+                HttpResponseMessage response = client.GetAsync(apiUrl + GetTrailQuery()).Result;
+
+                if (isAuthenticated && response.IsSuccessStatusCode)
+                {
+                    HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
+                    return response;
+                }
+
+                FormHttpCredentials form = new()
+                {
+                    HttpAuthenticationData = AuthenticationData,
+                    Url = apiUrl
+                };
+
+                form.ShowDialog();
+                if (form.CustomDialogResult != System.Windows.Forms.DialogResult.OK) break;
+                AuthenticationData = form.HttpAuthenticationData;
             }
 
-            // Save the new credentials if the connection is successful.
-            if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
-            }
-            formHttpCredentials.Dispose();
-
-            return httpResponseMessage;
+            return null;
         }
 
-        /// <summary>
-        /// Asynchronously retrieves the log data from the HTTP source.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation, with the log data as a string.</returns>
         public async Task<string> GetLogAsync()
         {
             HttpResponseMessage response = await GetLogWithHttpStatusAsync();
@@ -102,24 +79,15 @@ namespace LogScraper.Sources.Adapters.Http
             {
                 throw new Exception(ConvertHttpStatusCodeToString(response));
             }
-
             return await response.Content.ReadAsStringAsync();
         }
 
-        /// <summary>
-        /// Asynchronously retrieves the HTTP response from the log source.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation, with the HTTP response.</returns>
         public async Task<HttpResponseMessage> GetLogWithHttpStatusAsync()
         {
             try
             {
-                // Retrieve credentials from the credential store if not already set.
-                AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
-                if (httpAuthenticationSettings != null) AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
-
-                HttpClient client = await HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, httpAuthenticationSettings, timeoutSeconds);
-
+                if (client == null) throw new InvalidOperationException("HTTP client is not initialized.");
+                
                 return await client.GetAsync(apiUrl + GetTrailQuery());
             }
             catch (Exception e)
@@ -128,10 +96,30 @@ namespace LogScraper.Sources.Adapters.Http
             }
         }
 
-        /// <summary>
-        /// Constructs the query string for trailing log requests.
-        /// </summary>
-        /// <returns>A string representing the query parameters for the trailing log request.</returns>
+        public string GetLog()
+        {
+            HttpResponseMessage response = GetLogWithHttpStatus();
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception(ConvertHttpStatusCodeToString(response));
+            }
+            return response.Content.ReadAsStringAsync().Result;
+        }
+
+        private HttpResponseMessage GetLogWithHttpStatus()
+        {
+            try
+            {
+                if (client == null) throw new InvalidOperationException("HTTP client is not initialized.");
+
+                return client.GetAsync(apiUrl + GetTrailQuery()).Result;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Connection failed with error: " + e.Message);
+            }
+        }
+
         private string GetTrailQuery()
         {
             if (trailType == TrailType.None) return string.Empty;
@@ -145,53 +133,10 @@ namespace LogScraper.Sources.Adapters.Http
                 query = elapsedSeconds == -1 ? string.Empty : "?sinceSeconds=" + elapsedSeconds;
             }
 
-            // Update the last trail time for the next request.
             lastLogTrailTime = now;
-
             return query;
         }
 
-        /// <summary>
-        /// Retrieves the log data from the HTTP source synchronously.
-        /// </summary>
-        /// <returns>The log data as a string.</returns>
-        public string GetLog()
-        {
-            HttpResponseMessage response = GetLogWithHttpStatus();
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception(ConvertHttpStatusCodeToString(response));
-            }
-
-            return response.Content.ReadAsStringAsync().Result;
-        }
-
-        /// <summary>
-        /// Retrieves the HTTP response from the log source synchronously.
-        /// </summary>
-        /// <returns>An <see cref="HttpResponseMessage"/> representing the HTTP response.</returns>
-        private HttpResponseMessage GetLogWithHttpStatus()
-        {
-            try
-            {
-                // Retrieve credentials from the credential store if not already set.
-                AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
-                if (httpAuthenticationSettings != null) AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
-
-                HttpClient client = HttpClientFactory.CreateAsyncHttpClient(AuthenticationData, httpAuthenticationSettings, timeoutSeconds).Result;
-
-                return client.GetAsync(apiUrl + GetTrailQuery()).Result;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Connection failed with error: " + e.Message);
-            }
-        }
-        /// <summary>
-        /// Converts an HTTP status code to a descriptive string.
-        /// </summary>
-        /// <param name="response">The HTTP response to convert.</param>
-        /// <returns>A string describing the HTTP status code.</returns>
         public static string ConvertHttpStatusCodeToString(HttpResponseMessage response)
         {
             return response.StatusCode switch

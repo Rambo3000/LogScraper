@@ -61,7 +61,6 @@ namespace LogScraper.LogProviders.Kubernetes
                 if (kubernetesCluster == null || kubernetesNamespace == null || kubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
                 url = KubernetesHelper.GetUrlForPodLog(kubernetesCluster, kubernetesNamespace, kubernetesPod);
             }
-
             return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime);
         }
 
@@ -107,7 +106,7 @@ namespace LogScraper.LogProviders.Kubernetes
                         string urlPodsConfiguration = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, (KubernetesNamespace)cboKubernetesNamespace.SelectedItem);
                         sourceAdapter = GetSourceAdapter(urlPodsConfiguration);
 
-                        HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)sourceAdapter).TestConnectionAndAskForAuthorisation();
+                        HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)sourceAdapter).InitiateClientAndAuthenticate();
                         if (httpResponseMessage == null)
                         {
                             OnStatusUpdate("Failed to connect. No HttpResponseMessage", false);

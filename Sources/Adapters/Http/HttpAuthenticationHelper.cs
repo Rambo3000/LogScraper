@@ -112,6 +112,7 @@ namespace LogScraper.Sources.Adapters.Http
                 HttpAuthenticationType.ApiKey => "ApiKey",
                 HttpAuthenticationType.BearerToken => "BearerToken",
                 HttpAuthenticationType.BasicAuthentication => "Basic",
+                HttpAuthenticationType.FormLoginWithCsrf => "FormLoginWithCsrf",
                 _ => throw new Exception("Invalid conversion for authentication type"),
             };
         }
@@ -129,6 +130,7 @@ namespace LogScraper.Sources.Adapters.Http
             if (authenticationTypeString == "ApiKey") return HttpAuthenticationType.ApiKey;
             if (authenticationTypeString == "BearerToken") return HttpAuthenticationType.BearerToken;
             if (authenticationTypeString == "Basic") return HttpAuthenticationType.BasicAuthentication;
+            if (authenticationTypeString == "FormLoginWithCsrf") return HttpAuthenticationType.FormLoginWithCsrf;
             return HttpAuthenticationType.None;
         }
     }

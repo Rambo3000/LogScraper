@@ -32,17 +32,22 @@ namespace LogScraper.LogProviders.Runtime
 
         public ISourceAdapter GetSourceAdapter()
         {
+            return GetSourceAdapter(true);
+        }
+
+        public ISourceAdapter GetSourceAdapter(bool authenticate = true)
+        {
             RuntimeInstance RuntimeInstance = (RuntimeInstance)cboRuntimeInstances.SelectedItem ?? throw new Exception("Er is geen runtime instantie geselecteerd");
             if (string.IsNullOrEmpty(RuntimeInstance.Description)) throw new Exception("De runtime instantie is verplicht");
 
             ISourceAdapter sourceAdapter;
-            if (Debugger.IsAttached && RuntimeInstance.Description != "BasicTest")
+            if (Debugger.IsAttached && RuntimeInstance.Description[..4] == "Stub")
             {
                 sourceAdapter = SourceAdapterFactory.CreateFileSourceAdapter(RuntimeInstance.UrlRuntimeLog);
             }
             else
             {
-                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, RuntimeInstance.HttpAuthenticationSettings, TrailType.None);
+                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(RuntimeInstance.UrlRuntimeLog, CredentialManager.GenerateTargetLogProvider("Runtime", RuntimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, RuntimeInstance.HttpAuthenticationSettings, TrailType.None, authenticate: authenticate);
             }
             return sourceAdapter;
         }
@@ -55,8 +60,9 @@ namespace LogScraper.LogProviders.Runtime
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub1", UrlRuntimeLog = "Stubs/Runtime1.txt" });
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub2", UrlRuntimeLog = "Stubs/Runtime2.txt" });
                 cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub3", UrlRuntimeLog = "Stubs/Runtime3.txt" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "JSONInvertedExample", UrlRuntimeLog = "Stubs/JSONInvertedExample.log" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "BasicTest", UrlRuntimeLog = "http://localhost/runtime1.txt" });
+                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "StubJSONInvertedExample", UrlRuntimeLog = "Stubs/JSONInvertedExample.log" });
+                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP Basic Authentication (authorized/password001)", UrlRuntimeLog = "https://testpages.eviltester.com/styled/auth/basic-auth-results.html" });
+                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP no such host", UrlRuntimeLog = "http://nonexistinghost/" });
             }
             else
             {
@@ -75,7 +81,7 @@ namespace LogScraper.LogProviders.Runtime
             txtUrl.Text = ((RuntimeInstance)cboRuntimeInstances.SelectedItem).UrlRuntimeLog;
             try
             {
-                HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)GetSourceAdapter()).TestConnectionAndAskForAuthorisation();
+                HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)GetSourceAdapter(false)).InitiateClientAndAuthenticate();
                 if (httpResponseMessage != null)
                 {
                     if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
