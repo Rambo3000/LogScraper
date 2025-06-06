@@ -21,21 +21,12 @@ namespace LogScraper.Sources.Adapters.Http
 
         public DateTime? GetLastTrailTime() => lastLogTrailTime;
 
-        public HttpResponseMessage InitiateClientAndAuthenticate()
+        public bool TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage)
         {
-            if ( string.IsNullOrEmpty(apiUrl) )
-            {
-                throw new ArgumentException("API URL cannot be null or empty.", nameof(apiUrl));
-            }
-            if ( string.IsNullOrEmpty(credentialManagerUri) )
-            {
-                throw new ArgumentException("Credential manager URI cannot be null or empty.", nameof(credentialManagerUri));
-            }
-            if (timeoutSeconds <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(timeoutSeconds), "Timeout must be greater than zero.");
-            }
-            
+            errorMessage = string.Empty;
+            httpResponseMessage = null;
+
+            string lastHttpStatusDescription = string.Empty;
             for (int attempt = 0; attempt < 3; attempt++)
             {
                 AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
@@ -49,15 +40,28 @@ namespace LogScraper.Sources.Adapters.Http
                 // Initialize the HTTP client if not already done
                 client ??= clientAuthenticator.GetHttpClient(timeoutSeconds);
 
-                bool isAuthenticated = clientAuthenticator.AuthenticateAsync(client, httpAuthenticationSettings, AuthenticationData, apiUrl).Result;
-                HttpResponseMessage response = client.GetAsync(apiUrl + GetTrailQuery()).Result;
+                bool isAuthenticated = clientAuthenticator.AuthenticateAsync(client, httpAuthenticationSettings, AuthenticationData).Result;
 
-                if (isAuthenticated && response.IsSuccessStatusCode)
+                // If we have header based authentication we have to check by means of calling the real endpoint whether the connection can be made
+                if (AuthenticationData.Type != HttpAuthenticationType.FormLoginWithCsrf)
                 {
-                    HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
-                    return response;
+                    // Reduce the log to download to nothing
+                    DateTime? originalTrailTime = lastLogTrailTime;
+                    lastLogTrailTime = DateTime.Now;
+                    httpResponseMessage = client.GetAsync(apiUrl + GetTrailQuery()).Result;
+                    // Restore the trailtime for getting log situations
+                    lastLogTrailTime = originalTrailTime;
+
+                    isAuthenticated = httpResponseMessage.IsSuccessStatusCode;
                 }
 
+                if (isAuthenticated)
+                {
+                    HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
+                    return true;
+                }
+
+                if (httpResponseMessage != null) lastHttpStatusDescription = ConvertHttpStatusCodeToString(httpResponseMessage);
                 FormHttpCredentials form = new()
                 {
                     HttpAuthenticationData = AuthenticationData,
@@ -69,7 +73,8 @@ namespace LogScraper.Sources.Adapters.Http
                 AuthenticationData = form.HttpAuthenticationData;
             }
 
-            return null;
+            errorMessage = string.IsNullOrEmpty(lastHttpStatusDescription) ? "Failed to connect. No HttpResponseMessage" : lastHttpStatusDescription;
+            return false;
         }
 
         public async Task<string> GetLogAsync()
@@ -87,7 +92,7 @@ namespace LogScraper.Sources.Adapters.Http
             try
             {
                 if (client == null) throw new InvalidOperationException("HTTP client is not initialized.");
-                
+
                 return await client.GetAsync(apiUrl + GetTrailQuery());
             }
             catch (Exception e)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -17,7 +16,7 @@ namespace LogScraper.Sources.Adapters.Http.Authenticators
                 or HttpAuthenticationType.ApiKey;
         }
 
-        public Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data, string loginUrl)
+        public Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data)
         {
             switch (data.Type)
             {

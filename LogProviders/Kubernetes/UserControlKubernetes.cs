@@ -106,16 +106,9 @@ namespace LogScraper.LogProviders.Kubernetes
                         string urlPodsConfiguration = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, (KubernetesNamespace)cboKubernetesNamespace.SelectedItem);
                         sourceAdapter = GetSourceAdapter(urlPodsConfiguration);
 
-                        HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)sourceAdapter).InitiateClientAndAuthenticate();
-                        if (httpResponseMessage == null)
+                        if (!((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage))
                         {
-                            OnStatusUpdate("Failed to connect. No HttpResponseMessage", false);
-                            return;
-                        }
-
-                        if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-                        {
-                            OnStatusUpdate(HttpSourceAdapter.ConvertHttpStatusCodeToString(httpResponseMessage), false);
+                            OnStatusUpdate(errorMessage, false);
                             return;
                         }
 

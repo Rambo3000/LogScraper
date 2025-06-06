@@ -6,7 +6,7 @@ namespace LogScraper.Sources.Adapters.Http.Authenticators
     public interface IHttpClientAuthenticator 
     {
         HttpClient GetHttpClient(int timeoutSeconds);
-        Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data, string loginUrl);
+        Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data);
         bool IsApplicable(HttpAuthenticationType type);
     }
 

@@ -81,17 +81,14 @@ namespace LogScraper.LogProviders.Runtime
             txtUrl.Text = ((RuntimeInstance)cboRuntimeInstances.SelectedItem).UrlRuntimeLog;
             try
             {
-                HttpResponseMessage httpResponseMessage = ((HttpSourceAdapter)GetSourceAdapter(false)).InitiateClientAndAuthenticate();
-                if (httpResponseMessage != null)
+
+                if (((HttpSourceAdapter)GetSourceAdapter(false)).TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage))
                 {
-                    if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        OnStatusUpdate("Ok", true);
-                    }
-                    else
-                    {
-                        OnStatusUpdate(HttpSourceAdapter.ConvertHttpStatusCodeToString(httpResponseMessage), false);
-                    }
+                    OnStatusUpdate("Ok", true);
+                }
+                else
+                {
+                    OnStatusUpdate(errorMessage, false);
                 }
             }
             catch (Exception ex)

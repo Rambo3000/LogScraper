@@ -15,7 +15,7 @@ namespace LogScraper.Sources.Adapters.Http.Authenticators
             return type == HttpAuthenticationType.FormLoginWithCsrf;
         }
 
-        public async Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data, string loginUrl)
+        public async Task<bool> AuthenticateAsync(HttpClient client, HttpAuthenticationSettings httpAuthenticationSettings, HttpAuthenticationData data)
         {
             if (httpAuthenticationSettings == null || string.IsNullOrWhiteSpace(httpAuthenticationSettings.LoginPageUrl))
                 throw new ArgumentException("Login page url is required for CSRF login.");
@@ -41,8 +41,8 @@ namespace LogScraper.Sources.Adapters.Http.Authenticators
             HttpContent content = new FormUrlEncodedContent(form);
             HttpResponseMessage loginResponse = client.PostAsync(httpAuthenticationSettings.LoginPageUrl, content).Result;
 
-            //TODO: remove DEBUG line
-            MessageBox.Show(httpAuthenticationSettings.LoginPageUrl + ": " +loginResponse.StatusCode.ToString() + " " + content.ReadAsStringAsync().Result);
+            //Optional debug info
+            //MessageBox.Show(httpAuthenticationSettings.LoginPageUrl + ": " +loginResponse.StatusCode.ToString() + " " + content.ReadAsStringAsync().Result);
             if (loginResponse.StatusCode == HttpStatusCode.Found)
             {
                 Uri redirectUri = loginResponse.Headers.Location;

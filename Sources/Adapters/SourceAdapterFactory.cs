@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using LogScraper.Sources.Adapters.File;
 using LogScraper.Sources.Adapters.Http;
 
@@ -25,7 +26,7 @@ namespace LogScraper.Sources.Adapters
         public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null, bool authenticate = true)
         {
             HttpSourceAdapter httpSourceAdapter = new(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, lastTrailTime);
-            if (authenticate) httpSourceAdapter.InitiateClientAndAuthenticate();
+            if (authenticate) httpSourceAdapter.TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string _);
             return httpSourceAdapter;
         }
 

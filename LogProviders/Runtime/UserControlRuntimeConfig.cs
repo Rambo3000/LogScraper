@@ -8,6 +8,7 @@ using LogScraper.Sources.Adapters;
 using LogScraper.Configuration;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Layout;
+using System.Net.Http;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -220,13 +221,20 @@ namespace LogScraper.LogProviders.Kubernetes
                     httpAuthenticationSettings = selected.HttpAuthenticationSettings;
                 }
 
-                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null);
-                
-                ((HttpSourceAdapter)sourceAdapter).InitiateClientAndAuthenticate();
+                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null, false);
 
-                TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
-                TxtTestMessage.Text = "Succes";
-                TxtTestMessage.Text += Environment.NewLine + Environment.NewLine + url;
+                if (((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string errorMessage))
+                {
+                    TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
+                    TxtTestMessage.Text = "Succes";
+                    TxtTestMessage.Text += Environment.NewLine + Environment.NewLine + url;
+                }
+                else
+                {
+                    TxtTestMessage.ForeColor = System.Drawing.Color.DarkRed;
+                    TxtTestMessage.Text = errorMessage;
+                    TxtTestMessage.Text += Environment.NewLine + Environment.NewLine + url;
+                }
             }
             catch (Exception exception)
             {
