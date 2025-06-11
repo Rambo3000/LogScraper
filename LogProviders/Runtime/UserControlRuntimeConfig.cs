@@ -43,7 +43,9 @@ namespace LogScraper.LogProviders.Kubernetes
                     RuntimeInstance runtimeNew = new()
                     {
                         Description = runtime.Description,
-                        UrlRuntimeLog = runtime.UrlRuntimeLog
+                        UrlRuntimeLog = runtime.UrlRuntimeLog,
+                        IsUrlLinkToHtmlFileList = runtime.IsUrlLinkToHtmlFileList,
+                        IsUrlLinkToHtmlFolderList = runtime.IsUrlLinkToHtmlFolderList
                     };
                     if (runtime.HttpAuthenticationSettings != null)
                     {
@@ -179,6 +181,8 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtDescription.Text = selected.Description;
                 TxtUrl.Text = selected.UrlRuntimeLog;
                 ChkWebFormLogin.Checked = selected.HttpAuthenticationSettings != null && selected.HttpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf;
+                ChkUrlLinksToHtmlFileList.Checked = selected.IsUrlLinkToHtmlFileList;
+                ChkUrlLinksToHtmlFolderList.Checked = selected.IsUrlLinkToHtmlFolderList;
                 TxtLoginPageUrl.Text = selected.HttpAuthenticationSettings?.LoginPageUrl ?? string.Empty;
                 TxtUserFieldName.Text = selected.HttpAuthenticationSettings?.UserFieldName;
                 TxtPasswordFieldName.Text = selected.HttpAuthenticationSettings?.PasswordFieldName;
@@ -322,6 +326,36 @@ namespace LogScraper.LogProviders.Kubernetes
                 if (selected.HttpAuthenticationSettings != null)
                 {
                     selected.HttpAuthenticationSettings.CsrfFieldName = TxtCsrfFieldName.Text;
+                }
+            }
+        }
+
+        private void ChkUrlLinksToHtmlFileList_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                selected.IsUrlLinkToHtmlFileList = ChkUrlLinksToHtmlFileList.Checked;
+                if (selected.IsUrlLinkToHtmlFileList)
+                {
+                    selected.IsUrlLinkToHtmlFolderList = false;
+                    ChkUrlLinksToHtmlFolderList.Checked = false;
+                }
+            }
+        }
+
+        private void ChkUrlLinksToHtmlFolderList_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                selected.IsUrlLinkToHtmlFolderList = ChkUrlLinksToHtmlFolderList.Checked;
+                if (selected.IsUrlLinkToHtmlFolderList)
+                {
+                    selected.IsUrlLinkToHtmlFileList = false;
+                    ChkUrlLinksToHtmlFileList.Checked = false;
                 }
             }
         }

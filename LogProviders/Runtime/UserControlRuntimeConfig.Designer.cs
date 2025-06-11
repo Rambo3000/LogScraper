@@ -55,6 +55,8 @@ namespace LogScraper.LogProviders.Kubernetes
             LblClusterDescription = new System.Windows.Forms.Label();
             CboLogLayout = new System.Windows.Forms.ComboBox();
             lblLogLayout = new System.Windows.Forms.Label();
+            ChkUrlLinksToHtmlFolderList = new System.Windows.Forms.CheckBox();
+            ChkUrlLinksToHtmlFileList = new System.Windows.Forms.CheckBox();
             GrpRuntimes.SuspendLayout();
             grpRuntime.SuspendLayout();
             GrpWebFormSettings.SuspendLayout();
@@ -157,6 +159,8 @@ namespace LogScraper.LogProviders.Kubernetes
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(ChkUrlLinksToHtmlFileList);
+            grpRuntime.Controls.Add(ChkUrlLinksToHtmlFolderList);
             grpRuntime.Controls.Add(GrpWebFormSettings);
             grpRuntime.Controls.Add(ChkWebFormLogin);
             grpRuntime.Controls.Add(TxtTestMessage);
@@ -174,6 +178,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // GrpWebFormSettings
             // 
+            GrpWebFormSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             GrpWebFormSettings.Controls.Add(LblCsrfFieldName);
             GrpWebFormSettings.Controls.Add(LblPasswordFieldName);
             GrpWebFormSettings.Controls.Add(LblUserFieldName);
@@ -182,9 +187,9 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpWebFormSettings.Controls.Add(TxtPasswordFieldName);
             GrpWebFormSettings.Controls.Add(TxtUserFieldName);
             GrpWebFormSettings.Controls.Add(TxtLoginPageUrl);
-            GrpWebFormSettings.Location = new System.Drawing.Point(28, 137);
+            GrpWebFormSettings.Location = new System.Drawing.Point(20, 185);
             GrpWebFormSettings.Name = "GrpWebFormSettings";
-            GrpWebFormSettings.Size = new System.Drawing.Size(387, 197);
+            GrpWebFormSettings.Size = new System.Drawing.Size(497, 155);
             GrpWebFormSettings.TabIndex = 37;
             GrpWebFormSettings.TabStop = false;
             GrpWebFormSettings.Text = "Webformulier instellingen";
@@ -193,7 +198,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // LblCsrfFieldName
             // 
             LblCsrfFieldName.AutoSize = true;
-            LblCsrfFieldName.Location = new System.Drawing.Point(6, 149);
+            LblCsrfFieldName.Location = new System.Drawing.Point(6, 105);
             LblCsrfFieldName.Name = "LblCsrfFieldName";
             LblCsrfFieldName.Size = new System.Drawing.Size(96, 15);
             LblCsrfFieldName.TabIndex = 3;
@@ -202,7 +207,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // LblPasswordFieldName
             // 
             LblPasswordFieldName.AutoSize = true;
-            LblPasswordFieldName.Location = new System.Drawing.Point(6, 105);
+            LblPasswordFieldName.Location = new System.Drawing.Point(191, 61);
             LblPasswordFieldName.Name = "LblPasswordFieldName";
             LblPasswordFieldName.Size = new System.Drawing.Size(160, 15);
             LblPasswordFieldName.TabIndex = 2;
@@ -231,9 +236,9 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtCsrfFieldName.BackColor = System.Drawing.SystemColors.Window;
             TxtCsrfFieldName.IsRequired = false;
             TxtCsrfFieldName.IsWhiteSpaceAllowed = false;
-            TxtCsrfFieldName.Location = new System.Drawing.Point(6, 167);
+            TxtCsrfFieldName.Location = new System.Drawing.Point(6, 123);
             TxtCsrfFieldName.Name = "TxtCsrfFieldName";
-            TxtCsrfFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtCsrfFieldName.Size = new System.Drawing.Size(179, 23);
             TxtCsrfFieldName.TabIndex = 5;
             TxtCsrfFieldName.TextChanged += TxtCsrfFieldName_TextChanged;
             // 
@@ -242,9 +247,9 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtPasswordFieldName.BackColor = System.Drawing.SystemColors.Window;
             TxtPasswordFieldName.IsRequired = false;
             TxtPasswordFieldName.IsWhiteSpaceAllowed = false;
-            TxtPasswordFieldName.Location = new System.Drawing.Point(6, 123);
+            TxtPasswordFieldName.Location = new System.Drawing.Point(191, 79);
             TxtPasswordFieldName.Name = "TxtPasswordFieldName";
-            TxtPasswordFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtPasswordFieldName.Size = new System.Drawing.Size(160, 23);
             TxtPasswordFieldName.TabIndex = 5;
             TxtPasswordFieldName.TextChanged += TxtPasswordFieldName_TextChanged;
             // 
@@ -255,25 +260,26 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtUserFieldName.IsWhiteSpaceAllowed = false;
             TxtUserFieldName.Location = new System.Drawing.Point(6, 79);
             TxtUserFieldName.Name = "TxtUserFieldName";
-            TxtUserFieldName.Size = new System.Drawing.Size(239, 23);
+            TxtUserFieldName.Size = new System.Drawing.Size(179, 23);
             TxtUserFieldName.TabIndex = 5;
             TxtUserFieldName.TextChanged += TxtUserFieldName_TextChanged;
             // 
             // TxtLoginPageUrl
             // 
+            TxtLoginPageUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtLoginPageUrl.BackColor = System.Drawing.Color.MistyRose;
             TxtLoginPageUrl.IsRequired = true;
             TxtLoginPageUrl.IsWhiteSpaceAllowed = false;
             TxtLoginPageUrl.Location = new System.Drawing.Point(6, 35);
             TxtLoginPageUrl.Name = "TxtLoginPageUrl";
-            TxtLoginPageUrl.Size = new System.Drawing.Size(375, 23);
+            TxtLoginPageUrl.Size = new System.Drawing.Size(485, 23);
             TxtLoginPageUrl.TabIndex = 5;
             TxtLoginPageUrl.TextChanged += TxtLoginPageUrl_TextChanged;
             // 
             // ChkWebFormLogin
             // 
             ChkWebFormLogin.AutoSize = true;
-            ChkWebFormLogin.Location = new System.Drawing.Point(16, 112);
+            ChkWebFormLogin.Location = new System.Drawing.Point(8, 160);
             ChkWebFormLogin.Name = "ChkWebFormLogin";
             ChkWebFormLogin.Size = new System.Drawing.Size(411, 19);
             ChkWebFormLogin.TabIndex = 36;
@@ -343,6 +349,28 @@ namespace LogScraper.LogProviders.Kubernetes
             lblLogLayout.TabIndex = 10;
             lblLogLayout.Text = "Standaard log layout";
             // 
+            // ChkUrlLinksToHtmlFolderList
+            // 
+            ChkUrlLinksToHtmlFolderList.AutoSize = true;
+            ChkUrlLinksToHtmlFolderList.Location = new System.Drawing.Point(8, 110);
+            ChkUrlLinksToHtmlFolderList.Name = "ChkUrlLinksToHtmlFolderList";
+            ChkUrlLinksToHtmlFolderList.Size = new System.Drawing.Size(530, 19);
+            ChkUrlLinksToHtmlFolderList.TabIndex = 38;
+            ChkUrlLinksToHtmlFolderList.Text = "De URL verwijst naar een HTML pagina met een lijst van mappen, elke map bevat links naar logs";
+            ChkUrlLinksToHtmlFolderList.UseVisualStyleBackColor = true;
+            ChkUrlLinksToHtmlFolderList.CheckedChanged += ChkUrlLinksToHtmlFolderList_CheckedChanged;
+            // 
+            // ChkUrlLinksToHtmlFileList
+            // 
+            ChkUrlLinksToHtmlFileList.AutoSize = true;
+            ChkUrlLinksToHtmlFileList.Location = new System.Drawing.Point(8, 135);
+            ChkUrlLinksToHtmlFileList.Name = "ChkUrlLinksToHtmlFileList";
+            ChkUrlLinksToHtmlFileList.Size = new System.Drawing.Size(397, 19);
+            ChkUrlLinksToHtmlFileList.TabIndex = 39;
+            ChkUrlLinksToHtmlFileList.Text = "De URL verwijst naar een HTML pagina met een lijst van log bestanden";
+            ChkUrlLinksToHtmlFileList.UseVisualStyleBackColor = true;
+            ChkUrlLinksToHtmlFileList.CheckedChanged += ChkUrlLinksToHtmlFileList_CheckedChanged;
+            // 
             // UserControlRuntimeConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -388,5 +416,7 @@ namespace LogScraper.LogProviders.Kubernetes
         private ValidatedTextBox TxtCsrfFieldName;
         private ValidatedTextBox TxtPasswordFieldName;
         private ValidatedTextBox TxtUserFieldName;
+        private System.Windows.Forms.CheckBox ChkUrlLinksToHtmlFolderList;
+        private System.Windows.Forms.CheckBox ChkUrlLinksToHtmlFileList;
     }
 }

@@ -57,7 +57,10 @@ namespace LogScraper.Sources.Adapters.Http
 
                 if (isAuthenticated)
                 {
-                    HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
+                    if (AuthenticationData.Type != HttpAuthenticationType.None)
+                    {
+                        HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
+                    }
                     return true;
                 }
 

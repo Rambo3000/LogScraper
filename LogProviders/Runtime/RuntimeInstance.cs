@@ -22,6 +22,8 @@ namespace LogScraper.LogProviders.Runtime
         /// Gets or sets the HTTP authentication settings used to configure authentication for HTTP requests.
         /// </summary>
         public HttpAuthenticationSettings HttpAuthenticationSettings { get; set; }
+        public bool IsUrlLinkToHtmlFolderList { get; set; }
+        public bool IsUrlLinkToHtmlFileList { get; set; }
 
         /// <summary>
         /// Returns the string representation of the endpoint.
