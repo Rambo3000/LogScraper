@@ -94,6 +94,9 @@ namespace LogScraper.Sources.Adapters.Http
                 case HttpAuthenticationType.BasicAuthentication:
                     CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
                     break;
+                case HttpAuthenticationType.FormLoginWithCsrf:
+                    CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
+                    break;
                 default:
                     break;
             }
