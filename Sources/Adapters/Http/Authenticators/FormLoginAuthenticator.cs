@@ -48,7 +48,7 @@ namespace LogScraper.Sources.Adapters.Http.Authenticators
                 Uri redirectUri = loginResponse.Headers.Location;
 
                 // Redirect naar dezelfde login pagina
-                if (redirectUri != null && Uri.Compare(redirectUri, new Uri(httpAuthenticationSettings.LoginPageUrl), UriComponents.PathAndQuery, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0)
+                if (redirectUri != null && Uri.Compare(redirectUri, new Uri(httpAuthenticationSettings.LoginPageUrl), UriComponents.Path, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     return false;
                 }
