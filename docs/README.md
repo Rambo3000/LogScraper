@@ -30,6 +30,14 @@ Get the latest release from the [Releases section](https://github.com/Rambo3000/
 
 ---
 
+## 🔄 Updates
+
+To update the program, simply **replace the executable file** with the new version from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
+
+You can **keep your existing configuration files** (`LogScraperConfig.json`, `LogScraperLogLayouts.json`, `LogScraperLogProviders.json`) — there is no need to change or reconfigure them unless specified in the release notes.
+
+---
+
 ## ⚙️ Before You Start
 
 Download and extract the ZIP archive to your local machine. No installation is required — just run the executable. Built in C# (.NET), the application does **not** require a separate .NET runtime.
