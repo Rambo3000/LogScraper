@@ -117,4 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="pictureBox3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAYpJREFUOE+1
+        k71rVUEQxe9DiV9Ja2kZUQsLE1O6jffd85t9r9tOxNjZCka7VCkC4hcign9APgotRLAM+RcSBEFBFFSI
+        gihBxEBkwt3r9SZlPDCwc+bM7M7ubFH8D8QYz0uaARYlLQA3gImubhfKsjwGPAa2gQ1gpTZfO/cwhHC4
+        m7eDlNIRM1sHvpvZTfdzbDAYHAVmgV/A2p5FJD0APsQYT6SURoD7wOfa5lNKB4Bx4Ctw55/k4XA4BmwB
+        lfvAdWDTzC4BVzwm6Vq90VXgt7fbFDAzA95lH7gF3Gv5q8ATX0s6BPwELua4F7gNPGuIFqqqOgl8yydw
+        eEEzm2tE3r+ZvWiIGmZ2ysx+AMtFUfQyL+mlpLuNEJgGPjbEX34eeBtCONiie5K+SLrcMDHGs/7Ofhct
+        oe902q3NmVlybb/fP9Pme8Bz4H1ZlsczCSy5Zd+fGPgk6WmTmRFCGAVeAa/N7Fw3LumCt+nD5tpufAed
+        UfZieZTf1C0+8qns5u0CMNX9TFVVTXZ1+4I/t+OoXoz3lFUAAAAASUVORK5CYII=
+</value>
+  </data>
+  <metadata name="Tooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="pictureBox3.ToolTip" xml:space="preserve">
+    <value>Deze optie werkt momenteel alleen voor paginas die middels een sessie cookie en een token op de inlogpagina.
+
+Geef de URL van inlog webpagina op. 
+Voor de namen van de velden kijk in de HTML van de inlogpagina en identificeer de ids van de gebruikersnaam, wachtwoord en (CSRF) token.</value>
+  </data>
+  <data name="pictureBox2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAYpJREFUOE+1
+        k71rVUEQxe9DiV9Ja2kZUQsLE1O6jffd85t9r9tOxNjZCka7VCkC4hcign9APgotRLAM+RcSBEFBFFSI
+        gihBxEBkwt3r9SZlPDCwc+bM7M7ubFH8D8QYz0uaARYlLQA3gImubhfKsjwGPAa2gQ1gpTZfO/cwhHC4
+        m7eDlNIRM1sHvpvZTfdzbDAYHAVmgV/A2p5FJD0APsQYT6SURoD7wOfa5lNKB4Bx4Ctw55/k4XA4BmwB
+        lfvAdWDTzC4BVzwm6Vq90VXgt7fbFDAzA95lH7gF3Gv5q8ATX0s6BPwELua4F7gNPGuIFqqqOgl8yydw
+        eEEzm2tE3r+ZvWiIGmZ2ysx+AMtFUfQyL+mlpLuNEJgGPjbEX34eeBtCONiie5K+SLrcMDHGs/7Ofhct
+        oe902q3NmVlybb/fP9Pme8Bz4H1ZlsczCSy5Zd+fGPgk6WmTmRFCGAVeAa/N7Fw3LumCt+nD5tpufAed
+        UfZieZTf1C0+8qns5u0CMNX9TFVVTXZ1+4I/t+OoXoz3lFUAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="pictureBox2.ToolTip" xml:space="preserve">
+    <value>Gebruik deze optie indien er een lijst met logbestanden benaderbaar is vanaf een HTML pagina. 
+
+Geef bij de URL die van de HTML pagina op die links naar de logs bevat. 
+
+De applicatie detecteerd automatisch de logs en geeft hierin een keuze.</value>
+  </data>
+  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAYpJREFUOE+1
+        k71rVUEQxe9DiV9Ja2kZUQsLE1O6jffd85t9r9tOxNjZCka7VCkC4hcign9APgotRLAM+RcSBEFBFFSI
+        gihBxEBkwt3r9SZlPDCwc+bM7M7ubFH8D8QYz0uaARYlLQA3gImubhfKsjwGPAa2gQ1gpTZfO/cwhHC4
+        m7eDlNIRM1sHvpvZTfdzbDAYHAVmgV/A2p5FJD0APsQYT6SURoD7wOfa5lNKB4Bx4Ctw55/k4XA4BmwB
+        lfvAdWDTzC4BVzwm6Vq90VXgt7fbFDAzA95lH7gF3Gv5q8ATX0s6BPwELua4F7gNPGuIFqqqOgl8yydw
+        eEEzm2tE3r+ZvWiIGmZ2ysx+AMtFUfQyL+mlpLuNEJgGPjbEX34eeBtCONiie5K+SLrcMDHGs/7Ofhct
+        oe902q3NmVlybb/fP9Pme8Bz4H1ZlsczCSy5Zd+fGPgk6WmTmRFCGAVeAa/N7Fw3LumCt+nD5tpufAed
+        UfZieZTf1C0+8qns5u0CMNX9TFVVTXZ1+4I/t+OoXoz3lFUAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value>Gebruik deze optie indien er mappen met logbestanden benaderbaar zijn vanaf een HTML pagina. 
+
+Geef bij de URL die van de HTML pagina op die mappen bevat. 
+
+De mappen verwijzen naar HTML paginas waar links naar log bestanden staan. De applicatie detecteerd automatisch de mappen en logs en geeft hierin een keuze.</value>
+  </data>
 </root>

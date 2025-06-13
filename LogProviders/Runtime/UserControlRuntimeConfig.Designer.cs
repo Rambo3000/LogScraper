@@ -30,6 +30,8 @@ namespace LogScraper.LogProviders.Kubernetes
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlRuntimeConfig));
             LstUrls = new System.Windows.Forms.ListBox();
             BtnAddUrl = new System.Windows.Forms.Button();
             BtnRemoveUrl = new System.Windows.Forms.Button();
@@ -39,6 +41,11 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtUrl = new ValidatedTextBox();
             GrpRuntimes = new System.Windows.Forms.GroupBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
+            pictureBox3 = new System.Windows.Forms.PictureBox();
+            pictureBox2 = new System.Windows.Forms.PictureBox();
+            pictureBox1 = new System.Windows.Forms.PictureBox();
+            ChkUrlLinksToHtmlFileList = new System.Windows.Forms.CheckBox();
+            ChkUrlLinksToHtmlFolderList = new System.Windows.Forms.CheckBox();
             GrpWebFormSettings = new System.Windows.Forms.GroupBox();
             LblCsrfFieldName = new System.Windows.Forms.Label();
             LblPasswordFieldName = new System.Windows.Forms.Label();
@@ -55,10 +62,12 @@ namespace LogScraper.LogProviders.Kubernetes
             LblClusterDescription = new System.Windows.Forms.Label();
             CboLogLayout = new System.Windows.Forms.ComboBox();
             lblLogLayout = new System.Windows.Forms.Label();
-            ChkUrlLinksToHtmlFolderList = new System.Windows.Forms.CheckBox();
-            ChkUrlLinksToHtmlFileList = new System.Windows.Forms.CheckBox();
+            Tooltip = new System.Windows.Forms.ToolTip(components);
             GrpRuntimes.SuspendLayout();
             grpRuntime.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             GrpWebFormSettings.SuspendLayout();
             SuspendLayout();
             // 
@@ -69,14 +78,14 @@ namespace LogScraper.LogProviders.Kubernetes
             LstUrls.IntegralHeight = false;
             LstUrls.Location = new System.Drawing.Point(6, 22);
             LstUrls.Name = "LstUrls";
-            LstUrls.Size = new System.Drawing.Size(232, 396);
+            LstUrls.Size = new System.Drawing.Size(232, 399);
             LstUrls.TabIndex = 0;
             LstUrls.SelectedIndexChanged += LstUrls_SelectedIndexChanged;
             // 
             // BtnAddUrl
             // 
             BtnAddUrl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnAddUrl.Location = new System.Drawing.Point(6, 424);
+            BtnAddUrl.Location = new System.Drawing.Point(6, 427);
             BtnAddUrl.Name = "BtnAddUrl";
             BtnAddUrl.Size = new System.Drawing.Size(80, 23);
             BtnAddUrl.TabIndex = 1;
@@ -87,7 +96,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // BtnRemoveUrl
             // 
             BtnRemoveUrl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnRemoveUrl.Location = new System.Drawing.Point(92, 424);
+            BtnRemoveUrl.Location = new System.Drawing.Point(92, 427);
             BtnRemoveUrl.Name = "BtnRemoveUrl";
             BtnRemoveUrl.Size = new System.Drawing.Size(80, 23);
             BtnRemoveUrl.TabIndex = 2;
@@ -99,7 +108,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnUrlUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnUrlUp.Image = Properties.Resources.up;
-            BtnUrlUp.Location = new System.Drawing.Point(192, 424);
+            BtnUrlUp.Location = new System.Drawing.Point(192, 427);
             BtnUrlUp.Name = "BtnUrlUp";
             BtnUrlUp.Size = new System.Drawing.Size(22, 23);
             BtnUrlUp.TabIndex = 3;
@@ -110,7 +119,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             BtnUrlDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnUrlDown.Image = Properties.Resources.down;
-            BtnUrlDown.Location = new System.Drawing.Point(216, 424);
+            BtnUrlDown.Location = new System.Drawing.Point(216, 427);
             BtnUrlDown.Name = "BtnUrlDown";
             BtnUrlDown.Size = new System.Drawing.Size(22, 23);
             BtnUrlDown.TabIndex = 4;
@@ -136,7 +145,7 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtUrl.IsWhiteSpaceAllowed = false;
             TxtUrl.Location = new System.Drawing.Point(8, 81);
             TxtUrl.Name = "TxtUrl";
-            TxtUrl.Size = new System.Drawing.Size(520, 23);
+            TxtUrl.Size = new System.Drawing.Size(606, 23);
             TxtUrl.TabIndex = 6;
             TxtUrl.TextChanged += TxtUrl_TextChanged;
             // 
@@ -151,7 +160,7 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpRuntimes.Controls.Add(BtnUrlDown);
             GrpRuntimes.Location = new System.Drawing.Point(0, 34);
             GrpRuntimes.Name = "GrpRuntimes";
-            GrpRuntimes.Size = new System.Drawing.Size(782, 453);
+            GrpRuntimes.Size = new System.Drawing.Size(868, 456);
             GrpRuntimes.TabIndex = 8;
             GrpRuntimes.TabStop = false;
             GrpRuntimes.Text = "Urls";
@@ -159,6 +168,9 @@ namespace LogScraper.LogProviders.Kubernetes
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(pictureBox3);
+            grpRuntime.Controls.Add(pictureBox2);
+            grpRuntime.Controls.Add(pictureBox1);
             grpRuntime.Controls.Add(ChkUrlLinksToHtmlFileList);
             grpRuntime.Controls.Add(ChkUrlLinksToHtmlFolderList);
             grpRuntime.Controls.Add(GrpWebFormSettings);
@@ -171,10 +183,62 @@ namespace LogScraper.LogProviders.Kubernetes
             grpRuntime.Controls.Add(TxtDescription);
             grpRuntime.Location = new System.Drawing.Point(244, 16);
             grpRuntime.Name = "grpRuntime";
-            grpRuntime.Size = new System.Drawing.Size(532, 402);
+            grpRuntime.Size = new System.Drawing.Size(618, 405);
             grpRuntime.TabIndex = 14;
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Urls";
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Image = (System.Drawing.Image)resources.GetObject("pictureBox3.Image");
+            pictureBox3.Location = new System.Drawing.Point(244, 160);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new System.Drawing.Size(16, 16);
+            pictureBox3.TabIndex = 11;
+            pictureBox3.TabStop = false;
+            Tooltip.SetToolTip(pictureBox3, resources.GetString("pictureBox3.ToolTip"));
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = (System.Drawing.Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new System.Drawing.Point(411, 135);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new System.Drawing.Size(16, 16);
+            pictureBox2.TabIndex = 11;
+            pictureBox2.TabStop = false;
+            Tooltip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (System.Drawing.Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new System.Drawing.Point(535, 110);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new System.Drawing.Size(16, 16);
+            pictureBox1.TabIndex = 11;
+            pictureBox1.TabStop = false;
+            Tooltip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            // 
+            // ChkUrlLinksToHtmlFileList
+            // 
+            ChkUrlLinksToHtmlFileList.AutoSize = true;
+            ChkUrlLinksToHtmlFileList.Location = new System.Drawing.Point(8, 135);
+            ChkUrlLinksToHtmlFileList.Name = "ChkUrlLinksToHtmlFileList";
+            ChkUrlLinksToHtmlFileList.Size = new System.Drawing.Size(397, 19);
+            ChkUrlLinksToHtmlFileList.TabIndex = 39;
+            ChkUrlLinksToHtmlFileList.Text = "De URL verwijst naar een HTML pagina met een lijst van log bestanden";
+            ChkUrlLinksToHtmlFileList.UseVisualStyleBackColor = true;
+            ChkUrlLinksToHtmlFileList.CheckedChanged += ChkUrlLinksToHtmlFileList_CheckedChanged;
+            // 
+            // ChkUrlLinksToHtmlFolderList
+            // 
+            ChkUrlLinksToHtmlFolderList.AutoSize = true;
+            ChkUrlLinksToHtmlFolderList.Location = new System.Drawing.Point(8, 110);
+            ChkUrlLinksToHtmlFolderList.Name = "ChkUrlLinksToHtmlFolderList";
+            ChkUrlLinksToHtmlFolderList.Size = new System.Drawing.Size(530, 19);
+            ChkUrlLinksToHtmlFolderList.TabIndex = 38;
+            ChkUrlLinksToHtmlFolderList.Text = "De URL verwijst naar een HTML pagina met een lijst van mappen, elke map bevat links naar logs";
+            ChkUrlLinksToHtmlFolderList.UseVisualStyleBackColor = true;
+            ChkUrlLinksToHtmlFolderList.CheckedChanged += ChkUrlLinksToHtmlFolderList_CheckedChanged;
             // 
             // GrpWebFormSettings
             // 
@@ -189,7 +253,7 @@ namespace LogScraper.LogProviders.Kubernetes
             GrpWebFormSettings.Controls.Add(TxtLoginPageUrl);
             GrpWebFormSettings.Location = new System.Drawing.Point(20, 185);
             GrpWebFormSettings.Name = "GrpWebFormSettings";
-            GrpWebFormSettings.Size = new System.Drawing.Size(497, 155);
+            GrpWebFormSettings.Size = new System.Drawing.Size(583, 155);
             GrpWebFormSettings.TabIndex = 37;
             GrpWebFormSettings.TabStop = false;
             GrpWebFormSettings.Text = "Webformulier instellingen";
@@ -200,9 +264,9 @@ namespace LogScraper.LogProviders.Kubernetes
             LblCsrfFieldName.AutoSize = true;
             LblCsrfFieldName.Location = new System.Drawing.Point(6, 105);
             LblCsrfFieldName.Name = "LblCsrfFieldName";
-            LblCsrfFieldName.Size = new System.Drawing.Size(96, 15);
+            LblCsrfFieldName.Size = new System.Drawing.Size(135, 15);
             LblCsrfFieldName.TabIndex = 3;
-            LblCsrfFieldName.Text = "Naam CSRF-veld";
+            LblCsrfFieldName.Text = "Naam (CSRF) token veld";
             // 
             // LblPasswordFieldName
             // 
@@ -272,7 +336,7 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtLoginPageUrl.IsWhiteSpaceAllowed = false;
             TxtLoginPageUrl.Location = new System.Drawing.Point(6, 35);
             TxtLoginPageUrl.Name = "TxtLoginPageUrl";
-            TxtLoginPageUrl.Size = new System.Drawing.Size(485, 23);
+            TxtLoginPageUrl.Size = new System.Drawing.Size(571, 23);
             TxtLoginPageUrl.TabIndex = 5;
             TxtLoginPageUrl.TextChanged += TxtLoginPageUrl_TextChanged;
             // 
@@ -281,9 +345,9 @@ namespace LogScraper.LogProviders.Kubernetes
             ChkWebFormLogin.AutoSize = true;
             ChkWebFormLogin.Location = new System.Drawing.Point(8, 160);
             ChkWebFormLogin.Name = "ChkWebFormLogin";
-            ChkWebFormLogin.Size = new System.Drawing.Size(411, 19);
+            ChkWebFormLogin.Size = new System.Drawing.Size(230, 19);
             ChkWebFormLogin.TabIndex = 36;
-            ChkWebFormLogin.Text = "Inloggen via webformulier inschakelen (met CSRF-token en sessiecookie)";
+            ChkWebFormLogin.Text = "Inloggen via webformulier inschakelen";
             ChkWebFormLogin.UseVisualStyleBackColor = true;
             ChkWebFormLogin.CheckedChanged += ChkWebFormLogin_CheckedChanged;
             // 
@@ -296,14 +360,14 @@ namespace LogScraper.LogProviders.Kubernetes
             TxtTestMessage.Multiline = true;
             TxtTestMessage.Name = "TxtTestMessage";
             TxtTestMessage.ReadOnly = true;
-            TxtTestMessage.Size = new System.Drawing.Size(418, 27);
+            TxtTestMessage.Size = new System.Drawing.Size(504, 30);
             TxtTestMessage.TabIndex = 35;
             TxtTestMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BtnTest
             // 
             BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnTest.Location = new System.Drawing.Point(6, 369);
+            BtnTest.Location = new System.Drawing.Point(6, 372);
             BtnTest.Name = "BtnTest";
             BtnTest.Size = new System.Drawing.Size(96, 27);
             BtnTest.TabIndex = 16;
@@ -349,28 +413,6 @@ namespace LogScraper.LogProviders.Kubernetes
             lblLogLayout.TabIndex = 10;
             lblLogLayout.Text = "Standaard log layout";
             // 
-            // ChkUrlLinksToHtmlFolderList
-            // 
-            ChkUrlLinksToHtmlFolderList.AutoSize = true;
-            ChkUrlLinksToHtmlFolderList.Location = new System.Drawing.Point(8, 110);
-            ChkUrlLinksToHtmlFolderList.Name = "ChkUrlLinksToHtmlFolderList";
-            ChkUrlLinksToHtmlFolderList.Size = new System.Drawing.Size(530, 19);
-            ChkUrlLinksToHtmlFolderList.TabIndex = 38;
-            ChkUrlLinksToHtmlFolderList.Text = "De URL verwijst naar een HTML pagina met een lijst van mappen, elke map bevat links naar logs";
-            ChkUrlLinksToHtmlFolderList.UseVisualStyleBackColor = true;
-            ChkUrlLinksToHtmlFolderList.CheckedChanged += ChkUrlLinksToHtmlFolderList_CheckedChanged;
-            // 
-            // ChkUrlLinksToHtmlFileList
-            // 
-            ChkUrlLinksToHtmlFileList.AutoSize = true;
-            ChkUrlLinksToHtmlFileList.Location = new System.Drawing.Point(8, 135);
-            ChkUrlLinksToHtmlFileList.Name = "ChkUrlLinksToHtmlFileList";
-            ChkUrlLinksToHtmlFileList.Size = new System.Drawing.Size(397, 19);
-            ChkUrlLinksToHtmlFileList.TabIndex = 39;
-            ChkUrlLinksToHtmlFileList.Text = "De URL verwijst naar een HTML pagina met een lijst van log bestanden";
-            ChkUrlLinksToHtmlFileList.UseVisualStyleBackColor = true;
-            ChkUrlLinksToHtmlFileList.CheckedChanged += ChkUrlLinksToHtmlFileList_CheckedChanged;
-            // 
             // UserControlRuntimeConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -379,10 +421,13 @@ namespace LogScraper.LogProviders.Kubernetes
             Controls.Add(CboLogLayout);
             Controls.Add(GrpRuntimes);
             Name = "UserControlRuntimeConfig";
-            Size = new System.Drawing.Size(782, 490);
+            Size = new System.Drawing.Size(868, 493);
             GrpRuntimes.ResumeLayout(false);
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             GrpWebFormSettings.ResumeLayout(false);
             GrpWebFormSettings.PerformLayout();
             ResumeLayout(false);
@@ -418,5 +463,9 @@ namespace LogScraper.LogProviders.Kubernetes
         private ValidatedTextBox TxtUserFieldName;
         private System.Windows.Forms.CheckBox ChkUrlLinksToHtmlFolderList;
         private System.Windows.Forms.CheckBox ChkUrlLinksToHtmlFileList;
+        private System.Windows.Forms.ToolTip Tooltip;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
