@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using LogScraper.Credentials;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace LogScraper.Sources.Adapters.Http
 {

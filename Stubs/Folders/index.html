@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Log files</title>
+    <link rel="stylesheet" href="/statusviewer/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/statusviewer/css/bootstrap-theme.min.css">
+    <link href="/statusviewer/css/dataTables.bootstrap.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Status viewer</h1>
+        <p>Status informatie voor de Blueriq15 runtime t.b.v. UP-EU. Deze informatie is alleen per namespace. Dus bij een dubbel
+            uitgevoerde runtime (ACC en PROD) is de logging verdeeld over 2 pods.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p></p>
+            <div id="propstable_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                <div class="row">
+                    <div class="col-sm-6"></div>
+                    <div class="col-sm-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table id="logstable" class="table table-striped dataTable no-footer" role="grid"
+                               aria-describedby="propstable_info">
+                            <thead>
+                            <tr role="row">
+                                <th class="sorting_asc" tabindex="0" aria-controls="propstable" rowspan="1" colspan="1" style="width: 150px;" aria-sort="ascending">Applicaties</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 200px;">Log dir</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 200px;">Properties</th>
+                                <th class="sorting" tabindex="0" rowspan="1" colspan="1" style="width: 24px;">Type</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="background:#f2fefe">
+                                    <a href="/Folders/bq15/">
+                                        <code>bq15 tet</code>
+                                    </a>
+                                </td>
+                                
+                                
+                                <td class="mtime">/mnt/logging/blueriq/</td>
+                                <td class="mtime"></td>
+                                <td class="mtime" style="background: #f2fefe">BQ</td>
+                                
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Contact service">
+                                        <code >Contact service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/contact-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Customerdata service">
+                                        <code >Customerdata service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/customerdata-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Deelname service">
+                                        <code >Deelname service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/deelname-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Document service">
+                                        <code >Document service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/document-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Extern service">
+                                        <code >Extern service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/extern-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Fiab service">
+                                        <code >Fiab service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/fiab-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Gebeurtenis service">
+                                        <code >Gebeurtenis service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/gebeurtenis-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Job service">
+                                        <code >Job service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/job-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Mockserver">
+                                        <code >Mockserver</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/upeu-mockserver/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Relatie service">
+                                        <code >Relatie service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/relatie-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Sessiemanagement service">
+                                        <code >Sessiemanagement service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/sessiemanagement-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/subsidie-service">
+                                        <code >subsidie-service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/subsidie-service/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Systeemactie adapter">
+                                        <code >Systeemactie adapter</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/systeemactie-adapter/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Transactie intermediair">
+                                        <code >Transactie intermediair</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/transactie-intermediair/</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            <tr>
+                                
+                                <td style="background:#f9fef2">
+                                    <a href="/statusviewer/app-log/Zaakmanagement service">
+                                        <code >Zaakmanagement service</code>
+                                    </a>
+                                </td>
+                                
+                                <td class="mtime">/mnt/logging/zaakmanagement-service</td>
+                                <td class="mtime"></td>
+                                
+                                <td class="mtime" style="background:#f9fef2">JAVA</td>
+                                
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+        </div>
+    </div>
+
+    <script src="/statusviewer/script/jquery.min.js"></script>
+    <script src="/statusviewer/script/jquery.dataTables.min.js"></script>
+    <script src="/statusviewer/script/dataTables.bootstrap.js"></script>
+    <script src="/statusviewer/script/bootstrap.min.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+          $('#logstable').dataTable( {
+              "bFilter": false,
+              "bPaginate": false,
+              "order": [[ 2, "desc" ]]
+          });
+        });
+    </script>
+</div>
+</body>
+
+</html>
