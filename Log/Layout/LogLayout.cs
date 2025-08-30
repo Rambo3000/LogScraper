@@ -139,6 +139,7 @@ namespace LogScraper.Log.Layout
                 {
                     AfterPhrase = RemoveMetaDataCriteria.AfterPhrase,
                     BeforePhrase = RemoveMetaDataCriteria.BeforePhrase,
+                    IsRegex = RemoveMetaDataCriteria.IsRegex,
                 },
                 LogMetadataProperties = [],
                 LogContentProperties = [],

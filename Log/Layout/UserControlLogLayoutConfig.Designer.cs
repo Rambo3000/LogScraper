@@ -44,6 +44,7 @@ namespace LogScraper.Log
             pictureBox7 = new System.Windows.Forms.PictureBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
+            ChkMetadataEndRegex = new System.Windows.Forms.CheckBox();
             pictureBox11 = new System.Windows.Forms.PictureBox();
             groupBox2 = new System.Windows.Forms.GroupBox();
             pictureBox16 = new System.Windows.Forms.PictureBox();
@@ -277,6 +278,7 @@ namespace LogScraper.Log
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(ChkMetadataEndRegex);
             splitContainer1.Panel1.Controls.Add(pictureBox11);
             splitContainer1.Panel1.Controls.Add(groupBox2);
             splitContainer1.Panel1.Controls.Add(label1);
@@ -293,10 +295,21 @@ namespace LogScraper.Log
             splitContainer1.SplitterDistance = 147;
             splitContainer1.TabIndex = 33;
             // 
+            // ChkMetadataEndRegex
+            // 
+            ChkMetadataEndRegex.AutoSize = true;
+            ChkMetadataEndRegex.Location = new System.Drawing.Point(227, 114);
+            ChkMetadataEndRegex.Name = "ChkMetadataEndRegex";
+            ChkMetadataEndRegex.Size = new System.Drawing.Size(57, 19);
+            ChkMetadataEndRegex.TabIndex = 36;
+            ChkMetadataEndRegex.Text = "Regex";
+            ChkMetadataEndRegex.UseVisualStyleBackColor = true;
+            ChkMetadataEndRegex.CheckedChanged += ChkMetadataEndRegex_CheckedChanged;
+            // 
             // pictureBox11
             // 
             pictureBox11.Image = Properties.Resources.help;
-            pictureBox11.Location = new System.Drawing.Point(260, 93);
+            pictureBox11.Location = new System.Drawing.Point(205, 95);
             pictureBox11.Name = "pictureBox11";
             pictureBox11.Size = new System.Drawing.Size(16, 16);
             pictureBox11.TabIndex = 35;
@@ -389,7 +402,7 @@ namespace LogScraper.Log
             TxtMetadataEnd.IsWhiteSpaceAllowed = true;
             TxtMetadataEnd.Location = new System.Drawing.Point(3, 112);
             TxtMetadataEnd.Name = "TxtMetadataEnd";
-            TxtMetadataEnd.Size = new System.Drawing.Size(273, 23);
+            TxtMetadataEnd.Size = new System.Drawing.Size(218, 23);
             TxtMetadataEnd.TabIndex = 32;
             TxtMetadataEnd.TextChanged += TxtMetadataEnd_TextChanged;
             // 
@@ -1112,5 +1125,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.PictureBox pictureBox18;
         private System.Windows.Forms.CheckBox ChkContentPropertyIsError;
         private System.Windows.Forms.CheckBox ChkShowMetadataByDefault;
+        private System.Windows.Forms.CheckBox ChkMetadataEndRegex;
     }
 }

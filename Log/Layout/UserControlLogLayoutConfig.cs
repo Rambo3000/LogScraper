@@ -241,6 +241,7 @@ namespace LogScraper.Log
                 TxtDescription.Text = selected.Description;
                 TxtDateTimeFormat.Text = selected.DateTimeFormat;
                 TxtMetadataEnd.Text = selected.RemoveMetaDataCriteria.AfterPhrase;
+                ChkMetadataEndRegex.Checked = selected.RemoveMetaDataCriteria.IsRegex;
 
                 _metadataProperties.Clear();
                 foreach (LogMetadataProperty property in selected.LogMetadataProperties)
@@ -521,6 +522,8 @@ namespace LogScraper.Log
         {
             if (LstLayouts.SelectedItem is LogLayout logLayout) // Ensure 'logLayout' is defined
             {
+                //Clear any compiled regex to ensure they are recompiled with the current settings.
+                logLayout.RemoveMetaDataCriteria.RegexCompiled = null;
                 LogCollection logCollection = new();
                 try
                 {
@@ -685,6 +688,14 @@ namespace LogScraper.Log
             if (UpdatingInformation) return;
 
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsDefaultVisibleInLog = ChkShowMetadataByDefault.Checked;
+        }
+
+        private void ChkMetadataEndRegex_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.IsRegex = ChkMetadataEndRegex.Checked;
+
         }
     }
 }

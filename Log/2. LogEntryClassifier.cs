@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log.Content;
@@ -95,9 +96,15 @@ namespace LogScraper.Log
         {
             if (logCollection == null) return;
 
+            //Just in time precompile the regex parser
+            if (logLayout.RemoveMetaDataCriteria != null && logLayout.RemoveMetaDataCriteria.IsRegex && logLayout.RemoveMetaDataCriteria.RegexCompiled == null)
+            {
+                logLayout.RemoveMetaDataCriteria.RegexCompiled = new Regex(logLayout.RemoveMetaDataCriteria.AfterPhrase, RegexOptions.Compiled);
+            }
+
             Parallel.ForEach(logCollection.LogEntries, logEntry =>
             {
-                SetLogEntryStartPositionContent(logEntry, logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata);
+                SetLogEntryStartPositionContent(logEntry, logLayout);
                 ClassifyLogEntryMetadataProperties(logEntry, logLayout);
                 ClassifyLogEntryContentProperties(logEntry, logLayout, out bool errorFound);
                 if (errorFound) Interlocked.Increment(ref logCollection.ErrorCount);
@@ -109,31 +116,48 @@ namespace LogScraper.Log
         /// separator.
         /// </summary>
         /// <remarks>If the specified metadata content separator is not found in the log entry starting
-        /// from <paramref name="startIndex"/>, the content start position is set to <paramref name="startIndex"/>.
+        /// from <paramref name="startIndexMetadata"/>, the content start position is set to <paramref name="startIndexMetadata"/>.
         /// Otherwise, the position is set to the index immediately following the separator.</remarks>
         /// <param name="logEntry">The log entry object whose content start position is to be set.</param>
-        /// <param name="metadataContentSeperator">The string used to separate metadata from content within the log entry.</param>
-        /// <param name="startIndex">The index at which to begin searching for the metadata content separator.</param>
-        private static void SetLogEntryStartPositionContent(LogEntry logEntry, string metadataContentSeperator, int startIndex)
+        /// <param name="logLayout">The layout definition that specifies how the content starting position should be identified.</param>
+        private static void SetLogEntryStartPositionContent(LogEntry logEntry, LogLayout logLayout)
         {
-            int index = logEntry.Entry.IndexOf(metadataContentSeperator, startIndex);
-            if (index == -1)
+            int index = -1;
+
+            // Match on precompiled regex
+            if (logLayout.RemoveMetaDataCriteria.IsRegex)
             {
-                // If the seperator is not found, start searching after the startIndex
-                index = startIndex;
+                Match match = logLayout.RemoveMetaDataCriteria.RegexCompiled.Match(logEntry.Entry, logLayout.StartIndexMetadata);
+
+                if (match.Success)
+                {
+                    index = match.Index + match.Length;
+                }
             }
+            //Match on index
             else
             {
-                index += metadataContentSeperator.Length;
+                index = logEntry.Entry.IndexOf(logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata);
+                if (index != -1)
+                {
+                    index += logLayout.RemoveMetaDataCriteria.AfterPhrase.Length;
+                }
             }
+
+            if (index == -1)
+            {
+                // fallback: no match found, set to startIndexMetadata
+                index = logLayout.StartIndexMetadata;
+            }
+
             logEntry.StartIndexContent = index;
         }
+
         /// <summary>
         /// Classifies metadata properties for a log entry based on the provided log layout and adds this to the log entry.
         /// </summary>
         /// <param name="logEntry">The log entry to classify metadata properties for.</param>
         /// <param name="logLayout">The layout defining metadata properties and their criteria.</param>
-        /// <param name="logCollection">The collection of log entries, the number of errors found is updated here.</param>
         private static void ClassifyLogEntryMetadataProperties(LogEntry logEntry, LogLayout logLayout)
         {
             // Skip log entries that already have metadata properties classified.
