@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using ScintillaNET;
 
@@ -15,15 +16,23 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="scintillacontrol">The Scintilla control to initialize.</param>
         public static void Initialize(this Scintilla scintillacontrol)
         {
+            // Begin/End line indicator
             scintillacontrol.Indicators[10].Style = IndicatorStyle.FullBox;
             scintillacontrol.Indicators[10].ForeColor = Color.Gray;
             scintillacontrol.Indicators[10].Alpha = 50;
             scintillacontrol.Indicators[10].Under = true;
 
+            // Active line indicator
             scintillacontrol.Indicators[11].Style = IndicatorStyle.FullBox;
             scintillacontrol.Indicators[11].ForeColor = Color.FromArgb(60, 132, 196);
             scintillacontrol.Indicators[11].Alpha = 100;
             scintillacontrol.Indicators[11].Under = true;
+
+            // Error line indicator
+            scintillacontrol.Indicators[12].Style = IndicatorStyle.FullBox;
+            scintillacontrol.Indicators[12].ForeColor = Color.Red;
+            scintillacontrol.Indicators[12].Alpha = 100;
+            scintillacontrol.Indicators[12].Under = true;
 
             Indicator indicator = scintillacontrol.Indicators[INDICATOR_SEARCH];
             indicator.Style = IndicatorStyle.StraightBox;
@@ -86,7 +95,7 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="beginLine">The line number to highlight as the begin line (light gray), or null.</param>
         /// <param name="endLine">The line number to highlight as the end line (light gray), or null.</param>
         /// <param name="activeLine">The line number to highlight as the active line (light blue), or null.</param>
-        public static void HighlightLines(this Scintilla scintillacontrol, int? beginLine, int? endLine, int? activeLine)
+        public static void HighlightLines(this Scintilla scintillacontrol, int? beginLine, int? endLine, int? activeLine, List<int> errorlines)
         {
             // Clear previous highlights
             scintillacontrol.IndicatorCurrent = 10;
@@ -99,6 +108,9 @@ namespace LogScraper.Utilities.Extensions
                 HighlightSingleLine(scintillacontrol, beginLine.Value, 10);
             if (endLine.HasValue && endLine != beginLine)
                 HighlightSingleLine(scintillacontrol, endLine.Value, 10);
+            if (errorlines != null && errorlines.Count > 0)
+                foreach (int errorline in errorlines)
+                    HighlightSingleLine(scintillacontrol, errorline, 12);
 
             // Apply active line (light blue)
             if (activeLine.HasValue)
@@ -130,6 +142,8 @@ namespace LogScraper.Utilities.Extensions
             scintillacontrol.IndicatorCurrent = 10;
             scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
             scintillacontrol.IndicatorCurrent = 11;
+            scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
+            scintillacontrol.IndicatorCurrent = 12;
             scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
         }
 

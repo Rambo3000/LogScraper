@@ -23,6 +23,8 @@ namespace LogScraper.Utilities.UserControls
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private LogEntry logEntrySelected = null;
+        private List<LogContentProperty> ErrorContentProperties;
+        private List<int> errorLineNumbers = [];
         private int? selectedIndex = -1;
 
         public UserControlLogEntriesTextBox()
@@ -48,6 +50,8 @@ namespace LogScraper.Utilities.UserControls
         #region Update log layout and filter result
         public void UpdateLogLayout(LogLayout logLayout)
         {
+            ErrorContentProperties = [.. logLayout.LogContentProperties.Where(item => item.IsErrorProperty)];
+            errorLineNumbers = DetermineErrorLineNumbers();
             CboLogContentType.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -70,6 +74,7 @@ namespace LogScraper.Utilities.UserControls
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogExportSettings = logExportSettings;
             VisibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
+            errorLineNumbers = DetermineErrorLineNumbers();
             ShowLogEntries();
         }
         private void ShowLogEntries()
@@ -122,9 +127,43 @@ namespace LogScraper.Utilities.UserControls
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
 
-                TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
+
+                TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex, errorLineNumbers);
             }
         }
+        /// <summary>
+        /// Determines the list of line numbers of log entries that contain error properties.
+        /// </summary>
+        /// <remarks>This method iterates through the visible log entries and checks for the presence of 
+        /// error-related properties defined in <see cref="ErrorContentProperties"/>. If a log entry  contains any of
+        /// these properties, its corresponding line number is added to the result.</remarks>
+        /// <returns>A list of integers representing the line numbers of log entries that match the error criteria. The list will
+        /// be empty if no matching log entries are found.</returns>
+        private List<int> DetermineErrorLineNumbers()
+        {
+            List<int> errorLines = [];
+
+            if (VisibleLogEntries == null) return errorLines;
+
+            for (int i = 0; i < VisibleLogEntries.Count; i++)
+            {
+                LogEntry logEntry = VisibleLogEntries[i];
+                if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
+
+                foreach (LogContentProperty errorproperties in ErrorContentProperties)
+                {
+                    if (!logEntry.LogContentProperties.ContainsKey(errorproperties)) continue;
+
+                    if (TryGetLogEntryIndex(logEntry, out int logEntryIndex))
+                    {
+                        errorLines.Add(logEntryIndex);
+                    }
+                }
+            }
+
+            return errorLines;
+        }
+
         public void SelectLogEntry(LogEntry selectedLogEntry)
         {
             if (selectedLogEntry == null)
@@ -135,24 +174,35 @@ namespace LogScraper.Utilities.UserControls
             }
             logEntrySelected = selectedLogEntry;
 
-            int selectedIndexNew = -1;
-            bool found = false;
-            foreach (LogEntry logEntry in VisibleLogEntries)
-            {
-                selectedIndexNew++;
-                if (logEntry == logEntrySelected)
-                {
-                    found = true;
-                    break;
-                }
-                // Add the additional log entries to the line count
-                if (logEntry.AdditionalLogEntries != null) selectedIndexNew += logEntry.AdditionalLogEntries.Count;
-            }
+            bool found = TryGetLogEntryIndex(selectedLogEntry, out int selectedIndexNew);
 
             selectedIndex = found ? selectedIndexNew : null;
 
             HighlightLines();
             if (selectedIndex != null) TxtLogEntries.ScrollToLine((int)selectedIndex);
+        }
+
+        /// <summary>
+        /// Attempts to find the index of the specified <see cref="LogEntry"/> within the collection of visible log
+        /// entries.
+        /// </summary>
+        /// <param name="logEntry">The <see cref="LogEntry"/> to locate in the collection.</param>
+        /// <param name="logEntryIndex">When this method returns, contains the zero-based index of the specified <paramref name="logEntry"/> if it
+        /// is found; otherwise, contains -1. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the specified <paramref name="logEntry"/> is found in the collection of visible
+        /// log entries; otherwise, <see langword="false"/>.</returns>
+        private bool TryGetLogEntryIndex(LogEntry logEntry, out int logEntryIndex)
+        {
+            logEntryIndex = -1;
+            foreach (LogEntry logEntryVisible in VisibleLogEntries)
+            {
+                logEntryIndex++;
+                if (logEntryVisible == logEntry) return true;
+
+                // Add the additional log entries to the line count
+                if (logEntryVisible.AdditionalLogEntries != null) logEntryIndex += logEntryVisible.AdditionalLogEntries.Count;
+            }
+            return false;
         }
         #endregion
 
