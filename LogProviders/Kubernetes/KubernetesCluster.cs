@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Linq;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -39,6 +41,36 @@ namespace LogScraper.LogProviders.Kubernetes
         public override string ToString()
         {
             return Description;
+        }
+
+        /// <summary>
+        /// Creates a deep copy of the current KubernetesCluster instance, including its namespaces.
+        /// </summary>
+        /// <remarks>The returned cluster is independent of the original; changes to the copy do not
+        /// affect the source instance or its namespaces.</remarks>
+        /// <returns>A new KubernetesCluster object that is a deep copy of the current instance. All namespace objects are also
+        /// copied.</returns>
+        public KubernetesCluster Copy()
+        {
+            KubernetesCluster cluster = new()
+            {
+                Description = Description,
+                BaseUrl = BaseUrl,
+                ClusterId = ClusterId,
+                Namespaces = []
+            };
+            foreach (KubernetesNamespace kubernetesNamespace in Namespaces)
+            {
+                KubernetesNamespace newSpace = new()
+                {
+                    Description = kubernetesNamespace.Description,
+                    Name = kubernetesNamespace.Name,
+                    ShortenPodNames = kubernetesNamespace.ShortenPodNames,
+                    ShortenPodNamesValues = kubernetesNamespace.ShortenPodNamesValues
+                };
+                cluster.Namespaces.Add(newSpace);
+            }
+            return cluster;
         }
     }
 }

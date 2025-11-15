@@ -50,25 +50,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 foreach (var cluster in config.Clusters)
                 {
-                    List<KubernetesNamespace> namespaces = [];
-                    foreach (var ns in cluster.Namespaces)
-                    {
-                        KubernetesNamespace nsNew = new()
-                        {
-                            Description = ns.Description,
-                            Name = ns.Name
-                        };
-                        namespaces.Add(nsNew);
-                    }
-
-                    KubernetesCluster clusterNew = new()
-                    {
-                        Description = cluster.Description,
-                        BaseUrl = cluster.BaseUrl,
-                        ClusterId = cluster.ClusterId,
-                        Namespaces = namespaces
-                    };
-                    _clusters.Add(clusterNew);
+                    _clusters.Add(cluster.Copy());
                 }
                 LstClusters.DataSource = _clusters;
                 LstClusters.DisplayMember = string.Empty;
@@ -299,7 +281,9 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 UpdatingNamespaceInformation = true;
                 TxtNamespaceDescription.Text = selected.Description;
-                TxtNamespaceName.Text = selected.Name; ;
+                TxtNamespaceName.Text = selected.Name;
+                TxtFilterPodNames.Text = string.Join(" ", selected.ShortenPodNamesValues ?? []);
+                ChkFilterPodNames.Checked = selected.ShortenPodNames;
                 UpdatingNamespaceInformation = false;
             }
             UpdateButtons();
@@ -351,6 +335,24 @@ namespace LogScraper.LogProviders.Kubernetes
             }
         }
 
+        private void ChkFilterPodNames_CheckedChanged(object sender, EventArgs e)
+        {
+            TxtFilterPodNames.Enabled = ChkFilterPodNames.Checked;
+            if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
+
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected)
+            {
+                selected.ShortenPodNames = ChkFilterPodNames.Checked;
+            }
+        }
+
+        private void TxtFilterPodNames_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
+
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.ShortenPodNamesValues = [.. TxtFilterPodNames.Text.Split(' ')];
+        }
+
         private void BtnTest_Click(object sender, EventArgs e)
         {
             string url = string.Empty;
@@ -384,26 +386,13 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
 
-            KubernetesCluster cluster = new()
-            {
-                Description = selected.Description + " (kopie)",
-                BaseUrl = selected.BaseUrl,
-                ClusterId = selected.ClusterId,
-                Namespaces = []
-            };
-            foreach (KubernetesNamespace kubernetesNamespace in selected.Namespaces)
-            {
-                KubernetesNamespace newSpace = new()
-                {
-                    Description = kubernetesNamespace.Description,
-                    Name = kubernetesNamespace.Name
-                };
-                cluster.Namespaces.Add(newSpace);
-                _namespaces.Add(newSpace);
-            }
-            _clusters.Add(cluster);
+            KubernetesCluster newCluster = selected.Copy();
+            newCluster.Description = newCluster.Description + " (kopie)";
 
-            LstClusters.SelectedItem = cluster;
+            _namespaces = [.. newCluster.Namespaces];
+            _clusters.Add(newCluster);
+
+            LstClusters.SelectedItem = newCluster;
             LstNamespaces_SelectedIndexChanged(null, null);
         }
     }

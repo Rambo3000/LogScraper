@@ -120,4 +120,10 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="pictureBox3.ToolTip" xml:space="preserve">
+    <value>Kort de namen van pods in daar bepaalde delen tekst uit de naam te verwijderen. 
+Geef de te verwijderen delen van tekst op, geef meerdere delen op door deze met spatie te scheiden.
+
+De naam wordt alleen binnen de Logscraper applicatie aangepast. Kubernetes wordt hierdoor niet aangepast of beïnvloed.</value>
+  </data>
 </root>

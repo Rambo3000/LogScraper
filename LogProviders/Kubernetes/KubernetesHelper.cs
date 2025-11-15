@@ -39,8 +39,9 @@ namespace LogScraper.LogProviders.Kubernetes
         /// Parses the JSON to retrieve details such as pod name, image name, version, and description.
         /// </summary>
         /// <param name="jsonFromPodsResponse">The JSON response containing pod information.</param>
+        /// <param name="ShortenPodNamesValues">A list of values used to shorten pod names for descriptions.</param>
         /// <returns>A list of <see cref="KubernetesPod"/> objects containing extracted pod details.</returns>
-        internal static List<KubernetesPod> ExtractPodsInfo(string jsonFromPodsResponse)
+        internal static List<KubernetesPod> ExtractPodsInfo(string jsonFromPodsResponse, List<string> shortenPodNamesValues)
         {
             // Initialize an empty list to store pod information.
             List<KubernetesPod> podsInfo = [];
@@ -59,18 +60,27 @@ namespace LogScraper.LogProviders.Kubernetes
                     // Extract the pod name from the metadata.
                     string podName = podItem["metadata"]["name"].ToString();
 
+                    // Initialize the shortened pod name.
+                    string podNameShortened = podName;
+                    if (shortenPodNamesValues != null && shortenPodNamesValues.Count > 0)
+                    {
+                        // Shorten the pod name for description if applicable.
+                        foreach (string shortenValue in shortenPodNamesValues)
+                        {
+                            podNameShortened = podNameShortened.Replace(shortenValue, "");
+                        }
+                    }
+
                     // Extract the container image and split it to retrieve the image name.
                     string containerImage = podItem["spec"]["containers"][0]["image"].ToString();
                     string[] imageParts = containerImage.Split('/');
                     string imageName = imageParts[^1].Split(':')[0];
 
-                    // Generate a description by removing a specific prefix from the pod name.
-                    string description = podName.Replace("baas-umbrella-deployment-", string.Empty);
-
                     // Create a new KubernetesPod object with the extracted details.
                     KubernetesPod podInfo = new()
                     {
-                        Description = description,
+                        Description = podName,
+                        DescriptionShortened = podNameShortened,
                         Name = podName,
                         ImageName = imageName
                     };

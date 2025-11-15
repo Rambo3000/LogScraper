@@ -5,7 +5,6 @@ using LogScraper.Sources.Adapters.Http;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Windows.Forms;
 
@@ -51,17 +50,12 @@ namespace LogScraper.LogProviders.Kubernetes
                 lastTrailTime = ((KubernetesTimespan)CboKubernetesTimespan.SelectedItem).TolastTrailTime();
             }
 
-            KubernetesCluster kubernetesCluster = (KubernetesCluster)cboKubernetesCluster.SelectedItem;
-
             if (url == null)
             {
-                KubernetesNamespace kubernetesNamespace = (KubernetesNamespace)cboKubernetesNamespace.SelectedItem;
-                KubernetesPod kubernetesPod = (KubernetesPod)cboKubernetesPod.SelectedItem;
-
-                if (kubernetesCluster == null || kubernetesNamespace == null || kubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
-                url = KubernetesHelper.GetUrlForPodLog(kubernetesCluster, kubernetesNamespace, kubernetesPod);
+                if (SelectedKubernetesCluster == null || SelectedKubernetesNamespace == null || SelectedKubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
+                url = KubernetesHelper.GetUrlForPodLog(SelectedKubernetesCluster, SelectedKubernetesNamespace, SelectedKubernetesPod);
             }
-            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
+            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", SelectedKubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
         }
 
         private void PopulateKubernetesClusters()
@@ -74,71 +68,96 @@ namespace LogScraper.LogProviders.Kubernetes
         }
         private void PopulateKubernetesNamespaces()
         {
-            if (cboKubernetesCluster.SelectedItem != null)
+            if (SelectedKubernetesCluster == null) return;
+
+            cboKubernetesNamespace.Items.Clear();
+            cboKubernetesNamespace.Items.AddRange([.. SelectedKubernetesCluster.Namespaces]);
+            if (cboKubernetesNamespace.Items.Count > 0)
             {
-                cboKubernetesNamespace.Items.Clear();
-                cboKubernetesNamespace.Items.AddRange([.. ((KubernetesCluster)cboKubernetesCluster.SelectedItem).Namespaces]);
-                if (cboKubernetesNamespace.Items.Count > 0)
-                {
-                    cboKubernetesNamespace.SelectedIndex = 0;
-                }
+                cboKubernetesNamespace.SelectedIndex = 0;
             }
         }
+
+        private KubernetesCluster SelectedKubernetesCluster
+        {
+            get
+            {
+                if (cboKubernetesCluster == null || cboKubernetesCluster.SelectedItem == null) return null;
+                return (KubernetesCluster)cboKubernetesCluster.SelectedItem;
+            }
+        }
+
+        private KubernetesNamespace SelectedKubernetesNamespace
+        {
+            get
+            {
+                if (cboKubernetesNamespace == null || cboKubernetesNamespace.SelectedItem == null) return null;
+                return (KubernetesNamespace)cboKubernetesNamespace.SelectedItem;
+            }
+        }
+
+        private KubernetesPod SelectedKubernetesPod
+        {
+            get
+            {
+                if (cboKubernetesPod == null || cboKubernetesPod.SelectedItem == null) return null;
+                return (KubernetesPod)cboKubernetesPod.SelectedItem;
+            }
+        }
+
         private void PopulateKubernetesPods()
         {
-            if (cboKubernetesCluster.SelectedItem != null && cboKubernetesNamespace.SelectedItem != null)
+            if (SelectedKubernetesCluster == null) return;
+
+            string selectedKubernetesPodImageName = SelectedKubernetesPod?.ImageName;
+            cboKubernetesPod.Items.Clear();
+            try
             {
-                string selectedKubernetesPodImageName = cboKubernetesPod.SelectedItem == null ? null : ((KubernetesPod)cboKubernetesPod.SelectedItem).ImageName;
-                cboKubernetesPod.Items.Clear();
-                try
+                ISourceAdapter sourceAdapter;
+
+                string rawConfig;
+                if (Debugger.IsAttached)
                 {
-                    ISourceAdapter sourceAdapter;
+                    sourceAdapter = SourceAdapterFactory.CreateFileSourceAdapter("Stubs/KubernetesPod.json");
+                    rawConfig = sourceAdapter.GetLog();
+                }
+                else
+                {
+                    string urlPodsConfiguration = KubernetesHelper.GetUrlForPodConfiguration(SelectedKubernetesCluster, SelectedKubernetesNamespace);
+                    sourceAdapter = GetSourceAdapter(urlPodsConfiguration, null, false);
 
-                    string rawConfig;
-                    if (Debugger.IsAttached)
+                    if (!((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage))
                     {
-                        sourceAdapter = SourceAdapterFactory.CreateFileSourceAdapter("Stubs/KubernetesPod.json");
-                        rawConfig = sourceAdapter.GetLog();
-                    }
-                    else
-                    {
-                        KubernetesCluster kubernetesCluster = (KubernetesCluster)cboKubernetesCluster.SelectedItem;
-                        string urlPodsConfiguration = KubernetesHelper.GetUrlForPodConfiguration(kubernetesCluster, (KubernetesNamespace)cboKubernetesNamespace.SelectedItem);
-                        sourceAdapter = GetSourceAdapter(urlPodsConfiguration, null, false);
-
-                        if (!((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage httpResponseMessage, out string errorMessage))
-                        {
-                            OnStatusUpdate(errorMessage, false);
-                            return;
-                        }
-
-                        rawConfig = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                        OnStatusUpdate("Ok", true);
+                        OnStatusUpdate(errorMessage, false);
+                        return;
                     }
 
-                    List<KubernetesPod> kubernetesPods = KubernetesHelper.ExtractPodsInfo(rawConfig);
+                    rawConfig = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    OnStatusUpdate("Ok", true);
+                }
 
-                    cboKubernetesPod.Items.AddRange([.. kubernetesPods]);
-                    if (selectedKubernetesPodImageName == null && cboKubernetesPod.Items.Count > 0)
+                List<KubernetesPod> kubernetesPods = KubernetesHelper.ExtractPodsInfo(rawConfig, SelectedKubernetesNamespace.ShortenPodNames ? SelectedKubernetesNamespace.ShortenPodNamesValues : null);
+
+                cboKubernetesPod.Items.AddRange([.. kubernetesPods]);
+                if (selectedKubernetesPodImageName == null && cboKubernetesPod.Items.Count > 0)
+                {
+                    cboKubernetesPod.SelectedIndex = 0;
+                }
+
+                if (selectedKubernetesPodImageName == null) return;
+
+                foreach (KubernetesPod kubernetesPod in kubernetesPods)
+                {
+                    if (kubernetesPod.ImageName == selectedKubernetesPodImageName)
                     {
-                        cboKubernetesPod.SelectedIndex = 0;
-                    }
-
-                    if (selectedKubernetesPodImageName == null) return;
-
-                    foreach (KubernetesPod kubernetesPod in kubernetesPods)
-                    {
-                        if (kubernetesPod.ImageName == selectedKubernetesPodImageName)
-                        {
-                            cboKubernetesPod.SelectedItem = kubernetesPod;
-                            break;
-                        }
+                        cboKubernetesPod.SelectedItem = kubernetesPod;
+                        break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    OnStatusUpdate(ex.Message, false);
-                }
+            }
+            catch (Exception ex)
+            {
+                OnStatusUpdate(ex.Message, false);
             }
         }
 
@@ -177,9 +196,9 @@ namespace LogScraper.LogProviders.Kubernetes
         private void CboKubernetesTimespan_SelectedIndexChanged(object sender, EventArgs e)
         {
             KubernetesTimespan newTimeSpan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem;
-            if (cboKubernetesPod.SelectedIndex != -1 && 
+            if (cboKubernetesPod.SelectedIndex != -1 &&
                 previousTimeSpan != null && previousTimeSpan != KubernetesTimespan.Everything &&
-                ( newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
+                (newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
                 MessageBox.Show("Om oudere loggegevens op te halen moeten het log eerst gewist worden, wil je dit doen?", "Log wissen", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 OnSourceSelectionChanged(EventArgs.Empty);
