@@ -8,15 +8,16 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
+using System.ComponentModel;
 
 namespace LogScraper
 {
     public partial class UserControlSearch : UserControl
     {
-        //TODO: check resetting of the log content item list
         //TODO: improve text shown in the content listbox (maybe make the search text bold)
         //TODO: search metadata conditionally
         //TODO: use the content item list box for previous/next
+        //TODO: clean up code and comments
 
         public event Action<string, SearchDirectionUserControl, bool, bool, bool> Search;
         private LogMetadataFilterResult LogMetadataFilterResult;
@@ -28,7 +29,6 @@ namespace LogScraper
             Forward,
             Backward
         }
-
 
         /// Event to filter log entries based on the selected log content property
         public event EventHandler SelectedItemChanged;
@@ -96,7 +96,10 @@ namespace LogScraper
         public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
         {
             LogMetadataFilterResult = logMetadataFilterResult;
-            LstLogContent.Items.Clear();
+
+            //Do not search automatically after the log has been cleared
+            if (LastSearchEvent == null || LastSearchEvent.FirstLogEntry == null) return;
+            UpdateSearchResultsList();
         }
         private bool ClearSelectedLogEntryExternallyInProgress = false;
         public void ClearSelectedLogEntry()
@@ -123,9 +126,11 @@ namespace LogScraper
             if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
             {
                 LstLogContent.Items.Clear();
+                LastSearchEvent = null;
                 return;
             }
-            SearchEvent searchEventNew =  new()
+
+            SearchEvent searchEventNew = new SearchEvent()
             {
                 FirstLogEntry = LogMetadataFilterResult.LogEntries.FirstOrDefault(),
                 LastLogEntry = LogMetadataFilterResult.LogEntries.LastOrDefault(),
@@ -133,24 +138,123 @@ namespace LogScraper
                 CaseSensitive = chkCaseSensitive.Checked,
                 WholeWord = chkWholeWordsOnly.Checked
             };
+
+            // snelcheck: exact hetzelfde zoek-event als laatst -> niets doen
             if (searchEventNew.Equals(LastSearchEvent))
             {
                 return;
             }
-            LstLogContent.Items.Clear();
 
-            if (IsSearchEmpty() || LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
+            // bewaar huidige selectie (op OriginalLogEntry zodat we die later kunnen terugvinden)
+            LogEntry previouslySelectedLogEntry = null;
+            if (LstLogContent.SelectedItem is LogEntryDisplayObject selectedItem && selectedItem.OriginalLogEntry != null)
             {
-                return;
-            }
-            List<LogEntryDisplayObject> results = SearchLogEntries(LogMetadataFilterResult.LogEntries, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
-            foreach (var result in results)
-            {
-                LstLogContent.Items.Add(result);
+                previouslySelectedLogEntry = selectedItem.OriginalLogEntry;
             }
 
+            List<LogEntry> entries = LogMetadataFilterResult.LogEntries;
+            bool didIncrementalAppend = false;
+
+            // Voorwaarde voor incremental append:
+            // - we hebben een vorige zoekactie
+            // - FirstLogEntry, SearchText, CaseSensitive, WholeWord zijn gelijk
+            // - LastLogEntry is anders (nieuwere logs toegevoegd)
+            if (LastSearchEvent != null
+                && Equals(LastSearchEvent.FirstLogEntry, searchEventNew.FirstLogEntry)
+                && string.Equals(LastSearchEvent.SearchText ?? string.Empty, searchEventNew.SearchText ?? string.Empty, StringComparison.Ordinal)
+                && LastSearchEvent.CaseSensitive == searchEventNew.CaseSensitive
+                && LastSearchEvent.WholeWord == searchEventNew.WholeWord
+                && !Equals(LastSearchEvent.LastLogEntry, searchEventNew.LastLogEntry))
+            {
+                // probeer de positie van de oude LastLogEntry te vinden
+                int oldLastIndex = entries.FindIndex(delegate (LogEntry le) { return Equals(le, LastSearchEvent.LastLogEntry); });
+
+                if (oldLastIndex >= 0)
+                {
+                    int startIndex = oldLastIndex + 1;
+                    if (startIndex <= entries.Count - 1)
+                    {
+                        // zoek alleen in het nieuwe bereik en voeg toe
+                        List<LogEntryDisplayObject> newResults = SearchLogEntriesInRange(entries, startIndex, entries.Count - 1, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+                        // voeg toe aan de ListBox
+                        for (int i = 0; i < newResults.Count; i++)
+                        {
+                            LstLogContent.Items.Add(newResults[i]);
+                        }
+
+                        didIncrementalAppend = true;
+                    }
+                    else
+                    {
+                        // geen nieuwe entries om toe te voegen; niks doen behalve updaten van LastSearchEvent verderop
+                        didIncrementalAppend = true;
+                    }
+                }
+                // indien oldLastIndex == -1: we kunnen de oude positie niet bepalen -> fallback naar volledige refresh
+            }
+
+            if (!didIncrementalAppend)
+            {
+                // volledige refresh
+                LstLogContent.Items.Clear();
+
+                if (IsSearchEmpty() || LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
+                {
+                    LastSearchEvent = searchEventNew;
+                    return;
+                }
+
+                List<LogEntryDisplayObject> results = SearchLogEntries(entries, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+                for (int i = 0; i < results.Count; i++)
+                {
+                    LstLogContent.Items.Add(results[i]);
+                }
+            }
+
+            // probeer de oude selectie terug te zetten indien die nog aanwezig is
+            if (previouslySelectedLogEntry != null)
+            {
+                for (int i = 0; i < LstLogContent.Items.Count; i++)
+                {
+                    object itemObj = LstLogContent.Items[i];
+                    if (itemObj is LogEntryDisplayObject dto && Equals(dto.OriginalLogEntry, previouslySelectedLogEntry))
+                    {
+                        LstLogContent.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // update LastSearchEvent (altijd bijwerken zodat volgende keer vergelijking klopt)
             LastSearchEvent = searchEventNew;
         }
+
+        // Helper: zoek in entries tussen startIndex en endIndex (inclusief) en corrigeer de Index-property
+        private List<LogEntryDisplayObject> SearchLogEntriesInRange(List<LogEntry> entries, int startIndex, int endIndex, string searchText, bool caseSensitive, bool wholeWord)
+        {
+            List<LogEntryDisplayObject> adjustedResults = new List<LogEntryDisplayObject>();
+
+            if (entries == null || startIndex < 0 || endIndex < startIndex || startIndex >= entries.Count)
+            {
+                return adjustedResults;
+            }
+
+            int safeEnd = Math.Min(endIndex, entries.Count - 1);
+            int count = safeEnd - startIndex + 1;
+
+            List<LogEntry> slice = entries.GetRange(startIndex, count);
+            List<LogEntryDisplayObject> partial = SearchLogEntries(slice, searchText, caseSensitive, wholeWord);
+
+            for (int i = 0; i < partial.Count; i++)
+            {
+                LogEntryDisplayObject item = partial[i];
+                item.Index += startIndex; // corrigeer index naar originele lijst
+                adjustedResults.Add(item);
+            }
+
+            return adjustedResults;
+        }
+
 
         private bool IsSearchEmpty()
         {
@@ -243,7 +347,7 @@ namespace LogScraper
 
         private List<LogEntryDisplayObject> SearchLogEntries(List<LogEntry> entries, string searchText, bool caseSensitive, bool wholeWord)
         {
-            List<LogEntryDisplayObject> results = new List<LogEntryDisplayObject>();
+            List<LogEntryDisplayObject> results = [];
 
             if (entries == null)
             {

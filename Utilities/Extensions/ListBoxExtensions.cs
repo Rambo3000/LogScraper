@@ -34,7 +34,6 @@ namespace LogScraper.Utilities.Extensions
             {
                 int initialIndex = selectNext ? 0 : listBox.Items.Count - 1;
                 listBox.SelectedIndex = initialIndex;
-                EnsureIndexVisible(listBox, initialIndex);
                 return true;
             }
 
@@ -50,41 +49,7 @@ namespace LogScraper.Utilities.Extensions
             if (candidateIndex == currentIndex) return false;
 
             listBox.SelectedIndex = candidateIndex;
-            EnsureIndexVisible(listBox, candidateIndex);
             return true;
-        }
-
-        /// <summary>
-        /// Ensures that the item at the specified index in the provided ListBox is visible to the user by adjusting the
-        /// ListBox's scroll position if necessary.
-        /// </summary>
-        /// <remarks>If the specified index is already visible, no action is taken. If the index is
-        /// outside the valid range of items, the method does nothing.</remarks>
-        /// <param name="listBox">The ListBox control whose scroll position will be adjusted to make the specified item visible. Cannot be
-        /// null.</param>
-        /// <param name="index">The zero-based index of the item to ensure is visible. Must be within the bounds of the ListBox's items.</param>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="listBox"/> is null.</exception>
-        private static void EnsureIndexVisible(ListBox listBox, int index)
-        {
-            ArgumentNullException.ThrowIfNull(listBox);
-
-            if (index < 0 || index >= listBox.Items.Count) return;
-
-            int visible = VisibleItemCount(listBox);
-
-            // Already visible?
-            if (index >= listBox.TopIndex && index < listBox.TopIndex + visible) return;
-
-            // If above view -> show at top; if below -> align at bottom
-            if (index < listBox.TopIndex)
-            {
-                listBox.TopIndex = index;
-                return;
-            }
-
-            int newTop = index - visible + 1;
-            if (newTop < 0) newTop = 0;
-            listBox.TopIndex = newTop;
         }
 
         /// <summary>
