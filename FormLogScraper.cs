@@ -12,10 +12,11 @@ using LogScraper.Log.Metadata;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
-using LogScraper.Utilities.Extensions;
-using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
-using static LogScraper.UserControlSearch;
 using LogScraper.Utilities;
+using LogScraper.Utilities.Extensions;
+using LogScraper.Utilities.UserControls;
+using static LogScraper.UserControlSearch;
+using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper
 {
@@ -45,10 +46,11 @@ namespace LogScraper
             UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
             UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
+            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
-            usrSearch.Search += UsrSearch_Search;
+            UserControlSearch.Search += UsrSearch_Search;
 
             SetDynamicToolTips();
         }
@@ -176,6 +178,7 @@ namespace LogScraper
 
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
+            UserControlSearch.UpdateLogEntries(currentLogMetadataFilterResult);
 
             WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
@@ -252,7 +255,14 @@ namespace LogScraper
 
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
+            UserControlSearch.ClearSelectedLogEntry();
             UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
+        }
+
+        private void UserControlSearch_SelectedItemChanged(object sender, EventArgs e)
+        {
+            UserControlContentFilter.ClearSelectedLogEntry();
+            UserControlLogEntriesTextBox.SelectLogEntry(UserControlSearch.SelectedLogEntry);
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
@@ -275,13 +285,13 @@ namespace LogScraper
         }
         private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
         {
-            usrSearch.Enabled = false;
+            UserControlSearch.Enabled = false;
             try
             {
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
 
                 bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection);
-                usrSearch.SetResultsFound(found);
+                UserControlSearch.SetResultsFound(found);
             }
             catch (Exception ex)
             {
@@ -289,7 +299,7 @@ namespace LogScraper
             }
             finally
             {
-                usrSearch.Enabled = true;
+                UserControlSearch.Enabled = true;
             }
         }
         private void SetDynamicToolTips()
@@ -464,7 +474,7 @@ namespace LogScraper
         /// <remarks>
         /// This method intercepts key combinations such as Ctrl+R and Ctrl+F before they are passed to the focused control.
         /// - Ctrl+R triggers the "Record" functionality by invoking <see cref="BtnFormRecord_Click"/>.
-        /// - Ctrl+F sets focus to the search control (<see cref="usrSearch"/>).
+        /// - Ctrl+F sets focus to the search control (<see cref="UserControlSearch"/>).
         /// For all other key combinations, the base class implementation is called.
         /// </remarks>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -478,7 +488,7 @@ namespace LogScraper
             // CTRL-F focusses the search textbox
             if (keyData == (Keys.Control | Keys.F))
             {
-                usrSearch.Focus();
+                UserControlSearch.Focus();
                 return true;
             }
 

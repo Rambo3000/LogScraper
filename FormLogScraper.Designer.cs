@@ -53,8 +53,10 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             groupBox2 = new System.Windows.Forms.GroupBox();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
+            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox5 = new System.Windows.Forms.GroupBox();
-            usrSearch = new UserControlSearch();
+            UserControlSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
@@ -69,13 +71,16 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
             groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -315,8 +320,7 @@
             // 
             // splitContainer2.Panel2
             // 
-            splitContainer2.Panel2.Controls.Add(groupBox5);
-            splitContainer2.Panel2.Controls.Add(groupBox6);
+            splitContainer2.Panel2.Controls.Add(splitContainer3);
             splitContainer2.Size = new System.Drawing.Size(935, 447);
             splitContainer2.SplitterDistance = 685;
             splitContainer2.TabIndex = 8;
@@ -347,44 +351,70 @@
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
             // 
+            // UserControlLogEntriesTextBox
+            // 
+            UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            UserControlLogEntriesTextBox.Location = new System.Drawing.Point(3, 19);
+            UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(679, 425);
+            UserControlLogEntriesTextBox.TabIndex = 38;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.Location = new System.Drawing.Point(0, 0);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(groupBox5);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(groupBox6);
+            splitContainer3.Size = new System.Drawing.Size(246, 447);
+            splitContainer3.SplitterDistance = 112;
+            splitContainer3.TabIndex = 0;
+            // 
             // groupBox5
             // 
-            groupBox5.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBox5.Controls.Add(usrSearch);
-            groupBox5.Location = new System.Drawing.Point(3, 3);
+            groupBox5.Controls.Add(UserControlSearch);
+            groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
+            groupBox5.Location = new System.Drawing.Point(0, 0);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new System.Drawing.Size(243, 79);
+            groupBox5.Size = new System.Drawing.Size(246, 112);
             groupBox5.TabIndex = 2;
             groupBox5.TabStop = false;
             groupBox5.Text = "Zoeken";
             // 
             // usrSearch
             // 
-            usrSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrSearch.Location = new System.Drawing.Point(3, 19);
-            usrSearch.Name = "usrSearch";
-            usrSearch.Size = new System.Drawing.Size(237, 57);
-            usrSearch.TabIndex = 33;
+            UserControlSearch.Dock = System.Windows.Forms.DockStyle.Fill;
+            UserControlSearch.Location = new System.Drawing.Point(3, 19);
+            UserControlSearch.Name = "usrSearch";
+            UserControlSearch.Size = new System.Drawing.Size(240, 90);
+            UserControlSearch.TabIndex = 33;
             // 
             // groupBox6
             // 
-            groupBox6.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox6.Controls.Add(UserControlContentFilter);
-            groupBox6.Location = new System.Drawing.Point(0, 85);
+            groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
+            groupBox6.Location = new System.Drawing.Point(0, 0);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(246, 362);
+            groupBox6.Size = new System.Drawing.Size(246, 331);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
             groupBox6.Text = "Filter op inhoud";
             // 
-            // UserControlLogContentFilter
+            // UserControlContentFilter
             // 
             UserControlContentFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             UserControlContentFilter.BackColor = System.Drawing.SystemColors.Window;
             UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
-            UserControlContentFilter.Name = "UserControlLogContentFilter";
-            UserControlContentFilter.Size = new System.Drawing.Size(240, 340);
+            UserControlContentFilter.Name = "UserControlContentFilter";
+            UserControlContentFilter.Size = new System.Drawing.Size(240, 309);
             UserControlContentFilter.TabIndex = 0;
             // 
             // groupBox1
@@ -511,14 +541,6 @@
             label2.TabIndex = 24;
             label2.Text = "Layout";
             // 
-            // UserControlLogEntriesTextBox
-            // 
-            UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            UserControlLogEntriesTextBox.Location = new System.Drawing.Point(3, 19);
-            UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(679, 425);
-            UserControlLogEntriesTextBox.TabIndex = 38;
-            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -541,6 +563,10 @@
             splitContainer2.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
             groupBox5.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
@@ -594,7 +620,7 @@
         private Log.Metadata.UserControlMetadataFormatting UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
-        private UserControlSearch usrSearch;
+        private UserControlSearch UserControlSearch;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button BtnConfig;
         private System.Windows.Forms.Label label2;
@@ -602,5 +628,6 @@
         private System.Windows.Forms.ToolTip ToolTip;
         private UserControlMemoryUsage userControlMemoryUsage1;
         private Utilities.UserControls.UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
+        private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }

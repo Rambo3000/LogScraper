@@ -37,6 +37,7 @@
             ToolTip = new System.Windows.Forms.ToolTip(components);
             lblNoResults = new System.Windows.Forms.Label();
             chkWrapAround = new System.Windows.Forms.CheckBox();
+            LstLogContent = new System.Windows.Forms.ListBox();
             SuspendLayout();
             // 
             // txtSearch
@@ -125,10 +126,25 @@
             chkWrapAround.TabIndex = 7;
             chkWrapAround.UseVisualStyleBackColor = true;
             // 
+            // LstLogContent
+            // 
+            LstLogContent.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LstLogContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            LstLogContent.FormattingEnabled = true;
+            LstLogContent.IntegralHeight = false;
+            LstLogContent.Location = new System.Drawing.Point(0, 58);
+            LstLogContent.Name = "LstLogContent";
+            LstLogContent.Size = new System.Drawing.Size(243, 161);
+            LstLogContent.TabIndex = 8;
+            LstLogContent.DrawItem += LstLogContent_DrawItem;
+            LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
+            // 
             // UserControlSearch
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(LstLogContent);
             Controls.Add(chkWrapAround);
             Controls.Add(btnSearchNext);
             Controls.Add(btnSearchPrevious);
@@ -137,7 +153,7 @@
             Controls.Add(chkCaseSensitive);
             Controls.Add(txtSearch);
             Name = "UserControlSearch";
-            Size = new System.Drawing.Size(244, 52);
+            Size = new System.Drawing.Size(244, 219);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -152,5 +168,6 @@
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label lblNoResults;
         private System.Windows.Forms.CheckBox chkWrapAround;
+        private System.Windows.Forms.ListBox LstLogContent;
     }
 }

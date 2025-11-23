@@ -412,7 +412,17 @@ namespace LogScraper
         }
         #endregion
 
-        #region Public properties
+        #region Public methods and properties
+
+        private bool ClearSelectedLogEntryExternallyInProgress = false;
+        public void ClearSelectedLogEntry()
+        {
+            ClearSelectedLogEntryExternallyInProgress = true;
+            LstLogContent.SelectedIndex = -1;
+            ClearSelectedLogEntryExternallyInProgress = false;
+        }
+
+
         public LogEntry SelectedLogEntry
         {
             get
@@ -421,7 +431,6 @@ namespace LogScraper
                 return SelectedLogEntryDisplayObject.OriginalLogEntry;
             }
         }
-
 
         public LogContentValue SelectedContentValue
         {
@@ -466,7 +475,6 @@ namespace LogScraper
         #endregion
 
         #region Draw listbox items
-        private readonly SolidBrush LighterBrush = new(Color.FromArgb(240, 240, 240));
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return;
@@ -660,6 +668,7 @@ namespace LogScraper
         public event EventHandler SelectedItemChanged;
         protected virtual void OnSelectedItemChanged(EventArgs e)
         {
+            if (ClearSelectedLogEntryExternallyInProgress) return;
             SelectedItemChanged?.Invoke(this, e);
         }
         #endregion
