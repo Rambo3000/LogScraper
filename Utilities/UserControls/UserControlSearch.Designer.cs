@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlSearch));
             txtSearch = new System.Windows.Forms.TextBox();
             btnSearchNext = new System.Windows.Forms.Button();
             chkCaseSensitive = new System.Windows.Forms.CheckBox();
             btnSearchPrevious = new System.Windows.Forms.Button();
             chkWholeWordsOnly = new System.Windows.Forms.CheckBox();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            lblNoResults = new System.Windows.Forms.Label();
+            lblResults = new System.Windows.Forms.Label();
             chkWrapAround = new System.Windows.Forms.CheckBox();
             LstLogContent = new System.Windows.Forms.ListBox();
+            BtnClear = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // txtSearch
@@ -101,16 +103,14 @@
             chkWholeWordsOnly.UseVisualStyleBackColor = true;
             chkWholeWordsOnly.CheckedChanged += ChkWholeWordsOnly_CheckedChanged;
             // 
-            // lblNoResults
+            // lblResults
             // 
-            lblNoResults.AutoSize = true;
-            lblNoResults.ForeColor = System.Drawing.Color.FromArgb(192, 0, 0);
-            lblNoResults.Location = new System.Drawing.Point(110, 32);
-            lblNoResults.Name = "lblNoResults";
-            lblNoResults.Size = new System.Drawing.Size(89, 15);
-            lblNoResults.TabIndex = 6;
-            lblNoResults.Text = "Geen resultaten";
-            lblNoResults.Visible = false;
+            lblResults.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lblResults.ForeColor = System.Drawing.Color.Black;
+            lblResults.Location = new System.Drawing.Point(110, 32);
+            lblResults.Name = "lblResults";
+            lblResults.Size = new System.Drawing.Size(108, 20);
+            lblResults.TabIndex = 6;
             // 
             // chkWrapAround
             // 
@@ -140,15 +140,29 @@
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
             // 
+            // BtnClear
+            // 
+            BtnClear.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            BtnClear.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            BtnClear.Image = (System.Drawing.Image)resources.GetObject("BtnClear.Image");
+            BtnClear.Location = new System.Drawing.Point(224, 32);
+            BtnClear.Name = "BtnClear";
+            BtnClear.Size = new System.Drawing.Size(20, 20);
+            BtnClear.TabIndex = 9;
+            BtnClear.UseVisualStyleBackColor = true;
+            BtnClear.Click += BtnClear_Click;
+            // 
             // UserControlSearch
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(lblResults);
+            Controls.Add(BtnClear);
             Controls.Add(LstLogContent);
             Controls.Add(chkWrapAround);
             Controls.Add(btnSearchNext);
             Controls.Add(btnSearchPrevious);
-            Controls.Add(lblNoResults);
             Controls.Add(chkWholeWordsOnly);
             Controls.Add(chkCaseSensitive);
             Controls.Add(txtSearch);
@@ -166,8 +180,9 @@
         private System.Windows.Forms.Button btnSearchPrevious;
         private System.Windows.Forms.CheckBox chkWholeWordsOnly;
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.Label lblNoResults;
+        private System.Windows.Forms.Label lblResults;
         private System.Windows.Forms.CheckBox chkWrapAround;
         private System.Windows.Forms.ListBox LstLogContent;
+        private System.Windows.Forms.Button BtnClear;
     }
 }

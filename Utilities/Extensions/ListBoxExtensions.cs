@@ -51,23 +51,5 @@ namespace LogScraper.Utilities.Extensions
             listBox.SelectedIndex = candidateIndex;
             return true;
         }
-
-        /// <summary>
-        /// Calculates the maximum number of items that can be fully displayed in the specified ListBox without
-        /// scrolling.
-        /// </summary>
-        /// <param name="listBox">The ListBox control for which to determine the visible item count. Cannot be null.</param>
-        /// <returns>The number of items that can be fully displayed in the ListBox at once. The value is always at least 1.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="listBox"/> is null.</exception>
-        private static int VisibleItemCount(ListBox listBox)
-        {
-            if (listBox == null) throw new ArgumentNullException(nameof(listBox));
-
-            int itemHeight = listBox.ItemHeight;
-            if (itemHeight <= 0) itemHeight = 1;
-            int count = listBox.ClientSize.Height / itemHeight;
-            if (count < 1) count = 1;
-            return count;
-        }
     }
 }

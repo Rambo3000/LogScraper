@@ -61,6 +61,9 @@ namespace LogScraper.Log.Metadata
                 return SelectedMetadataProperties;
             }
         }
+
+        public bool IsOriginalMetadataShown { get { return chkShowOriginalMetdata.Checked; } }
+
         public void Clear()
         {
             pnlCheckBoxes.Controls.Clear();

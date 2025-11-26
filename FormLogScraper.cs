@@ -240,6 +240,7 @@ namespace LogScraper
         }
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
+            UserControlSearch.IsMetadataSearchEnabled = UsrControlMetadataFormating.IsOriginalMetadataShown;
             if (currentLogMetadataFilterResult != null) WriteLogToScreenAndFile(currentLogMetadataFilterResult);
         }
         private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)
@@ -291,7 +292,6 @@ namespace LogScraper
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
 
                 bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection);
-                UserControlSearch.SetResultsFound(found);
             }
             catch (Exception ex)
             {

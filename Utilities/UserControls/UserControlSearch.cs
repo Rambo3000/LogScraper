@@ -14,9 +14,7 @@ namespace LogScraper
 {
     public partial class UserControlSearch : UserControl
     {
-        //TODO: improve text shown in the content listbox (maybe make the search text bold)
-        //TODO: search metadata conditionally
-        //TODO: use the content item list box for previous/next
+        //TODO: search metadata conditionally, make sure to search the timestamp
         //TODO: clean up code and comments
 
         public event Action<string, SearchDirectionUserControl, bool, bool, bool> Search;
@@ -29,6 +27,9 @@ namespace LogScraper
             Forward,
             Backward
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsMetadataSearchEnabled { get; set; }
 
         /// Event to filter log entries based on the selected log content property
         public event EventHandler SelectedItemChanged;
@@ -43,6 +44,7 @@ namespace LogScraper
             public int Index { get; set; }
             public LogEntry OriginalLogEntry { get; set; }
             public int SearchTextStartvalue { get; set; }
+            public int SearchTextAdditionalLogLineIndex { get; set; }
             public LogContentValue ContentValue { get; set; }
             public override string ToString()
             { return ContentValue != null ? ContentValue.Value : string.Empty; }
@@ -57,6 +59,7 @@ namespace LogScraper
             public string SearchText { get; set; }
             public bool CaseSensitive { get; set; }
             public bool WholeWord { get; set; }
+            public bool IsMetadataSearchEnabled { get; set; }
 
             public override bool Equals(object obj)
             {
@@ -69,7 +72,8 @@ namespace LogScraper
                        LastLogEntry == other.LastLogEntry &&
                        SearchText == other.SearchText &&
                        CaseSensitive == other.CaseSensitive &&
-                       WholeWord == other.WholeWord;
+                       WholeWord == other.WholeWord &&
+                       IsMetadataSearchEnabled == other.IsMetadataSearchEnabled;
             }
             public override int GetHashCode()
             {
@@ -87,11 +91,6 @@ namespace LogScraper
             ToolTip.SetToolTip(chkWrapAround, "Zoek verder vanaf het begin");
             ToolTip.SetToolTip(btnSearchNext, "Volgende zoeken");
             ToolTip.SetToolTip(btnSearchPrevious, "Vorige zoeken");
-        }
-
-        public void SetResultsFound(bool resultsFound)
-        {
-            lblNoResults.Visible = !resultsFound;
         }
         public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
         {
@@ -125,17 +124,17 @@ namespace LogScraper
         {
             if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
             {
-                LstLogContent.Items.Clear();
-                LastSearchEvent = null;
+                Clear();
                 return;
             }
 
-            SearchEvent searchEventNew = new SearchEvent()
+            SearchEvent searchEventNew = new()
             {
                 FirstLogEntry = LogMetadataFilterResult.LogEntries.FirstOrDefault(),
                 LastLogEntry = LogMetadataFilterResult.LogEntries.LastOrDefault(),
                 SearchText = txtSearch.Text,
                 CaseSensitive = chkCaseSensitive.Checked,
+                IsMetadataSearchEnabled = IsMetadataSearchEnabled,
                 WholeWord = chkWholeWordsOnly.Checked
             };
 
@@ -164,6 +163,7 @@ namespace LogScraper
                 && string.Equals(LastSearchEvent.SearchText ?? string.Empty, searchEventNew.SearchText ?? string.Empty, StringComparison.Ordinal)
                 && LastSearchEvent.CaseSensitive == searchEventNew.CaseSensitive
                 && LastSearchEvent.WholeWord == searchEventNew.WholeWord
+                && LastSearchEvent.IsMetadataSearchEnabled == searchEventNew.IsMetadataSearchEnabled
                 && !Equals(LastSearchEvent.LastLogEntry, searchEventNew.LastLogEntry))
             {
                 // probeer de positie van de oude LastLogEntry te vinden
@@ -225,14 +225,44 @@ namespace LogScraper
                 }
             }
 
+            if (LstLogContent.Items.Count == 1) lblResults.Text = "1 resultaat";
+            else lblResults.Text = $"{LstLogContent.Items.Count} resultaten";
+
+            if (LstLogContent.Items.Count == 0) lblResults.ForeColor = Color.DarkRed;
+            else lblResults.ForeColor = Color.Black;
+
             // update LastSearchEvent (altijd bijwerken zodat volgende keer vergelijking klopt)
             LastSearchEvent = searchEventNew;
         }
 
-        // Helper: zoek in entries tussen startIndex en endIndex (inclusief) en corrigeer de Index-property
+        private void Clear()
+        {
+            LastSearchEvent = null;
+            LstLogContent.Items.Clear();
+            lblResults.Text = "";
+        }
+
+        /// <summary>
+        /// Searches for log entries within the specified index range that match the given search criteria.
+        /// </summary>
+        /// <remarks>The returned display objects have their index values adjusted to reflect their
+        /// position in the original entries list. The search is limited to the valid range between <paramref
+        /// name="startIndex"/> and <paramref name="endIndex"/>.</remarks>
+        /// <param name="entries">The list of log entries to search. Cannot be null.</param>
+        /// <param name="startIndex">The zero-based index of the first entry in the range to search. Must be greater than or equal to 0 and less
+        /// than the number of entries.</param>
+        /// <param name="endIndex">The zero-based index of the last entry in the range to search. Must be greater than or equal to <paramref
+        /// name="startIndex"/>.</param>
+        /// <param name="searchText">The text to search for within each log entry. If empty, no entries will match.</param>
+        /// <param name="caseSensitive">Specifies whether the search should be case-sensitive. If <see langword="true"/>, the search matches case
+        /// exactly; otherwise, it ignores case.</param>
+        /// <param name="wholeWord">Specifies whether to match only whole words. If <see langword="true"/>, only entries containing the exact
+        /// word are matched; otherwise, partial matches are allowed.</param>
+        /// <returns>A list of display objects representing log entries that match the search criteria within the specified
+        /// range. Returns an empty list if no entries match or if the input parameters are invalid.</returns>
         private List<LogEntryDisplayObject> SearchLogEntriesInRange(List<LogEntry> entries, int startIndex, int endIndex, string searchText, bool caseSensitive, bool wholeWord)
         {
-            List<LogEntryDisplayObject> adjustedResults = new List<LogEntryDisplayObject>();
+            List<LogEntryDisplayObject> adjustedResults = [];
 
             if (entries == null || startIndex < 0 || endIndex < startIndex || startIndex >= entries.Count)
             {
@@ -248,7 +278,7 @@ namespace LogScraper
             for (int i = 0; i < partial.Count; i++)
             {
                 LogEntryDisplayObject item = partial[i];
-                item.Index += startIndex; // corrigeer index naar originele lijst
+                item.Index += startIndex;
                 adjustedResults.Add(item);
             }
 
@@ -362,25 +392,53 @@ namespace LogScraper
             for (int i = 0; i < entries.Count; i++)
             {
                 LogEntry current = entries[i];
-                if (current == null)
+                if (current?.Entry == null)
                 {
                     continue;
                 }
 
-                string content = current.Entry ?? string.Empty;
-                int matchIndex = FindMatchIndex(content, searchText, caseSensitive, wholeWord);
+                int matchIndex = FindMatchIndex(current.Entry, searchText, caseSensitive, wholeWord, IsMetadataSearchEnabled ? 0 : current.StartIndexContent);
                 if (matchIndex >= 0)
                 {
-                    LogEntryDisplayObject item = new LogEntryDisplayObject();
-                    item.Index = i;
-                    item.OriginalLogEntry = current;
-                    item.SearchTextStartvalue = matchIndex;
+                    LogEntryDisplayObject item = new()
+                    {
+                        Index = i,
+                        OriginalLogEntry = current,
+                        SearchTextStartvalue = matchIndex,
+                        SearchTextAdditionalLogLineIndex = -1
+                    };
 
-                    string snippet = BuildValueTillSentenceEnd(content, matchIndex, searchText.Length, 8);
+                    string snippet = BuildValueTillSentenceEnd(current.Entry, matchIndex, searchText.Length, 8);
                     string timeDesc = current.TimeStamp.ToString("HH:mm:ss");
                     item.ContentValue = new LogContentValue(snippet, timeDesc);
 
                     results.Add(item);
+                }
+                // If no match is found in the main entry, check additional log entries
+                else if (current.AdditionalLogEntries != null && current.AdditionalLogEntries.Count > 0)
+                {
+                    for (int additionalLogLineIndex = 0; additionalLogLineIndex < current.AdditionalLogEntries.Count; additionalLogLineIndex++)
+                    {
+                        string additionalLogLine = current.AdditionalLogEntries[additionalLogLineIndex];
+                        matchIndex = FindMatchIndex(additionalLogLine, searchText, caseSensitive, wholeWord,0);
+                        if (matchIndex >= 0)
+                        {
+                            LogEntryDisplayObject item = new()
+                            {
+                                Index = i,
+                                OriginalLogEntry = current,
+                                SearchTextStartvalue = matchIndex,
+                                SearchTextAdditionalLogLineIndex = additionalLogLineIndex
+                            };
+
+                            string snippet = BuildValueTillSentenceEnd(additionalLogLine, matchIndex, searchText.Length, 8);
+                            string timeDesc = current.TimeStamp.ToString("HH:mm:ss");
+                            item.ContentValue = new LogContentValue(snippet, timeDesc);
+
+                            results.Add(item);
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -388,7 +446,7 @@ namespace LogScraper
         }
 
         // zoek index van eerste match (geeft -1 als niet gevonden). controleert whole word indien gevraagd.
-        public int FindMatchIndex(string text, string searchText, bool caseSensitive, bool wholeWord)
+        public int FindMatchIndex(string text, string searchText, bool caseSensitive, bool wholeWord, int contentStartIndex)
         {
             if (text == null || searchText == null)
             {
@@ -396,7 +454,7 @@ namespace LogScraper
             }
 
             StringComparison comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-            int startPos = 0;
+            int startPos = contentStartIndex;
 
             while (startPos <= text.Length - searchText.Length)
             {
@@ -568,6 +626,11 @@ namespace LogScraper
             if (ignoreSelectedItemChanged) return;
 
             OnSelectedItemChanged(EventArgs.Empty);
+        }
+
+        private void BtnClear_Click(object sender, EventArgs e)
+        {
+            Clear();
         }
     }
 }
