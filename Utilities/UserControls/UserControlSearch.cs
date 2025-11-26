@@ -14,31 +14,32 @@ namespace LogScraper
 {
     public partial class UserControlSearch : UserControl
     {
-        //TODO: search metadata conditionally, make sure to search the timestamp
-        //TODO: clean up code and comments
+        #region Private properties and initialization
 
+        private const string DefaulSearchtText = "Zoeken...";
         public event Action<string, SearchDirectionUserControl, bool, bool, bool> Search;
         private LogMetadataFilterResult LogMetadataFilterResult;
 
         private SearchEvent LastSearchEvent = null;
+        public UserControlSearch()
+        {
+            InitializeComponent();
+            TxtSearch_Leave(null, null);
+            ToolTip.SetToolTip(chkWholeWordsOnly, "Alleen hele woorden zoeken");
+            ToolTip.SetToolTip(chkCaseSensitive, "Hoofdletter gevoelig zoeken");
+            ToolTip.SetToolTip(chkWrapAround, "Zoek verder vanaf het begin");
+            ToolTip.SetToolTip(btnSearchNext, "Volgende zoeken");
+            ToolTip.SetToolTip(btnSearchPrevious, "Vorige zoeken");
+        }
 
+        #endregion
+
+        #region Classes and enums
         public enum SearchDirectionUserControl
         {
             Forward,
             Backward
         }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool IsMetadataSearchEnabled { get; set; }
-
-        /// Event to filter log entries based on the selected log content property
-        public event EventHandler SelectedItemChanged;
-        protected virtual void OnSelectedItemChanged(EventArgs e)
-        {
-            SelectedItemChanged?.Invoke(this, e);
-        }
-
-        #region Private class LogEntryDisplayObject
         private class LogEntryDisplayObject
         {
             public int Index { get; set; }
@@ -49,9 +50,6 @@ namespace LogScraper
             public override string ToString()
             { return ContentValue != null ? ContentValue.Value : string.Empty; }
         }
-        #endregion
-
-        #region Private class SearchEvent
         private class SearchEvent : IEquatable<SearchEvent>
         {
             public LogEntry FirstLogEntry { get; set; }
@@ -82,44 +80,18 @@ namespace LogScraper
         }
         #endregion
 
-        public UserControlSearch()
-        {
-            InitializeComponent();
-            TxtSearch_Leave(null, null);
-            ToolTip.SetToolTip(chkWholeWordsOnly, "Alleen hele woorden zoeken");
-            ToolTip.SetToolTip(chkCaseSensitive, "Hoofdletter gevoelig zoeken");
-            ToolTip.SetToolTip(chkWrapAround, "Zoek verder vanaf het begin");
-            ToolTip.SetToolTip(btnSearchNext, "Volgende zoeken");
-            ToolTip.SetToolTip(btnSearchPrevious, "Vorige zoeken");
-        }
-        public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
-        {
-            LogMetadataFilterResult = logMetadataFilterResult;
+        #region Search listbox population and update
 
-            //Do not search automatically after the log has been cleared
-            if (LastSearchEvent == null || LastSearchEvent.FirstLogEntry == null) return;
-            UpdateSearchResultsList();
-        }
-        private bool ClearSelectedLogEntryExternallyInProgress = false;
-        public void ClearSelectedLogEntry()
-        {
-            ClearSelectedLogEntryExternallyInProgress = true;
-            LstLogContent.SelectedIndex = -1;
-            ClearSelectedLogEntryExternallyInProgress = false;
-        }
-
-        private void BtnSearchNext_Click(object sender, EventArgs e)
-        {
-            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Forward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
-            UpdateSearchResultsList();
-            LstLogContent.MoveSelection(true, chkWrapAround.Checked);
-        }
-
-        private void BtnSearchPrevious_Click(object sender, EventArgs e)
-        {
-            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Backward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
-            LstLogContent.MoveSelection(false, chkWrapAround.Checked);
-        }
+        /// <summary>
+        /// Updates the search results list to reflect the current search criteria and log entries. Performs either an
+        /// incremental update or a full refresh, depending on changes since the last search.
+        /// </summary>
+        /// <remarks>This method preserves the user's selection in the results list when possible and
+        /// updates the displayed result count and status indicators. Incremental updates are performed when only new
+        /// log entries have been added and the search criteria remain unchanged, improving performance for large log
+        /// sets. A full refresh is performed if the search criteria have changed or the previous selection cannot be
+        /// determined. This method should be called whenever the search parameters or log data change to ensure the
+        /// results list remains accurate.</remarks>
         private void UpdateSearchResultsList()
         {
             if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
@@ -138,13 +110,13 @@ namespace LogScraper
                 WholeWord = chkWholeWordsOnly.Checked
             };
 
-            // snelcheck: exact hetzelfde zoek-event als laatst -> niets doen
+            // If the search event has not changed, no need to update
             if (searchEventNew.Equals(LastSearchEvent))
             {
                 return;
             }
 
-            // bewaar huidige selectie (op OriginalLogEntry zodat we die later kunnen terugvinden)
+            // Save the currently selected log entry to restore selection later
             LogEntry previouslySelectedLogEntry = null;
             if (LstLogContent.SelectedItem is LogEntryDisplayObject selectedItem && selectedItem.OriginalLogEntry != null)
             {
@@ -154,10 +126,10 @@ namespace LogScraper
             List<LogEntry> entries = LogMetadataFilterResult.LogEntries;
             bool didIncrementalAppend = false;
 
-            // Voorwaarde voor incremental append:
-            // - we hebben een vorige zoekactie
-            // - FirstLogEntry, SearchText, CaseSensitive, WholeWord zijn gelijk
-            // - LastLogEntry is anders (nieuwere logs toegevoegd)
+            // Search requirements for incremental appending:
+            // - we have a previous search event
+            // - FirstLogEntry, SearchText, CaseSensitive, WholeWord are the same
+            // - LastLogEntry is different (newer logs added)
             if (LastSearchEvent != null
                 && Equals(LastSearchEvent.FirstLogEntry, searchEventNew.FirstLogEntry)
                 && string.Equals(LastSearchEvent.SearchText ?? string.Empty, searchEventNew.SearchText ?? string.Empty, StringComparison.Ordinal)
@@ -166,7 +138,7 @@ namespace LogScraper
                 && LastSearchEvent.IsMetadataSearchEnabled == searchEventNew.IsMetadataSearchEnabled
                 && !Equals(LastSearchEvent.LastLogEntry, searchEventNew.LastLogEntry))
             {
-                // probeer de positie van de oude LastLogEntry te vinden
+                // Find the index of the last log entry from the previous search
                 int oldLastIndex = entries.FindIndex(delegate (LogEntry le) { return Equals(le, LastSearchEvent.LastLogEntry); });
 
                 if (oldLastIndex >= 0)
@@ -174,9 +146,8 @@ namespace LogScraper
                     int startIndex = oldLastIndex + 1;
                     if (startIndex <= entries.Count - 1)
                     {
-                        // zoek alleen in het nieuwe bereik en voeg toe
+                        // Only search the new entries that were added since the last search
                         List<LogEntryDisplayObject> newResults = SearchLogEntriesInRange(entries, startIndex, entries.Count - 1, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
-                        // voeg toe aan de ListBox
                         for (int i = 0; i < newResults.Count; i++)
                         {
                             LstLogContent.Items.Add(newResults[i]);
@@ -186,16 +157,14 @@ namespace LogScraper
                     }
                     else
                     {
-                        // geen nieuwe entries om toe te voegen; niks doen behalve updaten van LastSearchEvent verderop
                         didIncrementalAppend = true;
                     }
                 }
-                // indien oldLastIndex == -1: we kunnen de oude positie niet bepalen -> fallback naar volledige refresh
             }
 
             if (!didIncrementalAppend)
             {
-                // volledige refresh
+                // Full refresh of the search results
                 LstLogContent.Items.Clear();
 
                 if (IsSearchEmpty() || LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
@@ -211,7 +180,7 @@ namespace LogScraper
                 }
             }
 
-            // probeer de oude selectie terug te zetten indien die nog aanwezig is
+            // Try to restore the previous selection
             if (previouslySelectedLogEntry != null)
             {
                 for (int i = 0; i < LstLogContent.Items.Count; i++)
@@ -231,16 +200,12 @@ namespace LogScraper
             if (LstLogContent.Items.Count == 0) lblResults.ForeColor = Color.DarkRed;
             else lblResults.ForeColor = Color.Black;
 
-            // update LastSearchEvent (altijd bijwerken zodat volgende keer vergelijking klopt)
             LastSearchEvent = searchEventNew;
         }
 
-        private void Clear()
-        {
-            LastSearchEvent = null;
-            LstLogContent.Items.Clear();
-            lblResults.Text = "";
-        }
+        #endregion
+
+        #region Search logic
 
         /// <summary>
         /// Searches for log entries within the specified index range that match the given search criteria.
@@ -285,96 +250,21 @@ namespace LogScraper
             return adjustedResults;
         }
 
-
-        private bool IsSearchEmpty()
-        {
-            string search = txtSearch.Text.Trim();
-            if (string.IsNullOrEmpty(search) || search == DefaulSearchtText) return true;
-
-            return false;
-        }
-
-        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                BtnSearchNext_Click(sender, e);
-                e.Handled = true; // This prevents the system from processing the Enter key further
-            }
-        }
-
-        private void ChkCaseSensitive_CheckedChanged(object sender, EventArgs e)
-        {
-            txtSearch.Focus();
-        }
-
-        private void ChkWholeWordsOnly_CheckedChanged(object sender, EventArgs e)
-        {
-            txtSearch.Focus();
-        }
-
-        private const string DefaulSearchtText = "Zoeken...";
-
-        private void TxtSearch_Enter(object sender, EventArgs e)
-        {
-
-            if (txtSearch.Text == DefaulSearchtText)
-            {
-                txtSearch.Text = string.Empty;
-                txtSearch.ForeColor = SystemColors.ControlText;
-            }
-        }
-
-        private void TxtSearch_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtSearch.Text))
-            {
-                txtSearch.Text = DefaulSearchtText;
-                txtSearch.ForeColor = Color.DarkGray;
-            }
-        }
-
-        private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            if (e.Index < 0) return;
-
-            e.DrawBackground();
-
-            // Fetch the item
-            if (LstLogContent.Items[e.Index] is not LogEntryDisplayObject item || item.ContentValue == null) return;
-
-            Graphics g = e.Graphics;
-            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-
-            if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-            else g.FillRectangle(SystemBrushes.Window, e.Bounds);
-
-            //Default drawing, without tree
-            string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
-            e.Graphics.DrawString(truncatedValue, LstLogContent.Font, SystemBrushes.ControlText, e.Bounds);
-
-            e.DrawFocusRectangle();
-        }
-
-        private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
-        {
-            string truncatedText = text;
-            int ellipsisWidth = TextRenderer.MeasureText(graphics, ".....", LstLogContent.Font).Width;
-
-            while (TextRenderer.MeasureText(graphics, truncatedText, LstLogContent.Font).Width + ellipsisWidth > maxWidth)
-            {
-                if (truncatedText.Length == 0) break;
-                truncatedText = truncatedText[..^1];
-            }
-
-            if (truncatedText.Length < text.Length)
-            {
-                truncatedText += "...";
-            }
-
-            return truncatedText;
-        }
-
+        /// <summary>
+        /// Searches the specified log entries for occurrences of the given search text, returning a list of display
+        /// objects representing matching entries.
+        /// </summary>
+        /// <remarks>The search is performed on both the main entry and any additional log lines
+        /// associated with each log entry. The returned objects include information about the match location and a
+        /// content snippet for display purposes.</remarks>
+        /// <param name="entries">The collection of log entries to search. If null, an empty list is returned.</param>
+        /// <param name="searchText">The text to search for within each log entry. If null or empty, no results are returned.</param>
+        /// <param name="caseSensitive">Specifies whether the search should be case-sensitive. If <see langword="true"/>, only exact case matches
+        /// are considered.</param>
+        /// <param name="wholeWord">Specifies whether only whole word matches should be considered. If <see langword="true"/>, partial matches
+        /// are excluded.</param>
+        /// <returns>A list of display objects representing log entries that contain the search text. The list is empty if no
+        /// matches are found or if the input parameters are invalid.</returns>
         private List<LogEntryDisplayObject> SearchLogEntries(List<LogEntry> entries, string searchText, bool caseSensitive, bool wholeWord)
         {
             List<LogEntryDisplayObject> results = [];
@@ -397,6 +287,7 @@ namespace LogScraper
                     continue;
                 }
 
+                //Note that the timestamp is not searched if the metadata search is disabled, this is not in line with the search of the main log window, but it is -for now- the expected behavior for this search control.
                 int matchIndex = FindMatchIndex(current.Entry, searchText, caseSensitive, wholeWord, IsMetadataSearchEnabled ? 0 : current.StartIndexContent);
                 if (matchIndex >= 0)
                 {
@@ -420,7 +311,7 @@ namespace LogScraper
                     for (int additionalLogLineIndex = 0; additionalLogLineIndex < current.AdditionalLogEntries.Count; additionalLogLineIndex++)
                     {
                         string additionalLogLine = current.AdditionalLogEntries[additionalLogLineIndex];
-                        matchIndex = FindMatchIndex(additionalLogLine, searchText, caseSensitive, wholeWord,0);
+                        matchIndex = FindMatchIndex(additionalLogLine, searchText, caseSensitive, wholeWord, 0);
                         if (matchIndex >= 0)
                         {
                             LogEntryDisplayObject item = new()
@@ -445,7 +336,22 @@ namespace LogScraper
             return results;
         }
 
-        // zoek index van eerste match (geeft -1 als niet gevonden). controleert whole word indien gevraagd.
+        /// <summary>
+        /// Finds the index of the first occurrence of the specified search text within the given text, with options for
+        /// case sensitivity and whole word matching.
+        /// </summary>
+        /// <remarks>If whole word matching is enabled, the method checks that the found substring is not
+        /// part of a larger word. The search begins at the specified start index and proceeds forward.</remarks>
+        /// <param name="text">The text to search within. If null, the method returns -1.</param>
+        /// <param name="searchText">The substring to search for. If null, the method returns -1.</param>
+        /// <param name="caseSensitive">Specifies whether the search should be case-sensitive. If <see langword="true"/>, the search distinguishes
+        /// between uppercase and lowercase characters; otherwise, it ignores case.</param>
+        /// <param name="wholeWord">Specifies whether to match only whole words. If <see langword="true"/>, the method returns the index only if
+        /// the match is a whole word.</param>
+        /// <param name="contentStartIndex">The zero-based index in the text at which to begin searching. Must be greater than or equal to 0 and less
+        /// than or equal to the length of the text.</param>
+        /// <returns>The zero-based index of the first occurrence of the search text that matches the specified criteria;
+        /// otherwise, -1 if no match is found or if either input string is null.</returns>
         public int FindMatchIndex(string text, string searchText, bool caseSensitive, bool wholeWord, int contentStartIndex)
         {
             if (text == null || searchText == null)
@@ -482,7 +388,18 @@ namespace LogScraper
             return -1;
         }
 
-        // controleert of match op idx een "heel woord" is (letters, digits, underscore)
+        /// <summary>
+        /// Determines whether the specified substring within the input text represents a whole word, delimited by
+        /// non-word characters or string boundaries.
+        /// </summary>
+        /// <remarks>A whole word is defined as a sequence of letters, digits, or underscores that is not
+        /// immediately preceded or followed by another word character. If text is null, the method returns false. The
+        /// method does not validate that the specified index and length are within the bounds of the input
+        /// string.</remarks>
+        /// <param name="text">The input string to examine for a whole word at the specified position. Can be null.</param>
+        /// <param name="index">The zero-based starting index of the substring to check within the input text.</param>
+        /// <param name="length">The length of the substring to check for whole word boundaries.</param>
+        /// <returns>true if the substring at the specified index and length is a whole word; otherwise, false.</returns>
         public bool IsWholeWordAt(string text, int index, int length)
         {
             if (text == null)
@@ -518,10 +435,29 @@ namespace LogScraper
 
             return true;
         }
+        #endregion
 
-        // bouwt string: vanaf maxBefore tekens vóór match (of begin regel) tot het einde van de zin.
-        // zin-einde = eerste '.' of '!' of '?' na match (inclusief die char). Stop ook op newline.
-        public string BuildValueTillSentenceEnd(string text, int matchStart, int matchLength, int maxBefore)
+        #region Helper methods
+
+        /// <summary>
+        /// Builds a text snippet starting up to a specified number of characters before a match and ending at the
+        /// conclusion of the containing sentence.
+        /// </summary>
+        /// <remarks>The sentence end is determined by the first occurrence of a period ('.'), exclamation
+        /// mark ('!'), question mark ('?'), or a line break after the match. If the snippet does not start at the
+        /// beginning of the text, it is prefixed with an ellipsis ("..."). Trailing whitespace is removed from the
+        /// result.</remarks>
+        /// <param name="text">The source text from which to extract the snippet. If <paramref name="text"/> is <see langword="null"/>, an
+        /// empty string is returned.</param>
+        /// <param name="matchStart">The zero-based index in <paramref name="text"/> where the match begins. Must be within the bounds of the
+        /// text.</param>
+        /// <param name="matchLength">The length of the match in characters. Must be greater than zero.</param>
+        /// <param name="maxBefore">The maximum number of characters to include before the match start in the resulting snippet. If the match is
+        /// near the beginning of the text, fewer characters may be included.</param>
+        /// <returns>A substring of <paramref name="text"/> that starts up to <paramref name="maxBefore"/> characters before
+        /// <paramref name="matchStart"/> and ends at the end of the containing sentence. Returns an empty string if the
+        /// input is invalid or no valid snippet can be constructed.</returns>
+        public static string BuildValueTillSentenceEnd(string text, int matchStart, int matchLength, int maxBefore)
         {
             if (text == null)
             {
@@ -600,8 +536,69 @@ namespace LogScraper
 
             return snippet;
         }
-        private bool ignoreSelectedItemChanged = false;
 
+        #endregion
+
+        #region Drawing of listbox items
+        private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            e.DrawBackground();
+
+            // Fetch the item
+            if (LstLogContent.Items[e.Index] is not LogEntryDisplayObject item || item.ContentValue == null) return;
+
+            Graphics g = e.Graphics;
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+            else g.FillRectangle(SystemBrushes.Window, e.Bounds);
+
+            //Default drawing, without tree
+            string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
+            e.Graphics.DrawString(truncatedValue, LstLogContent.Font, SystemBrushes.ControlText, e.Bounds);
+
+            e.DrawFocusRectangle();
+        }
+        /// <summary>
+        /// Truncates the specified text so that its rendered width does not exceed the given maximum width, appending
+        /// an ellipsis if truncation occurs.
+        /// </summary>
+        /// <remarks>The method uses the current font of the LstLogContent control to measure text width.
+        /// If the text is truncated, an ellipsis is appended to indicate omitted content.</remarks>
+        /// <param name="text">The text to be truncated if it exceeds the specified maximum width when rendered.</param>
+        /// <param name="graphics">The graphics context used to measure the rendered width of the text.</param>
+        /// <param name="maxWidth">The maximum allowed width, in pixels, for the rendered text including the ellipsis.</param>
+        /// <returns>A string containing the original text if it fits within the maximum width; otherwise, a truncated version of
+        /// the text with an ellipsis appended.</returns>
+        private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
+        {
+            string truncatedText = text;
+            int ellipsisWidth = TextRenderer.MeasureText(graphics, ".....", LstLogContent.Font).Width;
+
+            while (TextRenderer.MeasureText(graphics, truncatedText, LstLogContent.Font).Width + ellipsisWidth > maxWidth)
+            {
+                if (truncatedText.Length == 0) break;
+                truncatedText = truncatedText[..^1];
+            }
+
+            if (truncatedText.Length < text.Length)
+            {
+                truncatedText += "...";
+            }
+
+            return truncatedText;
+        }
+        #endregion
+
+        #region Public properties and events
+        public void Clear()
+        {
+            LastSearchEvent = null;
+            LstLogContent.Items.Clear();
+            lblResults.Text = "";
+        }
         public LogEntry SelectedLogEntry
         {
             get
@@ -610,6 +607,33 @@ namespace LogScraper
                 return SelectedLogEntryDisplayObject.OriginalLogEntry;
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsMetadataSearchEnabled { get; set; }
+
+        /// Event to filter log entries based on the selected log content property
+        public event EventHandler SelectedItemChanged;
+        protected virtual void OnSelectedItemChanged(EventArgs e)
+        {
+            SelectedItemChanged?.Invoke(this, e);
+        }
+        public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
+        {
+            LogMetadataFilterResult = logMetadataFilterResult;
+
+            //Do not search automatically after the log has been cleared
+            if (LastSearchEvent == null || LastSearchEvent.FirstLogEntry == null) return;
+            UpdateSearchResultsList();
+        }
+        private bool ClearSelectedLogEntryExternallyInProgress = false;
+        public void ClearSelectedLogEntry()
+        {
+            ClearSelectedLogEntryExternallyInProgress = true;
+            LstLogContent.SelectedIndex = -1;
+            ClearSelectedLogEntryExternallyInProgress = false;
+        }
+        #endregion
+
+        #region Control events and private properties
         private LogEntryDisplayObject SelectedLogEntryDisplayObject
         {
             get
@@ -618,12 +642,17 @@ namespace LogScraper
                 return ((LogEntryDisplayObject)LstLogContent.SelectedItem);
             }
         }
+        private bool IsSearchEmpty()
+        {
+            string search = txtSearch.Text.Trim();
+            if (string.IsNullOrEmpty(search) || search == DefaulSearchtText) return true;
+
+            return false;
+        }
 
         private void LstLogContent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ClearSelectedLogEntryExternallyInProgress) return;
-
-            if (ignoreSelectedItemChanged) return;
 
             OnSelectedItemChanged(EventArgs.Empty);
         }
@@ -632,5 +661,57 @@ namespace LogScraper
         {
             Clear();
         }
+
+        private void BtnSearchNext_Click(object sender, EventArgs e)
+        {
+            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Forward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
+            UpdateSearchResultsList();
+            LstLogContent.MoveSelection(true, chkWrapAround.Checked);
+        }
+
+        private void BtnSearchPrevious_Click(object sender, EventArgs e)
+        {
+            Search?.Invoke(txtSearch.Text, SearchDirectionUserControl.Backward, chkCaseSensitive.Checked, chkWholeWordsOnly.Checked, chkWrapAround.Checked);
+            UpdateSearchResultsList();
+            LstLogContent.MoveSelection(false, chkWrapAround.Checked);
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BtnSearchNext_Click(sender, e);
+                e.Handled = true; // This prevents the system from processing the Enter key further
+            }
+        }
+
+        private void ChkCaseSensitive_CheckedChanged(object sender, EventArgs e)
+        {
+            txtSearch.Focus();
+        }
+
+        private void ChkWholeWordsOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            txtSearch.Focus();
+        }
+        private void TxtSearch_Enter(object sender, EventArgs e)
+        {
+
+            if (txtSearch.Text == DefaulSearchtText)
+            {
+                txtSearch.Text = string.Empty;
+                txtSearch.ForeColor = SystemColors.ControlText;
+            }
+        }
+
+        private void TxtSearch_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                txtSearch.Text = DefaulSearchtText;
+                txtSearch.ForeColor = Color.DarkGray;
+            }
+        }
+        #endregion
     }
 }
