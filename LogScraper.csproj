@@ -4,7 +4,7 @@
     <TargetFramework>net9.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>LogScraper.Program</StartupObject>
-    <ApplicationIcon>Icons\Scraper transparant.ico</ApplicationIcon>
+    <ApplicationIcon>Icons\Scraper.ico</ApplicationIcon>
     <SignAssembly>False</SignAssembly>
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2025 Robert de Volder</Copyright>

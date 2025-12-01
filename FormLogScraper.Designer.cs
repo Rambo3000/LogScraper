@@ -388,11 +388,11 @@
             groupBox5.TabStop = false;
             groupBox5.Text = "Zoeken";
             // 
-            // usrSearch
+            // UserControlSearch
             // 
             UserControlSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlSearch.Location = new System.Drawing.Point(3, 19);
-            UserControlSearch.Name = "usrSearch";
+            UserControlSearch.Name = "UserControlSearch";
             UserControlSearch.Size = new System.Drawing.Size(240, 90);
             UserControlSearch.TabIndex = 33;
             // 

@@ -48,8 +48,14 @@ If(Test-path $destination) {Remove-item $destination}
 Add-Type -assembly "system.io.compression.filesystem"
 [io.compression.zipfile]::CreateFromDirectory($Source, $destination)
 
+Write-Host "----- Building installer -----"
+# Compile installer
+if (!$test.IsPresent) {
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=`"$version`"" ".\Utilities\Installer\Settings.iss"
+}
+
 Write-Host "----- Cleaning up -----"
-Remove-item ".\bin\Release\" -Recurse -Force
+#Remove-item ".\bin\Release\" -Recurse -Force
 
 Write-Host "----- Open explorer -----"
 Start ".\bin\"
