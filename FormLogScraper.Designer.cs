@@ -553,7 +553,7 @@
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "FormLogScraper";
-            Text = "Log Scraper";
+            Text = "LogScraper";
             Load += FormLogScraper_Load;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();

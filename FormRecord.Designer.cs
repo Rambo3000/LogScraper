@@ -188,7 +188,7 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "FormRecord";
-            Text = " Log Scraper";
+            Text = " LogScraper";
             TopMost = true;
             FormClosing += FormMiniTop_FormClosing;
             ResumeLayout(false);
