@@ -51,7 +51,7 @@ Add-Type -assembly "system.io.compression.filesystem"
 Write-Host "----- Building installer -----"
 # Compile installer
 if (!$test.IsPresent) {
-& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=`"$version`"" ".\Utilities\Installer\Settings.iss"
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DMyAppVersion=`"$newVersion`"" ".\Utilities\Installer\Settings.iss"
 }
 
 Write-Host "----- Cleaning up -----"
