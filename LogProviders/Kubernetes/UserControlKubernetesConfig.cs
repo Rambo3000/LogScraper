@@ -28,6 +28,11 @@ namespace LogScraper.LogProviders.Kubernetes
                 }
             };
         }
+        public void Clear()
+        {
+            LstClusters.SelectedIndex = -1;
+            _clusters.Clear();
+        }
         internal void SetKubernetesConfig(KubernetesConfig config, List<LogLayout> logLayouts)
         {
             CboLogLayout.Items.Clear();

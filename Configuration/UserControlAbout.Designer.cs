@@ -38,6 +38,7 @@
             LblGnuLicense = new System.Windows.Forms.Label();
             BtnUpdate = new System.Windows.Forms.Button();
             LinkGitHub = new System.Windows.Forms.LinkLabel();
+            LblOpenExecutableFolder = new System.Windows.Forms.LinkLabel();
             GrpAbout.SuspendLayout();
             SuspendLayout();
             // 
@@ -61,6 +62,7 @@
             // 
             // GrpAbout
             // 
+            GrpAbout.Controls.Add(LblOpenExecutableFolder);
             GrpAbout.Controls.Add(LinkComponents);
             GrpAbout.Controls.Add(LblDisclaimer);
             GrpAbout.Controls.Add(LblRuntime);
@@ -77,7 +79,7 @@
             GrpAbout.Size = new System.Drawing.Size(723, 422);
             GrpAbout.TabIndex = 3;
             GrpAbout.TabStop = false;
-            GrpAbout.Text = "Over Log Scraper";
+            GrpAbout.Text = "Over LogScraper";
             // 
             // LinkComponents
             // 
@@ -94,7 +96,7 @@
             // LblDisclaimer
             // 
             LblDisclaimer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            LblDisclaimer.Location = new System.Drawing.Point(3, 214);
+            LblDisclaimer.Location = new System.Drawing.Point(3, 236);
             LblDisclaimer.Name = "LblDisclaimer";
             LblDisclaimer.Size = new System.Drawing.Size(75, 16);
             LblDisclaimer.TabIndex = 7;
@@ -112,7 +114,7 @@
             // LblDisclaimerFullText
             // 
             LblDisclaimerFullText.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblDisclaimerFullText.Location = new System.Drawing.Point(3, 214);
+            LblDisclaimerFullText.Location = new System.Drawing.Point(3, 236);
             LblDisclaimerFullText.Name = "LblDisclaimerFullText";
             LblDisclaimerFullText.Size = new System.Drawing.Size(712, 118);
             LblDisclaimerFullText.TabIndex = 5;
@@ -120,7 +122,7 @@
             // LblGnuLicense
             // 
             LblGnuLicense.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblGnuLicense.Location = new System.Drawing.Point(3, 175);
+            LblGnuLicense.Location = new System.Drawing.Point(3, 197);
             LblGnuLicense.Name = "LblGnuLicense";
             LblGnuLicense.Size = new System.Drawing.Size(707, 39);
             LblGnuLicense.TabIndex = 5;
@@ -128,7 +130,7 @@
             // 
             // BtnUpdate
             // 
-            BtnUpdate.Location = new System.Drawing.Point(8, 120);
+            BtnUpdate.Location = new System.Drawing.Point(8, 142);
             BtnUpdate.Name = "BtnUpdate";
             BtnUpdate.Size = new System.Drawing.Size(165, 34);
             BtnUpdate.TabIndex = 4;
@@ -146,6 +148,17 @@
             LinkGitHub.TabStop = true;
             LinkGitHub.Text = "GitHub Project Page";
             LinkGitHub.LinkClicked += LinkGitHub_LinkClicked;
+            // 
+            // LblOpenExecutableFolder
+            // 
+            LblOpenExecutableFolder.AutoSize = true;
+            LblOpenExecutableFolder.Location = new System.Drawing.Point(8, 118);
+            LblOpenExecutableFolder.Name = "LblOpenExecutableFolder";
+            LblOpenExecutableFolder.Size = new System.Drawing.Size(141, 15);
+            LblOpenExecutableFolder.TabIndex = 43;
+            LblOpenExecutableFolder.TabStop = true;
+            LblOpenExecutableFolder.Text = "Open de LogScraper map";
+            LblOpenExecutableFolder.LinkClicked += LblOpenExecutableFolder_LinkClicked;
             // 
             // UserControlAbout
             // 
@@ -171,5 +184,6 @@
         private System.Windows.Forms.Label LblAuthor;
         private System.Windows.Forms.Label LblDisclaimer;
         private System.Windows.Forms.LinkLabel LinkComponents;
+        private System.Windows.Forms.LinkLabel LblOpenExecutableFolder;
     }
 }

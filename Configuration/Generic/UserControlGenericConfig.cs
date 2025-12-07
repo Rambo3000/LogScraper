@@ -146,27 +146,5 @@ namespace LogScraper.Configuration
                 TxtEditorLocation.Text = dialog.FileName;
             }
         }
-
-        private void LblOpenExecutableFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenExecutableFolder();
-        }
-        private static void OpenExecutableFolder()
-        {
-            string executablePath = AppContext.BaseDirectory;
-            string folderPath = Path.GetDirectoryName(executablePath);
-
-            if (folderPath == null)
-            {
-                return;
-            }
-
-            System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "explorer.exe";
-            processStartInfo.Arguments = folderPath;
-            processStartInfo.UseShellExecute = true;
-
-            System.Diagnostics.Process.Start(processStartInfo);
-        }
     }
 }

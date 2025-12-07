@@ -20,6 +20,11 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             InitializeComponent();
         }
+        public void Clear()
+        {
+            LstUrls.SelectedIndex = -1;
+            _instances.Clear();
+        }
         internal void SetRuntimeConfig(RuntimeConfig config, List<LogLayout> logLayouts)
         {
             CboLogLayout.Items.Clear();

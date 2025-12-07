@@ -47,5 +47,9 @@ namespace LogScraper.LogProviders.Kubernetes
 
             return true;
         }
+        public void Clear()
+        {
+            CboLogLayout.SelectedIndex = -1;
+        }
     }
 }

@@ -47,7 +47,6 @@ namespace LogScraper.Configuration
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
-            LblOpenExecutableFolder = new System.Windows.Forms.LinkLabel();
             pictureBox3 = new System.Windows.Forms.PictureBox();
             ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -210,7 +209,6 @@ namespace LogScraper.Configuration
             // 
             // GrpGeneralSettings
             // 
-            GrpGeneralSettings.Controls.Add(LblOpenExecutableFolder);
             GrpGeneralSettings.Controls.Add(pictureBox3);
             GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
             GrpGeneralSettings.Controls.Add(pictureBox2);
@@ -232,17 +230,6 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
-            // 
-            // LblOpenExecutableFolder
-            // 
-            LblOpenExecutableFolder.AutoSize = true;
-            LblOpenExecutableFolder.Location = new System.Drawing.Point(6, 275);
-            LblOpenExecutableFolder.Name = "LblOpenExecutableFolder";
-            LblOpenExecutableFolder.Size = new System.Drawing.Size(351, 15);
-            LblOpenExecutableFolder.TabIndex = 41;
-            LblOpenExecutableFolder.TabStop = true;
-            LblOpenExecutableFolder.Text = "Open de map met de configuratiebestanden in Windows Explorer";
-            LblOpenExecutableFolder.LinkClicked += LblOpenExecutableFolder_LinkClicked;
             // 
             // pictureBox3
             // 
@@ -346,6 +333,5 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.Button BtnBrowseEditor;
         private System.Windows.Forms.CheckBox ChkAutoToggleHierarchy;
         private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.LinkLabel LblOpenExecutableFolder;
     }
 }

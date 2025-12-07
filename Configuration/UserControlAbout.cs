@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using LogScraper.Properties;
 using LogScraper.Utilities;
@@ -60,17 +61,44 @@ namespace LogScraper.Configuration
 
         private void UserControlAbout_SizeChanged(object sender, EventArgs e)
         {
+            CenterControl(lblVersion);
+            CenterControl(LblRuntime);
+            CenterControl(LblAuthor);
+            CenterControl(LinkGitHub);
+            CenterControl(LblOpenExecutableFolder);
+            CenterControl(BtnUpdate);
+        }
+        private void CenterControl(Control control)
+        {
             int center = GrpAbout.ClientSize.Width / 2;
-            lblVersion.Left = center - lblVersion.Width / 2;
-            LblRuntime.Left = center - LblRuntime.Width / 2;
-            LblAuthor.Left = center - LblAuthor.Width / 2;
-            LinkGitHub.Left = center - LinkGitHub.Width / 2;
-            BtnUpdate.Left = center - BtnUpdate.Width / 2;
+            control.Left = center - control.Width / 2;
         }
 
         private void LinkComponents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Link.LinkData.ToString()) { UseShellExecute = true });
+        }
+
+        private void LblOpenExecutableFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OpenExecutableFolder();
+        }
+        private static void OpenExecutableFolder()
+        {
+            string executablePath = AppContext.BaseDirectory;
+            string folderPath = Path.GetDirectoryName(executablePath);
+
+            if (folderPath == null)
+            {
+                return;
+            }
+
+            ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = "explorer.exe";
+            processStartInfo.Arguments = folderPath;
+            processStartInfo.UseShellExecute = true;
+
+            Process.Start(processStartInfo);
         }
     }
 }

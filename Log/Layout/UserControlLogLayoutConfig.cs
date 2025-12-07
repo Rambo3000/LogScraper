@@ -27,6 +27,13 @@ namespace LogScraper.Log
             LstContent.DisplayMember = "Description";
             LstMetadata.DisplayMember = "Description";
         }
+        public void Clear()
+        {
+            LstLayouts.SelectedIndex = -1;
+            _layouts.Clear();
+            _metadataProperties.Clear();
+            _contentProperties.Clear();
+        }
         internal void SetLogLayoutsConfig(List<LogLayout> layouts)
         {
             // Copy instances so we dont mix them with the ones already in the config
