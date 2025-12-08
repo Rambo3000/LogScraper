@@ -20,7 +20,7 @@ if ($test.IsPresent) {
     $propertyGroup.Version = $newVersion
     $propertyGroup.FileVersion = $newVersion
 
-    $destination = ".\bin\LogScraper " + $newVersion + ".zip"
+    $destination = ".\bin\LogScraperStandalone-" + $newVersion + ".zip"
     $projectFile.Save($projectFilePath)
     Write-Host "----- Updated version numbers to $newVersion -----"
 }
