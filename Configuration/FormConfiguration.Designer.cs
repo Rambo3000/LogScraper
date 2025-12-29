@@ -83,7 +83,7 @@
             TabLogProviders.Location = new System.Drawing.Point(3, 3);
             TabLogProviders.Name = "TabLogProviders";
             TabLogProviders.SelectedIndex = 0;
-            TabLogProviders.Size = new System.Drawing.Size(821, 590);
+            TabLogProviders.Size = new System.Drawing.Size(821, 553);
             TabLogProviders.TabIndex = 0;
             // 
             // tabKubernetes
@@ -92,7 +92,7 @@
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
             tabKubernetes.Padding = new System.Windows.Forms.Padding(3);
-            tabKubernetes.Size = new System.Drawing.Size(813, 562);
+            tabKubernetes.Size = new System.Drawing.Size(813, 525);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
@@ -101,8 +101,9 @@
             // 
             userControlKubernetesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlKubernetesConfig.Location = new System.Drawing.Point(3, 3);
+            userControlKubernetesConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlKubernetesConfig.Name = "userControlKubernetesConfig";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(807, 556);
+            userControlKubernetesConfig.Size = new System.Drawing.Size(807, 519);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // tabUrl
@@ -119,6 +120,7 @@
             // 
             userControlRuntimeConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
+            userControlRuntimeConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlRuntimeConfig.Name = "userControlRuntimeConfig";
             userControlRuntimeConfig.Size = new System.Drawing.Size(813, 562);
             userControlRuntimeConfig.TabIndex = 0;
@@ -137,6 +139,7 @@
             // 
             userControlFileConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlFileConfig.Location = new System.Drawing.Point(0, 0);
+            userControlFileConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlFileConfig.Name = "userControlFileConfig";
             userControlFileConfig.Size = new System.Drawing.Size(813, 562);
             userControlFileConfig.TabIndex = 0;
@@ -144,7 +147,7 @@
             // btnOk
             // 
             btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnOk.Location = new System.Drawing.Point(753, 632);
+            btnOk.Location = new System.Drawing.Point(753, 595);
             btnOk.Name = "btnOk";
             btnOk.Size = new System.Drawing.Size(75, 23);
             btnOk.TabIndex = 1;
@@ -155,7 +158,7 @@
             // btnCancel
             // 
             btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnCancel.Location = new System.Drawing.Point(672, 632);
+            btnCancel.Location = new System.Drawing.Point(672, 595);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 23);
             btnCancel.TabIndex = 2;
@@ -173,7 +176,7 @@
             tabMain.Location = new System.Drawing.Point(2, 2);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new System.Drawing.Size(835, 624);
+            tabMain.Size = new System.Drawing.Size(835, 587);
             tabMain.TabIndex = 3;
             // 
             // TabPageGeneral
@@ -182,7 +185,7 @@
             TabPageGeneral.Controls.Add(userControlGenericConfig);
             TabPageGeneral.Location = new System.Drawing.Point(4, 24);
             TabPageGeneral.Name = "TabPageGeneral";
-            TabPageGeneral.Size = new System.Drawing.Size(827, 596);
+            TabPageGeneral.Size = new System.Drawing.Size(827, 559);
             TabPageGeneral.TabIndex = 2;
             TabPageGeneral.Text = "Algemeen";
             TabPageGeneral.UseVisualStyleBackColor = true;
@@ -192,10 +195,10 @@
             tabControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabControl1.Controls.Add(tabImport);
             tabControl1.Controls.Add(tabExport);
-            tabControl1.Location = new System.Drawing.Point(2, 414);
+            tabControl1.Location = new System.Drawing.Point(2, 366);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(822, 179);
+            tabControl1.Size = new System.Drawing.Size(822, 190);
             tabControl1.TabIndex = 3;
             // 
             // tabImport
@@ -209,7 +212,7 @@
             tabImport.Location = new System.Drawing.Point(4, 24);
             tabImport.Name = "tabImport";
             tabImport.Padding = new System.Windows.Forms.Padding(3);
-            tabImport.Size = new System.Drawing.Size(814, 151);
+            tabImport.Size = new System.Drawing.Size(814, 162);
             tabImport.TabIndex = 0;
             tabImport.Text = "Instellingen importeren";
             tabImport.UseVisualStyleBackColor = true;
@@ -290,7 +293,7 @@
             tabExport.Location = new System.Drawing.Point(4, 24);
             tabExport.Name = "tabExport";
             tabExport.Padding = new System.Windows.Forms.Padding(3);
-            tabExport.Size = new System.Drawing.Size(814, 154);
+            tabExport.Size = new System.Drawing.Size(814, 162);
             tabExport.TabIndex = 1;
             tabExport.Text = "Instellingen exporteren";
             tabExport.UseVisualStyleBackColor = true;
@@ -355,10 +358,10 @@
             // 
             // userControlGenericConfig
             // 
-            userControlGenericConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             userControlGenericConfig.Location = new System.Drawing.Point(0, 0);
+            userControlGenericConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlGenericConfig.Name = "userControlGenericConfig";
-            userControlGenericConfig.Size = new System.Drawing.Size(827, 408);
+            userControlGenericConfig.Size = new System.Drawing.Size(827, 358);
             userControlGenericConfig.TabIndex = 0;
             // 
             // TabPageLogLayouts
@@ -366,7 +369,7 @@
             TabPageLogLayouts.Controls.Add(userControlLogLayoutConfig);
             TabPageLogLayouts.Location = new System.Drawing.Point(4, 24);
             TabPageLogLayouts.Name = "TabPageLogLayouts";
-            TabPageLogLayouts.Size = new System.Drawing.Size(827, 596);
+            TabPageLogLayouts.Size = new System.Drawing.Size(827, 559);
             TabPageLogLayouts.TabIndex = 3;
             TabPageLogLayouts.Text = "Log layout";
             TabPageLogLayouts.UseVisualStyleBackColor = true;
@@ -375,8 +378,9 @@
             // 
             userControlLogLayoutConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlLogLayoutConfig.Location = new System.Drawing.Point(0, 0);
+            userControlLogLayoutConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlLogLayoutConfig.Name = "userControlLogLayoutConfig";
-            userControlLogLayoutConfig.Size = new System.Drawing.Size(827, 596);
+            userControlLogLayoutConfig.Size = new System.Drawing.Size(827, 559);
             userControlLogLayoutConfig.TabIndex = 0;
             // 
             // TabPageLogProviders
@@ -385,7 +389,7 @@
             TabPageLogProviders.Location = new System.Drawing.Point(4, 24);
             TabPageLogProviders.Name = "TabPageLogProviders";
             TabPageLogProviders.Padding = new System.Windows.Forms.Padding(3);
-            TabPageLogProviders.Size = new System.Drawing.Size(827, 596);
+            TabPageLogProviders.Size = new System.Drawing.Size(827, 559);
             TabPageLogProviders.TabIndex = 1;
             TabPageLogProviders.Text = "Bron van logging";
             TabPageLogProviders.UseVisualStyleBackColor = true;
@@ -395,7 +399,7 @@
             TabPageAbout.Controls.Add(userControlAbout);
             TabPageAbout.Location = new System.Drawing.Point(4, 24);
             TabPageAbout.Name = "TabPageAbout";
-            TabPageAbout.Size = new System.Drawing.Size(827, 596);
+            TabPageAbout.Size = new System.Drawing.Size(827, 559);
             TabPageAbout.TabIndex = 4;
             TabPageAbout.Text = "Info";
             TabPageAbout.UseVisualStyleBackColor = true;
@@ -404,20 +408,21 @@
             // 
             userControlAbout.Dock = System.Windows.Forms.DockStyle.Fill;
             userControlAbout.Location = new System.Drawing.Point(0, 0);
+            userControlAbout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlAbout.Name = "userControlAbout";
-            userControlAbout.Size = new System.Drawing.Size(827, 596);
+            userControlAbout.Size = new System.Drawing.Size(827, 559);
             userControlAbout.TabIndex = 0;
             // 
             // FormConfiguration
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(840, 667);
+            ClientSize = new System.Drawing.Size(840, 630);
             Controls.Add(tabMain);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new System.Drawing.Size(850, 700);
+            MinimumSize = new System.Drawing.Size(848, 619);
             Name = "FormConfiguration";
             Text = "LogScraper instellingen";
             Load += FormConfiguration_Load;

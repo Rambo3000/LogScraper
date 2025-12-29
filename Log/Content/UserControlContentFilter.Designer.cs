@@ -43,6 +43,8 @@ namespace LogScraper
             BtnSelectTop = new System.Windows.Forms.Button();
             BtnSelectEnd = new System.Windows.Forms.Button();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
+            PnlUsedForCorrectScaling.SuspendLayout();
             SuspendLayout();
             // 
             // LstLogContent
@@ -52,7 +54,7 @@ namespace LogScraper
             LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             LstLogContent.FormattingEnabled = true;
             LstLogContent.IntegralHeight = false;
-            LstLogContent.Location = new System.Drawing.Point(0, 81);
+            LstLogContent.Location = new System.Drawing.Point(0, 80);
             LstLogContent.Name = "LstLogContent";
             LstLogContent.Size = new System.Drawing.Size(243, 159);
             LstLogContent.TabIndex = 0;
@@ -65,7 +67,7 @@ namespace LogScraper
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(0, 1);
+            CboLogContentType.Location = new System.Drawing.Point(0, 0);
             CboLogContentType.Name = "CboLogContentType";
             CboLogContentType.Size = new System.Drawing.Size(243, 23);
             CboLogContentType.TabIndex = 1;
@@ -75,7 +77,7 @@ namespace LogScraper
             // 
             BtnReset.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(215, 52);
+            BtnReset.Location = new System.Drawing.Point(215, 51);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(26, 25);
             BtnReset.TabIndex = 2;
@@ -86,7 +88,7 @@ namespace LogScraper
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(0, 27);
+            txtSearch.Location = new System.Drawing.Point(0, 26);
             txtSearch.Name = "txtSearch";
             txtSearch.Size = new System.Drawing.Size(243, 23);
             txtSearch.TabIndex = 7;
@@ -101,7 +103,7 @@ namespace LogScraper
             BtnFilterOnSameMetadata.Enabled = false;
             BtnFilterOnSameMetadata.Image = (System.Drawing.Image)resources.GetObject("BtnFilterOnSameMetadata.Image");
             BtnFilterOnSameMetadata.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(3, 244);
+            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(3, 243);
             BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
             BtnFilterOnSameMetadata.Size = new System.Drawing.Size(237, 25);
             BtnFilterOnSameMetadata.TabIndex = 8;
@@ -115,7 +117,7 @@ namespace LogScraper
             BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             BtnResetMetadataFilter.Image = (System.Drawing.Image)resources.GetObject("BtnResetMetadataFilter.Image");
             BtnResetMetadataFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnResetMetadataFilter.Location = new System.Drawing.Point(3, 244);
+            BtnResetMetadataFilter.Location = new System.Drawing.Point(4, 243);
             BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
             BtnResetMetadataFilter.Size = new System.Drawing.Size(237, 25);
             BtnResetMetadataFilter.TabIndex = 9;
@@ -129,7 +131,7 @@ namespace LogScraper
             // 
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(27, 52);
+            ChkShowFlowTree.Location = new System.Drawing.Point(27, 51);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 17;
@@ -142,7 +144,7 @@ namespace LogScraper
             // 
             ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(2, 52);
+            ChkShowNoTree.Location = new System.Drawing.Point(2, 51);
             ChkShowNoTree.Name = "ChkShowNoTree";
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 18;
@@ -155,7 +157,7 @@ namespace LogScraper
             // 
             BtnSelectTop.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSelectTop.Image = (System.Drawing.Image)resources.GetObject("BtnSelectTop.Image");
-            BtnSelectTop.Location = new System.Drawing.Point(162, 52);
+            BtnSelectTop.Location = new System.Drawing.Point(162, 51);
             BtnSelectTop.Name = "BtnSelectTop";
             BtnSelectTop.Size = new System.Drawing.Size(26, 25);
             BtnSelectTop.TabIndex = 21;
@@ -167,7 +169,7 @@ namespace LogScraper
             // 
             BtnSelectEnd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSelectEnd.Image = (System.Drawing.Image)resources.GetObject("BtnSelectEnd.Image");
-            BtnSelectEnd.Location = new System.Drawing.Point(187, 52);
+            BtnSelectEnd.Location = new System.Drawing.Point(187, 51);
             BtnSelectEnd.Name = "BtnSelectEnd";
             BtnSelectEnd.Size = new System.Drawing.Size(26, 25);
             BtnSelectEnd.TabIndex = 22;
@@ -175,26 +177,36 @@ namespace LogScraper
             BtnSelectEnd.UseVisualStyleBackColor = true;
             BtnSelectEnd.Click += BtnSelectEnd_Click;
             // 
+            // PnlUsedForCorrectScaling
+            // 
+            PnlUsedForCorrectScaling.Controls.Add(BtnResetMetadataFilter);
+            PnlUsedForCorrectScaling.Controls.Add(BtnSelectEnd);
+            PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
+            PnlUsedForCorrectScaling.Controls.Add(BtnSelectTop);
+            PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
+            PnlUsedForCorrectScaling.Controls.Add(ChkShowNoTree);
+            PnlUsedForCorrectScaling.Controls.Add(BtnReset);
+            PnlUsedForCorrectScaling.Controls.Add(ChkShowFlowTree);
+            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
+            PnlUsedForCorrectScaling.Controls.Add(BtnFilterOnSameMetadata);
+            PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
+            PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
+            PnlUsedForCorrectScaling.TabIndex = 23;
+            // 
             // UserControlLogContentFilter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Window;
-            Controls.Add(BtnSelectEnd);
-            Controls.Add(BtnSelectTop);
-            Controls.Add(ChkShowNoTree);
-            Controls.Add(ChkShowFlowTree);
-            Controls.Add(BtnFilterOnSameMetadata);
-            Controls.Add(txtSearch);
-            Controls.Add(BtnReset);
-            Controls.Add(CboLogContentType);
-            Controls.Add(LstLogContent);
-            Controls.Add(BtnResetMetadataFilter);
+            Controls.Add(PnlUsedForCorrectScaling);
             Name = "UserControlLogContentFilter";
             Size = new System.Drawing.Size(243, 272);
+            PnlUsedForCorrectScaling.ResumeLayout(false);
+            PnlUsedForCorrectScaling.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -210,5 +222,6 @@ namespace LogScraper
         private System.Windows.Forms.Button BtnSelectTop;
         private System.Windows.Forms.Button BtnSelectEnd;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
     }
 }

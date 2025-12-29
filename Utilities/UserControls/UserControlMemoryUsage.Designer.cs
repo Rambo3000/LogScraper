@@ -33,7 +33,7 @@
             // 
             // LblMemoryUsageValue
             // 
-            LblMemoryUsageValue.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblMemoryUsageValue.Dock = System.Windows.Forms.DockStyle.Fill;
             LblMemoryUsageValue.Location = new System.Drawing.Point(0, 0);
             LblMemoryUsageValue.Name = "LblMemoryUsageValue";
             LblMemoryUsageValue.Size = new System.Drawing.Size(69, 17);

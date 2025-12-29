@@ -39,13 +39,14 @@
             // 
             // TxtLogEntries
             // 
-            TxtLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtLogEntries.AutoCMaxHeight = 9;
             TxtLogEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            TxtLogEntries.Dock = System.Windows.Forms.DockStyle.Fill;
             TxtLogEntries.Location = new System.Drawing.Point(0, 0);
+            TxtLogEntries.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             TxtLogEntries.Name = "TxtLogEntries";
             TxtLogEntries.ReadOnly = true;
-            TxtLogEntries.Size = new System.Drawing.Size(712, 401);
+            TxtLogEntries.Size = new System.Drawing.Size(1017, 672);
             TxtLogEntries.TabIndents = true;
             TxtLogEntries.TabIndex = 42;
             TxtLogEntries.SizeChanged += TxtLogEntries_SizeChanged;
@@ -58,9 +59,10 @@
             ChkShowNoTree.CheckState = System.Windows.Forms.CheckState.Checked;
             ChkShowNoTree.Enabled = false;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(111, 2);
+            ChkShowNoTree.Location = new System.Drawing.Point(159, 3);
+            ChkShowNoTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             ChkShowNoTree.Name = "ChkShowNoTree";
-            ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
+            ChkShowNoTree.Size = new System.Drawing.Size(36, 42);
             ChkShowNoTree.TabIndex = 44;
             ChkShowNoTree.Tag = "asd";
             ChkShowNoTree.UseVisualStyleBackColor = true;
@@ -71,9 +73,10 @@
             ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(136, 2);
+            ChkShowFlowTree.Location = new System.Drawing.Point(194, 3);
+            ChkShowFlowTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
-            ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
+            ChkShowFlowTree.Size = new System.Drawing.Size(36, 42);
             ChkShowFlowTree.TabIndex = 43;
             ChkShowFlowTree.Tag = "asd";
             ChkShowFlowTree.UseVisualStyleBackColor = true;
@@ -84,9 +87,10 @@
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(4, 3);
+            CboLogContentType.Location = new System.Drawing.Point(6, 5);
+            CboLogContentType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(105, 23);
+            CboLogContentType.Size = new System.Drawing.Size(148, 33);
             CboLogContentType.TabIndex = 45;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
@@ -97,19 +101,21 @@
             PnlViewMode.Controls.Add(CboLogContentType);
             PnlViewMode.Controls.Add(ChkShowFlowTree);
             PnlViewMode.Controls.Add(ChkShowNoTree);
-            PnlViewMode.Location = new System.Drawing.Point(546, 3);
+            PnlViewMode.Location = new System.Drawing.Point(780, 5);
+            PnlViewMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             PnlViewMode.Name = "PnlViewMode";
-            PnlViewMode.Size = new System.Drawing.Size(163, 31);
+            PnlViewMode.Size = new System.Drawing.Size(233, 52);
             PnlViewMode.TabIndex = 46;
             // 
             // UserControlLogEntriesTextBox
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlViewMode);
             Controls.Add(TxtLogEntries);
+            Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             Name = "UserControlLogEntriesTextBox";
-            Size = new System.Drawing.Size(712, 403);
+            Size = new System.Drawing.Size(1017, 672);
             PnlViewMode.ResumeLayout(false);
             ResumeLayout(false);
         }

@@ -29,21 +29,17 @@ Write-Host "----- Publishing -----"
 dotnet publish -r win-x64 -c Release --nologo --self-contained
 
 Write-Host "----- Moving configuration file -----" 
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperConfig.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperConfig.json" -Force
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperLogLayouts.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogLayouts.json" -Force
-Move-Item -Path ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration\JsonFiles\LogScraperLogProviders.json" -Destination ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogProviders.json" -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Configuration" -Force -Recurse
+Move-Item -Path ".\bin\Release\net10.0-windows\win-x64\publish\Configuration\JsonFiles\LogScraperConfig.json" -Destination ".\bin\Release\net10.0-windows\win-x64\publish\LogScraperConfig.json" -Force
+Move-Item -Path ".\bin\Release\net10.0-windows\win-x64\publish\Configuration\JsonFiles\LogScraperLogLayouts.json" -Destination ".\bin\Release\net10.0-windows\win-x64\publish\LogScraperLogLayouts.json" -Force
+Move-Item -Path ".\bin\Release\net10.0-windows\win-x64\publish\Configuration\JsonFiles\LogScraperLogProviders.json" -Destination ".\bin\Release\net10.0-windows\win-x64\publish\LogScraperLogProviders.json" -Force
+Remove-item ".\bin\Release\net10.0-windows\win-x64\publish\Configuration" -Force -Recurse
 
 Write-Host "----- Cleaning publish folder -----" 
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\Stubs" -Recurse -Force
-Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraper.pdb" -Force
-#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\D3DCompiler_47_cor3.dll" -Force
-#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\PenImc_cor3.dll" -Force
-#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\vcruntime140_cor3.dll" -Force
-#Remove-item ".\bin\Release\net9.0-windows7.0\win-x64\publish\wpfgfx_cor3.dll" -Force
+Remove-item ".\bin\Release\net10.0-windows\win-x64\publish\Stubs" -Recurse -Force
+Remove-item ".\bin\Release\net10.0-windows\win-x64\publish\LogScraper.pdb" -Force
 
 Write-Host "----- Packing -----" 
-$source = ".\bin\Release\net9.0-windows7.0\win-x64\publish\"
+$source = ".\bin\Release\net10.0-windows\win-x64\publish\"
 If(Test-path $destination) {Remove-item $destination}
 Add-Type -assembly "system.io.compression.filesystem"
 [io.compression.zipfile]::CreateFromDirectory($Source, $destination)

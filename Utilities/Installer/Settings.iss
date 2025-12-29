@@ -28,16 +28,16 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Main executable from publish folder
-Source: "..\..\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraper.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\bin\Release\net10.0-windows\win-x64\publish\LogScraper.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Supporting runtime files (only include the ones you need; example kept minimal)
 ; Copy DLLs or other files if required, adjust as needed
-; Source: "..\..\bin\Release\net9.0-windows7.0\win-x64\publish\SomeDependency.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "..\..\bin\Release\net10.0-windows\win-x64\publish\SomeDependency.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ; JSON config files: only install if they do not already exist, and never remove on uninstall
-Source: "..\..\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperConfig.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
-Source: "..\..\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogLayouts.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
-Source: "..\..\bin\Release\net9.0-windows7.0\win-x64\publish\LogScraperLogProviders.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
+Source: "..\..\bin\Release\net10.0-windows\win-x64\publish\LogScraperConfig.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
+Source: "..\..\bin\Release\net10.0-windows\win-x64\publish\LogScraperLogLayouts.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
+Source: "..\..\bin\Release\net10.0-windows\win-x64\publish\LogScraperLogProviders.json"; DestDir: "{app}"; Flags: onlyifdoesntexist uninsneveruninstall ignoreversion
 
 [Icons]
 Name: "{group}\LogScraper"; Filename: "{app}\LogScraper.exe"
