@@ -19,7 +19,7 @@ namespace LogScraper
         public UserControlMemoryUsage()
         {
             InitializeComponent();
-
+            UpdateMemoryUsage(null, null);
             // Set a tooltip for the memory usage label to provide additional context to the user.
             new ToolTip().SetToolTip(LblMemoryUsageValue, "Geheugengebruik");
         }

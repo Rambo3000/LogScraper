@@ -91,7 +91,6 @@
             tabKubernetes.Controls.Add(userControlKubernetesConfig);
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
-            tabKubernetes.Padding = new System.Windows.Forms.Padding(3);
             tabKubernetes.Size = new System.Drawing.Size(813, 525);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
@@ -100,10 +99,10 @@
             // userControlKubernetesConfig
             // 
             userControlKubernetesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            userControlKubernetesConfig.Location = new System.Drawing.Point(3, 3);
+            userControlKubernetesConfig.Location = new System.Drawing.Point(0, 0);
             userControlKubernetesConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlKubernetesConfig.Name = "userControlKubernetesConfig";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(807, 519);
+            userControlKubernetesConfig.Size = new System.Drawing.Size(813, 525);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // tabUrl
@@ -111,7 +110,7 @@
             tabUrl.Controls.Add(userControlRuntimeConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
-            tabUrl.Size = new System.Drawing.Size(813, 562);
+            tabUrl.Size = new System.Drawing.Size(813, 525);
             tabUrl.TabIndex = 1;
             tabUrl.Text = "Directe Url";
             tabUrl.UseVisualStyleBackColor = true;
@@ -122,7 +121,7 @@
             userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
             userControlRuntimeConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlRuntimeConfig.Name = "userControlRuntimeConfig";
-            userControlRuntimeConfig.Size = new System.Drawing.Size(813, 562);
+            userControlRuntimeConfig.Size = new System.Drawing.Size(813, 525);
             userControlRuntimeConfig.TabIndex = 0;
             // 
             // tabFile
@@ -130,7 +129,7 @@
             tabFile.Controls.Add(userControlFileConfig);
             tabFile.Location = new System.Drawing.Point(4, 24);
             tabFile.Name = "tabFile";
-            tabFile.Size = new System.Drawing.Size(813, 562);
+            tabFile.Size = new System.Drawing.Size(813, 525);
             tabFile.TabIndex = 2;
             tabFile.Text = "Lokaal bestand";
             tabFile.UseVisualStyleBackColor = true;
@@ -141,7 +140,7 @@
             userControlFileConfig.Location = new System.Drawing.Point(0, 0);
             userControlFileConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlFileConfig.Name = "userControlFileConfig";
-            userControlFileConfig.Size = new System.Drawing.Size(813, 562);
+            userControlFileConfig.Size = new System.Drawing.Size(813, 525);
             userControlFileConfig.TabIndex = 0;
             // 
             // btnOk
@@ -358,10 +357,11 @@
             // 
             // userControlGenericConfig
             // 
+            userControlGenericConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             userControlGenericConfig.Location = new System.Drawing.Point(0, 0);
             userControlGenericConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlGenericConfig.Name = "userControlGenericConfig";
-            userControlGenericConfig.Size = new System.Drawing.Size(827, 358);
+            userControlGenericConfig.Size = new System.Drawing.Size(820, 358);
             userControlGenericConfig.TabIndex = 0;
             // 
             // TabPageLogLayouts

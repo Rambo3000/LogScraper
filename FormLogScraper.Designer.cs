@@ -144,7 +144,6 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Controls.Add(BtnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
@@ -158,6 +157,7 @@
             groupBox3.Controls.Add(lblLogEntriesTotalValue);
             groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
             groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
+            groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new System.Drawing.Size(257, 147);
@@ -170,9 +170,9 @@
             // 
             userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(206, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(188, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
-            userControlMemoryUsage1.Size = new System.Drawing.Size(46, 17);
+            userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
             userControlMemoryUsage1.TabIndex = 24;
             // 
             // BtnConfig

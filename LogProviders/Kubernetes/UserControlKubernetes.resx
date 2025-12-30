@@ -117,4 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnKubernetesRefresh.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAFkSURBVDhPbdOxahZBFAXg7yjGEIggCIJokToqKAhiJ1jbCQGbgIVPIIKNjQSfQFAQQRBbi9j5
+        BlaKnT6BhYoWIUWI7Ozs7O7//wOzM/fec8+ce2eWFSOJLDrrKP4hOK7L8LmnWFvkfLGyhO8dzR2bkbt4
+        jHvkjGSv2j2ykFQ9jTBOSJ7gF47LjONwQP5FfjSC6doTlM9H0iW8CnewiZPkZUckOcLlljutJLLTJePh
+        igZ8Js/JxUH1GBphX8ibTs0CZj2c7g8s5V7BtVlmYdbVmuvFniuohIPmfCUv5rC4XZu2sZw4FVN278SH
+        xSpuSFd/Lg1XMkheZInsh9c1vY218FfyrKKmy3R3Dgdht3lGkD1ySK7O1DWjvO/3+C7WGqJ0trfWxTf8
+        xn2carG4iU/4I26N9NPZs50Vb0P3YA77+/ezNnifbLUezeRNC+mDF/AIT/EgbLe+TA8cT1/FVX+Y2TUu
+        j/9tzi7cQRbtxgAAAABJRU5ErkJggg==
+</value>
+  </data>
 </root>

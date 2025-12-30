@@ -54,12 +54,14 @@ namespace LogScraper.Configuration
             pictureBox16 = new System.Windows.Forms.PictureBox();
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
+            PnlUsedForScalingCompatiblity.SuspendLayout();
             SuspendLayout();
             // 
             // LblDefaultLogProviderType
@@ -209,6 +211,7 @@ namespace LogScraper.Configuration
             // 
             // GrpGeneralSettings
             // 
+            GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             GrpGeneralSettings.Controls.Add(pictureBox3);
             GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
             GrpGeneralSettings.Controls.Add(pictureBox2);
@@ -223,7 +226,6 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.Controls.Add(ChkExportToFile);
             GrpGeneralSettings.Controls.Add(LblTimeout);
             GrpGeneralSettings.Controls.Add(TxtTimeOut);
-            GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
             GrpGeneralSettings.Size = new System.Drawing.Size(848, 326);
@@ -233,8 +235,9 @@ namespace LogScraper.Configuration
             // 
             // pictureBox3
             // 
+            pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox3.Image = Properties.Resources.help;
-            pictureBox3.Location = new System.Drawing.Point(427, 128);
+            pictureBox3.Location = new System.Drawing.Point(826, 128);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new System.Drawing.Size(16, 16);
             pictureBox3.TabIndex = 40;
@@ -253,8 +256,9 @@ namespace LogScraper.Configuration
             // 
             // pictureBox2
             // 
+            pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox2.Image = Properties.Resources.help;
-            pictureBox2.Location = new System.Drawing.Point(253, 153);
+            pictureBox2.Location = new System.Drawing.Point(826, 153);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new System.Drawing.Size(16, 16);
             pictureBox2.TabIndex = 38;
@@ -263,8 +267,9 @@ namespace LogScraper.Configuration
             // 
             // pictureBox1
             // 
+            pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(292, 103);
+            pictureBox1.Location = new System.Drawing.Point(826, 103);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 37;
@@ -273,8 +278,9 @@ namespace LogScraper.Configuration
             // 
             // pictureBox16
             // 
+            pictureBox16.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox16.Image = Properties.Resources.help;
-            pictureBox16.Location = new System.Drawing.Point(293, 79);
+            pictureBox16.Location = new System.Drawing.Point(826, 79);
             pictureBox16.Name = "pictureBox16";
             pictureBox16.Size = new System.Drawing.Size(16, 16);
             pictureBox16.TabIndex = 36;
@@ -291,11 +297,20 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters.Text = "Toon error regels altijd in de begin en eind filters";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
             // 
+            // PnlUsedForScalingCompatiblity
+            // 
+            PnlUsedForScalingCompatiblity.Controls.Add(GrpGeneralSettings);
+            PnlUsedForScalingCompatiblity.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForScalingCompatiblity.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForScalingCompatiblity.Name = "PnlUsedForScalingCompatiblity";
+            PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 326);
+            PnlUsedForScalingCompatiblity.TabIndex = 9;
+            // 
             // UserControlGenericConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(GrpGeneralSettings);
+            Controls.Add(PnlUsedForScalingCompatiblity);
             Name = "UserControlGenericConfig";
             Size = new System.Drawing.Size(848, 326);
             GrpExportSettings.ResumeLayout(false);
@@ -306,6 +321,7 @@ namespace LogScraper.Configuration
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
+            PnlUsedForScalingCompatiblity.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -333,5 +349,6 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.Button BtnBrowseEditor;
         private System.Windows.Forms.CheckBox ChkAutoToggleHierarchy;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Panel PnlUsedForScalingCompatiblity;
     }
 }

@@ -532,12 +532,21 @@ namespace LogScraper
 
         private static readonly Pen PenForDrawingLines = new(Color.Gray) { DashStyle = DashStyle.Dot };
 
+        private int TimeDescriptionFixedWidth = -1;
         private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g, bool isSelected, bool isOutOfScope)
         {
             // Indentation
             const int indentPerLevel = 10;
             int timeX = e.Bounds.Left;
-            int treeX = timeX + 56; // fixed width for TimeDescription
+            
+            if ( TimeDescriptionFixedWidth == -1)
+            {
+                // Calculate the fixed width for TimeDescription based on the widest possible time description
+                // This is required when the application is scaled to non-100%
+                TimeDescriptionFixedWidth = TextRenderer.MeasureText(g, "00:00: 00 ", LstLogContent.Font).Width;
+            }
+
+            int treeX = timeX + TimeDescriptionFixedWidth; // fixed width for TimeDescription
             int treeNodeDepth = item.FlowTreeNode == null ? 0 : item.FlowTreeNode.Depth;
             int indentPixels = treeNodeDepth * indentPerLevel; // tweak as needed
             int textX = treeX + indentPixels - indentPerLevel / 2;

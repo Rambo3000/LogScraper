@@ -69,12 +69,14 @@ namespace LogScraper.LogProviders.Kubernetes
             CboKubernetesTimespan = new System.Windows.Forms.ComboBox();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
+            PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
             GrpClusters.SuspendLayout();
             GrpCluster.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             grpNamespace.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            PnlUsedForScalingCompatibility.SuspendLayout();
             SuspendLayout();
             // 
             // LstClusters
@@ -262,12 +264,12 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             // ChkFilterPodNames
             // 
-            ChkFilterPodNames.AutoSize = true;
             ChkFilterPodNames.Location = new System.Drawing.Point(12, 110);
             ChkFilterPodNames.Name = "ChkFilterPodNames";
-            ChkFilterPodNames.Size = new System.Drawing.Size(131, 19);
+            ChkFilterPodNames.Size = new System.Drawing.Size(215, 19);
             ChkFilterPodNames.TabIndex = 17;
             ChkFilterPodNames.Text = "Podnamen inkorten";
+            ChkFilterPodNames.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             ChkFilterPodNames.UseVisualStyleBackColor = true;
             ChkFilterPodNames.CheckedChanged += ChkFilterPodNames_CheckedChanged;
             // 
@@ -450,7 +452,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             CboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogLayout.FormattingEnabled = true;
-            CboLogLayout.Location = new System.Drawing.Point(134, 5);
+            CboLogLayout.Location = new System.Drawing.Point(140, 5);
             CboLogLayout.Name = "CboLogLayout";
             CboLogLayout.Size = new System.Drawing.Size(187, 23);
             CboLogLayout.TabIndex = 9;
@@ -477,7 +479,7 @@ namespace LogScraper.LogProviders.Kubernetes
             // 
             CboKubernetesTimespan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboKubernetesTimespan.FormattingEnabled = true;
-            CboKubernetesTimespan.Location = new System.Drawing.Point(134, 34);
+            CboKubernetesTimespan.Location = new System.Drawing.Point(140, 34);
             CboKubernetesTimespan.Name = "CboKubernetesTimespan";
             CboKubernetesTimespan.Size = new System.Drawing.Size(187, 23);
             CboKubernetesTimespan.TabIndex = 32;
@@ -485,23 +487,32 @@ namespace LogScraper.LogProviders.Kubernetes
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(327, 37);
+            pictureBox1.Location = new System.Drawing.Point(333, 37);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 34;
             pictureBox1.TabStop = false;
             toolTip1.SetToolTip(pictureBox1, "De tijdspanne limiteerd het downloaden van het log tot de aangegeven periode. DIt is handig wanneer er een groot logbestand aanwezig is en alleen recente data opgehaald hoeft te worden.");
             // 
+            // PnlUsedForScalingCompatibility
+            // 
+            PnlUsedForScalingCompatibility.Controls.Add(pictureBox1);
+            PnlUsedForScalingCompatibility.Controls.Add(lblLogLayout);
+            PnlUsedForScalingCompatibility.Controls.Add(label1);
+            PnlUsedForScalingCompatibility.Controls.Add(GrpClusters);
+            PnlUsedForScalingCompatibility.Controls.Add(CboKubernetesTimespan);
+            PnlUsedForScalingCompatibility.Controls.Add(CboLogLayout);
+            PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
+            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(782, 514);
+            PnlUsedForScalingCompatibility.TabIndex = 35;
+            // 
             // UserControlKubernetesConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(pictureBox1);
-            Controls.Add(label1);
-            Controls.Add(CboKubernetesTimespan);
-            Controls.Add(lblLogLayout);
-            Controls.Add(CboLogLayout);
-            Controls.Add(GrpClusters);
+            Controls.Add(PnlUsedForScalingCompatibility);
             Name = "UserControlKubernetesConfig";
             Size = new System.Drawing.Size(782, 514);
             GrpClusters.ResumeLayout(false);
@@ -512,8 +523,9 @@ namespace LogScraper.LogProviders.Kubernetes
             grpNamespace.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            PnlUsedForScalingCompatibility.ResumeLayout(false);
+            PnlUsedForScalingCompatibility.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -555,5 +567,6 @@ namespace LogScraper.LogProviders.Kubernetes
         private System.Windows.Forms.CheckBox ChkFilterPodNames;
         private ValidatedTextBox TxtFilterPodNames;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlKubernetesLogProvider));
             cboKubernetesPod = new System.Windows.Forms.ComboBox();
             cboKubernetesNamespace = new System.Windows.Forms.ComboBox();
             cboKubernetesCluster = new System.Windows.Forms.ComboBox();
@@ -100,7 +101,7 @@
             // btnKubernetesRefresh
             // 
             btnKubernetesRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnKubernetesRefresh.Image = Properties.Resources.reload;
+            btnKubernetesRefresh.Image = (System.Drawing.Image)resources.GetObject("btnKubernetesRefresh.Image");
             btnKubernetesRefresh.Location = new System.Drawing.Point(336, 61);
             btnKubernetesRefresh.Name = "btnKubernetesRefresh";
             btnKubernetesRefresh.Size = new System.Drawing.Size(23, 24);

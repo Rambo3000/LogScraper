@@ -31,7 +31,7 @@ namespace LogScraper
 
 
             Font font = CheckBoxItem.Font;
-            int maxWidth = Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 20;
+            int maxWidth = ClientSize.Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 20;
             CheckBoxItem.Width = maxWidth + 20;
 
             if (string.IsNullOrEmpty(originalText))
@@ -96,8 +96,10 @@ namespace LogScraper
                 // prevent flickering
                 if (countValue == value) return;
 
+                LabelCount.Anchor = AnchorStyles.None;
                 LabelCount.Text = value.ToString("N0");
-                LabelCount.Left = Width - LabelCount.Width + 4;
+                LabelCount.Left = PnlUsedForScalingCompatibility.ClientSize.Width - LabelCount.Width + 4;
+                LabelCount.Anchor = AnchorStyles.Right | AnchorStyles.Top;
                 ForeColor = value == 0 ? Color.Gray : Color.Black;
                 countValue = value;
             }
