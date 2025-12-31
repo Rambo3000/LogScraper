@@ -1,8 +1,9 @@
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace LogScraper
 {
@@ -16,8 +17,39 @@ namespace LogScraper
         {
             InitializeComponent();
             CheckBoxItem.Checked = isChecked;
-            Count = count;
             Description = description;
+            Count = count;
+        }
+        /// <summary>
+        ///  Override to handle windows scaling correctly
+        /// </summary>
+        protected override void OnFontChanged(EventArgs eventArgs)
+        {
+            base.OnFontChanged(eventArgs);
+            UpdateHeightFromFont();
+        }
+
+        /// <summary>
+        ///  Override to handle windows scaling correctly
+        /// </summary>
+        protected override void OnLayout(LayoutEventArgs layoutEventArgs)
+        {
+            base.OnLayout(layoutEventArgs);
+            UpdateCount(Count);
+            AdjustCheckBoxText();
+        }
+        
+        void UpdateHeightFromFont()
+        {
+            int textHeight = LabelCount.PreferredHeight;
+
+            int desiredHeight = textHeight + GetExtraVerticalPadding();
+
+            if (Height != desiredHeight)
+            {
+                CheckBoxItem.Height = desiredHeight;
+                Height = desiredHeight;
+            }
         }
 
         private void CheckBoxItem_CheckedChanged(object sender, EventArgs e)
@@ -27,41 +59,18 @@ namespace LogScraper
 
         private void AdjustCheckBoxText()
         {
-            string originalText = DescriptionOriginalValue;
+            CheckBoxItem.AutoSize = false;
+            CheckBoxItem.AutoEllipsis = true;
 
+            int availableWidth = ClientSize.Width - LabelCount.PreferredWidth;
 
-            Font font = CheckBoxItem.Font;
-            int maxWidth = ClientSize.Width - TextRenderer.MeasureText(LabelCount.Text, LabelCount.Font).Width - 20;
-            CheckBoxItem.Width = maxWidth + 20;
-
-            if (string.IsNullOrEmpty(originalText))
+            if (availableWidth < 10)
             {
-                CheckBoxItem.Text = string.Empty;
-                return;
+                availableWidth = 50;
             }
 
-            // Measure the original text size
-            Size textSize = TextRenderer.MeasureText(originalText, font);
-
-            if (textSize.Width <= maxWidth)
-            {
-                CheckBoxItem.Text = originalText; // Text fits, no truncation needed
-                return;
-            }
-
-            // Truncate text by reducing characters until it fits
-            for (int i = originalText.Length - 1; i > 0; i--)
-            {
-                string testText = string.Concat(originalText.AsSpan(0, i), "...");
-                if (TextRenderer.MeasureText(testText, font).Width <= maxWidth)
-                {
-                    CheckBoxItem.Text = testText;
-                    return;
-                }
-            }
-
-            // If even "..." is too wide, just show "..."
-            CheckBoxItem.Text = "...";
+            CheckBoxItem.Width = availableWidth;
+            CheckBoxItem.Text = DescriptionOriginalValue ?? string.Empty;
         }
 
         private void LogMetadataFilterItem_SizeChanged(object sender, EventArgs e)
@@ -80,10 +89,9 @@ namespace LogScraper
         public string Description
         {
             get => DescriptionOriginalValue;
-            set
+            private set
             {
                 DescriptionOriginalValue = value;
-                AdjustCheckBoxText();
             }
         }
 
@@ -92,18 +100,38 @@ namespace LogScraper
         public int Count
         {
             get => countValue;
-            set {
+            set
+            {
                 // prevent flickering
                 if (countValue == value) return;
 
-                LabelCount.Anchor = AnchorStyles.None;
-                LabelCount.Text = value.ToString("N0");
-                LabelCount.Left = PnlUsedForScalingCompatibility.ClientSize.Width - LabelCount.Width + 4;
-                LabelCount.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-                ForeColor = value == 0 ? Color.Gray : Color.Black;
+                UpdateCount(value);
+                AdjustCheckBoxText();
                 countValue = value;
             }
         }
+
+        public void UpdateCount(int newCountValue)
+        {
+            LabelCount.Anchor = AnchorStyles.None;
+            LabelCount.Text = newCountValue.ToString("N0");
+            LabelCount.Left = ClientSize.Width - LabelCount.PreferredWidth;
+            LabelCount.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            ForeColor = newCountValue == 0 ? Color.Gray : Color.Black;
+        }
+        int GetExtraVerticalPadding()
+        {
+            if (DeviceDpi > 96)
+                return ScaleByDpi(6);   // high DPI needs more slack
+
+            return ScaleByDpi(2);       // normal DPI
+        }
+
+        int ScaleByDpi(int logicalPixels)
+        {
+            return (int)Math.Ceiling(logicalPixels * DeviceDpi / 96f);
+        }
+
     }
 }
 

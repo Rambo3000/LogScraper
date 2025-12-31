@@ -26,8 +26,27 @@ namespace LogScraper
             LblLogFilterDescription.Text = description;
         }
 
-        private bool UpdateListViewInProgres;
+        /// <summary>
+        ///  Override to handle windows scaling correctly
+        /// </summary>
+        protected override void OnLayout(LayoutEventArgs layoutEventArgs)
+        {
+            base.OnLayout(layoutEventArgs);
+            UpdateHeightFromFont();
+        }
 
+        private void UpdateHeightFromFont()
+        {
+            int textHeight = TextRenderer.MeasureText(LblLogFilterDescription.Text, LblLogFilterDescription.Font).Height;
+            int desiredTopPosition = textHeight + 1;
+
+            if (FlowLayoutPanelItems.Top != desiredTopPosition)
+            {
+                FlowLayoutPanelItems.Top = desiredTopPosition;
+            }
+        }
+
+        private bool UpdateListViewInProgres;
         public void UpdateListView(LogMetadataPropertyAndValues logMetadataPropertyAndValuesNew)
         {
 
