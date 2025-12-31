@@ -1,9 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
 
 namespace LogScraper
 {
@@ -43,7 +41,7 @@ namespace LogScraper
         {
             int textHeight = LabelCount.PreferredHeight;
 
-            int desiredHeight = textHeight + GetExtraVerticalPadding();
+            int desiredHeight = textHeight + ScaleByDpi(2);
 
             if (Height != desiredHeight)
             {
@@ -107,6 +105,8 @@ namespace LogScraper
 
                 UpdateCount(value);
                 AdjustCheckBoxText();
+                //Recalculate height also here for Windows 10 beacuse of some weird DPI scaling issues
+                UpdateHeightFromFont();
                 countValue = value;
             }
         }
@@ -119,15 +119,8 @@ namespace LogScraper
             LabelCount.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             ForeColor = newCountValue == 0 ? Color.Gray : Color.Black;
         }
-        int GetExtraVerticalPadding()
-        {
-            if (DeviceDpi > 96)
-                return ScaleByDpi(6);   // high DPI needs more slack
 
-            return ScaleByDpi(2);       // normal DPI
-        }
-
-        int ScaleByDpi(int logicalPixels)
+        private int ScaleByDpi(int logicalPixels)
         {
             return (int)Math.Ceiling(logicalPixels * DeviceDpi / 96f);
         }
