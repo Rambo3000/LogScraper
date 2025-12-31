@@ -120,9 +120,6 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="pictureBox7.ToolTip" xml:space="preserve">
     <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
 - de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
@@ -141,41 +138,6 @@ Indien de Regex optie is aangevinkt wordt naar de metadata tekst gezocht die aan
 
 Gebruik de volgende regex om op meerdere spaties te zoeken vanaf de timestamp, bijvoorbeeld 8:
 (?:\s+\S+){8}</value>
-  </data>
-  <data name="pictureBox2.ToolTip" xml:space="preserve">
-    <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.
-
-Specifier	Voorbeeld	Betekenis
-yyyy	2025	Volledig jaartal (4 cijfers)
-yy	25	Jaar in 2 cijfers
-MM	04	Maand (met voorloopnul)
-M	4	Maand (zonder voorloopnul)
-dd	14	Dag van de maand (met nul)
-d	14	Dag van de maand (zonder nul)
-dddd	maandag	Volledige naam van de dag
-ddd	ma	Afgekorte dagnaam
-
-HH	09	Uur (24-uurs, met nul)
-H	9	Uur (24-uurs, zonder nul)
-hh	09	Uur (12-uurs, met nul)
-h	9	Uur (12-uurs, zonder nul)
-mm	07	Minuten (met nul)
-m	7	Minuten (zonder nul)
-ss	04	Seconden (met nul)
-s	4	Seconden (zonder nul)
-tt	AM / PM	Voormiddag / namiddag
-
-fff	123	Milliseconden
-zz	+02	Tijdzone offset in uren
-zzz	+02:00	Tijdzone offset met minuten
-
-Voorbeelden
-yyyy-MM-dd HH:mm:ss	2025-04-14 13:45:30	Volledige datum + tijd (24-uurs)
-yyyy-MM-ddTHH:mm:ss	2025-04-14T13:45:30	ISO 8601 notatie (bijv. voor JSON)
-ddd dd MMM yyyy	ma 14 apr 2025	Leesbare datum, afgekorte dag/maand
-dddd dd MMMM yyyy	maandag 14 april 2025	Volledig uitgeschreven datum
-yyyy-MM-dd HH:mm:ss.fff	2025-04-14 13:45:30.123	Inclusief milliseconden
-yyyy-MM-dd HH:mm:ss zzz	2025-04-14 13:45:30 +02:00	Met tijdzone offset</value>
   </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
     <value>Metadata zijn gegevens die bij elke logregel aanwezig zijn en waarop gefilterd kan worden. 
@@ -219,5 +181,40 @@ Dan kan de tekst voor de waarde zijn: API call:
 De tekst na de waarde mag leeg blijven.
 
 Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
+  </data>
+  <data name="pictureBox2.ToolTip" xml:space="preserve">
+    <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.
+
+Specifier	Voorbeeld	Betekenis
+yyyy	2025	Volledig jaartal (4 cijfers)
+yy	25	Jaar in 2 cijfers
+MM	04	Maand (met voorloopnul)
+M	4	Maand (zonder voorloopnul)
+dd	14	Dag van de maand (met nul)
+d	14	Dag van de maand (zonder nul)
+dddd	maandag	Volledige naam van de dag
+ddd	ma	Afgekorte dagnaam
+
+HH	09	Uur (24-uurs, met nul)
+H	9	Uur (24-uurs, zonder nul)
+hh	09	Uur (12-uurs, met nul)
+h	9	Uur (12-uurs, zonder nul)
+mm	07	Minuten (met nul)
+m	7	Minuten (zonder nul)
+ss	04	Seconden (met nul)
+s	4	Seconden (zonder nul)
+tt	AM / PM	Voormiddag / namiddag
+
+fff	123	Milliseconden
+zz	+02	Tijdzone offset in uren
+zzz	+02:00	Tijdzone offset met minuten
+
+Voorbeelden
+yyyy-MM-dd HH:mm:ss	2025-04-14 13:45:30	Volledige datum + tijd (24-uurs)
+yyyy-MM-ddTHH:mm:ss	2025-04-14T13:45:30	ISO 8601 notatie (bijv. voor JSON)
+ddd dd MMM yyyy	ma 14 apr 2025	Leesbare datum, afgekorte dag/maand
+dddd dd MMMM yyyy	maandag 14 april 2025	Volledig uitgeschreven datum
+yyyy-MM-dd HH:mm:ss.fff	2025-04-14 13:45:30.123	Inclusief milliseconden
+yyyy-MM-dd HH:mm:ss zzz	2025-04-14 13:45:30 +02:00	Met tijdzone offset</value>
   </data>
 </root>

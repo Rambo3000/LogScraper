@@ -44,14 +44,15 @@ namespace LogScraper.Log
             pictureBox7 = new System.Windows.Forms.PictureBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
-            ChkMetadataEndRegex = new System.Windows.Forms.CheckBox();
-            pictureBox11 = new System.Windows.Forms.PictureBox();
+            PnlUsedForScalingCapability = new System.Windows.Forms.Panel();
             groupBox2 = new System.Windows.Forms.GroupBox();
             pictureBox16 = new System.Windows.Forms.PictureBox();
             TxtTestResponse = new System.Windows.Forms.RichTextBox();
             label3 = new System.Windows.Forms.Label();
             TxtExampleLogEntry = new ValidatedTextBox();
             BtnTest = new System.Windows.Forms.Button();
+            ChkMetadataEndRegex = new System.Windows.Forms.CheckBox();
+            pictureBox11 = new System.Windows.Forms.PictureBox();
             label1 = new System.Windows.Forms.Label();
             TxtMetadataEnd = new ValidatedTextBox();
             LblDescription = new System.Windows.Forms.Label();
@@ -114,9 +115,10 @@ namespace LogScraper.Log
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox11).BeginInit();
+            PnlUsedForScalingCapability.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox11).BeginInit();
             TabControl.SuspendLayout();
             tabPageMetadata.SuspendLayout();
             grpMetadata.SuspendLayout();
@@ -278,9 +280,9 @@ namespace LogScraper.Log
             // 
             // splitContainer1.Panel1
             // 
+            splitContainer1.Panel1.Controls.Add(PnlUsedForScalingCapability);
             splitContainer1.Panel1.Controls.Add(ChkMetadataEndRegex);
             splitContainer1.Panel1.Controls.Add(pictureBox11);
-            splitContainer1.Panel1.Controls.Add(groupBox2);
             splitContainer1.Panel1.Controls.Add(label1);
             splitContainer1.Panel1.Controls.Add(TxtMetadataEnd);
             splitContainer1.Panel1.Controls.Add(TxtDescription);
@@ -295,37 +297,27 @@ namespace LogScraper.Log
             splitContainer1.SplitterDistance = 148;
             splitContainer1.TabIndex = 33;
             // 
-            // ChkMetadataEndRegex
+            // PnlUsedForScalingCapability
             // 
-            ChkMetadataEndRegex.Location = new System.Drawing.Point(227, 114);
-            ChkMetadataEndRegex.Name = "ChkMetadataEndRegex";
-            ChkMetadataEndRegex.Size = new System.Drawing.Size(75, 21);
-            ChkMetadataEndRegex.TabIndex = 36;
-            ChkMetadataEndRegex.Text = "Regex";
-            ChkMetadataEndRegex.UseVisualStyleBackColor = true;
-            ChkMetadataEndRegex.CheckedChanged += ChkMetadataEndRegex_CheckedChanged;
-            // 
-            // pictureBox11
-            // 
-            pictureBox11.Image = Properties.Resources.help;
-            pictureBox11.Location = new System.Drawing.Point(205, 95);
-            pictureBox11.Name = "pictureBox11";
-            pictureBox11.Size = new System.Drawing.Size(16, 16);
-            pictureBox11.TabIndex = 35;
-            pictureBox11.TabStop = false;
-            toolTip.SetToolTip(pictureBox11, resources.GetString("pictureBox11.ToolTip"));
+            PnlUsedForScalingCapability.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlUsedForScalingCapability.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            PnlUsedForScalingCapability.Controls.Add(groupBox2);
+            PnlUsedForScalingCapability.Location = new System.Drawing.Point(290, 3);
+            PnlUsedForScalingCapability.Name = "PnlUsedForScalingCapability";
+            PnlUsedForScalingCapability.Size = new System.Drawing.Size(414, 142);
+            PnlUsedForScalingCapability.TabIndex = 37;
             // 
             // groupBox2
             // 
-            groupBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox2.Controls.Add(pictureBox16);
             groupBox2.Controls.Add(TxtTestResponse);
             groupBox2.Controls.Add(label3);
             groupBox2.Controls.Add(TxtExampleLogEntry);
             groupBox2.Controls.Add(BtnTest);
-            groupBox2.Location = new System.Drawing.Point(308, 6);
+            groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            groupBox2.Location = new System.Drawing.Point(0, 0);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(394, 139);
+            groupBox2.Size = new System.Drawing.Size(414, 142);
             groupBox2.TabIndex = 32;
             groupBox2.TabStop = false;
             groupBox2.Text = "Test de layout";
@@ -334,7 +326,7 @@ namespace LogScraper.Log
             // 
             pictureBox16.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox16.Image = Properties.Resources.help;
-            pictureBox16.Location = new System.Drawing.Point(372, -1);
+            pictureBox16.Location = new System.Drawing.Point(392, -1);
             pictureBox16.Name = "pictureBox16";
             pictureBox16.Size = new System.Drawing.Size(16, 16);
             pictureBox16.TabIndex = 35;
@@ -348,7 +340,7 @@ namespace LogScraper.Log
             TxtTestResponse.Location = new System.Drawing.Point(6, 43);
             TxtTestResponse.Name = "TxtTestResponse";
             TxtTestResponse.ReadOnly = true;
-            TxtTestResponse.Size = new System.Drawing.Size(382, 90);
+            TxtTestResponse.Size = new System.Drawing.Size(402, 93);
             TxtTestResponse.TabIndex = 33;
             TxtTestResponse.Text = "";
             // 
@@ -370,20 +362,40 @@ namespace LogScraper.Log
             TxtExampleLogEntry.IsWhiteSpaceAllowed = false;
             TxtExampleLogEntry.Location = new System.Drawing.Point(68, 15);
             TxtExampleLogEntry.Name = "TxtExampleLogEntry";
-            TxtExampleLogEntry.Size = new System.Drawing.Size(266, 23);
+            TxtExampleLogEntry.Size = new System.Drawing.Size(286, 23);
             TxtExampleLogEntry.TabIndex = 19;
             TxtExampleLogEntry.TextChanged += TxtMetadataDescription_TextChanged;
             // 
             // BtnTest
             // 
             BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnTest.Location = new System.Drawing.Point(340, 18);
+            BtnTest.Location = new System.Drawing.Point(356, 15);
             BtnTest.Name = "BtnTest";
-            BtnTest.Size = new System.Drawing.Size(48, 22);
+            BtnTest.Size = new System.Drawing.Size(48, 23);
             BtnTest.TabIndex = 30;
             BtnTest.Text = "Test";
             BtnTest.UseVisualStyleBackColor = true;
             BtnTest.Click += BtnTest_Click;
+            // 
+            // ChkMetadataEndRegex
+            // 
+            ChkMetadataEndRegex.Location = new System.Drawing.Point(227, 114);
+            ChkMetadataEndRegex.Name = "ChkMetadataEndRegex";
+            ChkMetadataEndRegex.Size = new System.Drawing.Size(60, 21);
+            ChkMetadataEndRegex.TabIndex = 36;
+            ChkMetadataEndRegex.Text = "Regex";
+            ChkMetadataEndRegex.UseVisualStyleBackColor = true;
+            ChkMetadataEndRegex.CheckedChanged += ChkMetadataEndRegex_CheckedChanged;
+            // 
+            // pictureBox11
+            // 
+            pictureBox11.Image = Properties.Resources.help;
+            pictureBox11.Location = new System.Drawing.Point(205, 95);
+            pictureBox11.Name = "pictureBox11";
+            pictureBox11.Size = new System.Drawing.Size(16, 16);
+            pictureBox11.TabIndex = 35;
+            pictureBox11.TabStop = false;
+            toolTip.SetToolTip(pictureBox11, resources.GetString("pictureBox11.ToolTip"));
             // 
             // label1
             // 
@@ -1022,10 +1034,11 @@ namespace LogScraper.Log
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox11).EndInit();
+            PnlUsedForScalingCapability.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox11).EndInit();
             TabControl.ResumeLayout(false);
             tabPageMetadata.ResumeLayout(false);
             grpMetadata.ResumeLayout(false);
@@ -1129,5 +1142,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox ChkContentPropertyIsError;
         private System.Windows.Forms.CheckBox ChkShowMetadataByDefault;
         private System.Windows.Forms.CheckBox ChkMetadataEndRegex;
+        private System.Windows.Forms.Panel PnlUsedForScalingCapability;
     }
 }
