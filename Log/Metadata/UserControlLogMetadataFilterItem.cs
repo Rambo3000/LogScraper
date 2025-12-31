@@ -41,7 +41,7 @@ namespace LogScraper
         {
             int textHeight = LabelCount.PreferredHeight;
 
-            int desiredHeight = textHeight + ScaleByDpi(2);
+            int desiredHeight = textHeight + ScaleByDpi(4);
 
             if (Height != desiredHeight)
             {

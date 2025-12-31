@@ -120,14 +120,14 @@
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnKubernetesRefresh.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAFkSURBVDhPbdOxahZBFAXg7yjGEIggCIJokToqKAhiJ1jbCQGbgIVPIIKNjQSfQFAQQRBbi9j5
-        BlaKnT6BhYoWIUWI7Ozs7O7//wOzM/fec8+ce2eWFSOJLDrrKP4hOK7L8LmnWFvkfLGyhO8dzR2bkbt4
-        jHvkjGSv2j2ykFQ9jTBOSJ7gF47LjONwQP5FfjSC6doTlM9H0iW8CnewiZPkZUckOcLlljutJLLTJePh
-        igZ8Js/JxUH1GBphX8ibTs0CZj2c7g8s5V7BtVlmYdbVmuvFniuohIPmfCUv5rC4XZu2sZw4FVN278SH
-        xSpuSFd/Lg1XMkheZInsh9c1vY218FfyrKKmy3R3Dgdht3lGkD1ySK7O1DWjvO/3+C7WGqJ0trfWxTf8
-        xn2carG4iU/4I26N9NPZs50Vb0P3YA77+/ezNnifbLUezeRNC+mDF/AIT/EgbLe+TA8cT1/FVX+Y2TUu
-        j/9tzi7cQRbtxgAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAWRJREFUOE9t
+        07FqFkEUBeDvKMYQiCAIgmiROiooCGInWNsJAZuAhU8ggo2NBJ9AUBBBEFuL2PkGVoqdPoGFihYhRYjs
+        7Ozs7v//A7Mz995zz5x7Z5YVI4ksOuso/iE4rsvwuadYW+R8sbKE7x3NHZuRu3iMe+SMZK/aPbKQVD2N
+        ME5InuAXjsuM43BA/kV+NILp2hOUz0fSJbwKd7CJk+RlRyQ5wuWWO60kstMl4+GKBnwmz8nFQfUYGmFf
+        yJtOzQJmPZzuDyzlXsG1WWZh1tWa68WeK6iEg+Z8JS/msLhdm7axnDgVU3bvxIfFKm5IV38uDVcySF5k
+        ieyH1zW9jbXwV/KsoqbLdHcOB2G3eUaQPXJIrs7UNaO87/f4LtYaonS2t9bFN/zGfZxqsbiJT/gjbo30
+        09mznRVvQ/dgDvv797M2eJ9stR7N5E0L6YMX8AhP8SBst75MDxxPX8VVf5jZNS6P/23OLtxBFu3GAAAA
+        AElFTkSuQmCC
 </value>
   </data>
 </root>

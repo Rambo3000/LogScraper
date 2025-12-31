@@ -38,6 +38,8 @@
             btnKubernetesRefresh = new System.Windows.Forms.Button();
             CboKubernetesTimespan = new System.Windows.Forms.ComboBox();
             label1 = new System.Windows.Forms.Label();
+            PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
+            PnlUsedForScalingCompatibility.SuspendLayout();
             SuspendLayout();
             // 
             // cboKubernetesPod
@@ -45,9 +47,9 @@
             cboKubernetesPod.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboKubernetesPod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboKubernetesPod.FormattingEnabled = true;
-            cboKubernetesPod.Location = new System.Drawing.Point(77, 62);
+            cboKubernetesPod.Location = new System.Drawing.Point(85, 64);
             cboKubernetesPod.Name = "cboKubernetesPod";
-            cboKubernetesPod.Size = new System.Drawing.Size(256, 23);
+            cboKubernetesPod.Size = new System.Drawing.Size(247, 23);
             cboKubernetesPod.TabIndex = 23;
             cboKubernetesPod.SelectedIndexChanged += CboKubernetesPod_SelectedIndexChanged;
             // 
@@ -55,7 +57,7 @@
             // 
             cboKubernetesNamespace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboKubernetesNamespace.FormattingEnabled = true;
-            cboKubernetesNamespace.Location = new System.Drawing.Point(77, 32);
+            cboKubernetesNamespace.Location = new System.Drawing.Point(85, 34);
             cboKubernetesNamespace.Name = "cboKubernetesNamespace";
             cboKubernetesNamespace.Size = new System.Drawing.Size(160, 23);
             cboKubernetesNamespace.TabIndex = 24;
@@ -65,7 +67,7 @@
             // 
             cboKubernetesCluster.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboKubernetesCluster.FormattingEnabled = true;
-            cboKubernetesCluster.Location = new System.Drawing.Point(77, 3);
+            cboKubernetesCluster.Location = new System.Drawing.Point(85, 5);
             cboKubernetesCluster.Name = "cboKubernetesCluster";
             cboKubernetesCluster.Size = new System.Drawing.Size(160, 23);
             cboKubernetesCluster.TabIndex = 25;
@@ -74,7 +76,7 @@
             // lblKubernetesPod
             // 
             lblKubernetesPod.AutoSize = true;
-            lblKubernetesPod.Location = new System.Drawing.Point(4, 65);
+            lblKubernetesPod.Location = new System.Drawing.Point(3, 67);
             lblKubernetesPod.Name = "lblKubernetesPod";
             lblKubernetesPod.Size = new System.Drawing.Size(28, 15);
             lblKubernetesPod.TabIndex = 20;
@@ -83,7 +85,7 @@
             // lblKubernetesNamespace
             // 
             lblKubernetesNamespace.AutoSize = true;
-            lblKubernetesNamespace.Location = new System.Drawing.Point(4, 36);
+            lblKubernetesNamespace.Location = new System.Drawing.Point(3, 38);
             lblKubernetesNamespace.Name = "lblKubernetesNamespace";
             lblKubernetesNamespace.Size = new System.Drawing.Size(69, 15);
             lblKubernetesNamespace.TabIndex = 21;
@@ -92,7 +94,7 @@
             // lblCluster
             // 
             lblCluster.AutoSize = true;
-            lblCluster.Location = new System.Drawing.Point(4, 6);
+            lblCluster.Location = new System.Drawing.Point(3, 8);
             lblCluster.Name = "lblCluster";
             lblCluster.Size = new System.Drawing.Size(44, 15);
             lblCluster.TabIndex = 22;
@@ -102,9 +104,9 @@
             // 
             btnKubernetesRefresh.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnKubernetesRefresh.Image = (System.Drawing.Image)resources.GetObject("btnKubernetesRefresh.Image");
-            btnKubernetesRefresh.Location = new System.Drawing.Point(336, 61);
+            btnKubernetesRefresh.Location = new System.Drawing.Point(335, 64);
             btnKubernetesRefresh.Name = "btnKubernetesRefresh";
-            btnKubernetesRefresh.Size = new System.Drawing.Size(23, 24);
+            btnKubernetesRefresh.Size = new System.Drawing.Size(23, 23);
             btnKubernetesRefresh.TabIndex = 28;
             btnKubernetesRefresh.UseVisualStyleBackColor = true;
             btnKubernetesRefresh.Click += BtnKubernetesRefresh_Click;
@@ -113,7 +115,7 @@
             // 
             CboKubernetesTimespan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboKubernetesTimespan.FormattingEnabled = true;
-            CboKubernetesTimespan.Location = new System.Drawing.Point(77, 91);
+            CboKubernetesTimespan.Location = new System.Drawing.Point(85, 93);
             CboKubernetesTimespan.Name = "CboKubernetesTimespan";
             CboKubernetesTimespan.Size = new System.Drawing.Size(160, 23);
             CboKubernetesTimespan.TabIndex = 30;
@@ -122,29 +124,39 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(4, 94);
+            label1.Location = new System.Drawing.Point(3, 96);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(65, 15);
             label1.TabIndex = 31;
             label1.Text = "Tijdspanne";
             // 
+            // PnlUsedForScalingCompatibility
+            // 
+            PnlUsedForScalingCompatibility.Controls.Add(label1);
+            PnlUsedForScalingCompatibility.Controls.Add(lblCluster);
+            PnlUsedForScalingCompatibility.Controls.Add(CboKubernetesTimespan);
+            PnlUsedForScalingCompatibility.Controls.Add(lblKubernetesNamespace);
+            PnlUsedForScalingCompatibility.Controls.Add(btnKubernetesRefresh);
+            PnlUsedForScalingCompatibility.Controls.Add(lblKubernetesPod);
+            PnlUsedForScalingCompatibility.Controls.Add(cboKubernetesPod);
+            PnlUsedForScalingCompatibility.Controls.Add(cboKubernetesCluster);
+            PnlUsedForScalingCompatibility.Controls.Add(cboKubernetesNamespace);
+            PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
+            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(363, 120);
+            PnlUsedForScalingCompatibility.TabIndex = 32;
+            // 
             // UserControlKubernetesLogProvider
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(label1);
-            Controls.Add(CboKubernetesTimespan);
-            Controls.Add(btnKubernetesRefresh);
-            Controls.Add(cboKubernetesPod);
-            Controls.Add(cboKubernetesNamespace);
-            Controls.Add(cboKubernetesCluster);
-            Controls.Add(lblKubernetesPod);
-            Controls.Add(lblKubernetesNamespace);
-            Controls.Add(lblCluster);
+            Controls.Add(PnlUsedForScalingCompatibility);
             Name = "UserControlKubernetesLogProvider";
             Size = new System.Drawing.Size(363, 120);
+            PnlUsedForScalingCompatibility.ResumeLayout(false);
+            PnlUsedForScalingCompatibility.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -157,5 +169,6 @@
         private System.Windows.Forms.Button btnKubernetesRefresh;
         private System.Windows.Forms.ComboBox CboKubernetesTimespan;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
     }
 }

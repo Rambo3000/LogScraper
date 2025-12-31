@@ -46,6 +46,9 @@ namespace LogScraper
         #region Update log layout
         public void UpdateLogLayout(LogLayout logLayout)
         {
+            //Reset item height to default in for weird windows scaling cases
+            LstLogContent.ItemHeight = LstLogContent.Font.Height;
+
             CboLogContentType.Items.Clear();
             if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties]);

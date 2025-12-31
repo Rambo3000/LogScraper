@@ -31,12 +31,14 @@
             txtFilePath = new System.Windows.Forms.TextBox();
             btnBrowse = new System.Windows.Forms.Button();
             lblFileName = new System.Windows.Forms.Label();
+            PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
+            PnlUsedForScalingCompatibility.SuspendLayout();
             SuspendLayout();
             // 
             // txtFilePath
             // 
             txtFilePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtFilePath.Location = new System.Drawing.Point(4, 18);
+            txtFilePath.Location = new System.Drawing.Point(3, 18);
             txtFilePath.Multiline = true;
             txtFilePath.Name = "txtFilePath";
             txtFilePath.Size = new System.Drawing.Size(254, 92);
@@ -45,7 +47,7 @@
             // btnBrowse
             // 
             btnBrowse.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnBrowse.Location = new System.Drawing.Point(262, 18);
+            btnBrowse.Location = new System.Drawing.Point(261, 18);
             btnBrowse.Name = "btnBrowse";
             btnBrowse.Size = new System.Drawing.Size(30, 23);
             btnBrowse.TabIndex = 1;
@@ -56,23 +58,33 @@
             // lblFileName
             // 
             lblFileName.AutoSize = true;
-            lblFileName.Location = new System.Drawing.Point(4, 0);
+            lblFileName.Location = new System.Drawing.Point(3, 0);
             lblFileName.Name = "lblFileName";
             lblFileName.Size = new System.Drawing.Size(84, 15);
             lblFileName.TabIndex = 2;
             lblFileName.Text = "Bestandsnaam";
             // 
+            // PnlUsedForScalingCompatibility
+            // 
+            PnlUsedForScalingCompatibility.Controls.Add(lblFileName);
+            PnlUsedForScalingCompatibility.Controls.Add(btnBrowse);
+            PnlUsedForScalingCompatibility.Controls.Add(txtFilePath);
+            PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
+            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(295, 113);
+            PnlUsedForScalingCompatibility.TabIndex = 3;
+            // 
             // UserControlFileLogProvider
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(lblFileName);
-            Controls.Add(btnBrowse);
-            Controls.Add(txtFilePath);
+            Controls.Add(PnlUsedForScalingCompatibility);
             Name = "UserControlFileLogProvider";
             Size = new System.Drawing.Size(295, 113);
+            PnlUsedForScalingCompatibility.ResumeLayout(false);
+            PnlUsedForScalingCompatibility.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -80,5 +92,6 @@
         private System.Windows.Forms.TextBox txtFilePath;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Label lblFileName;
+        private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
     }
 }

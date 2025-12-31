@@ -94,6 +94,9 @@ namespace LogScraper
         /// results list remains accurate.</remarks>
         private void UpdateSearchResultsList()
         {
+            //Reset item height to default in for weird windows scaling cases
+            LstLogContent.ItemHeight = LstLogContent.Font.Height;
+
             if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
             {
                 Clear();
