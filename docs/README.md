@@ -32,17 +32,30 @@ Get the latest release from the [Releases section](https://github.com/Rambo3000/
 
 ## ⚙️ Before You Start
 
-Download and extract the ZIP archive to your local machine. No installation is required — just run the executable. Built in C# (.NET), the application does **not** require a separate .NET runtime.
+Download the installer and run it or download the standalone ZIP and extract it to a desired location. 
 
-> **Note:** The executable is relatively large. Running it from a slow network share or cloud folder may result in delayed startup times.
+Built in C# (.NET), the application does **not** require a separate .NET runtime.
 
 ---
 
 ## 🔄 Updates
 
-To update the program, simply **replace the executable file** with the new version from the latest release ZIP archive from [Releases section](https://github.com/Rambo3000/logscraper/releases).
+### Recommended: Use the installer
+The preferred way to update Logscraper is to **download and run the latest installer** from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
 
-You can **keep your existing configuration files** (`LogScraperConfig.json`, `LogScraperLogLayouts.json`, `LogScraperLogProviders.json`) — there is no need to change or reconfigure them unless specified in the release notes.
+When switching from standalone to installer, you can import settings from the standalone version in the installed version using the settings window. The JSON files adjecent to the standalone can be imported one at a time.
+
+---
+
+### Alternative: Standalone (ZIP) update
+If the installer does not work for your setup, you can update manually using the **standalone ZIP**:
+
+1. Download the latest ZIP from the [Releases section](https://github.com/Rambo3000/logscraper/releases)
+2. **Replace the executable file** with the new version
+
+You can **keep your existing configuration files**  
+(`LogScraperConfig.json`, `LogScraperLogLayouts.json`, `LogScraperLogProviders.json`) — there is no need to change or reconfigure them unless specified in the release notes.
+
 
 ---
 
