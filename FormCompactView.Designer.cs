@@ -1,6 +1,6 @@
 ﻿namespace LogScraper
 {
-    partial class FormRecord
+    partial class FormCompactView
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormRecord));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCompactView));
             BtnRecord = new System.Windows.Forms.Button();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
@@ -52,13 +52,14 @@
             BtnRecord.Name = "BtnRecord";
             BtnRecord.Size = new System.Drawing.Size(40, 40);
             BtnRecord.TabIndex = 0;
+            ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
             BtnRecord.UseVisualStyleBackColor = true;
             BtnRecord.Click += BtnRecord_Click;
             // 
             // BtnRecordWithTimer
             // 
             BtnRecordWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnRecordWithTimer.Image");
-            BtnRecordWithTimer.Location = new System.Drawing.Point(44, 5);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(45, 5);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 1;
@@ -150,7 +151,7 @@
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            ToolTip.SetToolTip(btnBack, "Sluit dit venster en stop het uitlezen [CTRL-R]");
+            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-R]");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 

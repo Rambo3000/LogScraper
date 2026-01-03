@@ -5,11 +5,11 @@ using LogScraper.Sources.Workers;
 
 namespace LogScraper
 {
-    public partial class FormRecord : Form
+    public partial class FormCompactView : Form
     {
-        private static FormRecord instance;
+        private static FormCompactView instance;
         private static readonly Lock lockObject = new();
-        public static FormRecord Instance
+        public static FormCompactView Instance
         {
             get
             {
@@ -28,7 +28,7 @@ namespace LogScraper
 
         private FormLogScraper LogScraperForm = null;
 
-        public FormRecord()
+        public FormCompactView()
         {
             InitializeComponent();
         }

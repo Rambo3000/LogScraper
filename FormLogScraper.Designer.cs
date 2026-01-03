@@ -36,7 +36,6 @@
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
-            userControlMemoryUsage1 = new UserControlMemoryUsage();
             BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
@@ -45,6 +44,7 @@
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
+            userControlMemoryUsage1 = new UserControlMemoryUsage();
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
             usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
@@ -166,15 +166,6 @@
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
             // 
-            // userControlMemoryUsage1
-            // 
-            userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(188, 100);
-            userControlMemoryUsage1.Name = "userControlMemoryUsage1";
-            userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
-            userControlMemoryUsage1.TabIndex = 24;
-            // 
             // BtnConfig
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -207,9 +198,9 @@
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Open mini controls en start met uitlezen [CTRL-R]");
+            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-R]");
             BtnFormRecord.UseVisualStyleBackColor = true;
-            BtnFormRecord.Click += BtnFormRecord_Click;
+            BtnFormRecord.Click += BtnCompactView_Click;
             // 
             // BtnErase
             // 
@@ -260,6 +251,15 @@
             lblLogEntriesFilteredWithError.Size = new System.Drawing.Size(93, 15);
             lblLogEntriesFilteredWithError.TabIndex = 18;
             lblLogEntriesFilteredWithError.Text = "Regels met error";
+            // 
+            // userControlMemoryUsage1
+            // 
+            userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            userControlMemoryUsage1.AutoSize = true;
+            userControlMemoryUsage1.Location = new System.Drawing.Point(188, 100);
+            userControlMemoryUsage1.Name = "userControlMemoryUsage1";
+            userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
+            userControlMemoryUsage1.TabIndex = 24;
             // 
             // lblLogProvider
             // 

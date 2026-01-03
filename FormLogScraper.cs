@@ -31,7 +31,7 @@ namespace LogScraper
             CultureInfo culture = new("nl"); // of "en", "fr", etc.
             Thread.CurrentThread.CurrentUICulture = culture;
 
-            FormRecord.Instance.SetFormLogScraper(this);
+            FormCompactView.Instance.SetFormLogScraper(this);
 
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
@@ -88,7 +88,7 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
-                FormRecord.Instance.UpdateButtonsFromMainWindow();
+                FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
                 LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
@@ -113,7 +113,7 @@ namespace LogScraper
             }
             finally
             {
-                FormRecord.Instance.UpdateButtonsFromMainWindow();
+                FormCompactView.Instance.UpdateButtonsFromMainWindow();
             }
         }
         private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime)
@@ -142,7 +142,7 @@ namespace LogScraper
                     RefreshLogStatistics();
                 }
                 HandleErrorMessages(string.Empty, true);
-                FormRecord.Instance.UpdateButtonsFromMainWindow();
+                FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 lastTrailTime = updatedLastTrailTime;
             }
             catch (Exception ex)
@@ -325,7 +325,7 @@ namespace LogScraper
             GrpSourceAndLayout.Enabled = !downloadingInProgress;
             GrpLogProvidersSettings.Enabled = !downloadingInProgress;
 
-            FormRecord.Instance.UpdateButtonsFromMainWindow();
+            FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
         public void BtnRecord_Click(object sender, EventArgs e)
         {
@@ -348,10 +348,10 @@ namespace LogScraper
         {
             LogExportWorkerManager.OpenFileInExternalEditor();
         }
-        private void BtnFormRecord_Click(object sender, EventArgs e)
+        private void BtnCompactView_Click(object sender, EventArgs e)
         {
             if (!SourceProcessingManager.Instance.IsWorkerActive) { BtnRecordWithTimer_Click(sender, e); }
-            FormRecord.Instance.ShowForm();
+            FormCompactView.Instance.ShowForm();
         }
         private void BtnConfig_Click(object sender, EventArgs e)
         {
@@ -473,7 +473,7 @@ namespace LogScraper
         /// </returns>
         /// <remarks>
         /// This method intercepts key combinations such as Ctrl+R and Ctrl+F before they are passed to the focused control.
-        /// - Ctrl+R triggers the "Record" functionality by invoking <see cref="BtnFormRecord_Click"/>.
+        /// - Ctrl+R triggers the "Record" functionality by invoking <see cref="BtnCompactView_Click"/>.
         /// - Ctrl+F sets focus to the search control (<see cref="UserControlSearch"/>).
         /// For all other key combinations, the base class implementation is called.
         /// </remarks>
@@ -481,7 +481,7 @@ namespace LogScraper
         {
             if (keyData == (Keys.Control | Keys.R))
             {
-                BtnFormRecord_Click(this, EventArgs.Empty);
+                BtnCompactView_Click(this, EventArgs.Empty);
                 return true;
             }
 
