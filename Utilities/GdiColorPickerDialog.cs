@@ -15,6 +15,33 @@ namespace LogScraper.Utilities
         [DllImport("comdlg32.dll", SetLastError = true)]
         static extern bool ChooseColor(ref CHOOSECOLOR chooseColor);
 
+        private static readonly int[] CustomColors =
+        {
+            // Dark colors for text
+            ToColorRef(Color.FromArgb(0, 97, 0)),      // dark green
+            ToColorRef(Color.FromArgb(191, 144, 0)),   // dark yellow
+            ToColorRef(Color.FromArgb(31, 78, 121)),   // dark blue
+            ToColorRef(Color.FromArgb(156, 0, 6)),     // dark red
+            ToColorRef(Color.FromArgb(64, 64, 64)),    // dark gray
+            ToColorRef(Color.FromArgb(191, 97, 0)),    // dark orange
+            ToColorRef(Color.FromArgb(112, 48, 160)),  // dark purple
+            ToColorRef(Color.FromArgb(0, 64, 0)),      // darker green
+
+            // Matching Light colors for background
+            ToColorRef(Color.FromArgb(198, 239, 206)), // light green
+            ToColorRef(Color.FromArgb(255, 235, 156)), // light yellow
+            ToColorRef(Color.FromArgb(221, 235, 247)), // light blue
+            ToColorRef(Color.FromArgb(244, 204, 204)), // light red
+            ToColorRef(Color.FromArgb(217, 217, 217)), // light gray
+            ToColorRef(Color.FromArgb(255, 242, 204)), // light orange
+            ToColorRef(Color.FromArgb(234, 209, 220)), // light purple
+            ToColorRef(Color.FromArgb(232, 245, 233)) // very light green
+        };
+        private static int ToColorRef(Color color)
+        {
+            return color.R | (color.G << 8) | (color.B << 16);
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         struct CHOOSECOLOR
         {
@@ -43,8 +70,7 @@ namespace LogScraper.Utilities
         {
             IntPtr ownerHandle = parentControl.Handle;
 
-            int[] customColors = new int[16];
-            GCHandle customColorsHandle = GCHandle.Alloc(customColors, GCHandleType.Pinned);
+            GCHandle customColorsHandle = GCHandle.Alloc(CustomColors, GCHandleType.Pinned);
 
             try
             {
@@ -67,6 +93,7 @@ namespace LogScraper.Utilities
                 }
 
                 int rgb = chooseColor.ResultRgb;
+
                 selectedColor = Color.FromArgb(rgb & 0xFF, (rgb >> 8) & 0xFF, (rgb >> 16) & 0xFF);
 
                 return DialogResult.OK;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
 using ScintillaNET;
@@ -124,13 +125,21 @@ namespace LogScraper.Utilities.Extensions
         {
             scintillaControl.ResetAllStyles();
 
-            for (int i = 0; i < logContentProperties.Count && i < 250; i++)
-            {
-                // Offset style index to avoid conflicts with default styles
-                int styleIndex = i + 64;
+            // Reorder the properties so the errors are always prioritised and styled last,
+            // after sorting on error inverse the order
+            List<(LogContentProperty Property, int Index)> orderedProperties = [.. logContentProperties
+                .Select((property, index) => (property, index))
+                .Where(item => item.index < 186)
+                .OrderBy(item => item.property.IsErrorProperty ? 1 : 0)   // non-error first
+                .ThenByDescending(item => item.index)];
 
-                LogContentProperty logContentProperty = logContentProperties[i];
+
+            foreach ((LogContentProperty logContentProperty, int index) in orderedProperties)
+            {
                 if (!logContentProperty.IsCustomStyleEnabled) continue;
+
+                // Offset style index to avoid conflicts with default styles
+                int styleIndex = index + 64;
 
                 scintillaControl.SetStyleFromLogContentProperty(logContentProperty, styleIndex);
 

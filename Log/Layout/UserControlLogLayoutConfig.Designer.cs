@@ -734,6 +734,7 @@ namespace LogScraper.Log
             // BtnContentBackColor
             // 
             BtnContentBackColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentBackColor.Enabled = false;
             BtnContentBackColor.Location = new System.Drawing.Point(261, 221);
             BtnContentBackColor.Name = "BtnContentBackColor";
             BtnContentBackColor.Size = new System.Drawing.Size(99, 23);
@@ -745,6 +746,7 @@ namespace LogScraper.Log
             // BtnContentTextColor
             // 
             BtnContentTextColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentTextColor.Enabled = false;
             BtnContentTextColor.Location = new System.Drawing.Point(261, 197);
             BtnContentTextColor.Name = "BtnContentTextColor";
             BtnContentTextColor.Size = new System.Drawing.Size(99, 23);
@@ -758,6 +760,7 @@ namespace LogScraper.Log
             TxtCustomStyleExample.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtCustomStyleExample.AutoCMaxHeight = 9;
             TxtCustomStyleExample.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            TxtCustomStyleExample.Enabled = false;
             TxtCustomStyleExample.HScrollBar = false;
             TxtCustomStyleExample.Location = new System.Drawing.Point(382, 197);
             TxtCustomStyleExample.Name = "TxtCustomStyleExample";
