@@ -26,8 +26,8 @@ namespace LogScraper.Utilities.Extensions
 
             // Active line indicator
             scintillacontrol.Indicators[11].Style = IndicatorStyle.FullBox;
-            scintillacontrol.Indicators[11].ForeColor = Color.FromArgb(60, 132, 196);
-            scintillacontrol.Indicators[11].Alpha = 100;
+            scintillacontrol.Indicators[11].ForeColor = Color.FromArgb(155, 205, 232);
+            scintillacontrol.Indicators[11].Alpha = 200;
             scintillacontrol.Indicators[11].Under = true;
 
             Indicator indicator = scintillacontrol.Indicators[INDICATOR_SEARCH];

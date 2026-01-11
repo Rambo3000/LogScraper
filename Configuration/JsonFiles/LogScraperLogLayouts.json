@@ -8,49 +8,61 @@
           "description": "Log level",
           "criteria": {
             "beforePhrase": " ",
-            "afterPhrase": " "
+            "afterPhrase": " ",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Project",
           "criteria": {
             "beforePhrase": "projectName=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Gebruiker",
           "criteria": {
             "beforePhrase": "userId=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Branch",
           "criteria": {
             "beforePhrase": "projectVersion=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Pagina",
           "criteria": {
             "beforePhrase": "currentPageName=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Sessie",
           "criteria": {
             "beforePhrase": "runtimeSessionId=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": true
+          "isSessionData": true,
+          "isDefaultVisibleInLog": false
         }
       ],
       "logContentBeginEndFilters": [
@@ -60,15 +72,20 @@
           "criterias": [
             {
               "beforePhrase": "[onFlowStart] Starting flow: ",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             },
             {
               "beforePhrase": "Starting flow on refresh: ",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": true,
           "isErrorProperty": false,
+          "isCustomStyleEnabled": true,
+          "customTextColor": "0, 97, 0",
+          "customBackColor": "198, 239, 206",
           "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
@@ -77,33 +94,43 @@
           "criterias": [
             {
               "beforePhrase": "Completed flow: ",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             },
             {
               "beforePhrase": "Reached the end of flow '",
-              "afterPhrase": "'"
+              "afterPhrase": "'",
+              "isRegex": false
             },
             {
               "beforePhrase": "flow '",
-              "afterPhrase": "' failed"
+              "afterPhrase": "' failed",
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": false,
+          "isCustomStyleEnabled": true,
+          "customTextColor": "0, 179, 0",
+          "customBackColor": "198, 239, 206",
           "endFlowTreeContentPropertyDescription": ""
         },
         {
-          "description": "Composed path",
+          "description": "Webservice",
           "criteria": null,
           "criterias": [
             {
-              "beforePhrase": "Composed path ",
-              "afterPhrase": null
+              "beforePhrase": "Webservicecall '",
+              "afterPhrase": "' - Sending",
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": false,
-          "endFlowTreeContentPropertyDescription": ""
+          "isCustomStyleEnabled": true,
+          "customTextColor": "112, 48, 160",
+          "customBackColor": "234, 209, 220",
+          "endFlowTreeContentPropertyDescription": null
         },
         {
           "description": "Errors",
@@ -111,17 +138,22 @@
           "criterias": [
             {
               "beforePhrase": " ERROR",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": true,
+          "isCustomStyleEnabled": true,
+          "customTextColor": "156, 0, 6",
+          "customBackColor": "244, 204, 204",
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {
         "beforePhrase": " ",
-        "afterPhrase": " -"
+        "afterPhrase": " -",
+        "isRegex": false
       },
       "transformers": []
     },
@@ -133,17 +165,21 @@
           "description": "Log level",
           "criteria": {
             "beforePhrase": " ",
-            "afterPhrase": " "
+            "afterPhrase": " ",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         },
         {
           "description": "Project",
           "criteria": {
             "beforePhrase": "projectName=\"",
-            "afterPhrase": "\""
+            "afterPhrase": "\"",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         }
       ],
       "logContentBeginEndFilters": [
@@ -153,11 +189,15 @@
           "criterias": [
             {
               "beforePhrase": "Starting flow: ",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": true,
           "isErrorProperty": false,
+          "isCustomStyleEnabled": false,
+          "customTextColor": "",
+          "customBackColor": "",
           "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
@@ -166,11 +206,15 @@
           "criterias": [
             {
               "beforePhrase": "Completed flow: ",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": false,
+          "isCustomStyleEnabled": false,
+          "customTextColor": "",
+          "customBackColor": "",
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -179,17 +223,22 @@
           "criterias": [
             {
               "beforePhrase": " ERROR",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": true,
+          "isCustomStyleEnabled": false,
+          "customTextColor": "",
+          "customBackColor": "",
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {
         "beforePhrase": " ",
-        "afterPhrase": " -"
+        "afterPhrase": " -",
+        "isRegex": false
       },
       "transformers": [
         {
@@ -210,9 +259,11 @@
           "description": "Log level",
           "criteria": {
             "beforePhrase": " ",
-            "afterPhrase": " "
+            "afterPhrase": " ",
+            "isRegex": false
           },
-          "isSessionData": false
+          "isSessionData": false,
+          "isDefaultVisibleInLog": false
         }
       ],
       "logContentBeginEndFilters": [
@@ -222,17 +273,22 @@
           "criterias": [
             {
               "beforePhrase": " ERROR",
-              "afterPhrase": null
+              "afterPhrase": null,
+              "isRegex": false
             }
           ],
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": true,
+          "isCustomStyleEnabled": false,
+          "customTextColor": "",
+          "customBackColor": "",
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
       "removeMetaDataCriteria": {
         "beforePhrase": " ",
-        "afterPhrase": "]"
+        "afterPhrase": "]",
+        "isRegex": false
       },
       "transformers": []
     }

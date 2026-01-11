@@ -747,11 +747,11 @@ namespace LogScraper.Log
 
         private void ChkColorContentPropertyLogEntries_CheckedChanged(object sender, EventArgs e)
         {
-            if (UpdatingInformation) return;
-
             BtnContentBackColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
             BtnContentTextColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
             TxtCustomStyleExample.Enabled = ChkColorContentPropertyLogEntries.Checked;
+
+            if (UpdatingInformation) return;
 
             if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
             {
