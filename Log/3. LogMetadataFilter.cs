@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;

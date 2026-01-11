@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using LogScraper.Log.Content;
 using ScintillaNET;
 
 namespace LogScraper.Utilities.Extensions
@@ -27,12 +28,6 @@ namespace LogScraper.Utilities.Extensions
             scintillacontrol.Indicators[11].ForeColor = Color.FromArgb(60, 132, 196);
             scintillacontrol.Indicators[11].Alpha = 100;
             scintillacontrol.Indicators[11].Under = true;
-
-            // Error line indicator
-            scintillacontrol.Indicators[12].Style = IndicatorStyle.FullBox;
-            scintillacontrol.Indicators[12].ForeColor = Color.Red;
-            scintillacontrol.Indicators[12].Alpha = 100;
-            scintillacontrol.Indicators[12].Under = true;
 
             Indicator indicator = scintillacontrol.Indicators[INDICATOR_SEARCH];
             indicator.Style = IndicatorStyle.StraightBox;
@@ -95,7 +90,7 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="beginLine">The line number to highlight as the begin line (light gray), or null.</param>
         /// <param name="endLine">The line number to highlight as the end line (light gray), or null.</param>
         /// <param name="activeLine">The line number to highlight as the active line (light blue), or null.</param>
-        public static void HighlightLines(this Scintilla scintillacontrol, int? beginLine, int? endLine, int? activeLine, List<int> errorlines)
+        public static void HighlightLines(this Scintilla scintillacontrol, int? beginLine, int? endLine, int? activeLine)
         {
             // Clear previous highlights
             scintillacontrol.IndicatorCurrent = 10;
@@ -105,17 +100,62 @@ namespace LogScraper.Utilities.Extensions
 
             // Apply begin/end line (light gray)
             if (beginLine.HasValue)
-                HighlightSingleLine(scintillacontrol, beginLine.Value, 10);
+                scintillacontrol.HighlightSingleLine(beginLine.Value, 10);
             if (endLine.HasValue && endLine != beginLine)
-                HighlightSingleLine(scintillacontrol, endLine.Value, 10);
-            if (errorlines != null && errorlines.Count > 0)
-                foreach (int errorline in errorlines)
-                    HighlightSingleLine(scintillacontrol, errorline, 12);
+                scintillacontrol.HighlightSingleLine(endLine.Value, 10);
 
             // Apply active line (light blue)
             if (activeLine.HasValue)
-                HighlightSingleLine(scintillacontrol, activeLine.Value, 11);
+                scintillacontrol.HighlightSingleLine(activeLine.Value, 11);
         }
+        /// <summary>
+        /// Applies custom styles to specific lines in a Scintilla control based on the provided log content properties
+        /// and their associated line numbers.
+        /// </summary>
+        /// <remarks>A maximum of 186 log content properties are processed to avoid exceeding style index
+        /// limits. Existing styles in the Scintilla control are reset before applying new styles. Only lines associated
+        /// with properties that have custom styling enabled are affected.</remarks>
+        /// <param name="scintillaControl">The Scintilla control to which the styles will be applied.</param>
+        /// <param name="logContentProperties">A list of log content properties that define the custom styles to be used. Only properties with custom
+        /// styling enabled are considered.</param>
+        /// <param name="contentLinesToStyle">A mapping of log content properties to the lists of line numbers that should be styled using each property's
+        /// custom style.</param>
+        public static void StyleLines(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties, Dictionary<LogContentProperty, List<int>> contentLinesToStyle)
+        {
+            scintillaControl.ResetAllStyles();
+
+            for (int i = 0; i < logContentProperties.Count && i < 250; i++)
+            {
+                // Offset style index to avoid conflicts with default styles
+                int styleIndex = i + 64;
+
+                LogContentProperty logContentProperty = logContentProperties[i];
+                if (!logContentProperty.IsCustomStyleEnabled) continue;
+
+                scintillaControl.SetStyleFromLogContentProperty(logContentProperty, styleIndex);
+
+                contentLinesToStyle.TryGetValue(logContentProperty, out List<int> linesToStyle);
+
+                if (linesToStyle == null) continue;
+
+                foreach (int lineNumber in linesToStyle)
+                {
+                    scintillaControl.StyleSingleLine(lineNumber, styleIndex);
+                }
+            }
+        }
+        /// <summary>
+        /// Resets all text styling in the specified Scintilla control to the default style.
+        /// </summary>
+        /// <remarks>This method removes all custom styling from the control's text, restoring the default
+        /// appearance. Use this method to clear syntax highlighting or other style customizations.</remarks>
+        /// <param name="scintillaControl">The Scintilla control whose text styles will be reset. Cannot be null.</param>
+        public static void ResetAllStyles(this Scintilla scintillaControl)
+        {
+            scintillaControl.StartStyling(0);
+            scintillaControl.SetStyling(scintillaControl.TextLength, Style.Default);
+        }
+
 
         /// <summary>
         /// Highlights a single line in the Scintilla control using the specified indicator.
@@ -123,7 +163,7 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="scintillacontrol">The Scintilla control to modify.</param>
         /// <param name="lineNumber">The line number to highlight.</param>
         /// <param name="indicatorIndex">The indicator index to use for highlighting.</param>
-        private static void HighlightSingleLine(Scintilla scintillacontrol, int lineNumber, int indicatorIndex)
+        public static void HighlightSingleLine(this Scintilla scintillacontrol, int lineNumber, int indicatorIndex)
         {
             if (lineNumber < 0 || lineNumber >= scintillacontrol.Lines.Count)
                 return;
@@ -131,6 +171,58 @@ namespace LogScraper.Utilities.Extensions
             var line = scintillacontrol.Lines[lineNumber];
             scintillacontrol.IndicatorCurrent = indicatorIndex;
             scintillacontrol.IndicatorFillRange(line.Position, line.Length);
+        }
+
+        /// <summary>
+        /// Applies the specified style to a single line in the Scintilla control.
+        /// </summary>
+        /// <remarks>If the specified line number is outside the valid range, no styling is
+        /// applied.</remarks>
+        /// <param name="scintillaControl">The Scintilla control to which the style will be applied.</param>
+        /// <param name="lineNumber">The zero-based index of the line to style. Must be within the range of existing lines in the control.</param>
+        /// <param name="styleIndex">The style index to apply to the specified line.</param>
+        public static void StyleSingleLine(this Scintilla scintillaControl, int lineNumber, int styleIndex)
+        {
+            if (lineNumber < 0 || lineNumber >= scintillaControl.Lines.Count)
+                return;
+
+            Line line = scintillaControl.Lines[lineNumber];
+
+            int startPosition = line.Position;
+            int length = line.Length;
+
+            scintillaControl.StartStyling(startPosition);
+            scintillaControl.SetStyling(length, styleIndex);
+        }
+
+        /// <summary>
+        /// Applies custom foreground and background colors from a log content property to a specified style in the
+        /// given Scintilla control.
+        /// </summary>
+        /// <param name="scintillaControl">The Scintilla control whose style will be updated.</param>
+        /// <param name="logContentProperty">The log content property containing custom text and background color settings to apply.</param>
+        /// <param name="styleIndex">The index of the style in the Scintilla control to which the colors will be applied.</param>
+        public static void SetStyleFromLogContentProperty(this Scintilla scintillaControl, LogContentProperty logContentProperty, int styleIndex)
+        {
+            Style style = scintillaControl.Styles[styleIndex];
+            if (logContentProperty.CustomTextColor == Color.Empty)
+            {
+                style.ForeColor = scintillaControl.Styles[Style.Default].ForeColor;
+            }
+            else
+            {
+                style.ForeColor = logContentProperty.CustomTextColor;
+            }
+
+            if (logContentProperty.CustomBackColor == Color.Empty)
+            {
+                style.BackColor = scintillaControl.Styles[Style.Default].BackColor;
+            }
+            else
+            {
+                style.BackColor = logContentProperty.CustomBackColor;
+                style.FillLine = true;
+            }
         }
 
         /// <summary>

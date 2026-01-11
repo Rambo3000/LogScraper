@@ -80,6 +80,9 @@ namespace LogScraper.Log
             BtnMetadataUp = new System.Windows.Forms.Button();
             tabPageContentFilters = new System.Windows.Forms.TabPage();
             GrpContent = new System.Windows.Forms.GroupBox();
+            BtnContentBackColor = new System.Windows.Forms.Button();
+            BtnContentTextColor = new System.Windows.Forms.Button();
+            TxtCustomStyleExample = new ScintillaNET.Scintilla();
             pictureBox18 = new System.Windows.Forms.PictureBox();
             ChkContentPropertyIsError = new System.Windows.Forms.CheckBox();
             pictureBox17 = new System.Windows.Forms.PictureBox();
@@ -98,6 +101,7 @@ namespace LogScraper.Log
             BtnContentRemove = new System.Windows.Forms.Button();
             BtnContentDown = new System.Windows.Forms.Button();
             BtnContentUp = new System.Windows.Forms.Button();
+            ChkColorContentPropertyLogEntries = new System.Windows.Forms.CheckBox();
             tabPageTransformers = new System.Windows.Forms.TabPage();
             GrpExtractJson = new System.Windows.Forms.GroupBox();
             pictureBox15 = new System.Windows.Forms.PictureBox();
@@ -697,6 +701,9 @@ namespace LogScraper.Log
             // 
             // GrpContent
             // 
+            GrpContent.Controls.Add(BtnContentBackColor);
+            GrpContent.Controls.Add(BtnContentTextColor);
+            GrpContent.Controls.Add(TxtCustomStyleExample);
             GrpContent.Controls.Add(pictureBox18);
             GrpContent.Controls.Add(ChkContentPropertyIsError);
             GrpContent.Controls.Add(pictureBox17);
@@ -715,6 +722,7 @@ namespace LogScraper.Log
             GrpContent.Controls.Add(BtnContentRemove);
             GrpContent.Controls.Add(BtnContentDown);
             GrpContent.Controls.Add(BtnContentUp);
+            GrpContent.Controls.Add(ChkColorContentPropertyLogEntries);
             GrpContent.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpContent.Location = new System.Drawing.Point(3, 3);
             GrpContent.Name = "GrpContent";
@@ -722,6 +730,41 @@ namespace LogScraper.Log
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
             GrpContent.Text = "Content begin en eind filters";
+            // 
+            // BtnContentBackColor
+            // 
+            BtnContentBackColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentBackColor.Location = new System.Drawing.Point(261, 221);
+            BtnContentBackColor.Name = "BtnContentBackColor";
+            BtnContentBackColor.Size = new System.Drawing.Size(99, 23);
+            BtnContentBackColor.TabIndex = 42;
+            BtnContentBackColor.Text = "Achtergrond";
+            BtnContentBackColor.UseVisualStyleBackColor = true;
+            BtnContentBackColor.Click += BtnContentBackColor_Click;
+            // 
+            // BtnContentTextColor
+            // 
+            BtnContentTextColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            BtnContentTextColor.Location = new System.Drawing.Point(261, 197);
+            BtnContentTextColor.Name = "BtnContentTextColor";
+            BtnContentTextColor.Size = new System.Drawing.Size(99, 23);
+            BtnContentTextColor.TabIndex = 40;
+            BtnContentTextColor.Text = "Textkleur";
+            BtnContentTextColor.UseVisualStyleBackColor = true;
+            BtnContentTextColor.Click += BtnContentTextColor_Click;
+            // 
+            // TxtCustomStyleExample
+            // 
+            TxtCustomStyleExample.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtCustomStyleExample.AutoCMaxHeight = 9;
+            TxtCustomStyleExample.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            TxtCustomStyleExample.HScrollBar = false;
+            TxtCustomStyleExample.Location = new System.Drawing.Point(382, 197);
+            TxtCustomStyleExample.Name = "TxtCustomStyleExample";
+            TxtCustomStyleExample.ReadOnly = true;
+            TxtCustomStyleExample.Size = new System.Drawing.Size(305, 47);
+            TxtCustomStyleExample.TabIndents = true;
+            TxtCustomStyleExample.TabIndex = 39;
             // 
             // pictureBox18
             // 
@@ -841,7 +884,7 @@ namespace LogScraper.Log
             TxtContentBeforeAndAfterPhrases.Multiline = true;
             TxtContentBeforeAndAfterPhrases.Name = "TxtContentBeforeAndAfterPhrases";
             TxtContentBeforeAndAfterPhrases.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(446, 160);
+            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(446, 90);
             TxtContentBeforeAndAfterPhrases.TabIndex = 21;
             TxtContentBeforeAndAfterPhrases.TextChanged += TxtContentBeforeAndAfterPhrases_TextChanged;
             // 
@@ -921,6 +964,17 @@ namespace LogScraper.Log
             BtnContentUp.TabIndex = 17;
             BtnContentUp.UseVisualStyleBackColor = true;
             BtnContentUp.Click += BtnContentUp_Click;
+            // 
+            // ChkColorContentPropertyLogEntries
+            // 
+            ChkColorContentPropertyLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            ChkColorContentPropertyLogEntries.Location = new System.Drawing.Point(241, 180);
+            ChkColorContentPropertyLogEntries.Name = "ChkColorContentPropertyLogEntries";
+            ChkColorContentPropertyLogEntries.Size = new System.Drawing.Size(373, 20);
+            ChkColorContentPropertyLogEntries.TabIndex = 41;
+            ChkColorContentPropertyLogEntries.Text = "Kleur regels met deze content";
+            ChkColorContentPropertyLogEntries.UseVisualStyleBackColor = true;
+            ChkColorContentPropertyLogEntries.CheckedChanged += ChkColorContentPropertyLogEntries_CheckedChanged;
             // 
             // tabPageTransformers
             // 
@@ -1143,5 +1197,9 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox ChkShowMetadataByDefault;
         private System.Windows.Forms.CheckBox ChkMetadataEndRegex;
         private System.Windows.Forms.Panel PnlUsedForScalingCapability;
+        private ScintillaNET.Scintilla TxtCustomStyleExample;
+        private System.Windows.Forms.Button BtnContentBackColor;
+        private System.Windows.Forms.Button BtnContentTextColor;
+        private System.Windows.Forms.CheckBox ChkColorContentPropertyLogEntries;
     }
 }

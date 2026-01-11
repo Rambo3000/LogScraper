@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using LogScraper.Utilities.IndexDictionary;
 using Newtonsoft.Json;
 
@@ -38,6 +39,21 @@ namespace LogScraper.Log.Content
         /// Indicates whether an error is logged in the log entry if this log content property is present.
         /// </summary>
         public bool IsErrorProperty { get; set; } = false;
+
+        /// <summary>
+        /// Indicates whether a custom color is active for this log content property.
+        /// </summary>
+        public bool IsCustomStyleEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the color used to display log text.
+        /// </summary>
+        public Color CustomTextColor { get; set; } = Color.Empty;
+
+        /// <summary>
+        /// Gets or sets the background color used for log display.
+        /// </summary>
+        public Color CustomBackColor { get; set; } = Color.Empty;
 
         /// <summary>
         /// Description of the content property which is a filter for the end of a flow tree.
@@ -110,6 +126,37 @@ namespace LogScraper.Log.Content
         public override string ToString()
         {
             return Description;
+        }
+        /// <summary>
+        /// Creates a deep copy of the current LogContentProperty instance, including its filter criteria and related
+        /// property values.
+        /// </summary>
+        /// <remarks>The returned copy is independent of the original instance. Changes to the copied
+        /// LogContentProperty or its filter criteria do not affect the original object.</remarks>
+        /// <returns>A new LogContentProperty instance that is a deep copy of the current instance. All filter criteria and
+        /// property values are duplicated.</returns>
+        internal LogContentProperty Copy()
+        {
+            LogContentProperty newProperty = new()
+            {
+                Description = Description,
+                IsErrorProperty = IsErrorProperty,
+                IsBeginFlowTreeFilter = IsBeginFlowTreeFilter,
+                IsCustomStyleEnabled = IsCustomStyleEnabled,
+                CustomTextColor = CustomTextColor,
+                CustomBackColor = CustomBackColor,
+                EndFlowTreeContentProperty = EndFlowTreeContentProperty,
+                EndFlowTreeContentPropertyDescription = EndFlowTreeContentPropertyDescription
+            };
+            foreach (FilterCriteria criteria in Criterias)
+            {
+                newProperty.Criterias.Add(new FilterCriteria()
+                {
+                    BeforePhrase = criteria.BeforePhrase,
+                    AfterPhrase = criteria.AfterPhrase
+                });
+            }
+            return newProperty;
         }
     }
 

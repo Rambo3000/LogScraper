@@ -19,7 +19,6 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
-        /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
         /// <returns>A single string containing the processed log data.</returns>
         public static string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, out int entryCount)
         {
@@ -100,7 +99,6 @@ namespace LogScraper.Log
         /// Converts the specified range of log entries into a single string, optionally reducing the number of log entries for display.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="reduceNumberOfLogEntriesForDisplaying">Whether to reduce the number of log entries for display purposes.</param>
         /// <param name="startIndex">The starting index of the log entries to include.</param>
         /// <param name="endIndex">The ending index of the log entries to include.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
@@ -219,7 +217,7 @@ namespace LogScraper.Log
         /// prefix is calculated for the previous depth level.</param>
         /// <returns>A string consisting of tab characters (<c>'\t'</c>) representing the depth of the node in the tree.  Returns
         /// an empty string if the node is the root node or if the calculated depth is zero.</returns>
-        public static string GetTreePrefix(LogFlowTreeNode node, bool isBeginOrEndNode)
+        private static string GetTreePrefix(LogFlowTreeNode node, bool isBeginOrEndNode)
         {
             if (node == null || node.IsRootNode)
                 return string.Empty;

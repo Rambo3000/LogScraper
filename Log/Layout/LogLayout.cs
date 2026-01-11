@@ -148,38 +148,11 @@ namespace LogScraper.Log.Layout
 
             foreach (LogMetadataProperty property in LogMetadataProperties)
             {
-                LogMetadataProperty newProperty = new()
-                {
-                    Description = property.Description,
-                    IsSessionData = property.IsSessionData,
-                    IsDefaultVisibleInLog = property.IsDefaultVisibleInLog,
-                    Criteria = new FilterCriteria()
-                    {
-                        BeforePhrase = property.Criteria.BeforePhrase,
-                        AfterPhrase = property.Criteria.AfterPhrase
-                    }
-                };
-                layoutCopy.LogMetadataProperties.Add(newProperty);
+                layoutCopy.LogMetadataProperties.Add(property.Copy());
             }
             foreach (LogContentProperty property in LogContentProperties)
             {
-                LogContentProperty newProperty = new()
-                {
-                    Description = property.Description,
-                    IsErrorProperty = property.IsErrorProperty,
-                    IsBeginFlowTreeFilter = property.IsBeginFlowTreeFilter,
-                    EndFlowTreeContentProperty = property.EndFlowTreeContentProperty,
-                    EndFlowTreeContentPropertyDescription = property.EndFlowTreeContentPropertyDescription
-                };
-                foreach (FilterCriteria criteria in property.Criterias)
-                {
-                    newProperty.Criterias.Add(new FilterCriteria()
-                    {
-                        BeforePhrase = criteria.BeforePhrase,
-                        AfterPhrase = criteria.AfterPhrase
-                    });
-                }
-                layoutCopy.LogContentProperties.Add(newProperty);
+                layoutCopy.LogContentProperties.Add(property.Copy());
             }
             if (LogTransformers != null)
             {

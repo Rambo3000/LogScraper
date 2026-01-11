@@ -91,5 +91,27 @@ namespace LogScraper.Log.Metadata
             }
             return HashCodeCache;
         }
+        /// <summary>
+        /// Creates a new instance of the LogMetadataProperty class that is a copy of the current instance.
+        /// </summary>
+        /// <remarks>The returned copy is a shallow copy for most properties, except for the Criteria
+        /// property, which is copied by creating a new FilterCriteria instance with the same BeforePhrase and
+        /// AfterPhrase values. Changes to the Criteria property of the returned object do not affect the original
+        /// instance.</remarks>
+        /// <returns>A new LogMetadataProperty object with the same property values as the current instance.</returns>
+        public LogMetadataProperty Copy()
+        {
+            return new()
+            {
+                Description = Description,
+                IsSessionData = IsSessionData,
+                IsDefaultVisibleInLog = IsDefaultVisibleInLog,
+                Criteria = new FilterCriteria()
+                {
+                    BeforePhrase = Criteria.BeforePhrase,
+                    AfterPhrase = Criteria.AfterPhrase
+                }
+            };
+        }
     }
 }

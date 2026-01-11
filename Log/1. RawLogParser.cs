@@ -196,7 +196,7 @@ namespace LogScraper.Log
         /// <param name="dateTimeFormat">The expected date-time format at the start of the log entry.</param>
         /// <param name="timestamp">The parsed DateTime object.</param>
         /// <returns></returns>
-        public static bool TryGetDateTimeFromRawLogEntry(string rawLogEntry, string dateTimeFormat, out DateTime timestamp)
+        private static bool TryGetDateTimeFromRawLogEntry(string rawLogEntry, string dateTimeFormat, out DateTime timestamp)
         {
             if (rawLogEntry.Length < dateTimeFormat.Length)
             {

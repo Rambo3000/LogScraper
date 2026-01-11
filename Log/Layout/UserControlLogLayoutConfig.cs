@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
@@ -8,6 +9,8 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
+using LogScraper.Utilities;
+using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
@@ -26,6 +29,17 @@ namespace LogScraper.Log
             LstLayouts.DisplayMember = "Description";
             LstContent.DisplayMember = "Description";
             LstMetadata.DisplayMember = "Description";
+
+            TxtCustomStyleExample.Initialize();
+            TxtCustomStyleExample.HideUnusedMargins();
+            string dateTimeNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            TxtCustomStyleExample.ReadOnly = false;
+            TxtCustomStyleExample.Text = dateTimeNow + " Dit is een voorbeeld zonder aangepaste kleuren" + Environment.NewLine +
+                                        dateTimeNow + " Dit is een voorbeeld met aangepaste kleuren" + Environment.NewLine +
+                                        dateTimeNow + " Dit is een voorbeeld met selectie en aangepaste kleuren";
+            TxtCustomStyleExample.EmptyUndoBuffer();
+            TxtCustomStyleExample.ReadOnly = true;
+            TxtCustomStyleExample.HighlightSingleLine(2, 11);
         }
         public void Clear()
         {
@@ -326,6 +340,8 @@ namespace LogScraper.Log
                 TxtContentBeforeAndAfterPhrases.Text = GenerateFilterCriteriaText(selected.Criterias);
                 ChkContentPropertyIsError.Checked = selected.IsErrorProperty;
                 ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
+                ChkColorContentPropertyLogEntries.Checked = selected.IsCustomStyleEnabled;
+                UpdateTxtCustomStyleExample();
                 CboContentFilterMarksEnd.Items.Clear();
                 CboContentFilterMarksEnd.Items.AddRange([.. LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected)]);
                 if (selected.EndFlowTreeContentProperty != null) CboContentFilterMarksEnd.SelectedItem = selected.EndFlowTreeContentProperty;
@@ -703,6 +719,59 @@ namespace LogScraper.Log
 
             if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.IsRegex = ChkMetadataEndRegex.Checked;
 
+        }
+
+        private void BtnContentBackColor_Click(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+            if (LstContent.SelectedItem is not LogContentProperty selectedContentProperty) return;
+
+            if (GdiColorPickerDialog.ShowDialog(this, selectedContentProperty.CustomBackColor, out Color? selectedColor) == DialogResult.OK)
+            {
+                selectedContentProperty.CustomBackColor = (Color)selectedColor;
+                UpdateTxtCustomStyleExample();
+            }
+        }
+
+        private void BtnContentTextColor_Click(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+            if (LstContent.SelectedItem is not LogContentProperty selectedContentProperty) return;
+
+            if (GdiColorPickerDialog.ShowDialog(this, selectedContentProperty.CustomTextColor, out Color? selectedColor) == DialogResult.OK)
+            {
+                selectedContentProperty.CustomTextColor = (Color)selectedColor;
+                UpdateTxtCustomStyleExample();
+            }
+        }
+
+        private void ChkColorContentPropertyLogEntries_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            BtnContentBackColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
+            BtnContentTextColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
+            TxtCustomStyleExample.Enabled = ChkColorContentPropertyLogEntries.Checked;
+
+            if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
+            {
+                selectedContentProperty.IsCustomStyleEnabled = ChkColorContentPropertyLogEntries.Checked;
+                UpdateTxtCustomStyleExample();
+            }
+
+        }
+
+        private void UpdateTxtCustomStyleExample()
+        {
+            TxtCustomStyleExample.ResetAllStyles();
+            if (!ChkColorContentPropertyLogEntries.Checked) return;
+            if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
+            {
+                const int styleIndex = 64;
+                TxtCustomStyleExample.SetStyleFromLogContentProperty(selectedContentProperty, styleIndex);
+                TxtCustomStyleExample.StyleSingleLine(1, styleIndex);
+                TxtCustomStyleExample.StyleSingleLine(2, styleIndex);
+            }
         }
     }
 }

@@ -22,9 +22,8 @@ namespace LogScraper.Utilities.UserControls
         private LogExportSettings LogExportSettings;
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
-        private LogEntry logEntrySelected = null;
-        private List<LogContentProperty> ErrorContentProperties;
-        private List<int> errorLineNumbers = [];
+        private List<LogContentProperty> contentPropertiesWithCustomColoring;
+        private Dictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private int? selectedIndex = -1;
 
         public UserControlLogEntriesTextBox()
@@ -50,8 +49,8 @@ namespace LogScraper.Utilities.UserControls
         #region Update log layout and filter result
         public void UpdateLogLayout(LogLayout logLayout)
         {
-            ErrorContentProperties = [.. logLayout.LogContentProperties.Where(item => item.IsErrorProperty)];
-            errorLineNumbers = DetermineErrorLineNumbers();
+            contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
+            contentLinesToStyle = DetermineContentLinesToStyle();
             CboLogContentType.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -74,7 +73,7 @@ namespace LogScraper.Utilities.UserControls
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogExportSettings = logExportSettings;
             VisibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
-            errorLineNumbers = DetermineErrorLineNumbers();
+            contentLinesToStyle = DetermineContentLinesToStyle();
             ShowLogEntries();
         }
         private void ShowLogEntries()
@@ -94,6 +93,7 @@ namespace LogScraper.Utilities.UserControls
 
             ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree));
             HighlightLines();
+            StyleLines();
 
             try
             {
@@ -127,52 +127,63 @@ namespace LogScraper.Utilities.UserControls
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
 
-
-                TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex, errorLineNumbers);
+                TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
             }
         }
         /// <summary>
-        /// Determines the list of line numbers of log entries that contain error properties.
+        /// Applies custom styling to the currently visible log entries in the log display
+        /// control.
         /// </summary>
-        /// <remarks>This method iterates through the visible log entries and checks for the presence of 
-        /// error-related properties defined in <see cref="ErrorContentProperties"/>. If a log entry  contains any of
-        /// these properties, its corresponding line number is added to the result.</remarks>
-        /// <returns>A list of integers representing the line numbers of log entries that match the error criteria. The list will
-        /// be empty if no matching log entries are found.</returns>
-        private List<int> DetermineErrorLineNumbers()
+        /// <remarks>This method updates the visual appearance of log lines based on their content and any
+        /// custom coloring rules. It has no effect if there are no visible log entries.</remarks>
+        private void StyleLines()
         {
-            List<int> errorLines = [];
-
-            if (VisibleLogEntries == null) return errorLines;
-
-            for (int i = 0; i < VisibleLogEntries.Count; i++)
+            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
             {
-                LogEntry logEntry = VisibleLogEntries[i];
-                if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
+                TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, contentLinesToStyle);
+            }
+        }
+        /// <summary>
+        /// Identifies the line indexes of visible log entries that should be styled for each content property with
+        /// custom coloring.
+        /// </summary>
+        /// <returns>An IndexDictionary mapping each content property with custom coloring to a list of line indexes in the
+        /// visible log entries that should be styled. If there are no visible log entries, all lists will be empty.</returns>
+        private Dictionary<LogContentProperty, List<int>> DetermineContentLinesToStyle()
+        {
+            Dictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring.Count);
 
-                foreach (LogContentProperty errorproperties in ErrorContentProperties)
+            if (VisibleLogEntries == null) return logEntriesToStylePerContentProperty;
+
+            foreach (LogContentProperty LogContentProperty in contentPropertiesWithCustomColoring)
+            {
+                List<int> logEntriesIndexes = [];
+                logEntriesToStylePerContentProperty[LogContentProperty] = logEntriesIndexes;
+
+                for (int i = 0; i < VisibleLogEntries.Count; i++)
                 {
-                    if (!logEntry.LogContentProperties.ContainsKey(errorproperties)) continue;
+                    LogEntry logEntry = VisibleLogEntries[i];
+                    if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
+
+                    if (!logEntry.LogContentProperties.ContainsKey(LogContentProperty)) continue;
 
                     if (TryGetLogEntryIndex(logEntry, out int logEntryIndex))
                     {
-                        errorLines.Add(logEntryIndex);
+                        logEntriesIndexes.Add(logEntryIndex);
                     }
                 }
             }
 
-            return errorLines;
+            return logEntriesToStylePerContentProperty;
         }
 
         public void SelectLogEntry(LogEntry selectedLogEntry)
         {
             if (selectedLogEntry == null)
             {
-                logEntrySelected = null;
                 selectedIndex = null;
                 return;
             }
-            logEntrySelected = selectedLogEntry;
 
             bool found = TryGetLogEntryIndex(selectedLogEntry, out int selectedIndexNew);
 
@@ -211,12 +222,14 @@ namespace LogScraper.Utilities.UserControls
         {
             logEntryBegin = logEntryBeginNew;
             HighlightLines();
+            StyleLines();
             if (logEntryBeginNew != null) TxtLogEntries.ScrollToLine(0);
         }
         public void ApplyEndFilter(LogEntry logEntryEndNew)
         {
             logEntryEnd = logEntryEndNew;
             HighlightLines();
+            StyleLines();
             if (logEntryEndNew != null) TxtLogEntries.ScrollToLine(TxtLogEntries.Lines.Count - 1);
         }
         #endregion
