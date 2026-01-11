@@ -68,11 +68,11 @@ namespace LogScraper.Utilities.UserControls
             UpdatePnlViewModeSizeAndVisibility();
         }
 
-        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, LogExportSettings logExportSettings)
+        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogExportSettings logExportSettings)
         {
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogExportSettings = logExportSettings;
-            VisibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResultNew, logExportSettings);
+            VisibleLogEntries = visibleLogEntries;
             contentLinesToStyle = DetermineContentLinesToStyle();
             ShowLogEntries();
         }

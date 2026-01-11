@@ -18,7 +18,7 @@ namespace LogScraper
 
         private const string DefaulSearchtText = "Zoeken...";
         public event Action<string, SearchDirectionUserControl, bool, bool, bool> Search;
-        private LogMetadataFilterResult LogMetadataFilterResult;
+        private List<LogEntry> LogEntries ;
 
         private SearchEvent LastSearchEvent = null;
         public UserControlSearch()
@@ -97,7 +97,7 @@ namespace LogScraper
             //Reset item height to default in for weird windows scaling cases
             LstLogContent.ItemHeight = LstLogContent.Font.Height;
 
-            if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
+            if (LogEntries == null || LogEntries.Count == 0)
             {
                 Clear();
                 return;
@@ -105,8 +105,8 @@ namespace LogScraper
 
             SearchEvent searchEventNew = new()
             {
-                FirstLogEntry = LogMetadataFilterResult.LogEntries.FirstOrDefault(),
-                LastLogEntry = LogMetadataFilterResult.LogEntries.LastOrDefault(),
+                FirstLogEntry = LogEntries.FirstOrDefault(),
+                LastLogEntry = LogEntries.LastOrDefault(),
                 SearchText = txtSearch.Text,
                 CaseSensitive = chkCaseSensitive.Checked,
                 IsMetadataSearchEnabled = IsMetadataSearchEnabled,
@@ -126,7 +126,6 @@ namespace LogScraper
                 previouslySelectedLogEntry = selectedItem.OriginalLogEntry;
             }
 
-            List<LogEntry> entries = LogMetadataFilterResult.LogEntries;
             bool didIncrementalAppend = false;
 
             // Search requirements for incremental appending:
@@ -142,15 +141,15 @@ namespace LogScraper
                 && !Equals(LastSearchEvent.LastLogEntry, searchEventNew.LastLogEntry))
             {
                 // Find the index of the last log entry from the previous search
-                int oldLastIndex = entries.FindIndex(delegate (LogEntry le) { return Equals(le, LastSearchEvent.LastLogEntry); });
+                int oldLastIndex = LogEntries.FindIndex(delegate (LogEntry le) { return Equals(le, LastSearchEvent.LastLogEntry); });
 
                 if (oldLastIndex >= 0)
                 {
                     int startIndex = oldLastIndex + 1;
-                    if (startIndex <= entries.Count - 1)
+                    if (startIndex <= LogEntries.Count - 1)
                     {
                         // Only search the new entries that were added since the last search
-                        List<LogEntryDisplayObject> newResults = SearchLogEntriesInRange(entries, startIndex, entries.Count - 1, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+                        List<LogEntryDisplayObject> newResults = SearchLogEntriesInRange(LogEntries, startIndex, LogEntries.Count - 1, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
                         for (int i = 0; i < newResults.Count; i++)
                         {
                             LstLogContent.Items.Add(newResults[i]);
@@ -170,13 +169,13 @@ namespace LogScraper
                 // Full refresh of the search results
                 LstLogContent.Items.Clear();
 
-                if (IsSearchEmpty() || LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
+                if (IsSearchEmpty() || LogEntries == null)
                 {
                     LastSearchEvent = searchEventNew;
                     return;
                 }
 
-                List<LogEntryDisplayObject> results = SearchLogEntries(entries, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
+                List<LogEntryDisplayObject> results = SearchLogEntries(LogEntries, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
                 for (int i = 0; i < results.Count; i++)
                 {
                     LstLogContent.Items.Add(results[i]);
@@ -619,9 +618,9 @@ namespace LogScraper
         {
             SelectedItemChanged?.Invoke(this, e);
         }
-        public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
+        public void UpdateLogEntries(List<LogEntry> logEntries)
         {
-            LogMetadataFilterResult = logMetadataFilterResult;
+            LogEntries = logEntries;
 
             //Do not search automatically after the log has been cleared
             if (LastSearchEvent == null || LastSearchEvent.FirstLogEntry == null) return;
