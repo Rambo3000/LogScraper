@@ -36,7 +36,7 @@ namespace LogScraper.LogProviders.File
             openFileDialog.InitialDirectory = "C:\\"; // Set the initial directory (optional)
 
             // Define file filters
-            openFileDialog.Filter = "Text Files|*.txt|CSV Files|*.csv|Tab-Delimited Files|*.tsv|Log Files|*.log|XML Files|*.xml|JSON Files|*.json|All Files|*.*";
+            openFileDialog.Filter ="Text Files (*.txt;*.csv;*.tsv;*.log;*.xml;*.json)|*.txt;*.csv;*.tsv;*.log;*.xml;*.json|All Files (*.*)|*.*";
             openFileDialog.FilterIndex = 1; // Set the default filter index (optional)
             openFileDialog.RestoreDirectory = true; // Restore the previous directory (optional)
 
