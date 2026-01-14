@@ -274,7 +274,7 @@ namespace LogScraper.Configuration
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 37;
             pictureBox1.TabStop = false;
-            toolTip.SetToolTip(pictureBox1, "Toont bij de begin- en eindfilters een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type content waarop gefilterd wordt.");
+            toolTip.SetToolTip(pictureBox1, "Toont bij resultaten van de filtering op inhoud (rechts in het scherm) een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type waarop gefilterd wordt.");
             // 
             // pictureBox16
             // 
@@ -292,10 +292,16 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
             ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
             ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
-            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(280, 19);
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(380, 19);
             ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
-            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error regels altijd in de begin en eind filters";
+            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error regels altijd tussen de resultaten van de filters op inhoud";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
+            // 
+            // toolTip
+            // 
+            toolTip.AutoPopDelay = 9999999;
+            toolTip.InitialDelay = 500;
+            toolTip.ReshowDelay = 100;
             // 
             // PnlUsedForScalingCompatiblity
             // 

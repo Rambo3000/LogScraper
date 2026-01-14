@@ -696,7 +696,7 @@ namespace LogScraper.Log
             tabPageContentFilters.Padding = new System.Windows.Forms.Padding(3);
             tabPageContentFilters.Size = new System.Drawing.Size(699, 342);
             tabPageContentFilters.TabIndex = 1;
-            tabPageContentFilters.Text = "Content begin en eind filters";
+            tabPageContentFilters.Text = "Inhoudsfilters";
             tabPageContentFilters.UseVisualStyleBackColor = true;
             // 
             // GrpContent
@@ -729,7 +729,7 @@ namespace LogScraper.Log
             GrpContent.Size = new System.Drawing.Size(693, 336);
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
-            GrpContent.Text = "Content begin en eind filters";
+            GrpContent.Text = "Inhoudsfilters";
             // 
             // BtnContentBackColor
             // 
@@ -975,7 +975,7 @@ namespace LogScraper.Log
             ChkColorContentPropertyLogEntries.Name = "ChkColorContentPropertyLogEntries";
             ChkColorContentPropertyLogEntries.Size = new System.Drawing.Size(373, 20);
             ChkColorContentPropertyLogEntries.TabIndex = 41;
-            ChkColorContentPropertyLogEntries.Text = "Kleur regels met deze content";
+            ChkColorContentPropertyLogEntries.Text = "Kleur logregels met deze inhoud";
             ChkColorContentPropertyLogEntries.UseVisualStyleBackColor = true;
             ChkColorContentPropertyLogEntries.CheckedChanged += ChkColorContentPropertyLogEntries_CheckedChanged;
             // 
@@ -1075,6 +1075,12 @@ namespace LogScraper.Log
             pictureBox2.TabIndex = 27;
             pictureBox2.TabStop = false;
             toolTip.SetToolTip(pictureBox2, resources.GetString("pictureBox2.ToolTip"));
+            // 
+            // toolTip
+            // 
+            toolTip.AutoPopDelay = 9999999;
+            toolTip.InitialDelay = 500;
+            toolTip.ReshowDelay = 100;
             // 
             // UserControlLogLayoutConfig
             // 

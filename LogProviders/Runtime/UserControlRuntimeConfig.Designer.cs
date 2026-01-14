@@ -416,6 +416,12 @@ namespace LogScraper.LogProviders.Kubernetes
             lblLogLayout.TabIndex = 10;
             lblLogLayout.Text = "Standaard log layout";
             // 
+            // Tooltip
+            // 
+            Tooltip.AutoPopDelay = 9999999;
+            Tooltip.InitialDelay = 500;
+            Tooltip.ReshowDelay = 100;
+            // 
             // PnlUsedForScalingCompatibility
             // 
             PnlUsedForScalingCompatibility.Controls.Add(lblLogLayout);

@@ -124,7 +124,7 @@
     <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
 - de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
 - de metadata die per logregel weggeschreven wordt en waarop gefilterd kan worden.
-- eventuele inhoudelijke gegevens (content) waarop gezocht kan worden. Dit wordt gebruikt voor de begin en eind filters.</value>
+- inhoudelijke gegevens waar snel heen genavigeerd kan worden en welke in het log gekleurd kan worden</value>
   </data>
   <data name="pictureBox11.ToolTip" xml:space="preserve">
     <value>Geef de tekst die het einde van de metadata, en het begin van de daadwerkelijke log regel content identificeerd.
@@ -173,14 +173,14 @@ Geef dan op: API call: =&gt; is being started</value>
   </data>
   <data name="pictureBox6.ToolTip" xml:space="preserve">
     <value>Geef hier filters op voor de inhoudelijke waardes in het log. Deze kunnen gebruikt worden voor snel kunnen vinden van de gewenste logregel. 
-In de applicatie verschijnt dit bij de begin en eind filters
+In de applicatie verschijnt dit bij de inhoudsfilters rechts in het scherm.
 
 Bijvoorbeeld:
 2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
 Dan kan de tekst voor de waarde zijn: API call: 
 De tekst na de waarde mag leeg blijven.
 
-Let op! De applicatie kan langzamer worden indien de content in vele logregels voorkomt.</value>
+Let op! De applicatie kan langzamer worden indien er veel filters zijn opgegeven</value>
   </data>
   <data name="pictureBox2.ToolTip" xml:space="preserve">
     <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.

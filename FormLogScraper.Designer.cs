@@ -405,7 +405,7 @@
             groupBox6.Size = new System.Drawing.Size(246, 331);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
-            groupBox6.Text = "Filter op inhoud";
+            groupBox6.Text = "Inhoudsfilters";
             // 
             // UserControlContentFilter
             // 
@@ -540,6 +540,12 @@
             label2.Size = new System.Drawing.Size(43, 15);
             label2.TabIndex = 24;
             label2.Text = "Layout";
+            // 
+            // ToolTip
+            // 
+            ToolTip.AutoPopDelay = 9999999;
+            ToolTip.InitialDelay = 500;
+            ToolTip.ReshowDelay = 100;
             // 
             // FormLogScraper
             // 

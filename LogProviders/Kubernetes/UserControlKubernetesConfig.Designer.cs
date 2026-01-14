@@ -494,6 +494,12 @@ namespace LogScraper.LogProviders.Kubernetes
             pictureBox1.TabStop = false;
             toolTip1.SetToolTip(pictureBox1, "De tijdspanne limiteerd het downloaden van het log tot de aangegeven periode. DIt is handig wanneer er een groot logbestand aanwezig is en alleen recente data opgehaald hoeft te worden.");
             // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 9999999;
+            toolTip1.InitialDelay = 500;
+            toolTip1.ReshowDelay = 100;
+            // 
             // PnlUsedForScalingCompatibility
             // 
             PnlUsedForScalingCompatibility.Controls.Add(pictureBox1);
