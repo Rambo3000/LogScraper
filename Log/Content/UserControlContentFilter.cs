@@ -718,6 +718,7 @@ namespace LogScraper
 
         private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            LstLogContent.Items.Clear();
             UpdateDisplayedLogEntries();
             UpdateShowTreeControls(false);
 
