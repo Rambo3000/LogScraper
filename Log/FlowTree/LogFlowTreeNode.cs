@@ -213,5 +213,12 @@ namespace LogScraper.Log.FlowTree
             foundNode = null;
             return false;
         }
+        /// <summary>
+        /// Returns a string representation of the LogFlowTreeNode.
+        /// </summary>
+        public override string ToString()
+        {
+            return Key.ToString();
+        }
     }
 }

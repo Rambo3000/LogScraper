@@ -219,11 +219,11 @@ namespace LogScraper.Log
         /// an empty string if the node is the root node or if the calculated depth is zero.</returns>
         private static string GetTreePrefix(LogFlowTreeNode node, bool isBeginOrEndNode)
         {
-            if (node == null || node.IsRootNode)
+            if (node == null || (node.IsRootNode && isBeginOrEndNode))
                 return string.Empty;
 
             // Calculate the actual depth, because the begin and end entry we want to show on the previous depth
-            int depth = node.Depth + (isBeginOrEndNode ? -1 : 0);
+            int depth = node.Depth + (isBeginOrEndNode ? 0 : 1);
             if (depth == 0) return "";
             return new string('\t', depth * 2);
         }
