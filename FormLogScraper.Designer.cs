@@ -71,6 +71,9 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
+            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
@@ -93,6 +96,7 @@
             splitContainer1.SuspendLayout();
             GrpLogProvidersSettings.SuspendLayout();
             GrpSourceAndLayout.SuspendLayout();
+            ContextMenuReset.SuspendLayout();
             SuspendLayout();
             // 
             // BtnRecord
@@ -209,9 +213,10 @@
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
-            ToolTip.SetToolTip(BtnErase, "Wis het log");
+            ToolTip.SetToolTip(BtnErase, "Wis het log. Rechtermuisklik voor reset");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
+            BtnErase.MouseUp += BtnErase_MouseUp;
             // 
             // BtnStop
             // 
@@ -547,6 +552,27 @@
             ToolTip.InitialDelay = 500;
             ToolTip.ReshowDelay = 100;
             // 
+            // ContextMenuReset
+            // 
+            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemReset, ToolStripMenuItemClear });
+            ContextMenuReset.Name = "ContextMenuReset";
+            ContextMenuReset.ShowImageMargin = false;
+            ContextMenuReset.Size = new System.Drawing.Size(89, 48);
+            // 
+            // ToolStripMenuItemReset
+            // 
+            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
+            ToolStripMenuItemReset.Size = new System.Drawing.Size(88, 22);
+            ToolStripMenuItemReset.Text = "Reset";
+            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
+            // 
+            // ToolStripMenuItemClear
+            // 
+            ToolStripMenuItemClear.Name = "ToolStripMenuItemClear";
+            ToolStripMenuItemClear.Size = new System.Drawing.Size(88, 22);
+            ToolStripMenuItemClear.Text = "Wis log";
+            ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -586,6 +612,7 @@
             GrpLogProvidersSettings.ResumeLayout(false);
             GrpSourceAndLayout.ResumeLayout(false);
             GrpSourceAndLayout.PerformLayout();
+            ContextMenuReset.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -635,5 +662,8 @@
         private UserControlMemoryUsage userControlMemoryUsage1;
         private Utilities.UserControls.UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
         private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuReset;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
     }
 }

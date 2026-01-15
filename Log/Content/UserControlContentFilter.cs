@@ -475,6 +475,18 @@ namespace LogScraper
                 return ((LogContentProperty)CboLogContentType.SelectedItem);
             }
         }
+        public void Reset()
+        {
+            ClearSelectedLogEntry();
+            selectedEndEntryDisplayObject = null;
+            selectedBeginEntryDisplayObject = null;
+            LogContentPropertiesError = [];
+            LogMetadataPropertiesUserSession = [];
+            LogEntriesAreSingleSession = false;
+            IsSessionMetadataFilteringActive = false;
+            LogMetadataFilterResult = null;
+            UpdateTopBottomControls();
+        }
         #endregion
 
         #region Draw listbox items
@@ -541,8 +553,8 @@ namespace LogScraper
             // Indentation
             const int indentPerLevel = 10;
             int timeX = e.Bounds.Left;
-            
-            if ( TimeDescriptionFixedWidth == -1)
+
+            if (TimeDescriptionFixedWidth == -1)
             {
                 // Calculate the fixed width for TimeDescription based on the widest possible time description
                 // This is required when the application is scaled to non-100%

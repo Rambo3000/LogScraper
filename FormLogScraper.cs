@@ -216,12 +216,14 @@ namespace LogScraper
         }
         private void Reset()
         {
+            Erase();
             currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
+            UserControlContentFilter.Reset();
+            UserControlContentFilter.UpdateLogLayout((LogLayout)cboLogLayout.SelectedItem);
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
-            Erase();
 
             //Force memory cleanup
             GC.Collect();
@@ -345,6 +347,23 @@ namespace LogScraper
         {
             Erase();
         }
+        private void BtnErase_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            ContextMenuReset.Show(BtnErase, e.Location);
+        }
+        private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
+        private void ToolStripMenuItemClear_Click(object sender, EventArgs e)
+        {
+            Erase();
+        }
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
             LogExportWorkerManager.OpenFileInExternalEditor();
@@ -432,7 +451,6 @@ namespace LogScraper
         {
             if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UserControlContentFilter.UpdateLogLayout(logLayout);
             UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
             Reset();
@@ -497,7 +515,7 @@ namespace LogScraper
             if (keyData == (Keys.Control | Keys.B))
             {
                 UserControlContentFilter.SelectLogEntryBegin();
-                return true; 
+                return true;
             }
 
             // CTRL-E enables the end content filter
