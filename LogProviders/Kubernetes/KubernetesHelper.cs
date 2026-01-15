@@ -39,7 +39,6 @@ namespace LogScraper.LogProviders.Kubernetes
         /// Parses the JSON to retrieve details such as pod name, image name, version, and description.
         /// </summary>
         /// <param name="jsonFromPodsResponse">The JSON response containing pod information.</param>
-        /// <param name="ShortenPodNamesValues">A list of values used to shorten pod names for descriptions.</param>
         /// <returns>A list of <see cref="KubernetesPod"/> objects containing extracted pod details.</returns>
         internal static List<KubernetesPod> ExtractPodsInfo(string jsonFromPodsResponse, List<string> shortenPodNamesValues)
         {

@@ -66,7 +66,8 @@ namespace LogScraper.LogProviders.Kubernetes
                     Description = kubernetesNamespace.Description,
                     Name = kubernetesNamespace.Name,
                     ShortenPodNames = kubernetesNamespace.ShortenPodNames,
-                    ShortenPodNamesValues = kubernetesNamespace.ShortenPodNamesValues
+                    ShortenPodNamesValues = [.. kubernetesNamespace.ShortenPodNamesValues ?? []],
+                    DefaultSelectedPodNameParts = [.. kubernetesNamespace.DefaultSelectedPodNameParts]
                 };
                 cluster.Namespaces.Add(newSpace);
             }

@@ -34,6 +34,11 @@ namespace LogScraper.LogProviders.Kubernetes
         public List<string> ShortenPodNamesValues { get; set; }
 
         /// <summary>
+        /// Gets or sets the collection of default selected pod name parts.
+        /// </summary>
+        public List<string> DefaultSelectedPodNameParts { get; set; } = [];
+
+        /// <summary>
         /// Returns the string representation of the namespace.
         /// </summary>
         /// <returns>The description of the namespace.</returns>

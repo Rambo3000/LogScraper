@@ -139,20 +139,43 @@ namespace LogScraper.LogProviders.Kubernetes
                 List<KubernetesPod> kubernetesPods = KubernetesHelper.ExtractPodsInfo(rawConfig, SelectedKubernetesNamespace.ShortenPodNames ? SelectedKubernetesNamespace.ShortenPodNamesValues : null);
 
                 cboKubernetesPod.Items.AddRange([.. kubernetesPods]);
+
+                //First try to preselect the previously selected pod
+                if (selectedKubernetesPodImageName != null)
+                {
+                    if (selectedKubernetesPodImageName == null) return;
+
+                    foreach (KubernetesPod kubernetesPod in kubernetesPods)
+                    {
+                        if (kubernetesPod.ImageName == selectedKubernetesPodImageName)
+                        {
+                            cboKubernetesPod.SelectedItem = kubernetesPod;
+                            return;
+                        }
+                    }
+                }
+
+                //Try to select the default pod based on name parts 
+                if (selectedKubernetesPodImageName == null && SelectedKubernetesNamespace.DefaultSelectedPodNameParts.Count > 0)
+                {
+                    foreach (KubernetesPod kubernetesPod in kubernetesPods)
+                    {
+                        foreach (string searchValuein in SelectedKubernetesNamespace.DefaultSelectedPodNameParts)
+                        {
+                            if (!string.IsNullOrEmpty(searchValuein) && kubernetesPod.Name.Contains(searchValuein))
+                            {
+                                cboKubernetesPod.SelectedItem = kubernetesPod;
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                //Select the first pod if nothing is selected yet
                 if (selectedKubernetesPodImageName == null && cboKubernetesPod.Items.Count > 0)
                 {
                     cboKubernetesPod.SelectedIndex = 0;
-                }
-
-                if (selectedKubernetesPodImageName == null) return;
-
-                foreach (KubernetesPod kubernetesPod in kubernetesPods)
-                {
-                    if (kubernetesPod.ImageName == selectedKubernetesPodImageName)
-                    {
-                        cboKubernetesPod.SelectedItem = kubernetesPod;
-                        break;
-                    }
+                    return;
                 }
             }
             catch (Exception ex)

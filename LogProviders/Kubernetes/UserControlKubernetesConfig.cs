@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using LogScraper.Configuration;
 using LogScraper.Credentials;
 using LogScraper.Log.Layout;
@@ -288,6 +287,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtNamespaceDescription.Text = selected.Description;
                 TxtNamespaceName.Text = selected.Name;
                 TxtFilterPodNames.Text = string.Join(" ", selected.ShortenPodNamesValues ?? []);
+                TxtDefaultPodName.Text = string.Join(" ", selected.DefaultSelectedPodNameParts ?? []);
                 ChkFilterPodNames.Checked = selected.ShortenPodNames;
                 UpdatingNamespaceInformation = false;
             }
@@ -356,6 +356,13 @@ namespace LogScraper.LogProviders.Kubernetes
             if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
 
             if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.ShortenPodNamesValues = [.. TxtFilterPodNames.Text.Split(' ')];
+        }
+
+        private void TxtDefaultPodName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingClusterInformation || UpdatingNamespaceInformation) return;
+
+            if (LstNamespaces.SelectedItem is KubernetesNamespace selected) selected.DefaultSelectedPodNameParts = [.. TxtDefaultPodName.Text.Split(' ')];
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
