@@ -756,6 +756,12 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
             {
                 selectedContentProperty.IsCustomStyleEnabled = ChkColorContentPropertyLogEntries.Checked;
+                
+                if (ChkColorContentPropertyLogEntries.Checked == false)
+                {
+                    selectedContentProperty.CustomTextColor = Color.Empty;
+                    selectedContentProperty.CustomBackColor = Color.Empty;
+                }
                 UpdateTxtCustomStyleExample();
             }
 
