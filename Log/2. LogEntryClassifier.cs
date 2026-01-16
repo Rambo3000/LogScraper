@@ -138,7 +138,7 @@ namespace LogScraper.Log
             //Match on index
             else
             {
-                index = logEntry.Entry.IndexOf(logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata, StringComparison.OrdinalIgnoreCase);
+                index = logEntry.Entry.IndexOf(logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata, StringComparison.Ordinal);
                 if (index != -1)
                 {
                     index += logLayout.RemoveMetaDataCriteria.AfterPhrase.Length;
@@ -227,7 +227,7 @@ namespace LogScraper.Log
             if (criteria == null || string.IsNullOrEmpty(criteria.BeforePhrase) || afterPhraseManditory && isAfterPhraseNullOrEmpty) return null;
 
             // Find the start index of the before phrase.
-            int startIndex = logEntry.IndexOf(criteria.BeforePhrase, startPosition, StringComparison.OrdinalIgnoreCase);
+            int startIndex = logEntry.IndexOf(criteria.BeforePhrase, startPosition, StringComparison.Ordinal);
 
             if (startIndex == -1) return null;
 
@@ -235,7 +235,7 @@ namespace LogScraper.Log
             startIndex += criteria.BeforePhrase.Length;
 
             // Find the end index of the after phrase, if it exists.
-            int endIndex = isAfterPhraseNullOrEmpty ? -1 : logEntry.IndexOf(criteria.AfterPhrase, startIndex, StringComparison.OrdinalIgnoreCase);
+            int endIndex = isAfterPhraseNullOrEmpty ? -1 : logEntry.IndexOf(criteria.AfterPhrase, startIndex, StringComparison.Ordinal);
 
             // Handle cases where the after phrase is not found but it is mandatory or given.
             if ((afterPhraseManditory || !isAfterPhraseNullOrEmpty) && endIndex == -1) return null;
