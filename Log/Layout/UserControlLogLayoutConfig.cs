@@ -621,7 +621,7 @@ namespace LogScraper.Log
                 string before;
                 string after;
 
-                int separatorIndex = line.IndexOf("=>");
+                int separatorIndex = line.IndexOf("=>", StringComparison.Ordinal);
 
                 if (separatorIndex >= 0)
                 {
