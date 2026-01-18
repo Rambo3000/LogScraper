@@ -245,11 +245,15 @@ namespace LogScraper.Utilities.UserControls
         private void ChkShowNoTree_CheckedChanged(object sender, System.EventArgs e)
         {
             UpdateShowTreeControls(false);
+            UpdatePnlViewModeSizeAndVisibility();
+            ActiveControl = null;
         }
 
         private void ChkShowFlowTree_CheckedChanged(object sender, System.EventArgs e)
         {
             UpdateShowTreeControls(true);
+            UpdatePnlViewModeSizeAndVisibility();
+            ActiveControl = null;
         }
 
         private void CboLogContentType_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -306,10 +310,12 @@ namespace LogScraper.Utilities.UserControls
         }
         private void UpdatePnlViewModeSizeAndVisibility()
         {
+            PnlViewMode.SuspendDrawing();
             PnlViewMode.Visible = CboLogContentType.Items.Count > 0;
             // Hide the dropdownbox if there's only one item
-            PnlViewMode.Size = new Size((CboLogContentType.Items.Count == 1 ? 0 : CboLogContentType.Width + 4) + ChkShowFlowTree.Width + ChkShowNoTree.Width + 4, PnlViewMode.Height);
+            PnlViewMode.Size = new Size((ChkShowFlowTree.Checked && CboLogContentType.Items.Count > 1 ? CboLogContentType.Width + 4 : 0) + UserControlPostProcessing.Right - ChkShowNoTree.Left + 4, PnlViewMode.Height);
             UpdatePnlViewModePosition();
+            PnlViewMode.ResumeDrawing();
         }
         #endregion
     }

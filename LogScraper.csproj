@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <StartupObject>LogScraper.Program</StartupObject>
     <ApplicationIcon>Icons\Scraper.ico</ApplicationIcon>
@@ -134,6 +134,10 @@
     <None Update="Stubs\KubernetesPod.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LogPostProcessors\Json\" />
+    <Folder Include="LogPostProcessors\Xml\" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperConfig.json&quot; &quot;$(TargetDir)LogScraperConfig.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperLogLayouts.json&quot; &quot;$(TargetDir)LogScraperLogLayouts.json&quot;&#xD;&#xA;move &quot;$(TargetDir)Configuration\JsonFiles\LogScraperLogProviders.json&quot; &quot;$(TargetDir)LogScraperLogProviders.json&quot;&#xD;&#xA;rmdir /s /q &quot;$(TargetDir)Configuration&quot;" />
