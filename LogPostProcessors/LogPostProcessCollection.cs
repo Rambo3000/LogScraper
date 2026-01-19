@@ -5,49 +5,34 @@ namespace LogScraper.LogPostProcessors
 {
     public class LogPostProcessCollection
     {
-        private readonly object syncRoot = new object();
         private readonly Dictionary<LogPostProcessorKind, LogPostProcessStore> stores;
 
-        public LogPostProcessCollection(
-            int logEntryCount)
+        public LogPostProcessCollection()
         {
             stores = new Dictionary<LogPostProcessorKind, LogPostProcessStore>
-        {
             {
-                LogPostProcessorKind.JsonPrettyPrint,
-                new LogPostProcessStore(LogPostProcessorKind.JsonPrettyPrint)
-            },
-            {
-                LogPostProcessorKind.XmlPrettyPrint,
-                new LogPostProcessStore(LogPostProcessorKind.XmlPrettyPrint)
-            }
-        };
+                {
+                    LogPostProcessorKind.JsonPrettyPrint,
+                    new LogPostProcessStore(LogPostProcessorKind.JsonPrettyPrint)
+                },
+                {
+                    LogPostProcessorKind.XmlPrettyPrint,
+                    new LogPostProcessStore(LogPostProcessorKind.XmlPrettyPrint)
+                }
+            };
         }
 
-        public bool TryGetResult(
-            LogPostProcessorKind processorKind,
-            int logIndex,
-            out LogPostProcessResult result)
+        public bool TryGetResult(LogPostProcessorKind processorKind, int logIndex, out LogEntryPostProcessResult result)
         {
-            lock (syncRoot)
-            {
-                return stores[processorKind].TryGet(logIndex, out result);
-            }
+            return stores[processorKind].TryGet(logIndex, out result);
         }
 
-        public void SetResult(
-            LogPostProcessorKind processorKind,
-            int logIndex,
-            LogPostProcessResult result)
+        public void SetResult(LogPostProcessorKind processorKind, int logIndex, LogEntryPostProcessResult result)
         {
-            lock (syncRoot)
-            {
-                stores[processorKind].Set(logIndex, result);
-            }
+            stores[processorKind].Set(logIndex, result);
         }
 
-        public LogPostProcessStore GetStore(
-            LogPostProcessorKind processorKind)
+        public LogPostProcessStore GetStore(LogPostProcessorKind processorKind)
         {
             return stores[processorKind];
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Log;
 
@@ -7,7 +9,7 @@ namespace LogScraper.LogPostProcessors
     public partial class UserControlPostProcessing : UserControl
     {
         public event EventHandler PostProcessingFinished;
-        private readonly Timer timer = new();
+        private readonly System.Windows.Forms.Timer timer = new();
         public UserControlPostProcessing()
         {
             InitializeComponent();
@@ -16,21 +18,35 @@ namespace LogScraper.LogPostProcessors
             timer.Tick += Timer_Tick;
             timer.Start();
         }
-        public void UpdateLogCollection(LogCollection logCollection)
-        {
-
-        }
 
         private void StartPostProcessing()
         {
             IsProcessing = true;
             UpdateControlsEnabledState();
-        }
-        public void HandlePostProcessingFinished()
-        {
-            IsProcessing = false;
-            UpdateControlsEnabledState();
-            PostProcessingFinished(this, EventArgs.Empty);
+
+            CancelPostProcessing();
+
+            postProcessManager = new(LogCollection.Instance);
+            postProcessCancellationSource = new CancellationTokenSource();
+            postProcessManager.ProcessingFinished += Manager_ProcessingFinished;
+
+            List<LogPostProcessorKind> kinds = [];
+            if (prettyPrintJSONToolStripMenuItem.Checked)
+            {
+                kinds.Add(LogPostProcessorKind.JsonPrettyPrint);
+            }
+            if (prettyPrintXMLToolStripMenuItem.Checked)
+            {
+                kinds.Add(LogPostProcessorKind.XmlPrettyPrint);
+            }
+
+            bool started = postProcessManager.TryRun(0, LogCollection.Instance.LogEntries.Count - 1, kinds, postProcessCancellationSource.Token);
+
+            if (!started)
+            {
+                postProcessCancellationSource?.Dispose();
+                postProcessCancellationSource = null;
+            }
         }
 
         public bool IsProcessing { get; private set; } = false;
@@ -70,9 +86,47 @@ namespace LogScraper.LogPostProcessors
 
             ContextMenuPostProcessing.Show(BtnPostProcess, e.Location);
         }
+        private LogPostProcessManager postProcessManager;
+        private CancellationTokenSource postProcessCancellationSource;
 
         private void ApplyToVisibleLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            StartPostProcessing();
+        }
+        private void CancelPostProcessing()
+        {
+            if (postProcessCancellationSource == null)
+            {
+                return;
+            }
+
+            postProcessCancellationSource.Cancel();
+            postProcessCancellationSource.Dispose();
+            postProcessCancellationSource = null;
+        }
+
+
+        private void Manager_ProcessingFinished(object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(HandleProcessingFinished);
+                return;
+            }
+
+            HandleProcessingFinished();
+        }
+
+        private void HandleProcessingFinished()
+        {
+            IsProcessing = false;
+            UpdateControlsEnabledState();
+
+            postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
+            PostProcessingFinished?.Invoke(this, EventArgs.Empty);
+
+            postProcessCancellationSource?.Dispose();
+            postProcessCancellationSource = null;
 
         }
 

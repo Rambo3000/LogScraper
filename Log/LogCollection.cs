@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using LogScraper.LogPostProcessors;
 
 namespace LogScraper.Log
 {
@@ -52,5 +53,7 @@ namespace LogScraper.Log
         /// A list of log entries stored in the collection.
         /// </summary>
         public List<LogEntry> LogEntries { get; set; } = [];
+
+        public LogPostProcessCollection PostProcessCollection { get; } = new LogPostProcessCollection();
     }
 }

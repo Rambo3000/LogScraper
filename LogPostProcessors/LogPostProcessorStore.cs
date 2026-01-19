@@ -3,23 +3,18 @@ using System.Collections.Generic;
 
 namespace LogScraper.LogPostProcessors
 {
-    public sealed class LogPostProcessStore
+    public sealed class LogPostProcessStore(LogPostProcessorKind processorKind)
     {
         private const int BlockSize = 1024;
 
-        private readonly List<LogPostProcessResult[]> blocks = [];
+        private readonly List<LogEntryPostProcessResult[]> blocks = [];
 
-        public LogPostProcessorKind ProcessorKind { get; }
+        public LogPostProcessorKind ProcessorKind { get; } = processorKind;
 
-        public int LastProcessedStartIndex { get; private set; } = -1;
-        public int LastProcessedEndIndex { get; private set; } = -1;
+        public int LastProcessedStartIndex { get { return lastProcessedStartIndex; } }
+        public int LastProcessedEndIndex { get { return lastProcessedEndIndex; } }
 
-        public LogPostProcessStore(LogPostProcessorKind processorKind)
-        {
-            ProcessorKind = processorKind;
-        }
-
-        public bool TryGet(int logIndex, out LogPostProcessResult result)
+        public bool TryGet(int logIndex, out LogEntryPostProcessResult result)
         {
             int blockIndex = logIndex / BlockSize;
             int offset = logIndex % BlockSize;
@@ -35,7 +30,7 @@ namespace LogScraper.LogPostProcessors
         }
 
 
-        public void Set(int logIndex, LogPostProcessResult result)
+        public void Set(int logIndex, LogEntryPostProcessResult result)
         {
             int blockIndex = logIndex / BlockSize;
             int offset = logIndex % BlockSize;
@@ -48,7 +43,7 @@ namespace LogScraper.LogPostProcessors
         {
             while (blocks.Count <= blockIndex)
             {
-                blocks.Add(new LogPostProcessResult[BlockSize]);
+                blocks.Add(new LogEntryPostProcessResult[BlockSize]);
             }
         }
         private volatile int lastProcessedStartIndex = -1;
