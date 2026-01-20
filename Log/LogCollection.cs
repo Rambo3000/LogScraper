@@ -26,6 +26,7 @@ namespace LogScraper.Log
         public void Clear()
         {
             LogEntries.Clear();
+            PostProcessCollection = new();
             ErrorCount = 0;
         }
 
@@ -54,6 +55,6 @@ namespace LogScraper.Log
         /// </summary>
         public List<LogEntry> LogEntries { get; set; } = [];
 
-        public LogPostProcessCollection PostProcessCollection { get; } = new LogPostProcessCollection();
+        public LogPostProcessCollection PostProcessCollection { get; set; } = new LogPostProcessCollection();
     }
 }

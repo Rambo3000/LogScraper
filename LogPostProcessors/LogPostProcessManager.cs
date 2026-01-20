@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;``
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log;
@@ -30,7 +30,6 @@ namespace LogScraper.LogPostProcessors
         /// </summary>
         public bool TryRun(int startIndex, int endIndex, List<LogPostProcessorKind> processorKinds, CancellationToken cancellationToken)
         {
-            Volatile.Write(ref isRunning, 1);
 
             if (startIndex < 0 || endIndex >= logCollection.LogEntries.Count || startIndex > endIndex)
             {
@@ -47,7 +46,7 @@ namespace LogScraper.LogPostProcessors
                 OnProcessingFinished();
                 return false; // already running
             }
-
+            Volatile.Write(ref isRunning, 1);
             Task.Run(() => RunInternal(startIndex, endIndex, processorKinds, cancellationToken), cancellationToken);
             return true;
         }
@@ -146,7 +145,8 @@ namespace LogScraper.LogPostProcessors
             ParallelOptions options = new()
             {
                 CancellationToken = cancellationToken,
-                MaxDegreeOfParallelism = 1
+                //Make sure not to overload the CPU
+                MaxDegreeOfParallelism = Math.Min(1, Environment.ProcessorCount / 2)
             };
 
             Parallel.For(start, end + 1, options,

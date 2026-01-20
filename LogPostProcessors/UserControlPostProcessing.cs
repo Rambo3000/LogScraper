@@ -6,6 +6,10 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
+    //TODO: event voor resfreshen
+    //TODO: feedback geven of er iets veranderd is
+    //TODO: invullen van logtekst
+    //TODO: instelbaar maken welke postprocessing standaard is geselecteerd
     public partial class UserControlPostProcessing : UserControl
     {
         public event EventHandler PostProcessingFinished;
@@ -53,12 +57,12 @@ namespace LogScraper.LogPostProcessors
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (!IsProcessing) BtnPostProcess.ImageIndex = 0;
-
-            if (BtnPostProcess.ImageIndex == 0)
-                BtnPostProcess.ImageIndex = 1;
-            else
+            if (!IsProcessing)
+            {
                 BtnPostProcess.ImageIndex = 0;
+                return;
+            }
+            BtnPostProcess.ImageIndex = 1;
         }
 
         private void BtnPostProcess_Click(object sender, EventArgs e)
@@ -74,6 +78,7 @@ namespace LogScraper.LogPostProcessors
             prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
             prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
             DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing;
+            StopToolStripMenuItem.Enabled = IsProcessing;
         }
 
         private void BtnPostProcess_MouseUp(object sender, MouseEventArgs e)
@@ -132,12 +137,12 @@ namespace LogScraper.LogPostProcessors
 
         private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            LogCollection.Instance.PostProcessCollection = new();
         }
 
-        private void AutoApplyToolStripMenuItem_Click(object sender, EventArgs e)
+        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            postProcessCancellationSource?.Cancel();
         }
     }
 }

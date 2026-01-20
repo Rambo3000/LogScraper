@@ -18,8 +18,11 @@ namespace LogScraper.LogPostProcessors.Implementations
             int possibleEndIndex = logEntry.Entry.LastIndexOf('}');
             if (possibleEndIndex < possibleStartIndex) return false;
 
-            int possibleSubComma = logEntry.Entry.IndexOf(',', possibleStartIndex+1, possibleEndIndex - possibleStartIndex-2);
+            // Additional checks to filter out non-JSON data
+            int possibleSubComma = logEntry.Entry.IndexOf('\"', possibleStartIndex + 1, possibleEndIndex - possibleStartIndex - 2);
             if (possibleSubComma < 0) return false;
+            int possibleColon= logEntry.Entry.IndexOf(':', possibleStartIndex + 1, possibleEndIndex - possibleStartIndex - 2);
+            if (possibleColon < 0) return false;
 
             return TryJsonPrettyPrint(logEntry.Entry[possibleStartIndex..(possibleEndIndex + 1)], out prettyPrintedJson);
         }
