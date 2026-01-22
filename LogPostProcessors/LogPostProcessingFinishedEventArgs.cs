@@ -7,7 +7,7 @@ namespace LogScraper.LogPostProcessors
     /// </summary>
     /// <param name="wasCanceled">A value indicating whether the post-processing operation was canceled before completion.</param>
     /// <param name="hasChanges">A value indicating whether the post-processing operation resulted in any changes.</param>
-    public sealed class PostProcessingFinishedEventArgs(bool wasCanceled, bool hasChanges) : EventArgs
+    public sealed class LogPostProcessingFinishedEventArgs(bool wasCanceled, bool hasChanges) : EventArgs
     {
         public bool WasCanceled { get; } = wasCanceled;
         public bool HasChanges { get; } = hasChanges;

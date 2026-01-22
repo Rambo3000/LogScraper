@@ -174,7 +174,7 @@ namespace LogScraper.LogPostProcessors
         }
         private void OnProcessingFinished(bool wasCanceled, bool hasChanges)
         {
-            ProcessingFinished?.Invoke(this, new PostProcessingFinishedEventArgs(wasCanceled, hasChanges));
+            ProcessingFinished?.Invoke(this, new LogPostProcessingFinishedEventArgs(wasCanceled, hasChanges));
         }
     }
 }

@@ -103,7 +103,7 @@ namespace LogScraper.LogPostProcessors
             IsProcessing = false;
             UpdateControlsEnabledState();
 
-            PostProcessingFinishedEventArgs eventArgs = (PostProcessingFinishedEventArgs)e;
+            LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
             if (eventArgs.HasChanges && !eventArgs.WasCanceled) OnPostProcessingResultChanged(sender, e);
             postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
 
