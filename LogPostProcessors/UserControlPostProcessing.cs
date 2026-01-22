@@ -6,21 +6,15 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
-    //TODO: event voor resfreshen
-    //TODO: feedback geven of er iets veranderd is
     //TODO: invullen van logtekst
     //TODO: instelbaar maken welke postprocessing standaard is geselecteerd
     public partial class UserControlPostProcessing : UserControl
     {
-        public event EventHandler PostProcessingFinished;
-        private readonly System.Windows.Forms.Timer timer = new();
+        public event EventHandler PostProcessingResultChanged;
         public UserControlPostProcessing()
         {
             InitializeComponent();
-            timer.Interval = 500;
-
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            UpdateControlsEnabledState();
         }
 
         private void StartPostProcessing()
@@ -55,25 +49,16 @@ namespace LogScraper.LogPostProcessors
 
         public bool IsProcessing { get; private set; } = false;
 
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            if (!IsProcessing)
-            {
-                BtnPostProcess.ImageIndex = 0;
-                return;
-            }
-            BtnPostProcess.ImageIndex = 1;
-        }
-
         private void BtnPostProcess_Click(object sender, EventArgs e)
         {
-            StartPostProcessing();
+            ContextMenuPostProcessing.Show(BtnPostProcess, new System.Drawing.Point(0, BtnPostProcess.Height));
             //Remove the focus from the post process button
             this.ActiveControl = null;
         }
 
         private void UpdateControlsEnabledState()
         {
+            BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
             ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing;
             prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
             prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
@@ -83,13 +68,12 @@ namespace LogScraper.LogPostProcessors
 
         private void BtnPostProcess_MouseUp(object sender, MouseEventArgs e)
         {
-
-            if (e.Button != MouseButtons.Right)
+            if (e.Button != MouseButtons.Right && e.Button != MouseButtons.Left)
             {
                 return;
             }
 
-            ContextMenuPostProcessing.Show(BtnPostProcess, e.Location);
+            //ContextMenuPostProcessing.Show(BtnPostProcess, e.Location);
         }
         private LogPostProcessManager postProcessManager;
         private CancellationTokenSource postProcessCancellationSource;
@@ -100,10 +84,7 @@ namespace LogScraper.LogPostProcessors
         }
         private void CancelPostProcessing()
         {
-            if (postProcessCancellationSource == null)
-            {
-                return;
-            }
+            if (postProcessCancellationSource == null) return;
 
             postProcessCancellationSource.Cancel();
             postProcessCancellationSource.Dispose();
@@ -115,29 +96,29 @@ namespace LogScraper.LogPostProcessors
         {
             if (InvokeRequired)
             {
-                BeginInvoke(HandleProcessingFinished);
+                BeginInvoke(new Action(() => Manager_ProcessingFinished(sender, e)));
                 return;
             }
 
-            HandleProcessingFinished();
-        }
-
-        private void HandleProcessingFinished()
-        {
             IsProcessing = false;
             UpdateControlsEnabledState();
 
+            PostProcessingFinishedEventArgs eventArgs = (PostProcessingFinishedEventArgs)e;
+            if (eventArgs.HasChanges && !eventArgs.WasCanceled) OnPostProcessingResultChanged(sender, e);
             postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
-            PostProcessingFinished?.Invoke(this, EventArgs.Empty);
 
-            postProcessCancellationSource?.Dispose();
-            postProcessCancellationSource = null;
+            CancelPostProcessing();
+        }
 
+        private void OnPostProcessingResultChanged(object sender, EventArgs e)
+        {
+            PostProcessingResultChanged?.Invoke(this, e);
         }
 
         private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogCollection.Instance.PostProcessCollection = new();
+            OnPostProcessingResultChanged(sender, e);
         }
 
         private void StopToolStripMenuItem_Click(object sender, EventArgs e)

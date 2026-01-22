@@ -59,7 +59,7 @@
             ChkShowNoTree.CheckState = System.Windows.Forms.CheckState.Checked;
             ChkShowNoTree.Enabled = false;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(111, 3);
+            ChkShowNoTree.Location = new System.Drawing.Point(120, 3);
             ChkShowNoTree.Name = "ChkShowNoTree";
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 44;
@@ -72,7 +72,7 @@
             ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(136, 3);
+            ChkShowFlowTree.Location = new System.Drawing.Point(145, 3);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 43;
@@ -85,7 +85,7 @@
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(4, 4);
+            CboLogContentType.Location = new System.Drawing.Point(13, 4);
             CboLogContentType.Name = "CboLogContentType";
             CboLogContentType.Size = new System.Drawing.Size(105, 23);
             CboLogContentType.TabIndex = 45;
@@ -99,17 +99,17 @@
             PnlViewMode.Controls.Add(CboLogContentType);
             PnlViewMode.Controls.Add(ChkShowFlowTree);
             PnlViewMode.Controls.Add(ChkShowNoTree);
-            PnlViewMode.Location = new System.Drawing.Point(515, 3);
+            PnlViewMode.Location = new System.Drawing.Point(494, 3);
             PnlViewMode.Name = "PnlViewMode";
-            PnlViewMode.Size = new System.Drawing.Size(194, 31);
+            PnlViewMode.Size = new System.Drawing.Size(215, 31);
             PnlViewMode.TabIndex = 46;
             // 
             // UserControlPostProcessing
             // 
             UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            UserControlPostProcessing.Location = new System.Drawing.Point(166, 3);
+            UserControlPostProcessing.Location = new System.Drawing.Point(176, 3);
             UserControlPostProcessing.Name = "UserControlPostProcessing";
-            UserControlPostProcessing.Size = new System.Drawing.Size(25, 25);
+            UserControlPostProcessing.Size = new System.Drawing.Size(36, 25);
             UserControlPostProcessing.TabIndex = 47;
             // 
             // UserControlLogEntriesTextBox

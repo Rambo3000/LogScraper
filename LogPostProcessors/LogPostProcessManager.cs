@@ -12,6 +12,7 @@ namespace LogScraper.LogPostProcessors
         private static int isRunning; // atomic flag to enforce single manager run
 
         public event EventHandler ProcessingFinished;
+        bool anyItemProcessed = false; // 0 = no, 1 = yes
 
         private readonly LogCollection logCollection;
         private readonly Dictionary<LogPostProcessorKind, ILogPostProcessor> processors;
@@ -33,7 +34,7 @@ namespace LogScraper.LogPostProcessors
 
             if (startIndex < 0 || endIndex >= logCollection.LogEntries.Count || startIndex > endIndex)
             {
-                OnProcessingFinished();
+                OnProcessingFinished(false,false);
                 return false;
             }
             if (processorKinds == null || processorKinds.Count == 0)
@@ -43,7 +44,7 @@ namespace LogScraper.LogPostProcessors
 
             if (Interlocked.CompareExchange(ref isRunning, 1, 0) != 0)
             {
-                OnProcessingFinished();
+                OnProcessingFinished(false, false);
                 return false; // already running
             }
             Volatile.Write(ref isRunning, 1);
@@ -53,6 +54,8 @@ namespace LogScraper.LogPostProcessors
 
         private void RunInternal(int startIndex, int endIndex, List<LogPostProcessorKind> processorKinds, CancellationToken cancellationToken)
         {
+            bool wasCanceled = false;
+            Interlocked.Exchange(ref anyItemProcessed, false);
             try
             {
                 foreach (var kvp in processors)
@@ -121,6 +124,7 @@ namespace LogScraper.LogPostProcessors
             }
             catch (OperationCanceledException)
             {
+                wasCanceled = true;
                 // canceled, just exit silently
             }
             catch (Exception ex)
@@ -132,7 +136,10 @@ namespace LogScraper.LogPostProcessors
             {
                 // release the run lock
                 Volatile.Write(ref isRunning, 0);
-                OnProcessingFinished();
+
+                bool hasChanges = Volatile.Read(ref anyItemProcessed);
+
+                OnProcessingFinished(wasCanceled, hasChanges);
             }
         }
         private void ProcessRange(int start, int end, ILogPostProcessor processor, LogPostProcessorKind kind, LogPostProcessStore store, CancellationToken cancellationToken)
@@ -159,14 +166,15 @@ namespace LogScraper.LogPostProcessors
                     if (processor.TryProcess(entry, out string result))
                     {
                         store.Set(index, new LogEntryPostProcessResult(kind, result));
+
+                        // mark that something changed
+                        Interlocked.Exchange(ref anyItemProcessed, true);
                     }
                 });
         }
-        private void OnProcessingFinished()
+        private void OnProcessingFinished(bool wasCanceled, bool hasChanges)
         {
-            ProcessingFinished?.Invoke(this, EventArgs.Empty);
+            ProcessingFinished?.Invoke(this, new PostProcessingFinishedEventArgs(wasCanceled, hasChanges));
         }
-
     }
-
 }

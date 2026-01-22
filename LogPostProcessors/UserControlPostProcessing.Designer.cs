@@ -34,12 +34,12 @@
             BtnPostProcess = new System.Windows.Forms.Button();
             imageList1 = new System.Windows.Forms.ImageList(components);
             ContextMenuPostProcessing = new System.Windows.Forms.ContextMenuStrip(components);
-            prettyPrintJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            prettyPrintXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             ApplyToVisibleLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             StopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DeleteAllePostprocessingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            prettyPrintJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            prettyPrintXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatibility.SuspendLayout();
             ContextMenuPostProcessing.SuspendLayout();
@@ -74,15 +74,44 @@
             imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
             imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "auto-fix-custom 16x16.png");
-            imageList1.Images.SetKeyName(1, "cogs-custom 16x16.png");
+            imageList1.Images.SetKeyName(0, "auto-fix-with-dropdown-16x16.png");
+            imageList1.Images.SetKeyName(1, "cogs-custom-with-dropdown-24x16.png");
             // 
             // ContextMenuPostProcessing
             // 
-            ContextMenuPostProcessing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { prettyPrintJSONToolStripMenuItem, prettyPrintXMLToolStripMenuItem, toolStripSeparator1, ApplyToVisibleLogToolStripMenuItem, StopToolStripMenuItem, DeleteAllePostprocessingToolStripMenuItem });
+            ContextMenuPostProcessing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ApplyToVisibleLogToolStripMenuItem, StopToolStripMenuItem, DeleteAllePostprocessingToolStripMenuItem, toolStripSeparator1, prettyPrintJSONToolStripMenuItem, prettyPrintXMLToolStripMenuItem });
             ContextMenuPostProcessing.Name = "ContextMenu";
             ContextMenuPostProcessing.ShowCheckMargin = true;
-            ContextMenuPostProcessing.Size = new System.Drawing.Size(240, 120);
+            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 120);
+            // 
+            // ApplyToVisibleLogToolStripMenuItem
+            // 
+            ApplyToVisibleLogToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("ApplyToVisibleLogToolStripMenuItem.Image");
+            ApplyToVisibleLogToolStripMenuItem.Name = "ApplyToVisibleLogToolStripMenuItem";
+            ApplyToVisibleLogToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            ApplyToVisibleLogToolStripMenuItem.Text = "Pretty print toepassen";
+            ApplyToVisibleLogToolStripMenuItem.Click += ApplyToVisibleLogToolStripMenuItem_Click;
+            // 
+            // StopToolStripMenuItem
+            // 
+            StopToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("StopToolStripMenuItem.Image");
+            StopToolStripMenuItem.Name = "StopToolStripMenuItem";
+            StopToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            StopToolStripMenuItem.Text = "Stop";
+            StopToolStripMenuItem.Click += StopToolStripMenuItem_Click;
+            // 
+            // DeleteAllePostprocessingToolStripMenuItem
+            // 
+            DeleteAllePostprocessingToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("DeleteAllePostprocessingToolStripMenuItem.Image");
+            DeleteAllePostprocessingToolStripMenuItem.Name = "DeleteAllePostprocessingToolStripMenuItem";
+            DeleteAllePostprocessingToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            DeleteAllePostprocessingToolStripMenuItem.Text = "Wissen";
+            DeleteAllePostprocessingToolStripMenuItem.Click += DeleteAllePostprocessingToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(208, 6);
             // 
             // prettyPrintJSONToolStripMenuItem
             // 
@@ -91,7 +120,7 @@
             prettyPrintJSONToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             prettyPrintJSONToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("prettyPrintJSONToolStripMenuItem.Image");
             prettyPrintJSONToolStripMenuItem.Name = "prettyPrintJSONToolStripMenuItem";
-            prettyPrintJSONToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            prettyPrintJSONToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintJSONToolStripMenuItem.Text = "Pretty print JSON";
             // 
             // prettyPrintXMLToolStripMenuItem
@@ -101,37 +130,8 @@
             prettyPrintXMLToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             prettyPrintXMLToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("prettyPrintXMLToolStripMenuItem.Image");
             prettyPrintXMLToolStripMenuItem.Name = "prettyPrintXMLToolStripMenuItem";
-            prettyPrintXMLToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            prettyPrintXMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintXMLToolStripMenuItem.Text = "Pretty print XML";
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(236, 6);
-            // 
-            // ApplyToVisibleLogToolStripMenuItem
-            // 
-            ApplyToVisibleLogToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("ApplyToVisibleLogToolStripMenuItem.Image");
-            ApplyToVisibleLogToolStripMenuItem.Name = "ApplyToVisibleLogToolStripMenuItem";
-            ApplyToVisibleLogToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            ApplyToVisibleLogToolStripMenuItem.Text = "Toepassen op zichtbare log";
-            ApplyToVisibleLogToolStripMenuItem.Click += ApplyToVisibleLogToolStripMenuItem_Click;
-            // 
-            // StopToolStripMenuItem
-            // 
-            StopToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("StopToolStripMenuItem.Image");
-            StopToolStripMenuItem.Name = "StopToolStripMenuItem";
-            StopToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            StopToolStripMenuItem.Text = "Stop";
-            StopToolStripMenuItem.Click += StopToolStripMenuItem_Click;
-            // 
-            // DeleteAllePostprocessingToolStripMenuItem
-            // 
-            DeleteAllePostprocessingToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("DeleteAllePostprocessingToolStripMenuItem.Image");
-            DeleteAllePostprocessingToolStripMenuItem.Name = "DeleteAllePostprocessingToolStripMenuItem";
-            DeleteAllePostprocessingToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            DeleteAllePostprocessingToolStripMenuItem.Text = "Wissen";
-            DeleteAllePostprocessingToolStripMenuItem.Click += DeleteAllePostprocessingToolStripMenuItem_Click;
             // 
             // toolTip1
             // 
@@ -160,7 +160,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ApplyToVisibleLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DeleteAllePostprocessingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem StopToolStripMenuItem;
