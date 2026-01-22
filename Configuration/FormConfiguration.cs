@@ -87,7 +87,8 @@ namespace LogScraper.Configuration
             OpenFileDialog dialog = new()
             {
                 Title = "Select settings file to import",
-                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*"
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                InitialDirectory = GetDefaultOpenFolder()
             };
 
             if (dialog.ShowDialog(this) != DialogResult.OK) return;
@@ -122,6 +123,19 @@ namespace LogScraper.Configuration
                 MessageBox.Show("Import failed:\n" + ex.Message, "Import error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+        }
+        private static string GetDefaultOpenFolder()
+        {
+            string downloadsFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Downloads");
+
+            if (Directory.Exists(downloadsFolder))
+            {
+                return downloadsFolder;
+            }
+
+            return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         }
 
         // Helper that sets the checkbox states: checked+enabled when available, otherwise unchecked+disabled.
@@ -281,6 +295,7 @@ namespace LogScraper.Configuration
                 Title = "Exporteer instellingen",
                 Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
                 FileName = CreateDefaultExportFileName(),
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
                 OverwritePrompt = false // we handle overwrite ourselves
             };
 
