@@ -141,9 +141,22 @@ namespace LogScraper.Utilities.UserControls
         {
             if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
             {
+                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, LogPostProcessCollection, out int selectedIndex))
+                {
+                    HighlightLines(selectedIndex);
+                }
+                else
+                {
+                    HighlightLines(null);
+                }
+            }
+        }
+        private void HighlightLines(int? selectedIndex)
+        {
+            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
+            {
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
-                TryGetLogEntryIndex(selectedLogEntry, out int selectedIndex);
                 TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
             }
         }
@@ -172,22 +185,22 @@ namespace LogScraper.Utilities.UserControls
 
             if (VisibleLogEntries == null) return logEntriesToStylePerContentProperty;
 
-            foreach (LogContentProperty LogContentProperty in contentPropertiesWithCustomColoring)
+            int[] visualLineIndexPerVisibleEntry = LogEntryVisualIndexCalculator.BuildCache(VisibleLogEntries, LogPostProcessCollection);
+
+            foreach (LogContentProperty logContentProperty in contentPropertiesWithCustomColoring)
             {
                 List<int> logEntriesIndexes = [];
-                logEntriesToStylePerContentProperty[LogContentProperty] = logEntriesIndexes;
+                logEntriesToStylePerContentProperty[logContentProperty] = logEntriesIndexes;
 
                 for (int i = 0; i < VisibleLogEntries.Count; i++)
                 {
                     LogEntry logEntry = VisibleLogEntries[i];
+
                     if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
 
-                    if (!logEntry.LogContentProperties.ContainsKey(LogContentProperty)) continue;
+                    if (!logEntry.LogContentProperties.ContainsKey(logContentProperty)) continue;
 
-                    if (TryGetLogEntryIndex(logEntry, out int logEntryIndex))
-                    {
-                        logEntriesIndexes.Add(logEntryIndex);
-                    }
+                    logEntriesIndexes.Add(visualLineIndexPerVisibleEntry[i]);
                 }
             }
 
@@ -197,47 +210,18 @@ namespace LogScraper.Utilities.UserControls
         public void SelectLogEntry(LogEntry entry)
         {
             selectedLogEntry = entry;
-            if (selectedLogEntry == null) return;               
+            if (selectedLogEntry == null) return;
 
-            if (TryGetLogEntryIndex(selectedLogEntry, out int selectedIndex))
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, LogPostProcessCollection, out int selectedIndex))
             {
-                TxtLogEntries.ScrollToLine((int)selectedIndex);
+                TxtLogEntries.ScrollToLine(selectedIndex);
+                HighlightLines(selectedIndex);
+            }
+            else
+            {
+                HighlightLines(null);
             }
 
-            HighlightLines();
-        }
-
-        /// <summary>
-        /// Attempts to find the index of the specified <see cref="LogEntry"/> within the collection of visible log
-        /// entries.
-        /// </summary>
-        /// <param name="logEntry">The <see cref="LogEntry"/> to locate in the collection.</param>
-        /// <param name="logEntryIndex">When this method returns, contains the zero-based index of the specified <paramref name="logEntry"/> if it
-        /// is found; otherwise, contains -1. This parameter is passed uninitialized.</param>
-        /// <returns><see langword="true"/> if the specified <paramref name="logEntry"/> is found in the collection of visible
-        /// log entries; otherwise, <see langword="false"/>.</returns>
-        private bool TryGetLogEntryIndex(LogEntry logEntry, out int logEntryIndex)
-        {
-            logEntryIndex = -1;
-            foreach (LogEntry logEntryVisible in VisibleLogEntries)
-            {
-                logEntryIndex++;
-                if (logEntryVisible == logEntry) return true;
-
-                // Add the additional log entries to the line count
-                if (logEntryVisible.AdditionalLogEntries != null) logEntryIndex += logEntryVisible.AdditionalLogEntries.Count;
-
-                //TODO: optimize getting entries
-                if (logEntryVisible.TryGetPostProcessResult(LogPostProcessCollection, LogPostProcessorKind.XmlPrettyPrint, out LogEntryPostProcessResult result))
-                {
-                    logEntryIndex += result.LineCount + 2;
-                }
-                if (logEntryVisible.TryGetPostProcessResult(LogPostProcessCollection, LogPostProcessorKind.JsonPrettyPrint, out result))
-                {
-                    logEntryIndex += result.LineCount + 2;
-                }
-            }
-            return false;
         }
         #endregion
 
