@@ -11,6 +11,8 @@ namespace LogScraper.LogPostProcessors
 
         public LogPostProcessorKind ProcessorKind { get; } = processorKind;
 
+        public string Name { get; } = processorKind.ToPrettyName();
+
         public int LastProcessedStartIndex { get { return lastProcessedStartIndex; } }
         public int LastProcessedEndIndex { get { return lastProcessedEndIndex; } }
 

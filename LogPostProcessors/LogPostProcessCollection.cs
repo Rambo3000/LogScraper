@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace LogScraper.LogPostProcessors
 {
     public class LogPostProcessCollection
     {
-        private readonly Dictionary<LogPostProcessorKind, LogPostProcessStore> stores;
+        private Dictionary<LogPostProcessorKind, LogPostProcessStore> stores;
 
         public LogPostProcessCollection()
+        {
+            CreateStores();
+        }
+
+        private void CreateStores()
         {
             stores = new Dictionary<LogPostProcessorKind, LogPostProcessStore>
             {
@@ -37,6 +43,11 @@ namespace LogScraper.LogPostProcessors
             return stores[processorKind];
         }
 
+        public List<LogPostProcessStore> GetStores()
+        {
+            return [stores[LogPostProcessorKind.XmlPrettyPrint], stores[LogPostProcessorKind.JsonPrettyPrint]];
+        }
+
         private int isProcessing;
 
         public bool TryBeginProcessing()
@@ -47,6 +58,11 @@ namespace LogScraper.LogPostProcessors
         public void EndProcessing()
         {
             Volatile.Write(ref isProcessing, 0);
+        }
+
+        internal void Clear()
+        {
+            CreateStores();
         }
     }
 

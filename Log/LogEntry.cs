@@ -9,18 +9,19 @@ namespace LogScraper.Log
     /// <summary>
     /// Represents a single log entry with its associated metadata and content properties.
     /// </summary>
-    public class LogEntry: IEquatable<LogEntry>, IComparable<LogEntry>
+    public class LogEntry: IEquatable<LogEntry>, IComparable<LogEntry>, IHasIndex
     {
         /// <summary>
         /// Initializes a new instance of the LogEntry class with the specified entry content and timestamp.
         /// </summary>
         /// <param name="entry">The content of the log entry.</param>
         /// <param name="timestamp">The timestamp associated with the log entry.</param>
-        public LogEntry(string entry, DateTime timestamp)
+        public LogEntry(string entry, DateTime timestamp, int index)
         {
             Entry =  entry.Trim();
             TimeStamp = timestamp;
             HashCodeCache = Entry.GetHashCode();
+            Index = index;
         }
         /// <summary>
         /// The content of the log entry.
@@ -58,6 +59,11 @@ namespace LogScraper.Log
         /// Content properties associated with the log entry, represented as key-value pairs.
         /// </summary>
         public IndexDictionary<LogContentProperty, LogContentValue> LogContentProperties { get; set; }
+
+        /// <summary>
+        /// Gets or sets the zero-based index associated with the current item.
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// Determines whether the current log entry is equal to another log entry.

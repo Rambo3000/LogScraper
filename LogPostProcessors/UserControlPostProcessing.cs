@@ -58,8 +58,10 @@ namespace LogScraper.LogPostProcessors
 
         private void UpdateControlsEnabledState()
         {
+            bool processorSelected = prettyPrintJSONToolStripMenuItem.Checked || prettyPrintXMLToolStripMenuItem.Checked;
+
             BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
-            ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing;
+            ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing && processorSelected;
             prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
             prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
             DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing;
@@ -117,13 +119,23 @@ namespace LogScraper.LogPostProcessors
 
         private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogCollection.Instance.PostProcessCollection = new();
+            LogCollection.Instance.PostProcessCollection.Clear();
             OnPostProcessingResultChanged(sender, e);
         }
 
         private void StopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             postProcessCancellationSource?.Cancel();
+        }
+
+        private void prettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateControlsEnabledState();
+        }
+
+        private void prettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateControlsEnabledState();
         }
     }
 }

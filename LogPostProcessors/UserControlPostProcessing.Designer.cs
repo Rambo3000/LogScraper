@@ -82,7 +82,7 @@
             ContextMenuPostProcessing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ApplyToVisibleLogToolStripMenuItem, StopToolStripMenuItem, DeleteAllePostprocessingToolStripMenuItem, toolStripSeparator1, prettyPrintJSONToolStripMenuItem, prettyPrintXMLToolStripMenuItem });
             ContextMenuPostProcessing.Name = "ContextMenu";
             ContextMenuPostProcessing.ShowCheckMargin = true;
-            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 120);
+            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 142);
             // 
             // ApplyToVisibleLogToolStripMenuItem
             // 
@@ -122,6 +122,7 @@
             prettyPrintJSONToolStripMenuItem.Name = "prettyPrintJSONToolStripMenuItem";
             prettyPrintJSONToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintJSONToolStripMenuItem.Text = "Pretty print JSON";
+            prettyPrintJSONToolStripMenuItem.Click += prettyPrintJSONToolStripMenuItem_Click;
             // 
             // prettyPrintXMLToolStripMenuItem
             // 
@@ -132,6 +133,7 @@
             prettyPrintXMLToolStripMenuItem.Name = "prettyPrintXMLToolStripMenuItem";
             prettyPrintXMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintXMLToolStripMenuItem.Text = "Pretty print XML";
+            prettyPrintXMLToolStripMenuItem.Click += prettyPrintXMLToolStripMenuItem_Click;
             // 
             // toolTip1
             // 

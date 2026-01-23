@@ -8,6 +8,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -19,12 +20,13 @@ namespace LogScraper.Utilities.UserControls
 
         private List<LogEntry> VisibleLogEntries;
         private LogMetadataFilterResult LogMetadataFilterResult;
+        private LogPostProcessCollection LogPostProcessCollection;
         private LogExportSettings LogExportSettings;
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
         private Dictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
-        private int? selectedIndex = -1;
+        private LogEntry selectedLogEntry = null;
 
         public UserControlLogEntriesTextBox()
         {
@@ -32,6 +34,12 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
+            UserControlPostProcessing.PostProcessingResultChanged += UserControlPostProcessing_PostProcessingResultChanged;
+        }
+
+        private void UserControlPostProcessing_PostProcessingResultChanged(object sender, System.EventArgs e)
+        {
+            ShowLogEntries();
         }
         #endregion
 
@@ -68,10 +76,11 @@ namespace LogScraper.Utilities.UserControls
             UpdatePnlViewModeSizeAndVisibility();
         }
 
-        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogExportSettings logExportSettings)
+        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogExportSettings logExportSettings, LogPostProcessCollection logPostProcessCollection)
         {
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogExportSettings = logExportSettings;
+            LogPostProcessCollection = logPostProcessCollection;
             VisibleLogEntries = visibleLogEntries;
             contentLinesToStyle = DetermineContentLinesToStyle();
             ShowLogEntries();
@@ -91,13 +100,21 @@ namespace LogScraper.Utilities.UserControls
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
 
-            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree));
+            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogPostProcessCollection, LogExportSettings, SelectedLogContentProperty, logFlowTree));
             HighlightLines();
+            contentLinesToStyle = DetermineContentLinesToStyle();
             StyleLines();
 
             try
             {
-                TxtLogEntries.FirstVisibleLine = firstVisibleLine;
+                if (selectedLogEntry != null)
+                {
+                    SelectLogEntry(selectedLogEntry);
+                }
+                else
+                {
+                    TxtLogEntries.FirstVisibleLine = firstVisibleLine;
+                }
             }
             catch
             {
@@ -126,7 +143,7 @@ namespace LogScraper.Utilities.UserControls
             {
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
-
+                TryGetLogEntryIndex(selectedLogEntry, out int selectedIndex);
                 TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
             }
         }
@@ -177,20 +194,17 @@ namespace LogScraper.Utilities.UserControls
             return logEntriesToStylePerContentProperty;
         }
 
-        public void SelectLogEntry(LogEntry selectedLogEntry)
+        public void SelectLogEntry(LogEntry entry)
         {
-            if (selectedLogEntry == null)
+            selectedLogEntry = entry;
+            if (selectedLogEntry == null) return;               
+
+            if (TryGetLogEntryIndex(selectedLogEntry, out int selectedIndex))
             {
-                selectedIndex = null;
-                return;
+                TxtLogEntries.ScrollToLine((int)selectedIndex);
             }
 
-            bool found = TryGetLogEntryIndex(selectedLogEntry, out int selectedIndexNew);
-
-            selectedIndex = found ? selectedIndexNew : null;
-
             HighlightLines();
-            if (selectedIndex != null) TxtLogEntries.ScrollToLine((int)selectedIndex);
         }
 
         /// <summary>
@@ -212,6 +226,16 @@ namespace LogScraper.Utilities.UserControls
 
                 // Add the additional log entries to the line count
                 if (logEntryVisible.AdditionalLogEntries != null) logEntryIndex += logEntryVisible.AdditionalLogEntries.Count;
+
+                //TODO: optimize getting entries
+                if (logEntryVisible.TryGetPostProcessResult(LogPostProcessCollection, LogPostProcessorKind.XmlPrettyPrint, out LogEntryPostProcessResult result))
+                {
+                    logEntryIndex += result.LineCount + 2;
+                }
+                if (logEntryVisible.TryGetPostProcessResult(LogPostProcessCollection, LogPostProcessorKind.JsonPrettyPrint, out result))
+                {
+                    logEntryIndex += result.LineCount + 2;
+                }
             }
             return false;
         }

@@ -5,6 +5,7 @@ using LogScraper.Export;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Metadata;
+using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
@@ -110,7 +111,7 @@ namespace LogScraper.Log
             for (int i = startIndex; i < endIndex; i++)
             {
                 LogFlowTreeNode logFlowTreeNode = null;
-                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, ref logFlowTreeNode, false);
+                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, null, ref logFlowTreeNode, false);
             }
             return stringBuilder.ToString();
         }
@@ -122,12 +123,14 @@ namespace LogScraper.Log
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
         /// <param name="logExportSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes)
+        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogPostProcessCollection logPostProcessCollection,  LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes)
         {
             bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();
 
             LogFlowTreeNode currentTreeNode = null;
+
+            List<LogPostProcessStore> logPostProcessStores = logPostProcessCollection.GetStores();
 
             foreach (LogEntry logEntry in logEntries)
             {
@@ -145,7 +148,7 @@ namespace LogScraper.Log
                     }
                 }
 
-                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, ref currentTreeNode, showTree);
+                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, logPostProcessStores, ref currentTreeNode, showTree);
             }
 
             return stringBuilder.ToString();
@@ -165,7 +168,7 @@ namespace LogScraper.Log
         /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
         /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
         /// langword="true"/>, tree-related prefixes are added to the log entry.</param>
-        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, ref LogFlowTreeNode treeNode, bool showTree)
+        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, List<LogPostProcessStore> logPostProcessStores, ref LogFlowTreeNode treeNode, bool showTree)
         {
             string text = logEntry.Entry;
 
@@ -205,6 +208,19 @@ namespace LogScraper.Log
                     {
                         stringBuilder.AppendLine(extra);
                     }
+                }
+            }
+
+            if ( logPostProcessStores == null) return;
+
+            //TODO: optimize getting post process results
+            foreach (LogPostProcessStore store in logPostProcessStores)
+            {
+                if (store.TryGet(logEntry.Index, out LogEntryPostProcessResult postProcessResult))
+                {
+                    stringBuilder.AppendLine($"--- LogScraper {store.Name} ---");
+                    stringBuilder.AppendLine(postProcessResult.ProcessedText);
+                    stringBuilder.AppendLine($"--- /LogScraper {store.Name} ---");
                 }
             }
         }

@@ -165,7 +165,7 @@ namespace LogScraper.LogPostProcessors
 
                     if (processor.TryProcess(entry, out string result))
                     {
-                        store.Set(index, new LogEntryPostProcessResult(kind, result));
+                        store.Set(entry.Index, new LogEntryPostProcessResult(kind, result));
 
                         // mark that something changed
                         Interlocked.Exchange(ref anyItemProcessed, true);

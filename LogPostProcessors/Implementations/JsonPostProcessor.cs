@@ -34,7 +34,8 @@ namespace LogScraper.LogPostProcessors.Implementations
         };
         private static readonly JsonSerializerOptions serializerOptions = new()
         {
-            WriteIndented = true
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
         private static bool TryJsonPrettyPrint(string text, out string prettyPrintedJson)
