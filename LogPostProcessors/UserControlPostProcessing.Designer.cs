@@ -122,7 +122,7 @@
             prettyPrintJSONToolStripMenuItem.Name = "prettyPrintJSONToolStripMenuItem";
             prettyPrintJSONToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintJSONToolStripMenuItem.Text = "Pretty print JSON";
-            prettyPrintJSONToolStripMenuItem.Click += prettyPrintJSONToolStripMenuItem_Click;
+            prettyPrintJSONToolStripMenuItem.Click += PrettyPrintJSONToolStripMenuItem_Click;
             // 
             // prettyPrintXMLToolStripMenuItem
             // 
@@ -133,7 +133,7 @@
             prettyPrintXMLToolStripMenuItem.Name = "prettyPrintXMLToolStripMenuItem";
             prettyPrintXMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             prettyPrintXMLToolStripMenuItem.Text = "Pretty print XML";
-            prettyPrintXMLToolStripMenuItem.Click += prettyPrintXMLToolStripMenuItem_Click;
+            prettyPrintXMLToolStripMenuItem.Click += PrettyPrintXMLToolStripMenuItem_Click;
             // 
             // toolTip1
             // 

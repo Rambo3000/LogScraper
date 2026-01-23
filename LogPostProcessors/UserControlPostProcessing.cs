@@ -6,7 +6,9 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
-    //TODO: invullen van logtekst
+    //TODO: result combi object ipv losse stores
+    //TODO: beter optioneel logica voor postprocessing toepassen
+
     //TODO: instelbaar maken welke postprocessing standaard is geselecteerd
     public partial class UserControlPostProcessing : UserControl
     {
@@ -128,12 +130,12 @@ namespace LogScraper.LogPostProcessors
             postProcessCancellationSource?.Cancel();
         }
 
-        private void prettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PrettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdateControlsEnabledState();
         }
 
-        private void prettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PrettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdateControlsEnabledState();
         }
