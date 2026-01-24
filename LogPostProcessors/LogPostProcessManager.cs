@@ -34,7 +34,7 @@ namespace LogScraper.LogPostProcessors
 
             if (startIndex < 0 || endIndex >= logCollection.LogEntries.Count || startIndex > endIndex)
             {
-                OnProcessingFinished(false,false);
+                OnProcessingFinished(false, false);
                 return false;
             }
             if (processorKinds == null || processorKinds.Count == 0)
@@ -66,59 +66,7 @@ namespace LogScraper.LogPostProcessors
 
                     ILogPostProcessor processor = kvp.Value;
 
-                    // ensure store exists
-                    var store = logCollection.PostProcessCollection.GetStore(kind);
-                    int requestStart = startIndex;
-                    int requestEnd = endIndex;
-
-                    int processedStart = store.LastProcessedStartIndex;
-                    int processedEnd = store.LastProcessedEndIndex;
-
-                    // no previous processing
-                    if (processedStart < 0 || processedEnd < 0)
-                    {
-                        ProcessRange(requestStart, requestEnd, processor, kind, store, cancellationToken);
-                        store.MarkRangeProcessed(requestStart, requestEnd);
-                        continue;
-                    }
-
-                    // no overlap at all → forget old range
-                    if (requestStart > processedEnd || requestEnd < processedStart)
-                    {
-                        ProcessRange(requestStart, requestEnd, processor, kind, store, cancellationToken);
-                        store.MarkRangeProcessed(requestStart, requestEnd);
-                        continue;
-                    }
-
-                    // fully inside processed → skip everything
-                    if (requestStart >= processedStart && requestEnd <= processedEnd)
-                    {
-                        continue;
-                    }
-
-                    // partial overlaps → up to two ranges
-
-                    // before overlap
-                    if (requestStart < processedStart)
-                    {
-                        int start = requestStart;
-                        int end = processedStart - 1;
-                        ProcessRange(start, end, processor, kind, store, cancellationToken);
-                    }
-
-                    // after overlap
-                    if (requestEnd > processedEnd)
-                    {
-                        int start = processedEnd + 1;
-                        int end = requestEnd;
-                        ProcessRange(start, end, processor, kind, store, cancellationToken);
-                    }
-
-                    // merge ranges
-                    int newProcessedStart = Math.Min(processedStart, requestStart);
-                    int newProcessedEnd = Math.Max(processedEnd, requestEnd);
-
-                    store.MarkRangeProcessed(newProcessedStart, newProcessedEnd);
+                    ProcessRange(startIndex, endIndex, processor, kind, cancellationToken);
 
                 }
             }
@@ -142,7 +90,7 @@ namespace LogScraper.LogPostProcessors
                 OnProcessingFinished(wasCanceled, hasChanges);
             }
         }
-        private void ProcessRange(int start, int end, ILogPostProcessor processor, LogPostProcessorKind kind, LogPostProcessStore store, CancellationToken cancellationToken)
+        private void ProcessRange(int start, int end, ILogPostProcessor processor, LogPostProcessorKind kind, CancellationToken cancellationToken)
         {
             if (start > end)
             {
@@ -163,9 +111,13 @@ namespace LogScraper.LogPostProcessors
 
                     LogEntry entry = logCollection.LogEntries[index];
 
+                    // skip if already processed with this processor, also to avoid threading issues
+                    if (entry.LogPostProcessResults != null && entry.LogPostProcessResults.Results[(int)kind] != null) return;
+
                     if (processor.TryProcess(entry, out string result))
                     {
-                        store.Set(entry.Index, new LogEntryPostProcessResult(kind, result));
+                        entry.LogPostProcessResults ??= new LogPostProcessResults();
+                        entry.LogPostProcessResults.Set(kind, new LogPostProcessResult(kind, result));
 
                         // mark that something changed
                         Interlocked.Exchange(ref anyItemProcessed, true);

@@ -9,7 +9,6 @@ using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
-using LogScraper.LogPostProcessors;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
@@ -25,7 +24,6 @@ namespace LogScraper
     {
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
-        private LogPostProcessCollection LogPostProcessCollection;
         public FormLogScraper()
         {
             InitializeComponent();
@@ -177,7 +175,6 @@ namespace LogScraper
 
             // Filter the log entries into the FilterResult and update the count
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList, (LogLayout)cboLogLayout.SelectedItem);
-            LogPostProcessCollection = LogCollection.Instance.PostProcessCollection;
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
 
@@ -194,7 +191,7 @@ namespace LogScraper
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
             List<LogEntry> visibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResult, logExportSettings);
-            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logExportSettings, LogPostProcessCollection);
+            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logExportSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
 
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();

@@ -2,24 +2,19 @@
 {
     public enum LogPostProcessorKind
     {
-        JsonPrettyPrint = 1,
-        XmlPrettyPrint = 2
+        JsonPrettyPrint = 0,
+        XmlPrettyPrint = 1
     }
     public static class LogPostProcessorKindExtensions
     {
         public static string ToPrettyName(this LogPostProcessorKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case LogPostProcessorKind.JsonPrettyPrint:
-                    return "json";
-
-                case LogPostProcessorKind.XmlPrettyPrint:
-                    return "xml";
-
-                default:
-                    return kind.ToString();
-            }
+                LogPostProcessorKind.JsonPrettyPrint => "json",
+                LogPostProcessorKind.XmlPrettyPrint => "xml",
+                _ => kind.ToString(),
+            };
         }
     }
 }

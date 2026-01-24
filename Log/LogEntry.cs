@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
+using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
@@ -64,6 +65,10 @@ namespace LogScraper.Log
         /// Gets or sets the zero-based index associated with the current item.
         /// </summary>
         public int Index { get; set; }
+        /// <summary>
+        /// Gets or sets the results of the log post-processing operation.
+        /// </summary>
+        public LogPostProcessResults LogPostProcessResults { get; set; }
 
         /// <summary>
         /// Determines whether the current log entry is equal to another log entry.

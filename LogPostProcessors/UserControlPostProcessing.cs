@@ -121,7 +121,7 @@ namespace LogScraper.LogPostProcessors
 
         private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogCollection.Instance.PostProcessCollection.Clear();
+            //TODO: implement not showing postprocessing results in log entries
             OnPostProcessingResultChanged(sender, e);
         }
 

@@ -7,7 +7,7 @@ namespace LogScraper.LogPostProcessors
     /// </summary>
     /// <param name="processorKind">The kind of post-processor applied to the log entry. Determines how the log text was processed.</param>
     /// <param name="processedText">The log entry text after post-processing has been applied. Cannot be null.</param>
-    public class LogEntryPostProcessResult(LogPostProcessorKind processorKind, string processedText)
+    public class LogPostProcessResult(LogPostProcessorKind processorKind, string processedText)
     {
         /// <summary>
         /// Gets the kind of log post processor associated with this instance.
