@@ -32,7 +32,7 @@ namespace LogScraper.Log
 
             entryCount = endIndex - startIndex;
 
-            return GetLogEntriesAsString(filterResult, startIndex, endIndex, logExportSettings);
+            return GetLogEntriesAsString(filterResult, startIndex, endIndex, logExportSettings, []);
         }
 
         /// <summary>
@@ -103,15 +103,16 @@ namespace LogScraper.Log
         /// <param name="startIndex">The starting index of the log entries to include.</param>
         /// <param name="endIndex">The ending index of the log entries to include.</param>
         /// <param name="logExportSettings">Settings for exporting the log data.</param>
+        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing the formatted log entries.</returns>
-        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, int startIndex, int endIndex, LogExportSettings logExportSettings)
+        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, int startIndex, int endIndex, LogExportSettings logExportSettings, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             StringBuilder stringBuilder = new();
 
             for (int i = startIndex; i < endIndex; i++)
             {
                 LogFlowTreeNode logFlowTreeNode = null;
-                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, ref logFlowTreeNode, false);
+                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, ref logFlowTreeNode, false, logPostProcessorKinds);
             }
             return stringBuilder.ToString();
         }
@@ -122,13 +123,17 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
         /// <param name="logExportSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
+        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes)
+        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();
 
             LogFlowTreeNode currentTreeNode = null;
+
+            // Set the log post processor kinds to null if the list is empty to avoid unnecessary processing
+            if (logPostProcessorKinds != null && logPostProcessorKinds.Count == 0) logPostProcessorKinds = null;
 
             foreach (LogEntry logEntry in logEntries)
             {
@@ -146,7 +151,7 @@ namespace LogScraper.Log
                     }
                 }
 
-                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, ref currentTreeNode, showTree);
+                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, ref currentTreeNode, showTree, logPostProcessorKinds);
             }
 
             return stringBuilder.ToString();
@@ -165,8 +170,9 @@ namespace LogScraper.Log
         /// <param name="treeNode">A reference to the current node in the log flow tree, used to determine hierarchical relationships between
         /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
         /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
+        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// langword="true"/>, tree-related prefixes are added to the log entry.</param>
-        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, ref LogFlowTreeNode treeNode, bool showTree)
+        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, ref LogFlowTreeNode treeNode, bool showTree, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             string text = logEntry.Entry;
 
@@ -209,11 +215,12 @@ namespace LogScraper.Log
                 }
             }
 
-            if (logEntry.LogPostProcessResults == null) return;
+            // Append log post-processed results if available
+            if (logEntry.LogPostProcessResults == null || logPostProcessorKinds == null) return;
 
-            for (int i = 0; i < logEntry.LogPostProcessResults.Results.Length; i++)
-            {
-                LogPostProcessResult result = logEntry.LogPostProcessResults.Results[i];
+            foreach (LogPostProcessorKind kind in logPostProcessorKinds)
+            { 
+                LogPostProcessResult result = logEntry.LogPostProcessResults.Results[(int)kind];
                 if (result == null) continue;
                 stringBuilder.AppendLine($"--- LogScraper pretty {result.ProcessorKind.ToPrettyName()} ---");
                 stringBuilder.AppendLine(result.ProcessedText);
@@ -240,15 +247,12 @@ namespace LogScraper.Log
             return new string('\t', depth * 2);
         }
 
-
-
         /// <summary>
         /// Inserts metadata to a log entry at the specified position.
         /// </summary>
         /// <param name="logEntry">The original log entry.</param>
         /// <param name="startIndex">The position to insert the metadata.</param>
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
-        /// <param name="logExportSettingsMetadata">Metadata settings for the log export.</param>
         /// <returns>The log entry with added metadata.</returns>
         private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettings logExportSettings)
         {
@@ -276,8 +280,8 @@ namespace LogScraper.Log
         /// Removes text from the input string based on the specified criteria.
         /// </summary>
         /// <param name="inputText">The input string.</param>
-        /// <param name="criteria">The criteria for removing text.</param>
-        /// <param name="startPosition">The starting position on the input text after which the filter criteria should be applied.</param>
+        /// <param name="beforeIndex">The index before which text should be removed.</param>
+        /// <param name="afterIndex">The index after which text should be removed.</param>  
         /// <returns>The modified string with the specified text removed.</returns>
         public static string RemoveTextByCriteria(string inputText, int beforeIndex, int afterIndex)
         {

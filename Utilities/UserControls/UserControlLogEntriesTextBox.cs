@@ -33,10 +33,10 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
-            UserControlPostProcessing.PostProcessingResultChanged += UserControlPostProcessing_PostProcessingResultChanged;
+            UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
         }
 
-        private void UserControlPostProcessing_PostProcessingResultChanged(object sender, System.EventArgs e)
+        private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, System.EventArgs e)
         {
             ShowLogEntries();
         }
@@ -57,7 +57,7 @@ namespace LogScraper.Utilities.UserControls
         public void UpdateLogLayout(LogLayout logLayout)
         {
             contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
-            contentLinesToStyle = DetermineContentLinesToStyle();
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, UserControlPostProcessing.VisibleProcessorKinds);
             CboLogContentType.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -80,7 +80,6 @@ namespace LogScraper.Utilities.UserControls
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogExportSettings = logExportSettings;
             VisibleLogEntries = visibleLogEntries;
-            contentLinesToStyle = DetermineContentLinesToStyle();
             ShowLogEntries();
         }
         private void ShowLogEntries()
@@ -97,10 +96,10 @@ namespace LogScraper.Utilities.UserControls
             {
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
-
-            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree));
+            List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
+            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds));
             HighlightLines();
-            contentLinesToStyle = DetermineContentLinesToStyle();
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds );
             StyleLines();
 
             try
@@ -139,7 +138,7 @@ namespace LogScraper.Utilities.UserControls
         {
             if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
             {
-                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, out int selectedIndex))
+                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
                 {
                     HighlightLines(selectedIndex);
                 }
@@ -171,46 +170,13 @@ namespace LogScraper.Utilities.UserControls
                 TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, contentLinesToStyle);
             }
         }
-        /// <summary>
-        /// Identifies the line indexes of visible log entries that should be styled for each content property with
-        /// custom coloring.
-        /// </summary>
-        /// <returns>An IndexDictionary mapping each content property with custom coloring to a list of line indexes in the
-        /// visible log entries that should be styled. If there are no visible log entries, all lists will be empty.</returns>
-        private Dictionary<LogContentProperty, List<int>> DetermineContentLinesToStyle()
-        {
-            Dictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring.Count);
-
-            if (VisibleLogEntries == null) return logEntriesToStylePerContentProperty;
-
-            int[] visualLineIndexPerVisibleEntry = LogEntryVisualIndexCalculator.BuildCache(VisibleLogEntries);
-
-            foreach (LogContentProperty logContentProperty in contentPropertiesWithCustomColoring)
-            {
-                List<int> logEntriesIndexes = [];
-                logEntriesToStylePerContentProperty[logContentProperty] = logEntriesIndexes;
-
-                for (int i = 0; i < VisibleLogEntries.Count; i++)
-                {
-                    LogEntry logEntry = VisibleLogEntries[i];
-
-                    if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
-
-                    if (!logEntry.LogContentProperties.ContainsKey(logContentProperty)) continue;
-
-                    logEntriesIndexes.Add(visualLineIndexPerVisibleEntry[i]);
-                }
-            }
-
-            return logEntriesToStylePerContentProperty;
-        }
 
         public void SelectLogEntry(LogEntry entry)
         {
             selectedLogEntry = entry;
             if (selectedLogEntry == null) return;
 
-            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, out int selectedIndex))
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
             {
                 TxtLogEntries.ScrollToLine(selectedIndex);
                 HighlightLines(selectedIndex);
