@@ -138,7 +138,7 @@
             // toolTip1
             // 
             toolTip1.AutoPopDelay = 99999999;
-            toolTip1.InitialDelay = 500;
+            toolTip1.InitialDelay = 250;
             toolTip1.ReshowDelay = 100;
             // 
             // UserControlPostProcessing
