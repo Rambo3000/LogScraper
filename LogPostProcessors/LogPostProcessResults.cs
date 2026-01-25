@@ -23,6 +23,11 @@ namespace LogScraper.LogPostProcessors
         /// </summary>
         public int LineCountIncludingHeadersAndFooters { get; private set; } = 0;
 
+
+        /// <summary>
+        /// Counts the total number of lines from all processors, including header and footer lines.
+        /// </summary>
+        /// <returns>The total line count including headers and footers.</returns>
         private int CountAllProcessorsLines()
         {
             int count = 0;

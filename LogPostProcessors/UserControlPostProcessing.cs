@@ -17,18 +17,35 @@ namespace LogScraper.LogPostProcessors
         }
         #endregion
 
-        #region Public properties
+        #region Public properties and methods
+        /// <summary>
+        /// Gets the list of log post-processor kinds that are available and currently visible to the user.
+        /// </summary>
         public List<LogPostProcessorKind> VisibleProcessorKinds
         {
             get { return effectiveVisibleKinds; }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether a processing operation is currently in progress.
+        /// </summary>
         public bool IsProcessing { get; private set; } = false;
+
+        /// <summary>
+        /// Resets the state of the object by clearing all post-processing data and related flags.
+        /// </summary>
+        public void Clear()
+        {
+            CancelPostProcessing();
+            isVirtuallyReset = false;
+            hasPostProcessingData = false;
+        }
         #endregion
 
-        #region Processing logic
+        #region Post processing logic
         private LogPostProcessManager postProcessManager;
         private CancellationTokenSource postProcessCancellationSource;
+
         private void StartPostProcessing()
         {
             IsProcessing = true;
@@ -50,7 +67,7 @@ namespace LogScraper.LogPostProcessors
                 kinds.Add(LogPostProcessorKind.XmlPrettyPrint);
             }
 
-            bool started = postProcessManager.TryRun(0, LogCollection.Instance.LogEntries.Count - 1, kinds, postProcessCancellationSource.Token);
+            bool started = postProcessManager.TryRun(kinds, postProcessCancellationSource.Token);
 
             if (!started)
             {
@@ -66,80 +83,22 @@ namespace LogScraper.LogPostProcessors
                 BeginInvoke(new Action(() => Manager_ProcessingFinished(sender, e)));
                 return;
             }
+
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
 
             if (eventArgs.HasChanges) hasPostProcessingData = true;
             isVirtuallyReset = false;
+            IsProcessing = false;
 
             RecalculateEffectiveVisibility();
 
-            IsProcessing = false;
             UpdateControlsEnabledState();
 
-            if (eventArgs.HasChanges && !eventArgs.WasCanceled) RecalculateEffectiveVisibility();
             postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
 
             CancelPostProcessing();
         }
 
-        #endregion
-
-        #region Control event handlers and enabled state
-        private void ApplyToVisibleLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StartPostProcessing();
-        }
-        private void BtnPostProcess_Click(object sender, EventArgs e)
-        {
-            ContextMenuPostProcessing.Show(BtnPostProcess, new System.Drawing.Point(0, BtnPostProcess.Height));
-            //Remove the focus from the post process button
-            this.ActiveControl = null;
-        }
-
-        private void CancelPostProcessing()
-        {
-            RecalculateEffectiveVisibility();
-
-            if (postProcessCancellationSource == null) return;
-
-            postProcessCancellationSource.Cancel();
-            postProcessCancellationSource.Dispose();
-            postProcessCancellationSource = null;
-        }
-
-        private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            isVirtuallyReset = true;
-            RecalculateEffectiveVisibility();
-        }
-
-        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            postProcessCancellationSource?.Cancel();
-        }
-
-        private void PrettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateControlsEnabledState();
-            UpdatePreferredVisibilityFromUi();
-        }
-        private void PrettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateControlsEnabledState();
-            UpdatePreferredVisibilityFromUi();
-        }
-
-        private void UpdateControlsEnabledState()
-        {
-            bool processorSelected = prettyPrintJSONToolStripMenuItem.Checked || prettyPrintXMLToolStripMenuItem.Checked;
-
-            BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
-            ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing && processorSelected;
-            prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
-            prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
-            DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing;
-            StopToolStripMenuItem.Enabled = IsProcessing;
-        }
         #endregion
 
         #region Preffered and effective visibility management
@@ -211,6 +170,66 @@ namespace LogScraper.LogPostProcessors
             }
 
             return true;
+        }
+        #endregion
+
+        #region Control event handlers and enabled state
+        private void ApplyToVisibleLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartPostProcessing();
+        }
+        private void BtnPostProcess_Click(object sender, EventArgs e)
+        {
+            ContextMenuPostProcessing.Show(BtnPostProcess, new System.Drawing.Point(0, BtnPostProcess.Height));
+            //Remove the focus from the post process button
+            ActiveControl = null;
+        }
+
+        private void CancelPostProcessing()
+        {
+            RecalculateEffectiveVisibility();
+
+            if (postProcessCancellationSource == null) return;
+
+            postProcessCancellationSource.Cancel();
+            postProcessCancellationSource.Dispose();
+            postProcessCancellationSource = null;
+        }
+
+        private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            isVirtuallyReset = true;
+            UpdateControlsEnabledState();
+            RecalculateEffectiveVisibility();
+        }
+
+        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            postProcessCancellationSource?.Cancel();
+        }
+
+        private void PrettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateControlsEnabledState();
+            UpdatePreferredVisibilityFromUi();
+        }
+        private void PrettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateControlsEnabledState();
+            UpdatePreferredVisibilityFromUi();
+        }
+
+        private void UpdateControlsEnabledState()
+        {
+            bool processorSelected = prettyPrintJSONToolStripMenuItem.Checked || prettyPrintXMLToolStripMenuItem.Checked;
+
+            BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
+            ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing && processorSelected;
+            StopToolStripMenuItem.Enabled = IsProcessing;
+            DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing && hasPostProcessingData && !isVirtuallyReset;
+
+            prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
+            prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
         }
         #endregion
     }

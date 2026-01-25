@@ -130,6 +130,7 @@ namespace LogScraper.Utilities.UserControls
         public void Clear()
         {
             TxtLogEntries.Clear();
+            UserControlPostProcessing.Clear();
         }
         #endregion
 
