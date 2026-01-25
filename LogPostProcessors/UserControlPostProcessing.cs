@@ -6,6 +6,7 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
+    // TODO: Split the control itself to provide optionally all options
     public partial class UserControlPostProcessing : UserControl
     {
         #region Initialization
@@ -38,7 +39,7 @@ namespace LogScraper.LogPostProcessors
         {
             CancelPostProcessing();
             isVirtuallyReset = false;
-            hasPostProcessingData = false;
+            hasPostProcessingData = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
         }
         #endregion
 
@@ -86,7 +87,15 @@ namespace LogScraper.LogPostProcessors
 
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
 
-            if (eventArgs.HasChanges) hasPostProcessingData = true;
+            // Update the hasPostProcessingData array based on the changes reported by the event args
+            foreach (var kind in Enum.GetValues<LogPostProcessorKind>())
+            {
+                // Skip if we already have data for this kind or if there were no changes, do not reset existing data
+                if (hasPostProcessingData[(int)kind] || eventArgs.HasChanges[(int)kind] == false) continue;
+
+                hasPostProcessingData[(int)kind] = true;
+            }
+
             isVirtuallyReset = false;
             IsProcessing = false;
 
@@ -112,8 +121,10 @@ namespace LogScraper.LogPostProcessors
         /// </summary>
         private List<LogPostProcessorKind> effectiveVisibleKinds = [];
 
-        // Whether any post-processing data exists
-        private bool hasPostProcessingData;
+        /// <summary>
+        /// Indicates whether there is any post-processing data available per processorkind.
+        /// </summary>
+        private bool[] hasPostProcessingData = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
 
         /// <summary>
         /// Indicates whether the post-processing state has been virtually reset (i.e., no post-processing data is considered to exist).
@@ -125,13 +136,19 @@ namespace LogScraper.LogPostProcessors
         {
             List<LogPostProcessorKind> newEffective;
 
-            if (isVirtuallyReset || !hasPostProcessingData)
+            // If we are virtually reset or there is no post-processing data at all, nothing is visible
+            if (isVirtuallyReset || !AnyValueTrue(hasPostProcessingData))
             {
                 newEffective = [];
             }
             else
             {
-                newEffective = [.. preferredVisibleKinds];
+                // Determine per processor if the user wants to see it and if there is data for it
+                newEffective = new(preferredVisibleKinds.Count);
+                foreach (LogPostProcessorKind kind in preferredVisibleKinds)
+                {
+                    if (hasPostProcessingData[(int)kind]) newEffective.Add(kind);
+                }
             }
 
             if (AreSameKinds(effectiveVisibleKinds, newEffective)) return;
@@ -226,10 +243,19 @@ namespace LogScraper.LogPostProcessors
             BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
             ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing && processorSelected;
             StopToolStripMenuItem.Enabled = IsProcessing;
-            DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing && hasPostProcessingData && !isVirtuallyReset;
+            DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing && AnyValueTrue(hasPostProcessingData) && !isVirtuallyReset;
 
             prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
             prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
+        }
+
+        private static bool AnyValueTrue(bool[] array)
+        {
+            foreach (var item in array)
+            {
+                if (item) return true;
+            }
+            return false;
         }
         #endregion
     }

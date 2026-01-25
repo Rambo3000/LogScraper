@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace LogScraper.LogPostProcessors
 {
     public sealed class LogPostProcessResults
@@ -6,7 +8,7 @@ namespace LogScraper.LogPostProcessors
         /// <summary>
         /// Gets the results of the log post-processing operation.
         /// </summary>
-        public LogPostProcessResult[] Results { get; } = new LogPostProcessResult[2];
+        public LogPostProcessResult[] Results { get; } = new LogPostProcessResult[Enum.GetValues<LogPostProcessorKind>().Length];
         /// <summary>
         /// Sets the processing result for the specified log post-processor kind.
         /// </summary>

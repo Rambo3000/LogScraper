@@ -26,7 +26,7 @@ namespace LogScraper.LogPostProcessors
         /// <summary>
         /// Indicates whether any log item has been processed during the current run.
         /// </summary>
-        private bool anyItemProcessed = false;
+        private readonly bool[] anyItemProcessed = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
 
         /// <summary>
         /// Occurs when the processing operation has completed.
@@ -59,10 +59,9 @@ namespace LogScraper.LogPostProcessors
         /// <returns>True if processing started successfully; false if already running or no log entries to process.</returns>
         public bool TryRun(List<LogPostProcessorKind> processorKinds, CancellationToken cancellationToken)
         {
-
             if (logCollection == null || logCollection.LogEntries == null || logCollection.LogEntries.Count == 0)
             {
-                OnProcessingFinished(false, false);
+                OnProcessingFinished(false, new bool[Enum.GetValues<LogPostProcessorKind>().Length]);
                 return false;
             }
             if (processorKinds == null || processorKinds.Count == 0)
@@ -72,10 +71,13 @@ namespace LogScraper.LogPostProcessors
 
             if (Interlocked.CompareExchange(ref isRunning, 1, 0) != 0)
             {
-                OnProcessingFinished(false, false);
+                OnProcessingFinished(false, new bool[Enum.GetValues<LogPostProcessorKind>().Length]);
                 return false; // already running
             }
             Volatile.Write(ref isRunning, 1);
+
+            bool[] anyItemProcessed = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
+
             Task.Run(() => RunInternal(0, logCollection.LogEntries.Count - 1, processorKinds, cancellationToken), cancellationToken);
             return true;
         }
@@ -91,12 +93,14 @@ namespace LogScraper.LogPostProcessors
         private void RunInternal(int startIndex, int endIndex, List<LogPostProcessorKind> processorKinds, CancellationToken cancellationToken)
         {
             bool wasCanceled = false;
-            Interlocked.Exchange(ref anyItemProcessed, false);
             try
             {
                 foreach (var kvp in processors)
                 {
                     LogPostProcessorKind kind = kvp.Key;
+
+                    Interlocked.Exchange(ref anyItemProcessed[(int)kind], false);
+
                     // skip unrequested processor
                     if (!processorKinds.Contains(kind)) continue;
 
@@ -120,8 +124,12 @@ namespace LogScraper.LogPostProcessors
             {
                 // release the run lock
                 Volatile.Write(ref isRunning, 0);
+                bool[] hasChanges = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
 
-                bool hasChanges = Volatile.Read(ref anyItemProcessed);
+                foreach (var kind in processorKinds)
+                {
+                    hasChanges[(int)kind] = Volatile.Read(ref anyItemProcessed[(int)kind]);
+                }
 
                 OnProcessingFinished(wasCanceled, hasChanges);
             }
@@ -166,7 +174,7 @@ namespace LogScraper.LogPostProcessors
                         entry.LogPostProcessResults.Set(kind, new LogPostProcessResult(kind, result));
 
                         // mark that something changed
-                        Interlocked.Exchange(ref anyItemProcessed, true);
+                        Interlocked.Exchange(ref anyItemProcessed[(int)kind], true);
                     }
                 });
         }
@@ -176,7 +184,7 @@ namespace LogScraper.LogPostProcessors
         /// </summary>
         /// <param name="wasCanceled">Indicates whether the processing was canceled.</param>
         /// <param name="hasChanges">Indicates whether any changes were made during processing.</param>
-        private void OnProcessingFinished(bool wasCanceled, bool hasChanges)
+        private void OnProcessingFinished(bool wasCanceled, bool[] hasChanges)
         {
             ProcessingFinished?.Invoke(this, new LogPostProcessingFinishedEventArgs(wasCanceled, hasChanges));
         }
