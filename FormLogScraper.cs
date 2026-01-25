@@ -43,18 +43,26 @@ namespace LogScraper
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
+            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+
             UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdateBegin;
             UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
             UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
-            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
-
-            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+            
+            UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
+            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.LogText)) return;
+            LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.LogText);
         }
 
         private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
@@ -184,7 +192,7 @@ namespace LogScraper
         }
         private void WriteLogToScreenAndFile(LogMetadataFilterResult logMetadataFilterResult)
         {
-            LogExportSettings logExportSettings = new()
+            LogRenderSettings logExportSettings = new()
             {
                 LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
                 LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
@@ -192,12 +200,12 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-            List<LogEntry> visibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResult, logExportSettings);
+            List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesActiveRange(logMetadataFilterResult, logExportSettings);
+
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logExportSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
 
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
-            LogExportWorkerManager.WriteToFile(logMetadataFilterResult, logExportSettings);
         }
         #endregion
 

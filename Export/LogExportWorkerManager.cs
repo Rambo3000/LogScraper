@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.Log.Metadata;
 
 namespace LogScraper.Export
 {
@@ -41,7 +40,7 @@ namespace LogScraper.Export
         }
 
         // Queue to hold workers and their associated data.
-        private readonly Queue<(LogExporterWorker, LogMetadataFilterResult, LogExportSettings)> workerQueue = new();
+        private readonly Queue<(LogExporterWorker, string)> workerQueue = new();
 
         // Indicates whether the queue is currently being processed.
         private bool isProcessingQueue = false;
@@ -56,11 +55,10 @@ namespace LogScraper.Export
         /// </summary>
         /// <param name="worker">The log exporter worker to add.</param>
         /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">The settings to use for exporting the log.</param>
-        public void AddWorker(LogExporterWorker worker, LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        public void AddWorker(LogExporterWorker worker, string log)
         {
             // Enqueue the worker and its associated data.
-            workerQueue.Enqueue((worker, filterResult, logExportSettings));
+            workerQueue.Enqueue((worker, log));
 
             // Start processing the queue if not already in progress.
             if (!isProcessingQueue)
@@ -93,8 +91,8 @@ namespace LogScraper.Export
             }
 
             // Dequeue the last worker and process it.
-            var (worker, filterResult, logExportSettings) = workerQueue.Dequeue();
-            await worker.DoWorkAsync(filterResult, logExportSettings);
+            var (worker, log) = workerQueue.Dequeue();
+            await worker.DoWorkAsync(log);
 
             // Start the next worker when the current one finishes.
             StartNextWorker();
@@ -150,13 +148,13 @@ namespace LogScraper.Export
         /// </summary>
         /// <param name="logMetadataFilterResult">The result of filtering log metadata.</param>
         /// <param name="logExportSettings">The settings to use for exporting the log.</param>
-        internal static void WriteToFile(LogMetadataFilterResult logMetadataFilterResult, LogExportSettings logExportSettings)
+        internal static void WriteToFile(string log)
         {
             if (ConfigurationManager.GenericConfig.ExportToFile)
             {
                 // Create a new log exporter worker and add it to the manager.
                 LogExporterWorker logExporter = new(GetExportFileName());
-                LogExportWorkerManager.Instance.AddWorker(logExporter, logMetadataFilterResult, logExportSettings);
+                LogExportWorkerManager.Instance.AddWorker(logExporter, log);
             }
         }
 

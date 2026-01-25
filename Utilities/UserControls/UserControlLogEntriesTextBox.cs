@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
@@ -20,7 +20,7 @@ namespace LogScraper.Utilities.UserControls
 
         private List<LogEntry> VisibleLogEntries;
         private LogMetadataFilterResult LogMetadataFilterResult;
-        private LogExportSettings LogExportSettings;
+        private LogRenderSettings LogRenderSettings;
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
@@ -75,10 +75,10 @@ namespace LogScraper.Utilities.UserControls
             UpdatePnlViewModeSizeAndVisibility();
         }
 
-        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogExportSettings logExportSettings)
+        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogRenderSettings logRenderSettings)
         {
             LogMetadataFilterResult = logMetadataFilterResultNew;
-            LogExportSettings = logExportSettings;
+            this.LogRenderSettings = logRenderSettings;
             VisibleLogEntries = visibleLogEntries;
             ShowLogEntries();
         }
@@ -89,7 +89,7 @@ namespace LogScraper.Utilities.UserControls
             // Prevent the log from scrolling
             int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
 
-            if (VisibleLogEntries == null || LogExportSettings == null) return;
+            if (VisibleLogEntries == null || LogRenderSettings == null) return;
 
             List<LogFlowTreeNode> logFlowTree = null;
             if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
@@ -97,9 +97,9 @@ namespace LogScraper.Utilities.UserControls
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
             List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
-            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds));
+            ShowRawLog(LogRenderer.GetLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds));
             HighlightLines();
-            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds );
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds);
             StyleLines();
 
             try
@@ -131,6 +131,30 @@ namespace LogScraper.Utilities.UserControls
         {
             TxtLogEntries.Clear();
             UserControlPostProcessing.Clear();
+        }
+        /// <summary>
+        /// Event that is triggered when the text in the log entries text box changes.
+        /// </summary>
+
+        public event EventHandler LogEntriesTextChanged
+        {
+            add
+            {
+                TxtLogEntries.TextChanged += value;
+            }
+            remove
+            {
+                TxtLogEntries.TextChanged -= value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current text displayed in the log entries text box.
+        /// </summary>
+        public string LogText
+        {
+            get { return TxtLogEntries.Text; }
+
         }
         #endregion
 
@@ -291,5 +315,6 @@ namespace LogScraper.Utilities.UserControls
             PnlViewMode.ResumeDrawing();
         }
         #endregion
+
     }
 }

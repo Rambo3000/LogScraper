@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using LogScraper.Export;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Metadata;
@@ -11,40 +10,20 @@ using LogScraper.Utilities.IndexDictionary;
 namespace LogScraper.Log
 {
     /// <summary>
-    /// This class is responsible for exporting log data based on the filtered log metadata and export settings.
+    /// Provides functionality to render log entries based on specified export settings.
     /// </summary>
-    internal class LogDataExporter
+    internal class LogRenderer
     {
-        /// <summary>
-        /// Creates a single string based on the filtered log metadata, export settings, and display options.
-        /// </summary>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">Settings for exporting the log data.</param>
-        /// <returns>A single string containing the processed log data.</returns>
-        public static string CreateExportedLog(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings, out int entryCount)
-        {
-            entryCount = 0;
-            // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
-            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logExportSettings);
-
-            // If the calculated indices are invalid, return an empty ExportedLogData object.
-            if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return string.Empty;
-
-            entryCount = endIndex - startIndex;
-
-            return GetLogEntriesAsString(filterResult, startIndex, endIndex, logExportSettings, []);
-        }
-
         /// <summary>
         /// Gets the log entries within a specified range.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">Settings for exporting the log data.</param>
+        /// <param name="logRenderSettings">Settings for exporting the log data.</param>
         /// <returns>A string containing the formatted log entries.</returns>
-        public static List<LogEntry> GetLogEntriesActiveRange(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        public static List<LogEntry> GetLogEntriesActiveRange(LogMetadataFilterResult filterResult, LogRenderSettings logRenderSettings)
         {
             // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
-            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logExportSettings);
+            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logRenderSettings);
 
             // If the calculated indices are invalid, return an empty ExportedLogData object.
             if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return [];
@@ -56,9 +35,9 @@ namespace LogScraper.Log
         /// Determines the start and end indices for the log entries to be exported based on the export settings.
         /// </summary>
         /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">Settings for exporting the log data.</param>
+        /// <param name="logRenderSettings">Settings for exporting the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
-        private static (int startIndex, int endIndex) CalculateExportRange(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        private static (int startIndex, int endIndex) CalculateExportRange(LogMetadataFilterResult filterResult, LogRenderSettings logRenderSettings)
         {
             int numberOfLogEntriesTotal = filterResult.LogEntries.Count;
 
@@ -66,11 +45,11 @@ namespace LogScraper.Log
             int endindex = numberOfLogEntriesTotal;
 
             // Adjust the start index based on the LogEntryBegin setting
-            if (logExportSettings.LogEntryBegin != null)
+            if (logRenderSettings.LogEntryBegin != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (filterResult.LogEntries[i] == logExportSettings.LogEntryBegin)
+                    if (filterResult.LogEntries[i] == logRenderSettings.LogEntryBegin)
                     {
                         startindex = i;
                         break;
@@ -80,11 +59,11 @@ namespace LogScraper.Log
             }
 
             // Adjust the end index based on the LogEntryEnd setting
-            if (logExportSettings.LogEntryEnd != null)
+            if (logRenderSettings.LogEntryEnd != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (filterResult.LogEntries[i] == logExportSettings.LogEntryEnd)
+                    if (filterResult.LogEntries[i] == logRenderSettings.LogEntryEnd)
                     {
                         endindex = i + 1;
                         break;
@@ -97,35 +76,14 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Converts the specified range of log entries into a single string, optionally reducing the number of log entries for display.
-        /// </summary>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="startIndex">The starting index of the log entries to include.</param>
-        /// <param name="endIndex">The ending index of the log entries to include.</param>
-        /// <param name="logExportSettings">Settings for exporting the log data.</param>
-        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
-        /// <returns>A string containing the formatted log entries.</returns>
-        private static string GetLogEntriesAsString(LogMetadataFilterResult filterResult, int startIndex, int endIndex, LogExportSettings logExportSettings, List<LogPostProcessorKind> logPostProcessorKinds)
-        {
-            StringBuilder stringBuilder = new();
-
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                LogFlowTreeNode logFlowTreeNode = null;
-                AppendLogEntryToStringBuilder(stringBuilder, filterResult.LogEntries[i], logExportSettings, ref logFlowTreeNode, false, logPostProcessorKinds);
-            }
-            return stringBuilder.ToString();
-        }
-
-        /// <summary>
         /// Converts a collection of log entries into a single formatted string based on the specified export
         /// settings.
         /// </summary>
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
-        /// <param name="logExportSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
+        /// <param name="logRenderSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogExportSettings logExportSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
+        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();
@@ -151,7 +109,7 @@ namespace LogScraper.Log
                     }
                 }
 
-                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logExportSettings, ref currentTreeNode, showTree, logPostProcessorKinds);
+                AppendLogEntryToStringBuilder(stringBuilder, logEntry, logRenderSettings, ref currentTreeNode, showTree, logPostProcessorKinds);
             }
 
             return stringBuilder.ToString();
@@ -166,24 +124,24 @@ namespace LogScraper.Log
         /// are also appended, with formatting applied as needed.</remarks>
         /// <param name="stringBuilder">The <see cref="StringBuilder"/> to which the log entry will be appended.</param>
         /// <param name="logEntry">The log entry to append, including its content and metadata.</param>
-        /// <param name="logExportSettings">The settings that control how the log entry is formatted and exported.</param>
+        /// <param name="logRenderSettings">The settings that control how the log entry is formatted and exported.</param>
         /// <param name="treeNode">A reference to the current node in the log flow tree, used to determine hierarchical relationships between
         /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
         /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// langword="true"/>, tree-related prefixes are added to the log entry.</param>
-        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogExportSettings logExportSettings, ref LogFlowTreeNode treeNode, bool showTree, List<LogPostProcessorKind> logPostProcessorKinds)
+        private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogRenderSettings logRenderSettings, ref LogFlowTreeNode treeNode, bool showTree, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             string text = logEntry.Entry;
 
-            if (!logExportSettings.ShowOriginalMetadata)
+            if (!logRenderSettings.ShowOriginalMetadata)
             {
-                if (logExportSettings.LogLayout.RemoveMetaDataCriteria != null)
+                if (logRenderSettings.LogLayout.RemoveMetaDataCriteria != null)
                 {
-                    text = RemoveTextByCriteria(text, logExportSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
+                    text = RemoveTextByCriteria(text, logRenderSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
                 }
 
-                text = InsertMetadataIntoLogEntry(text, logExportSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logExportSettings);
+                text = InsertMetadataIntoLogEntry(text, logRenderSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logRenderSettings);
             }
 
             string treePrefix = string.Empty;
@@ -195,13 +153,13 @@ namespace LogScraper.Log
                 if (isEndNode) treeNode = treeNode.Parent;
             }
 
-            text = text.Insert(logExportSettings.LogLayout.StartIndexMetadata, treePrefix);
+            text = text.Insert(logRenderSettings.LogLayout.StartIndexMetadata, treePrefix);
 
             stringBuilder.AppendLine(text);
 
             if (logEntry.AdditionalLogEntries != null)
             {
-                string additionLogEntryPrefix = string.Concat(logEntry.Entry.AsSpan(0, logExportSettings.LogLayout.StartIndexMetadata), " ", treePrefix);
+                string additionLogEntryPrefix = string.Concat(logEntry.Entry.AsSpan(0, logRenderSettings.LogLayout.StartIndexMetadata), " ", treePrefix);
                 foreach (string extra in logEntry.AdditionalLogEntries)
                 {
                     if (showTree)
@@ -254,11 +212,11 @@ namespace LogScraper.Log
         /// <param name="startIndex">The position to insert the metadata.</param>
         /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
         /// <returns>The log entry with added metadata.</returns>
-        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogExportSettings logExportSettings)
+        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogRenderSettings logRenderSettings)
         {
             if (startIndex <= 0 ||
-                logExportSettings.SelectedMetadataProperties == null ||
-                logExportSettings.SelectedMetadataProperties.Count == 0 ||
+                logRenderSettings.SelectedMetadataProperties == null ||
+                logRenderSettings.SelectedMetadataProperties.Count == 0 ||
                 logMetadataPropertiesWithStringValue == null ||
                 logMetadataPropertiesWithStringValue.Count == 0)
             {
@@ -266,7 +224,7 @@ namespace LogScraper.Log
             }
 
             List<string> values = [];
-            foreach (LogMetadataProperty logMetadataProperty in logExportSettings.SelectedMetadataProperties)
+            foreach (LogMetadataProperty logMetadataProperty in logRenderSettings.SelectedMetadataProperties)
             {
                 logMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value);
                 if (value != null) { values.Add(value); }

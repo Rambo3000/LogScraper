@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 
-namespace LogScraper.Export
+namespace LogScraper.Log
 {
     /// <summary>
     /// Represents the settings used for exporting log data.
     /// </summary>
-    public class LogExportSettings
+    public class LogRenderSettings
     {
         /// <summary>
         /// The log entry that marks the beginning of the export range.
