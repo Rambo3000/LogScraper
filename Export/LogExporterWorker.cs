@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using LogScraper.Log;
-using LogScraper.Log.Metadata;
 
 namespace LogScraper.Export
 {
@@ -26,20 +24,16 @@ namespace LogScraper.Export
         /// <summary>
         /// Performs the log export operation asynchronously.
         /// </summary>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">The settings to use for exporting the log.</param>
-        public async Task DoWorkAsync(LogMetadataFilterResult filterResult, LogExportSettings logExportSettings)
+        /// <param name="log">The log content to be exported.</param>
+        public async Task DoWorkAsync(string log)
         {
             try
             {
                 // Notify that the export process has started.
                 OnStatusUpdate("Bezig met wegschrijven...", true);
 
-                // Generate the log content based on the filter result and export settings.
-                string exportedLog = LogDataExporter.CreateExportedLog(filterResult, logExportSettings, out int _);
-
                 // Write the generated log content to the specified file asynchronously.
-                await File.WriteAllTextAsync(logFilePath, exportedLog);
+                await File.WriteAllTextAsync(logFilePath, log);
 
                 // Notify that the export process completed successfully.
                 OnStatusUpdate("Ok", true);

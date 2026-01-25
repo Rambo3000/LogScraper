@@ -40,6 +40,7 @@
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
             BtnErase = new System.Windows.Forms.Button();
+            imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
@@ -208,15 +209,23 @@
             // 
             // BtnErase
             // 
-            BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
+            BtnErase.ImageIndex = 0;
+            BtnErase.ImageList = imageListBtnErase;
             BtnErase.Location = new System.Drawing.Point(212, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
-            ToolTip.SetToolTip(BtnErase, "Wis het log. Rechtermuisklik voor reset");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
             BtnErase.MouseUp += BtnErase_MouseUp;
+            // 
+            // imageListBtnErase
+            // 
+            imageListBtnErase.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageListBtnErase.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListBtnErase.ImageStream");
+            imageListBtnErase.TransparentColor = System.Drawing.Color.Transparent;
+            imageListBtnErase.Images.SetKeyName(0, "trash-can-outline-with-dropdown-36x24.png");
+            imageListBtnErase.Images.SetKeyName(1, "Reset-with-dropwdown-36x24.png");
             // 
             // BtnStop
             // 
@@ -508,7 +517,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(466, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(474, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -549,28 +558,29 @@
             // ToolTip
             // 
             ToolTip.AutoPopDelay = 9999999;
-            ToolTip.InitialDelay = 500;
+            ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
             // ContextMenuReset
             // 
             ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemReset, ToolStripMenuItemClear });
             ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.ShowImageMargin = false;
-            ContextMenuReset.Size = new System.Drawing.Size(89, 48);
+            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
             // 
             // ToolStripMenuItemReset
             // 
+            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
             ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
-            ToolStripMenuItemReset.Size = new System.Drawing.Size(88, 22);
-            ToolStripMenuItemReset.Text = "Reset";
+            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
+            ToolStripMenuItemReset.Text = "Reset log en filters";
             ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
             // 
             // ToolStripMenuItemClear
             // 
+            ToolStripMenuItemClear.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemClear.Image");
             ToolStripMenuItemClear.Name = "ToolStripMenuItemClear";
-            ToolStripMenuItemClear.Size = new System.Drawing.Size(88, 22);
-            ToolStripMenuItemClear.Text = "Wis log";
+            ToolStripMenuItemClear.Size = new System.Drawing.Size(210, 22);
+            ToolStripMenuItemClear.Text = "Wis log (filters behouden)";
             ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
             // 
             // FormLogScraper
@@ -665,5 +675,6 @@
         private System.Windows.Forms.ContextMenuStrip ContextMenuReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
+        private System.Windows.Forms.ImageList imageListBtnErase;
     }
 }

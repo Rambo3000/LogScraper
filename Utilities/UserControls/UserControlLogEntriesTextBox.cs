@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -19,12 +20,12 @@ namespace LogScraper.Utilities.UserControls
 
         private List<LogEntry> VisibleLogEntries;
         private LogMetadataFilterResult LogMetadataFilterResult;
-        private LogExportSettings LogExportSettings;
+        private LogRenderSettings LogRenderSettings;
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
         private Dictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
-        private int? selectedIndex = -1;
+        private LogEntry selectedLogEntry = null;
 
         public UserControlLogEntriesTextBox()
         {
@@ -32,6 +33,12 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
+            UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
+        }
+
+        private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, System.EventArgs e)
+        {
+            RenderLogEntries();
         }
         #endregion
 
@@ -50,7 +57,7 @@ namespace LogScraper.Utilities.UserControls
         public void UpdateLogLayout(LogLayout logLayout)
         {
             contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
-            contentLinesToStyle = DetermineContentLinesToStyle();
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, UserControlPostProcessing.VisibleProcessorKinds);
             CboLogContentType.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -68,36 +75,43 @@ namespace LogScraper.Utilities.UserControls
             UpdatePnlViewModeSizeAndVisibility();
         }
 
-        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogExportSettings logExportSettings)
+        public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogRenderSettings logRenderSettings)
         {
             LogMetadataFilterResult = logMetadataFilterResultNew;
-            LogExportSettings = logExportSettings;
+            this.LogRenderSettings = logRenderSettings;
             VisibleLogEntries = visibleLogEntries;
-            contentLinesToStyle = DetermineContentLinesToStyle();
-            ShowLogEntries();
+            RenderLogEntries();
         }
-        private void ShowLogEntries()
+        private void RenderLogEntries()
         {
             this.SuspendDrawing();
 
             // Prevent the log from scrolling
             int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
 
-            if (VisibleLogEntries == null || LogExportSettings == null) return;
+            if (VisibleLogEntries == null || LogRenderSettings == null) return;
 
             List<LogFlowTreeNode> logFlowTree = null;
             if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
             {
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
-
-            ShowRawLog(LogDataExporter.GetLogEntriesAsString(VisibleLogEntries, LogExportSettings, SelectedLogContentProperty, logFlowTree));
+            List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
+            Text  = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
             HighlightLines();
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds);
             StyleLines();
 
             try
             {
-                TxtLogEntries.FirstVisibleLine = firstVisibleLine;
+                if (selectedLogEntry != null)
+                {
+                    SelectLogEntry(selectedLogEntry);
+                }
+                else
+                {
+                    TxtLogEntries.FirstVisibleLine = firstVisibleLine;
+                }
             }
             catch
             {
@@ -105,17 +119,40 @@ namespace LogScraper.Utilities.UserControls
             }
             this.ResumeDrawing();
         }
-        public void ShowRawLog(string rawLog)
+        /// <summary>
+        /// Updates the text displayed in the log entries text box.
+        /// </summary>
+        public override string Text
         {
-            TxtLogEntries.ReadOnly = false;
-            TxtLogEntries.Text = rawLog;
-            TxtLogEntries.EmptyUndoBuffer();
-            TxtLogEntries.ReadOnly = true;
-            UpdatePnlViewModePosition();
+            get { return TxtLogEntries.Text; }
+            set
+            {
+                TxtLogEntries.ReadOnly = false;
+                TxtLogEntries.Text = value;
+                TxtLogEntries.EmptyUndoBuffer();
+                TxtLogEntries.ReadOnly = true;
+                UpdatePnlViewModePosition();
+            }
         }
         public void Clear()
         {
             TxtLogEntries.Clear();
+            UserControlPostProcessing.Clear();
+        }
+        /// <summary>
+        /// Event that is triggered when the text in the log entries text box changes.
+        /// </summary>
+
+        public event EventHandler LogEntriesTextChanged
+        {
+            add
+            {
+                TxtLogEntries.TextChanged += value;
+            }
+            remove
+            {
+                TxtLogEntries.TextChanged -= value;
+            }
         }
         #endregion
 
@@ -124,9 +161,22 @@ namespace LogScraper.Utilities.UserControls
         {
             if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
             {
+                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
+                {
+                    HighlightLines(selectedIndex);
+                }
+                else
+                {
+                    HighlightLines(null);
+                }
+            }
+        }
+        private void HighlightLines(int? selectedIndex)
+        {
+            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
+            {
                 int? beginIndex = (logEntryBegin == null) ? null : 0;
                 int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
-
                 TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
             }
         }
@@ -143,77 +193,22 @@ namespace LogScraper.Utilities.UserControls
                 TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, contentLinesToStyle);
             }
         }
-        /// <summary>
-        /// Identifies the line indexes of visible log entries that should be styled for each content property with
-        /// custom coloring.
-        /// </summary>
-        /// <returns>An IndexDictionary mapping each content property with custom coloring to a list of line indexes in the
-        /// visible log entries that should be styled. If there are no visible log entries, all lists will be empty.</returns>
-        private Dictionary<LogContentProperty, List<int>> DetermineContentLinesToStyle()
+
+        public void SelectLogEntry(LogEntry entry)
         {
-            Dictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring.Count);
+            selectedLogEntry = entry;
+            if (selectedLogEntry == null) return;
 
-            if (VisibleLogEntries == null) return logEntriesToStylePerContentProperty;
-
-            foreach (LogContentProperty LogContentProperty in contentPropertiesWithCustomColoring)
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
             {
-                List<int> logEntriesIndexes = [];
-                logEntriesToStylePerContentProperty[LogContentProperty] = logEntriesIndexes;
-
-                for (int i = 0; i < VisibleLogEntries.Count; i++)
-                {
-                    LogEntry logEntry = VisibleLogEntries[i];
-                    if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
-
-                    if (!logEntry.LogContentProperties.ContainsKey(LogContentProperty)) continue;
-
-                    if (TryGetLogEntryIndex(logEntry, out int logEntryIndex))
-                    {
-                        logEntriesIndexes.Add(logEntryIndex);
-                    }
-                }
+                TxtLogEntries.ScrollToLine(selectedIndex);
+                HighlightLines(selectedIndex);
+            }
+            else
+            {
+                HighlightLines(null);
             }
 
-            return logEntriesToStylePerContentProperty;
-        }
-
-        public void SelectLogEntry(LogEntry selectedLogEntry)
-        {
-            if (selectedLogEntry == null)
-            {
-                selectedIndex = null;
-                return;
-            }
-
-            bool found = TryGetLogEntryIndex(selectedLogEntry, out int selectedIndexNew);
-
-            selectedIndex = found ? selectedIndexNew : null;
-
-            HighlightLines();
-            if (selectedIndex != null) TxtLogEntries.ScrollToLine((int)selectedIndex);
-        }
-
-        /// <summary>
-        /// Attempts to find the index of the specified <see cref="LogEntry"/> within the collection of visible log
-        /// entries.
-        /// </summary>
-        /// <param name="logEntry">The <see cref="LogEntry"/> to locate in the collection.</param>
-        /// <param name="logEntryIndex">When this method returns, contains the zero-based index of the specified <paramref name="logEntry"/> if it
-        /// is found; otherwise, contains -1. This parameter is passed uninitialized.</param>
-        /// <returns><see langword="true"/> if the specified <paramref name="logEntry"/> is found in the collection of visible
-        /// log entries; otherwise, <see langword="false"/>.</returns>
-        private bool TryGetLogEntryIndex(LogEntry logEntry, out int logEntryIndex)
-        {
-            logEntryIndex = -1;
-            foreach (LogEntry logEntryVisible in VisibleLogEntries)
-            {
-                logEntryIndex++;
-                if (logEntryVisible == logEntry) return true;
-
-                // Add the additional log entries to the line count
-                if (logEntryVisible.AdditionalLogEntries != null) logEntryIndex += logEntryVisible.AdditionalLogEntries.Count;
-            }
-            return false;
         }
         #endregion
 
@@ -245,16 +240,20 @@ namespace LogScraper.Utilities.UserControls
         private void ChkShowNoTree_CheckedChanged(object sender, System.EventArgs e)
         {
             UpdateShowTreeControls(false);
+            UpdatePnlViewModeSizeAndVisibility();
+            ActiveControl = null;
         }
 
         private void ChkShowFlowTree_CheckedChanged(object sender, System.EventArgs e)
         {
             UpdateShowTreeControls(true);
+            UpdatePnlViewModeSizeAndVisibility();
+            ActiveControl = null;
         }
 
         private void CboLogContentType_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            ShowLogEntries();
+            RenderLogEntries();
         }
         private void TxtLogEntries_SizeChanged(object sender, System.EventArgs e)
         {
@@ -287,7 +286,7 @@ namespace LogScraper.Utilities.UserControls
             ChkShowNoTree.Enabled = showTree;
             CboLogContentType.Enabled = showTree;
 
-            ShowLogEntries();
+            RenderLogEntries();
             updateShowTreeInProgress = false;
         }
         private void UpdatePnlViewModePosition()
@@ -306,11 +305,14 @@ namespace LogScraper.Utilities.UserControls
         }
         private void UpdatePnlViewModeSizeAndVisibility()
         {
+            PnlViewMode.SuspendDrawing();
             PnlViewMode.Visible = CboLogContentType.Items.Count > 0;
             // Hide the dropdownbox if there's only one item
-            PnlViewMode.Size = new Size((CboLogContentType.Items.Count == 1 ? 0 : CboLogContentType.Width + 4) + ChkShowFlowTree.Width + ChkShowNoTree.Width + 4, PnlViewMode.Height);
+            PnlViewMode.Size = new Size((ChkShowFlowTree.Checked && CboLogContentType.Items.Count > 1 ? CboLogContentType.Width + 4 : 0) + UserControlPostProcessing.Right - ChkShowNoTree.Left + 4, PnlViewMode.Height);
             UpdatePnlViewModePosition();
+            PnlViewMode.ResumeDrawing();
         }
         #endregion
+
     }
 }

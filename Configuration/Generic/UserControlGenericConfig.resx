@@ -126,4 +126,9 @@ Zodra er meerdere sessies geselecteerd zijn, schakelt de weergave automatisch te
 
 Geef in de log-layout configuratie aan welke metadata bij een sessie hoort.</value>
   </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value>Toont bij de begin- en eindfilters een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type content waarop gefilterd wordt.
+
+Deze functionaliteit werkt alleen als er in de configuratie van de loglayout een contentfilter met de naam ""Errors"" is ingesteld. Deze filter bepaalt welke regels als rode errorregels worden weergegeven.</value>
+  </data>
 </root>

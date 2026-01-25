@@ -15,6 +15,7 @@ using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.UserControls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static LogScraper.UserControlSearch;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -42,17 +43,26 @@ namespace LogScraper
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
+            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+
             UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdateBegin;
             UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
             UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
-            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
-
-            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+            
+            UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
+            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
             SetDynamicToolTips();
+            UpdateBtnErase();
+        }
+
+        private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.Text)) return;
+            LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.Text);
         }
 
         private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
@@ -129,7 +139,7 @@ namespace LogScraper
                 catch (Exception)
                 {
                     //Write the raw log to the text box to not leave the user completely in the dark
-                    UserControlLogEntriesTextBox.ShowRawLog(RawLogParser.JoinRawLogIntoString(rawLog));
+                    UserControlLogEntriesTextBox.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
@@ -175,7 +185,6 @@ namespace LogScraper
 
             // Filter the log entries into the FilterResult and update the count
             currentLogMetadataFilterResult = LogMetadataFilter.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList, (LogLayout)cboLogLayout.SelectedItem);
-
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
 
@@ -183,7 +192,7 @@ namespace LogScraper
         }
         private void WriteLogToScreenAndFile(LogMetadataFilterResult logMetadataFilterResult)
         {
-            LogExportSettings logExportSettings = new()
+            LogRenderSettings logRenderSettings = new()
             {
                 LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
                 LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
@@ -191,12 +200,12 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-            List<LogEntry> visibleLogEntries = LogDataExporter.GetLogEntriesActiveRange(logMetadataFilterResult, logExportSettings);
-            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logExportSettings);
+            List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
+
+            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
 
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
-            LogExportWorkerManager.WriteToFile(logMetadataFilterResult, logExportSettings);
         }
         #endregion
 
@@ -343,9 +352,11 @@ namespace LogScraper
             BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
+        private bool isResetUiEnabled = false;
         public void BtnErase_Click(object sender, EventArgs e)
         {
-            Erase();
+            if (isResetUiEnabled) Reset();
+            else Erase();
         }
         private void BtnErase_MouseUp(object sender, MouseEventArgs e)
         {
@@ -358,12 +369,33 @@ namespace LogScraper
         }
         private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
         {
+            isResetUiEnabled = true;
+            UpdateBtnErase();
             Reset();
         }
         private void ToolStripMenuItemClear_Click(object sender, EventArgs e)
         {
+            isResetUiEnabled = false;
+            UpdateBtnErase();
             Erase();
         }
+        private void UpdateBtnErase()
+        {
+            string toolTipText;
+
+            if (!isResetUiEnabled)
+            {
+                toolTipText = "Wis log. Rechtermuisklik voor reset.";
+                BtnErase.ImageIndex = 0;
+            }
+            else
+            {
+                toolTipText = "Reset log en filters. Rechtermuisklik voor log wissen.";
+                BtnErase.ImageIndex = 1;
+            }
+            ToolTip.SetToolTip(BtnErase, toolTipText);
+        }
+
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
             LogExportWorkerManager.OpenFileInExternalEditor();

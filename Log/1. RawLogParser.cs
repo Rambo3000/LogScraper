@@ -166,6 +166,7 @@ namespace LogScraper.Log
             bool logEntryIsAdded = false;
             LogEntry lastLogEntry = null;
 
+            int indexOffset = logCollection.LogEntries.Count;
             for (int i = 0; i < parsedLines.Length; i++)
             {
                 ref ParsedLogLine line = ref parsedLines[i];
@@ -182,7 +183,7 @@ namespace LogScraper.Log
                     continue;
                 }
 
-                LogEntry newLogEntry = new(line.RawEntry, line.Timestamp);
+                LogEntry newLogEntry = new(line.RawEntry, line.Timestamp, i + indexOffset);
                 logCollection.LogEntries.Add(newLogEntry);
                 logEntryIsAdded = true;
                 lastLogEntry = newLogEntry;
