@@ -71,7 +71,7 @@ namespace LogScraper
 
         private void BtnErase_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnErase_Click(sender, e);
+            LogScraperForm.Erase();
         }
 
         private void BtnBack_Click(object sender, System.EventArgs e)

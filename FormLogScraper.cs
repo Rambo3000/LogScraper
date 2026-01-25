@@ -210,7 +210,7 @@ namespace LogScraper
         #endregion
 
         #region Erase and reset
-        private void Erase()
+        public void Erase()
         {
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
