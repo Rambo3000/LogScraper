@@ -575,7 +575,7 @@ namespace LogScraper.Log
                         information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
                     }
                     information += Environment.NewLine;
-                    information += "Content begin en eind filters:" + Environment.NewLine;
+                    information += "Inhoudsfilters:" + Environment.NewLine;
                     foreach (var property in logLayout.LogContentProperties)
                     {
                         logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
@@ -583,13 +583,13 @@ namespace LogScraper.Log
                         string valueToShow = hasContentValue ? contentValue.Value : "<niet gevonden>";
                         information += $"   {property.Description}: {valueToShow}" + Environment.NewLine;
                     }
-                    TxtTestResponse.ForeColor = System.Drawing.Color.Black;
+                    TxtTestResponse.ForeColor = Color.Black;
                     TxtTestResponse.Text = information;
 
                 }
                 catch (Exception exception)
                 {
-                    TxtTestResponse.ForeColor = System.Drawing.Color.DarkRed;
+                    TxtTestResponse.ForeColor = Color.DarkRed;
                     TxtTestResponse.Text = $"Error: {exception.Message}";
                 }
             }

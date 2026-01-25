@@ -61,8 +61,8 @@ namespace LogScraper
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.LogText)) return;
-            LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.LogText);
+            if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.Text)) return;
+            LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.Text);
         }
 
         private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
@@ -139,7 +139,7 @@ namespace LogScraper
                 catch (Exception)
                 {
                     //Write the raw log to the text box to not leave the user completely in the dark
-                    UserControlLogEntriesTextBox.ShowRawLog(RawLogParser.JoinRawLogIntoString(rawLog));
+                    UserControlLogEntriesTextBox.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
@@ -192,7 +192,7 @@ namespace LogScraper
         }
         private void WriteLogToScreenAndFile(LogMetadataFilterResult logMetadataFilterResult)
         {
-            LogRenderSettings logExportSettings = new()
+            LogRenderSettings logRenderSettings = new()
             {
                 LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
                 LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
@@ -200,9 +200,9 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-            List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesActiveRange(logMetadataFilterResult, logExportSettings);
+            List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
 
-            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logExportSettings);
+            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
 
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();

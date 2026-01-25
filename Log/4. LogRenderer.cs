@@ -15,31 +15,31 @@ namespace LogScraper.Log
     internal class LogRenderer
     {
         /// <summary>
-        /// Gets the log entries within a specified range.
+        /// Retrieves the log entries to be rendered based on the provided metadata filter result and render settings.
         /// </summary>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
-        /// <param name="logRenderSettings">Settings for exporting the log data.</param>
+        /// <param name="metadataFilterResult">The result of filtering log metadata.</param>
+        /// <param name="logRenderSettings">Settings for rendering the log data.</param>
         /// <returns>A string containing the formatted log entries.</returns>
-        public static List<LogEntry> GetLogEntriesActiveRange(LogMetadataFilterResult filterResult, LogRenderSettings logRenderSettings)
+        public static List<LogEntry> GetLogEntriesToRenderFromMetadataFilterResult(LogMetadataFilterResult metadataFilterResult, LogRenderSettings logRenderSettings)
         {
             // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
-            (int startIndex, int endIndex) = CalculateExportRange(filterResult, logRenderSettings);
+            (int startIndex, int endIndex) = CalculateLogRenderRange(metadataFilterResult, logRenderSettings);
 
             // If the calculated indices are invalid, return an empty ExportedLogData object.
             if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return [];
 
-            return filterResult.LogEntries[startIndex..endIndex];
+            return metadataFilterResult.LogEntries[startIndex..endIndex];
         }
 
         /// <summary>
         /// Determines the start and end indices for the log entries to be exported based on the export settings.
         /// </summary>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
+        /// <param name="metadataFilterResult">The result of filtering log metadata.</param>
         /// <param name="logRenderSettings">Settings for exporting the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
-        private static (int startIndex, int endIndex) CalculateExportRange(LogMetadataFilterResult filterResult, LogRenderSettings logRenderSettings)
+        private static (int startIndex, int endIndex) CalculateLogRenderRange(LogMetadataFilterResult metadataFilterResult, LogRenderSettings logRenderSettings)
         {
-            int numberOfLogEntriesTotal = filterResult.LogEntries.Count;
+            int numberOfLogEntriesTotal = metadataFilterResult.LogEntries.Count;
 
             int startindex = 0;
             int endindex = numberOfLogEntriesTotal;
@@ -49,7 +49,7 @@ namespace LogScraper.Log
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (filterResult.LogEntries[i] == logRenderSettings.LogEntryBegin)
+                    if (metadataFilterResult.LogEntries[i] == logRenderSettings.LogEntryBegin)
                     {
                         startindex = i;
                         break;
@@ -63,7 +63,7 @@ namespace LogScraper.Log
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (filterResult.LogEntries[i] == logRenderSettings.LogEntryEnd)
+                    if (metadataFilterResult.LogEntries[i] == logRenderSettings.LogEntryEnd)
                     {
                         endindex = i + 1;
                         break;
@@ -76,14 +76,16 @@ namespace LogScraper.Log
         }
 
         /// <summary>
-        /// Converts a collection of log entries into a single formatted string based on the specified export
+        /// Renders the provided list of log entries as a single string according to the specified render
         /// settings.
         /// </summary>
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
         /// <param name="logRenderSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
+        /// <param name="logContentPropertyForFlowTree">The log content property used to build the flow tree structure. Can be null.</param>
+        /// <param name="logFlowTreeNodes">The list of log flow tree nodes representing the hierarchical structure of log entries. Can be null.</param>
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string GetLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
+        public static string RenderLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();

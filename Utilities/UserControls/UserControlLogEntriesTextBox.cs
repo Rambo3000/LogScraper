@@ -38,7 +38,7 @@ namespace LogScraper.Utilities.UserControls
 
         private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, System.EventArgs e)
         {
-            ShowLogEntries();
+            RenderLogEntries();
         }
         #endregion
 
@@ -80,9 +80,9 @@ namespace LogScraper.Utilities.UserControls
             LogMetadataFilterResult = logMetadataFilterResultNew;
             this.LogRenderSettings = logRenderSettings;
             VisibleLogEntries = visibleLogEntries;
-            ShowLogEntries();
+            RenderLogEntries();
         }
-        private void ShowLogEntries()
+        private void RenderLogEntries()
         {
             this.SuspendDrawing();
 
@@ -97,7 +97,7 @@ namespace LogScraper.Utilities.UserControls
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
             List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
-            ShowRawLog(LogRenderer.GetLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds));
+            Text  = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
             HighlightLines();
             contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds);
             StyleLines();
@@ -119,13 +119,20 @@ namespace LogScraper.Utilities.UserControls
             }
             this.ResumeDrawing();
         }
-        public void ShowRawLog(string rawLog)
+        /// <summary>
+        /// Updates the text displayed in the log entries text box.
+        /// </summary>
+        public override string Text
         {
-            TxtLogEntries.ReadOnly = false;
-            TxtLogEntries.Text = rawLog;
-            TxtLogEntries.EmptyUndoBuffer();
-            TxtLogEntries.ReadOnly = true;
-            UpdatePnlViewModePosition();
+            get { return TxtLogEntries.Text; }
+            set
+            {
+                TxtLogEntries.ReadOnly = false;
+                TxtLogEntries.Text = value;
+                TxtLogEntries.EmptyUndoBuffer();
+                TxtLogEntries.ReadOnly = true;
+                UpdatePnlViewModePosition();
+            }
         }
         public void Clear()
         {
@@ -146,15 +153,6 @@ namespace LogScraper.Utilities.UserControls
             {
                 TxtLogEntries.TextChanged -= value;
             }
-        }
-
-        /// <summary>
-        /// Gets the current text displayed in the log entries text box.
-        /// </summary>
-        public string LogText
-        {
-            get { return TxtLogEntries.Text; }
-
         }
         #endregion
 
@@ -255,7 +253,7 @@ namespace LogScraper.Utilities.UserControls
 
         private void CboLogContentType_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            ShowLogEntries();
+            RenderLogEntries();
         }
         private void TxtLogEntries_SizeChanged(object sender, System.EventArgs e)
         {
@@ -288,7 +286,7 @@ namespace LogScraper.Utilities.UserControls
             ChkShowNoTree.Enabled = showTree;
             CboLogContentType.Enabled = showTree;
 
-            ShowLogEntries();
+            RenderLogEntries();
             updateShowTreeInProgress = false;
         }
         private void UpdatePnlViewModePosition()
