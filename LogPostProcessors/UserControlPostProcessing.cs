@@ -191,15 +191,29 @@ namespace LogScraper.LogPostProcessors
         #endregion
 
         #region Control event handlers and enabled state
+        private void BtnPostProcess_Click(object sender, EventArgs e)
+        {
+            StartPostProcessing();
+
+            //Remove the focus from the post process button
+            ActiveControl = null;
+        }
+        private void BtnPostProcess_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            ContextMenuPostProcessing.Show(BtnPostProcess, e.Location);
+
+            //Remove the focus from the post process button
+            ActiveControl = null;
+        }
+
         private void ApplyToVisibleLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StartPostProcessing();
-        }
-        private void BtnPostProcess_Click(object sender, EventArgs e)
-        {
-            ContextMenuPostProcessing.Show(BtnPostProcess, new System.Drawing.Point(0, BtnPostProcess.Height));
-            //Remove the focus from the post process button
-            ActiveControl = null;
         }
 
         private void CancelPostProcessing()

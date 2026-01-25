@@ -67,6 +67,7 @@
             toolTip1.SetToolTip(BtnPostProcess, "Pretty print XML en JSON. Rechtermuisklik voor meer opties");
             BtnPostProcess.UseVisualStyleBackColor = true;
             BtnPostProcess.Click += BtnPostProcess_Click;
+            BtnPostProcess.MouseUp += BtnPostProcess_MouseUp;
             // 
             // imageList1
             // 
@@ -81,7 +82,7 @@
             ContextMenuPostProcessing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ApplyToVisibleLogToolStripMenuItem, StopToolStripMenuItem, DeleteAllePostprocessingToolStripMenuItem, toolStripSeparator1, prettyPrintJSONToolStripMenuItem, prettyPrintXMLToolStripMenuItem });
             ContextMenuPostProcessing.Name = "ContextMenu";
             ContextMenuPostProcessing.ShowCheckMargin = true;
-            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 142);
+            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 120);
             // 
             // ApplyToVisibleLogToolStripMenuItem
             // 

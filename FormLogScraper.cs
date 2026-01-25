@@ -15,6 +15,7 @@ using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.UserControls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static LogScraper.UserControlSearch;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -53,6 +54,7 @@ namespace LogScraper
             UserControlSearch.Search += UsrSearch_Search;
 
             SetDynamicToolTips();
+            UpdateBtnErase();
         }
 
         private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
@@ -342,9 +344,11 @@ namespace LogScraper
             BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
+        private bool isResetUiEnabled = false;
         public void BtnErase_Click(object sender, EventArgs e)
         {
-            Erase();
+            if (isResetUiEnabled) Reset();
+            else Erase();
         }
         private void BtnErase_MouseUp(object sender, MouseEventArgs e)
         {
@@ -357,12 +361,33 @@ namespace LogScraper
         }
         private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
         {
+            isResetUiEnabled = true;
+            UpdateBtnErase();
             Reset();
         }
         private void ToolStripMenuItemClear_Click(object sender, EventArgs e)
         {
+            isResetUiEnabled = false;
+            UpdateBtnErase();
             Erase();
         }
+        private void UpdateBtnErase()
+        {
+            string toolTipText;
+
+            if (!isResetUiEnabled)
+            {
+                toolTipText = "Wis log. Rechtermuisklik voor reset.";
+                BtnErase.ImageIndex = 0;
+            }
+            else
+            {
+                toolTipText = "Reset log en filters. Rechtermuisklik voor log wissen.";
+                BtnErase.ImageIndex = 1;
+            }
+            ToolTip.SetToolTip(BtnErase, toolTipText);
+        }
+
         public void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
             LogExportWorkerManager.OpenFileInExternalEditor();
