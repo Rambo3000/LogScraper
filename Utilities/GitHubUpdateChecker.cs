@@ -91,36 +91,57 @@ namespace LogScraper.Utilities
         /// Fetches the latest release version from the GitHub API.
         /// </summary>
         /// <param name="user">The GitHub username.</param>
-        /// <param name="repo">The GitHub repository name.</param>
+        /// <param name="repository">The GitHub repository name.</param>
+        /// <param name="includePrereleases">Whether to include pre-release versions in the check.</param>
         /// <returns>The latest release version as a string, or null if the request fails.</returns>
-        private static async Task<string> GetLatestGitHubReleaseVersionAsync(string user, string repo)
+        private static async Task<string> GetLatestGitHubReleaseVersionAsync(string user, string repository, bool includePrereleases = false)
         {
-            string url = "https://api.github.com/repos/" + user + "/" + repo + "/releases/latest";
+            string url = "https://api.github.com/repos/" + user + "/" + repository + "/releases" + (!includePrereleases ? "/latest" : "");
 
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.UserAgent.TryParseAdd("update-checker"); // Set a user agent for the request
+            using HttpClient httpClient = new();
+            httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("update-checker");
 
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode(); // Throw an exception if the response indicates failure
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
                 string json = await response.Content.ReadAsStringAsync();
+                using JsonDocument document = JsonDocument.Parse(json);
 
-                using JsonDocument doc = JsonDocument.Parse(json);
-                JsonElement root = doc.RootElement;
-
-                if (root.TryGetProperty("tag_name", out JsonElement tag))
+                if (!includePrereleases)
                 {
-                    return tag.GetString(); // Return the tag name (version) if available
+                    if (document.RootElement.TryGetProperty("tag_name", out JsonElement tag))
+                    {
+                        return tag.GetString();
+                    }
+
+                    return null;
+                }
+
+                foreach (JsonElement release in document.RootElement.EnumerateArray())
+                {
+                    bool isPrerelease = release.GetProperty("prerelease").GetBoolean();
+
+                    if (!isPrerelease)
+                    {
+                        continue;
+                    }
+
+                    if (release.TryGetProperty("tag_name", out JsonElement prereleaseTag))
+                    {
+                        return prereleaseTag.GetString();
+                    }
                 }
             }
             catch
             {
-                // Swallow errors silently; optionally log or debug
+                // Intentionally ignored
             }
 
-            return null; // Return null if the request fails or the tag name is not found
+            return null;
         }
+
 
         /// <summary>
         /// Determines whether the latest version is newer than the current version.
