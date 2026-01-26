@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -9,8 +9,8 @@
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2025 Robert de Volder</Copyright>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.2.3</FileVersion>
-    <Version>3.2.3</Version>
+    <FileVersion>3.2.4</FileVersion>
+    <Version>3.2.4</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
