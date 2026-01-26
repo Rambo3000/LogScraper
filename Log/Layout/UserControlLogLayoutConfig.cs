@@ -341,6 +341,7 @@ namespace LogScraper.Log
                 ChkContentPropertyIsError.Checked = selected.IsErrorProperty;
                 ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
                 ChkColorContentPropertyLogEntries.Checked = selected.IsCustomStyleEnabled;
+                ChkContentBackColorFillLine.Checked = selected.IsCustomBackColorFillLine;
                 UpdateTxtCustomStyleExample();
                 CboContentFilterMarksEnd.Items.Clear();
                 CboContentFilterMarksEnd.Items.AddRange([.. LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected)]);
@@ -749,6 +750,7 @@ namespace LogScraper.Log
         {
             BtnContentBackColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
             BtnContentTextColor.Enabled = ChkColorContentPropertyLogEntries.Checked;
+            ChkContentBackColorFillLine.Enabled = ChkColorContentPropertyLogEntries.Checked;
             TxtCustomStyleExample.Enabled = ChkColorContentPropertyLogEntries.Checked;
 
             if (UpdatingInformation) return;
@@ -756,15 +758,23 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
             {
                 selectedContentProperty.IsCustomStyleEnabled = ChkColorContentPropertyLogEntries.Checked;
-                
+                selectedContentProperty.IsCustomBackColorFillLine = ChkContentBackColorFillLine.Checked;
                 if (ChkColorContentPropertyLogEntries.Checked == false)
                 {
                     selectedContentProperty.CustomTextColor = Color.Empty;
                     selectedContentProperty.CustomBackColor = Color.Empty;
+                    ChkContentBackColorFillLine.Checked = false;
                 }
                 UpdateTxtCustomStyleExample();
             }
 
+        }
+        private void ChkContentBackColorFillLine_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstContent.SelectedItem is LogContentProperty selected) selected.IsCustomBackColorFillLine = ChkContentBackColorFillLine.Checked;
+            UpdateTxtCustomStyleExample();
         }
 
         private void UpdateTxtCustomStyleExample()
@@ -779,5 +789,6 @@ namespace LogScraper.Log
                 TxtCustomStyleExample.StyleSingleLine(2, styleIndex);
             }
         }
+
     }
 }

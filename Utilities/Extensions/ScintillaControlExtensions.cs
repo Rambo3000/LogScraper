@@ -230,7 +230,7 @@ namespace LogScraper.Utilities.Extensions
             else
             {
                 style.BackColor = logContentProperty.CustomBackColor;
-                style.FillLine = true;
+                style.FillLine = logContentProperty.IsCustomBackColorFillLine;
             }
         }
 

@@ -56,6 +56,11 @@ namespace LogScraper.Log.Content
         public Color CustomBackColor { get; set; } = Color.Empty;
 
         /// <summary>
+        /// Indicates whether the custom background color should be applied to the entire width of the line, beyond the text width.
+        /// </summary>
+        public bool IsCustomBackColorFillLine { get; set; } = false;
+
+        /// <summary>
         /// Description of the content property which is a filter for the end of a flow tree.
         /// Used for JSON serilization and only when <see cref="IsBeginFlowTreeFilter"/> is true.
         /// </summary>
@@ -143,6 +148,7 @@ namespace LogScraper.Log.Content
                 IsErrorProperty = IsErrorProperty,
                 IsBeginFlowTreeFilter = IsBeginFlowTreeFilter,
                 IsCustomStyleEnabled = IsCustomStyleEnabled,
+                IsCustomBackColorFillLine = IsCustomBackColorFillLine,
                 CustomTextColor = CustomTextColor,
                 CustomBackColor = CustomBackColor,
                 EndFlowTreeContentProperty = EndFlowTreeContentProperty,
