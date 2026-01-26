@@ -6,6 +6,7 @@ using LogScraper.LogProviders;
 
 namespace LogScraper.Configuration
 {
+    // TODO: add option for beta release update notification
     public partial class UserControlGenericConfig : UserControl
     {
         public UserControlGenericConfig()

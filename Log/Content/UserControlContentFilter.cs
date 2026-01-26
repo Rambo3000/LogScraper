@@ -747,13 +747,9 @@ namespace LogScraper
             this.SuspendDrawing();
             if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
 
-            //Reset the top end end filters
-            selectedBeginEntryDisplayObject = null;
-            selectedEndEntryDisplayObject = null;
-            OnBeginEntryChanged(e);
-            OnEndEntryChanged(e);
+            ResetBeginEndFilters();
+
             LstLogContent.Invalidate();
-            UpdateTopBottomControls();
 
             this.ResumeDrawing();
         }
@@ -910,6 +906,25 @@ namespace LogScraper
             // In case the metadata filtering is not active, the button will be disabled as there is no action to perform
             BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || !IsSessionMetadataFilteringActive;
             BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
+        }
+
+        public void ResetFilters()
+        {
+            ResetBeginEndFilters();
+            txtSearch.Text = string.Empty;
+            TxtSearch_Leave(this, EventArgs.Empty);
+
+            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
+        }
+
+        public void ResetBeginEndFilters()
+        {
+            //Reset the top end end filters
+            selectedBeginEntryDisplayObject = null;
+            selectedEndEntryDisplayObject = null;
+            OnBeginEntryChanged(null);
+            OnEndEntryChanged(null);
+            UpdateTopBottomControls();
         }
         #endregion
     }

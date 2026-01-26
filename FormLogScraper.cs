@@ -49,7 +49,7 @@ namespace LogScraper
             UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
             UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
-            
+
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
@@ -202,7 +202,7 @@ namespace LogScraper
             };
             List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
 
-            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult,visibleLogEntries, logRenderSettings);
+            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
 
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
@@ -351,6 +351,11 @@ namespace LogScraper
         {
             BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
+        }
+        private void BtnClearFilters_Click(object sender, EventArgs e)
+        {
+            UsrMetadataFilterOverview.ResetFilters();
+            UserControlContentFilter.ResetFilters();
         }
         private bool isResetUiEnabled = false;
         public void BtnErase_Click(object sender, EventArgs e)

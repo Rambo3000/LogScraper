@@ -36,6 +36,7 @@
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
+            BtnClearFilters = new System.Windows.Forms.Button();
             BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
@@ -107,6 +108,7 @@
             BtnRecord.Name = "BtnRecord";
             BtnRecord.Size = new System.Drawing.Size(52, 40);
             BtnRecord.TabIndex = 0;
+            BtnRecord.TabStop = false;
             ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
             BtnRecord.UseVisualStyleBackColor = true;
             BtnRecord.Click += BtnRecord_Click;
@@ -149,6 +151,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(BtnClearFilters);
             groupBox3.Controls.Add(BtnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
@@ -165,20 +168,35 @@
             groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(257, 147);
+            groupBox3.Size = new System.Drawing.Size(297, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
             // 
+            // BtnClearFilters
+            // 
+            BtnClearFilters.Image = (System.Drawing.Image)resources.GetObject("BtnClearFilters.Image");
+            BtnClearFilters.Location = new System.Drawing.Point(212, 22);
+            BtnClearFilters.Name = "BtnClearFilters";
+            BtnClearFilters.Size = new System.Drawing.Size(40, 40);
+            BtnClearFilters.TabIndex = 25;
+            BtnClearFilters.TabStop = false;
+            BtnClearFilters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(BtnClearFilters, "Alle filters ongedaan maken");
+            BtnClearFilters.UseCompatibleTextRendering = true;
+            BtnClearFilters.UseVisualStyleBackColor = true;
+            BtnClearFilters.Click += BtnClearFilters_Click;
+            // 
             // BtnConfig
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(226, 117);
+            BtnConfig.Location = new System.Drawing.Point(266, 117);
             BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
+            BtnConfig.TabStop = false;
             BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             ToolTip.SetToolTip(BtnConfig, "Instellingen");
             BtnConfig.UseVisualStyleBackColor = true;
@@ -191,6 +209,7 @@
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
+            btnOpenWithEditor.TabStop = false;
             ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
@@ -202,6 +221,7 @@
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
+            BtnFormRecord.TabStop = false;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-R]");
             BtnFormRecord.UseVisualStyleBackColor = true;
@@ -211,10 +231,11 @@
             // 
             BtnErase.ImageIndex = 0;
             BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(212, 22);
+            BtnErase.Location = new System.Drawing.Point(251, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(40, 40);
             BtnErase.TabIndex = 11;
+            BtnErase.TabStop = false;
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
             BtnErase.MouseUp += BtnErase_MouseUp;
@@ -234,6 +255,7 @@
             BtnStop.Name = "BtnStop";
             BtnStop.Size = new System.Drawing.Size(52, 40);
             BtnStop.TabIndex = 17;
+            BtnStop.TabStop = false;
             ToolTip.SetToolTip(BtnStop, "Stop [CTRL-S]");
             BtnStop.UseVisualStyleBackColor = true;
             BtnStop.Click += BtnStop_Click;
@@ -254,6 +276,7 @@
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(56, 40);
             BtnRecordWithTimer.TabIndex = 16;
+            BtnRecordWithTimer.TabStop = false;
             BtnRecordWithTimer.UseVisualStyleBackColor = true;
             BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
@@ -270,7 +293,7 @@
             // 
             userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(188, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(228, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
             userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
             userControlMemoryUsage1.TabIndex = 24;
@@ -517,7 +540,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(474, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(506, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -539,7 +562,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(268, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(308, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
@@ -676,5 +699,6 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
         private System.Windows.Forms.ImageList imageListBtnErase;
+        private System.Windows.Forms.Button BtnClearFilters;
     }
 }

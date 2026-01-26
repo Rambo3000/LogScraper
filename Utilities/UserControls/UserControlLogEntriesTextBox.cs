@@ -84,6 +84,7 @@ namespace LogScraper.Utilities.UserControls
         }
         private void RenderLogEntries()
         {
+            // TODO: Calculate the visible log entries and restore after rendering
             this.SuspendDrawing();
 
             // Prevent the log from scrolling
@@ -97,7 +98,9 @@ namespace LogScraper.Utilities.UserControls
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
             List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
+
             Text  = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
+            
             HighlightLines();
             contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds);
             StyleLines();

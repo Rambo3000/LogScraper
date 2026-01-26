@@ -107,7 +107,7 @@ namespace LogScraper.Log.Metadata
         /// </summary>
         private void OnFilterChanged(object sender, EventArgs e)
         {
-            FilterChanged?.Invoke(this, e);
+            if (!isResetFiltersInProgress) FilterChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -178,6 +178,20 @@ namespace LogScraper.Log.Metadata
 
             Controls.Clear();
             logMetadataPropertyControls.Clear();
+        }
+        private bool isResetFiltersInProgress = false;
+        internal void ResetFilters()
+        {
+            isResetFiltersInProgress = true;
+            foreach (Control control in Controls)
+            {
+                if (control is UserControlLogMetadataFilter userControlLogMetadataFilter)
+                {
+                    userControlLogMetadataFilter.ResetFilters();
+                }
+            }
+            isResetFiltersInProgress = false;
+            OnFilterChanged(this, EventArgs.Empty);
         }
     }
 }

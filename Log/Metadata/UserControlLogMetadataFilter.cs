@@ -1,11 +1,12 @@
-﻿using LogScraper.Log.Metadata;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.ComponentModel;
+using LogScraper.Log.Metadata;
 using LogScraper.Utilities.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace LogScraper
 {
@@ -184,6 +185,14 @@ namespace LogScraper
                 {
                     item.IsChecked = false;
                 }
+            }
+        }
+
+        internal void ResetFilters()
+        {
+            foreach (UserControlLogMetadataFilterItem item in FlowLayoutPanelItems.Controls)
+            {
+                item.IsChecked = false;
             }
         }
     }
