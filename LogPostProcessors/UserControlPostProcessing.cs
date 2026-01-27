@@ -6,7 +6,6 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
-    // TODO: Split the control itself to provide optionally all options
     public partial class UserControlPostProcessing : UserControl
     {
         #region Initialization

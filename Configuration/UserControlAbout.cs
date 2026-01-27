@@ -93,10 +93,12 @@ namespace LogScraper.Configuration
                 return;
             }
 
-            ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "explorer.exe";
-            processStartInfo.Arguments = folderPath;
-            processStartInfo.UseShellExecute = true;
+            ProcessStartInfo processStartInfo = new()
+            {
+                FileName = "explorer.exe",
+                Arguments = folderPath,
+                UseShellExecute = true
+            };
 
             Process.Start(processStartInfo);
         }

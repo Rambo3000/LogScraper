@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LogScraper.Configuration;
 
 namespace LogScraper.Utilities
 {
@@ -41,7 +43,7 @@ namespace LogScraper.Utilities
             string githubUser = "Rambo3000"; // GitHub username
             string githubRepo = "LogScraper"; // GitHub repository name
             string currentVersion = GetCurrentVersion(); // Get the current application version
-            string latestVersion = await GetLatestGitHubReleaseVersionAsync(githubUser, githubRepo); // Fetch the latest release version
+            (string latestVersion, string releaseUrl, bool isPrerelease) = await GetLatestGitHubReleaseAsync(githubUser, githubRepo, ConfigurationManager.GenericConfig.IncludeBetaUpdates);
 
             if (latestVersion == null)
             {
@@ -50,16 +52,17 @@ namespace LogScraper.Utilities
 
             if (IsNewerVersion(latestVersion, currentVersion))
             {
+                string prereleaseText = isPrerelease ? Environment.NewLine + Environment.NewLine + "Please note: this is a pre-release version and may be unstable." : "";
                 // Notify the user about the new version and provide an option to open the download page
                 DialogResult result = MessageBox.Show(
-                    "A new version " + latestVersion + " is available. Do you want to open the download page?",
+                    "A new version " + latestVersion + " is available. Do you want to open the download page?" + prereleaseText,
                     "Update Available",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Information);
 
                 if (result == DialogResult.Yes)
                 {
-                    OpenReleasePage(githubUser, githubRepo); // Open the GitHub release page
+                    OpenReleasePage(releaseUrl); // Open the GitHub release page
                 }
             }
             else if (ShowMessageNoNewVersionFound)
@@ -94,7 +97,7 @@ namespace LogScraper.Utilities
         /// <param name="repository">The GitHub repository name.</param>
         /// <param name="includePrereleases">Whether to include pre-release versions in the check.</param>
         /// <returns>The latest release version as a string, or null if the request fails.</returns>
-        private static async Task<string> GetLatestGitHubReleaseVersionAsync(string user, string repository, bool includePrereleases = false)
+        private static async Task<(string Version, string HtmlUrl, bool IsPrerelease)> GetLatestGitHubReleaseAsync(string user, string repository, bool includePrereleases)
         {
             string url = "https://api.github.com/repos/" + user + "/" + repository + "/releases" + (!includePrereleases ? "/latest" : "");
 
@@ -111,27 +114,20 @@ namespace LogScraper.Utilities
 
                 if (!includePrereleases)
                 {
-                    if (document.RootElement.TryGetProperty("tag_name", out JsonElement tag))
-                    {
-                        return tag.GetString();
-                    }
+                    JsonElement root = document.RootElement;
 
-                    return null;
+                    return (
+                        root.GetProperty("tag_name").GetString(), root.GetProperty("html_url").GetString(), root.GetProperty("prerelease").GetBoolean());
                 }
 
                 foreach (JsonElement release in document.RootElement.EnumerateArray())
                 {
-                    bool isPrerelease = release.GetProperty("prerelease").GetBoolean();
-
-                    if (!isPrerelease)
+                    if (!release.GetProperty("prerelease").GetBoolean())
                     {
                         continue;
                     }
 
-                    if (release.TryGetProperty("tag_name", out JsonElement prereleaseTag))
-                    {
-                        return prereleaseTag.GetString();
-                    }
+                    return (release.GetProperty("tag_name").GetString(), release.GetProperty("html_url").GetString(), true);
                 }
             }
             catch
@@ -139,9 +135,8 @@ namespace LogScraper.Utilities
                 // Intentionally ignored
             }
 
-            return null;
+            return (null, null, false);
         }
-
 
         /// <summary>
         /// Determines whether the latest version is newer than the current version.
@@ -181,18 +176,19 @@ namespace LogScraper.Utilities
         }
 
         /// <summary>
-        /// Opens the GitHub release page for the specified repository in the default web browser.
+        /// Opens the GitHub release page for the specified release Url in the default web browser.
         /// </summary>
-        /// <param name="user">The GitHub username.</param>
-        /// <param name="repo">The GitHub repository name.</param>
-        private static void OpenReleasePage(string user, string repo)
+        /// <param name="releaseUrl">The URL of the GitHub release page.</param>
+        private static void OpenReleasePage(string releaseUrl)
         {
-            string url = "https://github.com/" + user + "/" + repo + "/releases/latest";
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            if (!string.IsNullOrEmpty(releaseUrl))
             {
-                FileName = url,
-                UseShellExecute = true // Use the default web browser
-            });
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = releaseUrl,
+                    UseShellExecute = true
+                });
+            }
         }
     }
 

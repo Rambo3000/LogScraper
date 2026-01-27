@@ -55,7 +55,12 @@ namespace LogScraper.Configuration.Generic
         /// <summary>
         /// Gets or sets a value indicating whether to automatically toggle the hierarchy when the session filter is applied
         /// </summary>
-        public bool AutoToggleHierarchy  { get; set; } = true;
+        public bool AutoToggleHierarchy { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to check for updates for beta releases.
+        /// </summary>
+        public bool IncludeBetaUpdates { get; set; } = true;
     }
 
     /// <summary>

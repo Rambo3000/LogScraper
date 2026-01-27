@@ -55,6 +55,7 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
+            ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -212,6 +213,7 @@ namespace LogScraper.Configuration
             // GrpGeneralSettings
             // 
             GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
             GrpGeneralSettings.Controls.Add(pictureBox3);
             GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
             GrpGeneralSettings.Controls.Add(pictureBox2);
@@ -312,6 +314,16 @@ namespace LogScraper.Configuration
             PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 326);
             PnlUsedForScalingCompatiblity.TabIndex = 9;
             // 
+            // ChkIncludePrereleaseUpdates
+            // 
+            ChkIncludePrereleaseUpdates.AutoSize = true;
+            ChkIncludePrereleaseUpdates.Location = new System.Drawing.Point(6, 266);
+            ChkIncludePrereleaseUpdates.Name = "ChkIncludePrereleaseUpdates";
+            ChkIncludePrereleaseUpdates.Size = new System.Drawing.Size(264, 19);
+            ChkIncludePrereleaseUpdates.TabIndex = 41;
+            ChkIncludePrereleaseUpdates.Text = "Controleer ook op beta-updates (prereleases)";
+            ChkIncludePrereleaseUpdates.UseVisualStyleBackColor = true;
+            // 
             // UserControlGenericConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -356,5 +368,6 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.CheckBox ChkAutoToggleHierarchy;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Panel PnlUsedForScalingCompatiblity;
+        private System.Windows.Forms.CheckBox ChkIncludePrereleaseUpdates;
     }
 }

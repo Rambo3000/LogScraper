@@ -6,7 +6,6 @@ using LogScraper.LogProviders;
 
 namespace LogScraper.Configuration
 {
-    // TODO: add option for beta release update notification
     public partial class UserControlGenericConfig : UserControl
     {
         public UserControlGenericConfig()
@@ -25,6 +24,7 @@ namespace LogScraper.Configuration
             TxtEditorLocation.Text = config.EditorFileName;
             TxtExportFileName.Text = config.ExportFileName;
             TxtTimeOut.Text = config.HttpCLientTimeOUtSeconds.ToString();
+            ChkIncludePrereleaseUpdates.Checked = config.IncludeBetaUpdates;
         }
 
         private void ChkExportToFile_CheckedChanged(object sender, EventArgs e)
@@ -66,7 +66,8 @@ namespace LogScraper.Configuration
                 ShowErrorLinesInBeginAndEndFilters = ChkShowErrorsInBeginAndEndFilters.Checked,
                 AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
                 LogProviderTypeDefault = (LogProviderType)CboLogProviderType.SelectedItem,
-                HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0
+                HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0,
+                IncludeBetaUpdates = ChkIncludePrereleaseUpdates.Checked
             };
 
             return config;

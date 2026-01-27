@@ -85,6 +85,8 @@ namespace LogScraper
 
             RefreshLogStatistics();
 
+            // Check for updates in a separate thread to not block the UI
+            // The update has to occur after the settings are loaded to know if beta updates are allowed
             GitHubUpdateChecker.CheckForUpdateInSeperateThread();
         }
         #endregion
