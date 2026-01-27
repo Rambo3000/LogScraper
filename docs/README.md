@@ -17,7 +17,7 @@
 - 🔍 Search within logs  
 - 📤 Export to external tools like Notepad++  
 - 🛠️ Fully configurable UI  
-- 🗃️ Single standalone executable — no installer or .NET Framework required  
+- 🗃️ Available as installer or standalone, no .Net framework installation required
 - 🔔 Automatic update checks  
 - 📌 Mini Controls: compact always-on-top UI for quick log access  
 - 🔐 Secure credential storage using Windows Credential Manager 
