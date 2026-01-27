@@ -56,7 +56,11 @@ namespace LogScraper.Utilities.UserControls
         #region Update log layout and filter result
         public void UpdateLogLayout(LogLayout logLayout)
         {
+            // Determine content properties with custom coloring
             contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
+            // Update the styles in the text box based on the new layout
+            TxtLogEntries.UpdateStyles(contentPropertiesWithCustomColoring);
+
             contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, UserControlPostProcessing.VisibleProcessorKinds);
             CboLogContentType.Items.Clear();
 

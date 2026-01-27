@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -119,31 +120,26 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="scintillaControl">The Scintilla control to which the styles will be applied.</param>
         /// <param name="logContentProperties">A list of log content properties that define the custom styles to be used. Only properties with custom
         /// styling enabled are considered.</param>
-        /// <param name="contentLinesToStyle">A mapping of log content properties to the lists of line numbers that should be styled using each property's
+        /// <param name="contentLinesToStyleDictionary">A mapping of log content properties to the lists of line numbers that should be styled using each property's
         /// custom style.</param>
-        public static void StyleLines(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties, Dictionary<LogContentProperty, List<int>> contentLinesToStyle)
+        public static void StyleLines(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties, Dictionary<LogContentProperty, List<int>> contentLinesToStyleDictionary)
         {
-            scintillaControl.ResetAllStyles();
-
             // Reorder the properties so the errors are always prioritised and styled last,
             // after sorting on error inverse the order
-            List<(LogContentProperty Property, int Index)> orderedProperties = [.. logContentProperties
-                .Select((property, index) => (property, index))
-                .Where(item => item.index < 186)
-                .OrderBy(item => item.property.IsErrorProperty ? 1 : 0)   // non-error first
-                .ThenByDescending(item => item.index)];
+            List<LogContentProperty> orderedProperties = [.. logContentProperties
+                .Select(property => property)
+                .Where(item => item.Index < 186)
+                .OrderBy(item => item.IsErrorProperty ? 1 : 0)   // non-error first
+                .ThenByDescending(item => item.Index)];
 
 
-            foreach ((LogContentProperty logContentProperty, int index) in orderedProperties)
+            foreach (LogContentProperty logContentProperty in orderedProperties)
             {
                 if (!logContentProperty.IsCustomStyleEnabled) continue;
 
-                // Offset style index to avoid conflicts with default styles
-                int styleIndex = index + 64;
+                int styleIndex = CalculateStyleIndex(logContentProperty);
 
-                scintillaControl.SetStyleFromLogContentProperty(logContentProperty, styleIndex);
-
-                contentLinesToStyle.TryGetValue(logContentProperty, out List<int> linesToStyle);
+                contentLinesToStyleDictionary.TryGetValue(logContentProperty, out List<int> linesToStyle);
 
                 if (linesToStyle == null) continue;
 
@@ -153,6 +149,39 @@ namespace LogScraper.Utilities.Extensions
                 }
             }
         }
+
+        /// <summary>
+        /// Updates the styles in the Scintilla control based on the provided log content properties.
+        /// </summary>
+        /// <remarks>This method resets all existing styles in the Scintilla control and then applies new styles
+        /// based on the custom style settings of the provided log content properties. Only properties with
+        /// custom styling enabled are considered, and a maximum of 186 properties are processed to avoid exceeding style index limits.</remarks>
+        /// <param name="scintillaControl">The Scintilla control whose styles will be updated.</param>
+        /// <param name="logContentProperties">A list of log content properties that define the custom styles to be applied.</param>
+        public static void UpdateStyles(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties)
+        {
+            scintillaControl.ResetAllStyles();
+
+            foreach (LogContentProperty logContentProperty in logContentProperties)
+            {
+                if (!logContentProperty.IsCustomStyleEnabled) continue;
+
+                if (logContentProperty.Index >= 186) return;
+
+                scintillaControl.SetStyleFromLogContentProperty(logContentProperty, CalculateStyleIndex(logContentProperty));
+            }
+        }
+
+        /// <summary>
+        /// Calculates the style index for a given log content property.
+        /// </summary>
+        /// <param name="property">The log content property for which to calculate the style index.</param>
+        /// <returns>The calculated style index.</returns>
+        private static int CalculateStyleIndex(LogContentProperty property)
+        {
+            return property.Index + 64;
+        }
+
         /// <summary>
         /// Resets all text styling in the specified Scintilla control to the default style.
         /// </summary>
