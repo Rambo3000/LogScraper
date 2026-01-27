@@ -147,9 +147,9 @@ namespace LogScraper.Utilities.Extensions
 
                 if (linesToStyle == null) continue;
 
-                foreach (int lineNumber in linesToStyle)
+                foreach ((int startLine, int endLine) in GetConsecutiveLineRanges(linesToStyle))
                 {
-                    scintillaControl.StyleSingleLine(lineNumber, styleIndex);
+                    scintillaControl.StyleLineRange(startLine, endLine, styleIndex);
                 }
             }
         }
@@ -203,6 +203,60 @@ namespace LogScraper.Utilities.Extensions
             scintillaControl.StartStyling(startPosition);
             scintillaControl.SetStyling(length, styleIndex);
         }
+        /// <summary>
+        /// Applies the specified style to a range of lines in the Scintilla control.
+        /// </summary>
+        /// <remarks>If the specified line numbers are outside the valid range or if the start line
+        /// is greater than the end line, no styling is applied.</remarks>
+        /// <param name="scintillaControl">The Scintilla control to which the style will be applied.</param>
+        /// <param name="startLineNumber">The zero-based index of the starting line of the range to style. Must be within the range of existing lines in the control.</param>
+        /// <param name="endLineNumber">The zero-based index of the ending line of the range to style. Must be within the range of existing lines in the control.</param>
+        /// <param name="styleIndex">The style index to apply to the specified range of lines.</param>
+        public static void StyleLineRange(this Scintilla scintillaControl, int startLineNumber, int endLineNumber, int styleIndex)
+        {
+            if (startLineNumber < 0 || endLineNumber >= scintillaControl.Lines.Count || startLineNumber > endLineNumber)
+                return;
+
+            Line startLine = scintillaControl.Lines[startLineNumber];
+            Line endLine = scintillaControl.Lines[endLineNumber];
+
+            int startPosition = startLine.Position;
+            int length = (endLine.Position + endLine.Length) - startPosition;
+
+            scintillaControl.StartStyling(startPosition);
+            scintillaControl.SetStyling(length, styleIndex);
+        }
+        /// <summary>
+        /// Generates ranges of consecutive line numbers from a list of individual line numbers.
+        /// </summary>
+        /// <param name="lineNumbers">A list of line numbers to process.</param>
+        /// <returns>An enumerable of tuples, each containing the start and end line numbers of a consecutive range.</returns>
+        private static IEnumerable<(int StartLine, int EndLine)> GetConsecutiveLineRanges(List<int> lineNumbers)
+        {
+            if (lineNumbers == null || lineNumbers.Count == 0) yield break;
+
+            int rangeStart = lineNumbers[0];
+            int previousLine = rangeStart;
+
+            for (int i = 1; i < lineNumbers.Count; i++)
+            {
+                int currentLine = lineNumbers[i];
+
+                if (currentLine == previousLine + 1)
+                {
+                    previousLine = currentLine;
+                    continue;
+                }
+
+                yield return (rangeStart, previousLine);
+
+                rangeStart = currentLine;
+                previousLine = currentLine;
+            }
+
+            yield return (rangeStart, previousLine);
+        }
+
 
         /// <summary>
         /// Applies custom foreground and background colors from a log content property to a specified style in the
