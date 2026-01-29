@@ -54,6 +54,7 @@ namespace LogScraper.Utilities.UserControls
         #endregion 
 
         #region Update log layout and filter result
+
         public void UpdateLogLayout(LogLayout logLayout)
         {
             // Determine content properties with custom coloring
@@ -61,7 +62,6 @@ namespace LogScraper.Utilities.UserControls
             // Update the styles in the text box based on the new layout
             TxtLogEntries.UpdateStyles(contentPropertiesWithCustomColoring);
 
-            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, UserControlPostProcessing.VisibleProcessorKinds);
             CboLogContentType.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -82,50 +82,82 @@ namespace LogScraper.Utilities.UserControls
         public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogRenderSettings logRenderSettings)
         {
             LogMetadataFilterResult = logMetadataFilterResultNew;
-            this.LogRenderSettings = logRenderSettings;
+            LogRenderSettings = logRenderSettings;
             VisibleLogEntries = visibleLogEntries;
             RenderLogEntries();
         }
+
+        // Cache mapping: visible log entry index -> starting visual line index
+        private int[] visualLineIndexPerVisibleEntryCache = null;
+
+        // Cache of visible log entries used to build the visual index cache
+        private List<LogEntry> visibleLogEntriesCache = null;
+
+        /// <summary>
+        /// Renders the visible log entries into the text box, applying the current
+        /// render settings, flow tree visualization, and post-processing effects.
+        /// This method also preserves the scroll position based on the previously visible log entry and offset.
+        /// </summary>
         private void RenderLogEntries()
         {
-            // TODO: Calculate the visible log entries and restore after rendering
-            this.SuspendDrawing();
-
-            // Prevent the log from scrolling
-            int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
-
+            // Nothing to render if there is no data or render configuration
             if (VisibleLogEntries == null || LogRenderSettings == null) return;
 
+            this.SuspendDrawing();
+
+            int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
+
+            // Persist the logical scroll anchor: which log entry is at the top
+            // and how far we are scrolled into that entry (for multiline entries)
+            int previousTopLogEntryIndex = -1;
+            int previousOffsetIntoEntry = 0;
+
+            // Determine the currently visible log entry index and offset before re-rendering
+            // This allows restoring the scroll position after content changes
+            if (visualLineIndexPerVisibleEntryCache != null && visibleLogEntriesCache != null)
+            {
+                LogEntryVisualIndexCalculator.TryGetTopVisibleLogEntry(firstVisibleLine, visualLineIndexPerVisibleEntryCache, visibleLogEntriesCache, out previousTopLogEntryIndex, out previousOffsetIntoEntry);
+            }
+
+            // Optional flow tree visualization based on the selected content property
             List<LogFlowTreeNode> logFlowTree = null;
             if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
             {
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
+
+            // Active post-processors influence visual line spans (pretty print, etc.)
             List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
 
-            Text  = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
-            
+            // Render all visible log entries into a single text representation
+            Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
+
+            // Begin, End and selected log entry highlighting
             HighlightLines();
-            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds);
+
+            // Recalculate visual line start indexes per visible log entry
+            // This also returns an array mapping each visible log entry to the visual line index
+            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds, out int[] visualLineIndexPerVisibleEntry);
+
+            // Apply custom per-line styling after visual indices are known
             StyleLines();
 
-            try
+            // Update caches for the next render cycle
+            visualLineIndexPerVisibleEntryCache = visualLineIndexPerVisibleEntry;
+            visibleLogEntriesCache = VisibleLogEntries;
+
+            // Restore scroll position based on the previously visible log entry
+            // This keeps the view stable when filters or visual spans change
+            if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(previousTopLogEntryIndex, previousOffsetIntoEntry, visualLineIndexPerVisibleEntryCache, visibleLogEntriesCache, out int scrollToPosition))
             {
-                if (selectedLogEntry != null)
-                {
-                    SelectLogEntry(selectedLogEntry);
-                }
-                else
-                {
-                    TxtLogEntries.FirstVisibleLine = firstVisibleLine;
-                }
+                TxtLogEntries.FirstVisibleLine = scrollToPosition;
             }
-            catch
-            {
-                // Do nothing, do not interrupt the user
-            }
+
+            // Resume drawing once the content and scroll position are fully restored
             this.ResumeDrawing();
         }
+
+
         /// <summary>
         /// Updates the text displayed in the log entries text box.
         /// </summary>
@@ -138,6 +170,11 @@ namespace LogScraper.Utilities.UserControls
                 TxtLogEntries.Text = value;
                 TxtLogEntries.EmptyUndoBuffer();
                 TxtLogEntries.ReadOnly = true;
+
+                // Invalidate caches as the content has changed
+                visualLineIndexPerVisibleEntryCache = null;
+                visibleLogEntriesCache = null;
+
                 UpdatePnlViewModePosition();
             }
         }
