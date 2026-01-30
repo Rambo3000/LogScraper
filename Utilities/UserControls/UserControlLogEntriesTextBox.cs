@@ -8,6 +8,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.VisualIndex;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
@@ -53,7 +54,7 @@ namespace LogScraper.Utilities.UserControls
         }
         #endregion 
 
-        #region Update log layout and filter result
+        #region Update log layout and render log entries
 
         public void UpdateLogLayout(LogLayout logLayout)
         {
@@ -86,12 +87,10 @@ namespace LogScraper.Utilities.UserControls
             VisibleLogEntries = visibleLogEntries;
             RenderLogEntries();
         }
-
-        // Cache mapping: visible log entry index -> starting visual line index
-        private int[] visualLineIndexPerVisibleEntryCache = null;
-
-        // Cache of visible log entries used to build the visual index cache
-        private List<LogEntry> visibleLogEntriesCache = null;
+        /// <summary>
+        /// Cache of the last rendered log layout, used to preserve scroll position across renders.
+        /// </summary>
+        LogRenderLayout renderLayoutCache = null;
 
         /// <summary>
         /// Renders the visible log entries into the text box, applying the current
@@ -105,19 +104,9 @@ namespace LogScraper.Utilities.UserControls
 
             this.SuspendDrawing();
 
-            int firstVisibleLine = TxtLogEntries.FirstVisibleLine;
-
-            // Persist the logical scroll anchor: which log entry is at the top
-            // and how far we are scrolled into that entry (for multiline entries)
-            int previousTopLogEntryIndex = -1;
-            int previousOffsetIntoEntry = 0;
-
-            // Determine the currently visible log entry index and offset before re-rendering
-            // This allows restoring the scroll position after content changes
-            if (visualLineIndexPerVisibleEntryCache != null && visibleLogEntriesCache != null)
-            {
-                LogEntryVisualIndexCalculator.TryGetTopVisibleLogEntry(firstVisibleLine, visualLineIndexPerVisibleEntryCache, visibleLogEntriesCache, out previousTopLogEntryIndex, out previousOffsetIntoEntry);
-            }
+            // Try to get the log entry and offset currently at the top of the view
+            // Do this before updateing the text to preserve scroll position
+            LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.FirstVisibleLine, renderLayoutCache, out LogEntryRenderPosition preRenderTopLogEntry);
 
             // Optional flow tree visualization based on the selected content property
             List<LogFlowTreeNode> logFlowTree = null;
@@ -142,16 +131,24 @@ namespace LogScraper.Utilities.UserControls
             // Apply custom per-line styling after visual indices are known
             StyleLines();
 
-            // Update caches for the next render cycle
-            visualLineIndexPerVisibleEntryCache = visualLineIndexPerVisibleEntry;
-            visibleLogEntriesCache = VisibleLogEntries;
-
-            // Restore scroll position based on the previously visible log entry
-            // This keeps the view stable when filters or visual spans change
-            if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(previousTopLogEntryIndex, previousOffsetIntoEntry, visualLineIndexPerVisibleEntryCache, visibleLogEntriesCache, out int scrollToPosition))
+            LogRenderLayout postRenderLayout = new()
             {
-                TxtLogEntries.FirstVisibleLine = scrollToPosition;
+                VisibleLogEntries = VisibleLogEntries,
+                VisualLineIndexPerEntry = visualLineIndexPerVisibleEntry
+            };
+
+            if (preRenderTopLogEntry != null)
+            {
+                // Restore scroll position based on the previously visible log entry
+                // This keeps the view stable when filters or visual spans change
+                if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(preRenderTopLogEntry, renderLayoutCache, postRenderLayout, TxtLogEntries.LinesOnScreen, out int scrollToPosition))
+                {
+                    TxtLogEntries.FirstVisibleLine = scrollToPosition;
+                }
             }
+
+            // Update caches for the next render cycle
+            renderLayoutCache = postRenderLayout;
 
             // Resume drawing once the content and scroll position are fully restored
             this.ResumeDrawing();
@@ -172,8 +169,10 @@ namespace LogScraper.Utilities.UserControls
                 TxtLogEntries.ReadOnly = true;
 
                 // Invalidate caches as the content has changed
-                visualLineIndexPerVisibleEntryCache = null;
-                visibleLogEntriesCache = null;
+                if (string.IsNullOrEmpty(value))
+                {
+                    renderLayoutCache = null;
+                }
 
                 UpdatePnlViewModePosition();
             }
