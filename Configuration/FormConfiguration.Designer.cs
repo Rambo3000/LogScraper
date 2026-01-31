@@ -83,7 +83,7 @@
             TabLogProviders.Location = new System.Drawing.Point(3, 3);
             TabLogProviders.Name = "TabLogProviders";
             TabLogProviders.SelectedIndex = 0;
-            TabLogProviders.Size = new System.Drawing.Size(821, 553);
+            TabLogProviders.Size = new System.Drawing.Size(1028, 508);
             TabLogProviders.TabIndex = 0;
             // 
             // tabKubernetes
@@ -91,7 +91,7 @@
             tabKubernetes.Controls.Add(userControlKubernetesConfig);
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
-            tabKubernetes.Size = new System.Drawing.Size(813, 525);
+            tabKubernetes.Size = new System.Drawing.Size(1020, 480);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
@@ -102,7 +102,7 @@
             userControlKubernetesConfig.Location = new System.Drawing.Point(0, 0);
             userControlKubernetesConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlKubernetesConfig.Name = "userControlKubernetesConfig";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(813, 525);
+            userControlKubernetesConfig.Size = new System.Drawing.Size(1020, 480);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // tabUrl
@@ -146,7 +146,7 @@
             // btnOk
             // 
             btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnOk.Location = new System.Drawing.Point(753, 595);
+            btnOk.Location = new System.Drawing.Point(960, 550);
             btnOk.Name = "btnOk";
             btnOk.Size = new System.Drawing.Size(75, 23);
             btnOk.TabIndex = 1;
@@ -157,7 +157,7 @@
             // btnCancel
             // 
             btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btnCancel.Location = new System.Drawing.Point(672, 595);
+            btnCancel.Location = new System.Drawing.Point(879, 550);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 23);
             btnCancel.TabIndex = 2;
@@ -175,7 +175,7 @@
             tabMain.Location = new System.Drawing.Point(2, 2);
             tabMain.Name = "tabMain";
             tabMain.SelectedIndex = 0;
-            tabMain.Size = new System.Drawing.Size(835, 587);
+            tabMain.Size = new System.Drawing.Size(1042, 542);
             tabMain.TabIndex = 3;
             // 
             // TabPageGeneral
@@ -184,7 +184,7 @@
             TabPageGeneral.Controls.Add(userControlGenericConfig);
             TabPageGeneral.Location = new System.Drawing.Point(4, 24);
             TabPageGeneral.Name = "TabPageGeneral";
-            TabPageGeneral.Size = new System.Drawing.Size(827, 559);
+            TabPageGeneral.Size = new System.Drawing.Size(1034, 514);
             TabPageGeneral.TabIndex = 2;
             TabPageGeneral.Text = "Algemeen";
             TabPageGeneral.UseVisualStyleBackColor = true;
@@ -194,10 +194,10 @@
             tabControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             tabControl1.Controls.Add(tabImport);
             tabControl1.Controls.Add(tabExport);
-            tabControl1.Location = new System.Drawing.Point(2, 366);
+            tabControl1.Location = new System.Drawing.Point(2, 330);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new System.Drawing.Size(822, 190);
+            tabControl1.Size = new System.Drawing.Size(1029, 181);
             tabControl1.TabIndex = 3;
             // 
             // tabImport
@@ -211,7 +211,7 @@
             tabImport.Location = new System.Drawing.Point(4, 24);
             tabImport.Name = "tabImport";
             tabImport.Padding = new System.Windows.Forms.Padding(3);
-            tabImport.Size = new System.Drawing.Size(814, 162);
+            tabImport.Size = new System.Drawing.Size(1021, 153);
             tabImport.TabIndex = 0;
             tabImport.Text = "Instellingen importeren";
             tabImport.UseVisualStyleBackColor = true;
@@ -292,7 +292,7 @@
             tabExport.Location = new System.Drawing.Point(4, 24);
             tabExport.Name = "tabExport";
             tabExport.Padding = new System.Windows.Forms.Padding(3);
-            tabExport.Size = new System.Drawing.Size(814, 162);
+            tabExport.Size = new System.Drawing.Size(1021, 117);
             tabExport.TabIndex = 1;
             tabExport.Text = "Instellingen exporteren";
             tabExport.UseVisualStyleBackColor = true;
@@ -361,7 +361,7 @@
             userControlGenericConfig.Location = new System.Drawing.Point(0, 0);
             userControlGenericConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlGenericConfig.Name = "userControlGenericConfig";
-            userControlGenericConfig.Size = new System.Drawing.Size(820, 358);
+            userControlGenericConfig.Size = new System.Drawing.Size(1027, 322);
             userControlGenericConfig.TabIndex = 0;
             // 
             // TabPageLogLayouts
@@ -369,7 +369,7 @@
             TabPageLogLayouts.Controls.Add(userControlLogLayoutConfig);
             TabPageLogLayouts.Location = new System.Drawing.Point(4, 24);
             TabPageLogLayouts.Name = "TabPageLogLayouts";
-            TabPageLogLayouts.Size = new System.Drawing.Size(827, 559);
+            TabPageLogLayouts.Size = new System.Drawing.Size(1034, 514);
             TabPageLogLayouts.TabIndex = 3;
             TabPageLogLayouts.Text = "Log layout";
             TabPageLogLayouts.UseVisualStyleBackColor = true;
@@ -380,7 +380,7 @@
             userControlLogLayoutConfig.Location = new System.Drawing.Point(0, 0);
             userControlLogLayoutConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlLogLayoutConfig.Name = "userControlLogLayoutConfig";
-            userControlLogLayoutConfig.Size = new System.Drawing.Size(827, 559);
+            userControlLogLayoutConfig.Size = new System.Drawing.Size(1034, 514);
             userControlLogLayoutConfig.TabIndex = 0;
             // 
             // TabPageLogProviders
@@ -389,7 +389,7 @@
             TabPageLogProviders.Location = new System.Drawing.Point(4, 24);
             TabPageLogProviders.Name = "TabPageLogProviders";
             TabPageLogProviders.Padding = new System.Windows.Forms.Padding(3);
-            TabPageLogProviders.Size = new System.Drawing.Size(827, 559);
+            TabPageLogProviders.Size = new System.Drawing.Size(1034, 514);
             TabPageLogProviders.TabIndex = 1;
             TabPageLogProviders.Text = "Bron van logging";
             TabPageLogProviders.UseVisualStyleBackColor = true;
@@ -399,7 +399,7 @@
             TabPageAbout.Controls.Add(userControlAbout);
             TabPageAbout.Location = new System.Drawing.Point(4, 24);
             TabPageAbout.Name = "TabPageAbout";
-            TabPageAbout.Size = new System.Drawing.Size(827, 559);
+            TabPageAbout.Size = new System.Drawing.Size(1034, 514);
             TabPageAbout.TabIndex = 4;
             TabPageAbout.Text = "Info";
             TabPageAbout.UseVisualStyleBackColor = true;
@@ -410,14 +410,14 @@
             userControlAbout.Location = new System.Drawing.Point(0, 0);
             userControlAbout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlAbout.Name = "userControlAbout";
-            userControlAbout.Size = new System.Drawing.Size(827, 559);
+            userControlAbout.Size = new System.Drawing.Size(1034, 514);
             userControlAbout.TabIndex = 0;
             // 
             // FormConfiguration
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(840, 630);
+            ClientSize = new System.Drawing.Size(1047, 585);
             Controls.Add(tabMain);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);

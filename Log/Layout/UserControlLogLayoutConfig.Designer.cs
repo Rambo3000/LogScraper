@@ -80,6 +80,8 @@ namespace LogScraper.Log
             BtnMetadataUp = new System.Windows.Forms.Button();
             tabPageContentFilters = new System.Windows.Forms.TabPage();
             GrpContent = new System.Windows.Forms.GroupBox();
+            pictureBox12 = new System.Windows.Forms.PictureBox();
+            ChkContentPropertyIsNavigationEnabled = new System.Windows.Forms.CheckBox();
             ChkContentBackColorFillLine = new System.Windows.Forms.CheckBox();
             BtnContentBackColor = new System.Windows.Forms.Button();
             BtnContentTextColor = new System.Windows.Forms.Button();
@@ -87,7 +89,6 @@ namespace LogScraper.Log
             pictureBox18 = new System.Windows.Forms.PictureBox();
             ChkContentPropertyIsError = new System.Windows.Forms.CheckBox();
             pictureBox17 = new System.Windows.Forms.PictureBox();
-            LblContentFilterMarksEnd = new System.Windows.Forms.Label();
             ChkContentFilterMarksBegin = new System.Windows.Forms.CheckBox();
             CboContentFilterMarksEnd = new System.Windows.Forms.ComboBox();
             pictureBox9 = new System.Windows.Forms.PictureBox();
@@ -134,6 +135,7 @@ namespace LogScraper.Log
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             tabPageContentFilters.SuspendLayout();
             GrpContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox12).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox18).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox17).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).BeginInit();
@@ -271,7 +273,7 @@ namespace LogScraper.Log
             grpRuntime.Controls.Add(pictureBox2);
             grpRuntime.Location = new System.Drawing.Point(258, 16);
             grpRuntime.Name = "grpRuntime";
-            grpRuntime.Size = new System.Drawing.Size(726, 573);
+            grpRuntime.Size = new System.Drawing.Size(726, 602);
             grpRuntime.TabIndex = 14;
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Log layout";
@@ -298,8 +300,8 @@ namespace LogScraper.Log
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(TabControl);
-            splitContainer1.Size = new System.Drawing.Size(720, 551);
-            splitContainer1.SplitterDistance = 156;
+            splitContainer1.Size = new System.Drawing.Size(720, 580);
+            splitContainer1.SplitterDistance = 163;
             splitContainer1.TabIndex = 33;
             // 
             // PnlUsedForScalingCapability
@@ -309,7 +311,7 @@ namespace LogScraper.Log
             PnlUsedForScalingCapability.Controls.Add(groupBox2);
             PnlUsedForScalingCapability.Location = new System.Drawing.Point(290, 3);
             PnlUsedForScalingCapability.Name = "PnlUsedForScalingCapability";
-            PnlUsedForScalingCapability.Size = new System.Drawing.Size(427, 150);
+            PnlUsedForScalingCapability.Size = new System.Drawing.Size(427, 157);
             PnlUsedForScalingCapability.TabIndex = 37;
             // 
             // groupBox2
@@ -322,7 +324,7 @@ namespace LogScraper.Log
             groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox2.Location = new System.Drawing.Point(0, 0);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(427, 150);
+            groupBox2.Size = new System.Drawing.Size(427, 157);
             groupBox2.TabIndex = 32;
             groupBox2.TabStop = false;
             groupBox2.Text = "Test de layout";
@@ -345,7 +347,7 @@ namespace LogScraper.Log
             TxtTestResponse.Location = new System.Drawing.Point(6, 43);
             TxtTestResponse.Name = "TxtTestResponse";
             TxtTestResponse.ReadOnly = true;
-            TxtTestResponse.Size = new System.Drawing.Size(415, 101);
+            TxtTestResponse.Size = new System.Drawing.Size(415, 108);
             TxtTestResponse.TabIndex = 33;
             TxtTestResponse.Text = "";
             // 
@@ -452,7 +454,7 @@ namespace LogScraper.Log
             TabControl.Location = new System.Drawing.Point(0, 0);
             TabControl.Name = "TabControl";
             TabControl.SelectedIndex = 0;
-            TabControl.Size = new System.Drawing.Size(720, 391);
+            TabControl.Size = new System.Drawing.Size(720, 413);
             TabControl.TabIndex = 28;
             // 
             // tabPageMetadata
@@ -461,7 +463,7 @@ namespace LogScraper.Log
             tabPageMetadata.Location = new System.Drawing.Point(4, 24);
             tabPageMetadata.Name = "tabPageMetadata";
             tabPageMetadata.Padding = new System.Windows.Forms.Padding(3);
-            tabPageMetadata.Size = new System.Drawing.Size(712, 363);
+            tabPageMetadata.Size = new System.Drawing.Size(712, 389);
             tabPageMetadata.TabIndex = 0;
             tabPageMetadata.Text = "Metadata";
             tabPageMetadata.UseVisualStyleBackColor = true;
@@ -489,7 +491,7 @@ namespace LogScraper.Log
             grpMetadata.Dock = System.Windows.Forms.DockStyle.Fill;
             grpMetadata.Location = new System.Drawing.Point(3, 3);
             grpMetadata.Name = "grpMetadata";
-            grpMetadata.Size = new System.Drawing.Size(706, 357);
+            grpMetadata.Size = new System.Drawing.Size(706, 383);
             grpMetadata.TabIndex = 19;
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
@@ -641,14 +643,14 @@ namespace LogScraper.Log
             LstMetadata.IntegralHeight = false;
             LstMetadata.Location = new System.Drawing.Point(6, 22);
             LstMetadata.Name = "LstMetadata";
-            LstMetadata.Size = new System.Drawing.Size(220, 300);
+            LstMetadata.Size = new System.Drawing.Size(220, 326);
             LstMetadata.TabIndex = 10;
             LstMetadata.SelectedIndexChanged += LstMetadata_SelectedIndexChanged;
             // 
             // BtnMetadataAdd
             // 
             BtnMetadataAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataAdd.Location = new System.Drawing.Point(6, 328);
+            BtnMetadataAdd.Location = new System.Drawing.Point(6, 354);
             BtnMetadataAdd.Name = "BtnMetadataAdd";
             BtnMetadataAdd.Size = new System.Drawing.Size(80, 23);
             BtnMetadataAdd.TabIndex = 15;
@@ -659,7 +661,7 @@ namespace LogScraper.Log
             // BtnMetadataRemove
             // 
             BtnMetadataRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataRemove.Location = new System.Drawing.Point(90, 328);
+            BtnMetadataRemove.Location = new System.Drawing.Point(90, 354);
             BtnMetadataRemove.Name = "BtnMetadataRemove";
             BtnMetadataRemove.Size = new System.Drawing.Size(80, 23);
             BtnMetadataRemove.TabIndex = 16;
@@ -671,7 +673,7 @@ namespace LogScraper.Log
             // 
             BtnMetadataDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataDown.Image = Properties.Resources.down;
-            BtnMetadataDown.Location = new System.Drawing.Point(204, 328);
+            BtnMetadataDown.Location = new System.Drawing.Point(204, 354);
             BtnMetadataDown.Name = "BtnMetadataDown";
             BtnMetadataDown.Size = new System.Drawing.Size(22, 23);
             BtnMetadataDown.TabIndex = 18;
@@ -682,7 +684,7 @@ namespace LogScraper.Log
             // 
             BtnMetadataUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataUp.Image = Properties.Resources.up;
-            BtnMetadataUp.Location = new System.Drawing.Point(180, 328);
+            BtnMetadataUp.Location = new System.Drawing.Point(180, 354);
             BtnMetadataUp.Name = "BtnMetadataUp";
             BtnMetadataUp.Size = new System.Drawing.Size(22, 23);
             BtnMetadataUp.TabIndex = 17;
@@ -695,13 +697,15 @@ namespace LogScraper.Log
             tabPageContentFilters.Location = new System.Drawing.Point(4, 24);
             tabPageContentFilters.Name = "tabPageContentFilters";
             tabPageContentFilters.Padding = new System.Windows.Forms.Padding(3);
-            tabPageContentFilters.Size = new System.Drawing.Size(712, 363);
+            tabPageContentFilters.Size = new System.Drawing.Size(712, 385);
             tabPageContentFilters.TabIndex = 1;
             tabPageContentFilters.Text = "Inhoudsfilters";
             tabPageContentFilters.UseVisualStyleBackColor = true;
             // 
             // GrpContent
             // 
+            GrpContent.Controls.Add(pictureBox12);
+            GrpContent.Controls.Add(ChkContentPropertyIsNavigationEnabled);
             GrpContent.Controls.Add(ChkContentBackColorFillLine);
             GrpContent.Controls.Add(BtnContentBackColor);
             GrpContent.Controls.Add(BtnContentTextColor);
@@ -709,7 +713,6 @@ namespace LogScraper.Log
             GrpContent.Controls.Add(pictureBox18);
             GrpContent.Controls.Add(ChkContentPropertyIsError);
             GrpContent.Controls.Add(pictureBox17);
-            GrpContent.Controls.Add(LblContentFilterMarksEnd);
             GrpContent.Controls.Add(ChkContentFilterMarksBegin);
             GrpContent.Controls.Add(CboContentFilterMarksEnd);
             GrpContent.Controls.Add(pictureBox9);
@@ -728,15 +731,39 @@ namespace LogScraper.Log
             GrpContent.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpContent.Location = new System.Drawing.Point(3, 3);
             GrpContent.Name = "GrpContent";
-            GrpContent.Size = new System.Drawing.Size(706, 357);
+            GrpContent.Size = new System.Drawing.Size(706, 379);
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
             GrpContent.Text = "Inhoudsfilters";
             // 
+            // pictureBox12
+            // 
+            pictureBox12.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            pictureBox12.Image = Properties.Resources.help;
+            pictureBox12.Location = new System.Drawing.Point(687, 219);
+            pictureBox12.Name = "pictureBox12";
+            pictureBox12.Size = new System.Drawing.Size(16, 16);
+            pictureBox12.TabIndex = 45;
+            pictureBox12.TabStop = false;
+            toolTip.SetToolTip(pictureBox12, resources.GetString("pictureBox12.ToolTip"));
+            // 
+            // ChkContentPropertyIsNavigationEnabled
+            // 
+            ChkContentPropertyIsNavigationEnabled.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            ChkContentPropertyIsNavigationEnabled.Checked = true;
+            ChkContentPropertyIsNavigationEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            ChkContentPropertyIsNavigationEnabled.Location = new System.Drawing.Point(241, 215);
+            ChkContentPropertyIsNavigationEnabled.Name = "ChkContentPropertyIsNavigationEnabled";
+            ChkContentPropertyIsNavigationEnabled.Size = new System.Drawing.Size(326, 20);
+            ChkContentPropertyIsNavigationEnabled.TabIndex = 44;
+            ChkContentPropertyIsNavigationEnabled.Text = "Gebruik dit filter voor navigatie in het log";
+            ChkContentPropertyIsNavigationEnabled.UseVisualStyleBackColor = true;
+            ChkContentPropertyIsNavigationEnabled.CheckedChanged += ChkContentPropertyIsNavigationEnabled_CheckedChanged;
+            // 
             // ChkContentBackColorFillLine
             // 
             ChkContentBackColorFillLine.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkContentBackColorFillLine.Location = new System.Drawing.Point(261, 245);
+            ChkContentBackColorFillLine.Location = new System.Drawing.Point(261, 305);
             ChkContentBackColorFillLine.Name = "ChkContentBackColorFillLine";
             ChkContentBackColorFillLine.Size = new System.Drawing.Size(373, 20);
             ChkContentBackColorFillLine.TabIndex = 43;
@@ -748,7 +775,7 @@ namespace LogScraper.Log
             // 
             BtnContentBackColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnContentBackColor.Enabled = false;
-            BtnContentBackColor.Location = new System.Drawing.Point(261, 218);
+            BtnContentBackColor.Location = new System.Drawing.Point(261, 278);
             BtnContentBackColor.Name = "BtnContentBackColor";
             BtnContentBackColor.Size = new System.Drawing.Size(99, 23);
             BtnContentBackColor.TabIndex = 42;
@@ -760,7 +787,7 @@ namespace LogScraper.Log
             // 
             BtnContentTextColor.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnContentTextColor.Enabled = false;
-            BtnContentTextColor.Location = new System.Drawing.Point(261, 194);
+            BtnContentTextColor.Location = new System.Drawing.Point(261, 254);
             BtnContentTextColor.Name = "BtnContentTextColor";
             BtnContentTextColor.Size = new System.Drawing.Size(99, 23);
             BtnContentTextColor.TabIndex = 40;
@@ -775,7 +802,7 @@ namespace LogScraper.Log
             TxtCustomStyleExample.BorderStyle = System.Windows.Forms.BorderStyle.None;
             TxtCustomStyleExample.Enabled = false;
             TxtCustomStyleExample.HScrollBar = false;
-            TxtCustomStyleExample.Location = new System.Drawing.Point(382, 194);
+            TxtCustomStyleExample.Location = new System.Drawing.Point(382, 254);
             TxtCustomStyleExample.Name = "TxtCustomStyleExample";
             TxtCustomStyleExample.ReadOnly = true;
             TxtCustomStyleExample.Size = new System.Drawing.Size(318, 47);
@@ -786,7 +813,7 @@ namespace LogScraper.Log
             // 
             pictureBox18.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             pictureBox18.Image = Properties.Resources.help;
-            pictureBox18.Location = new System.Drawing.Point(684, 271);
+            pictureBox18.Location = new System.Drawing.Point(684, 336);
             pictureBox18.Name = "pictureBox18";
             pictureBox18.Size = new System.Drawing.Size(16, 16);
             pictureBox18.TabIndex = 37;
@@ -796,9 +823,9 @@ namespace LogScraper.Log
             // ChkContentPropertyIsError
             // 
             ChkContentPropertyIsError.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkContentPropertyIsError.Location = new System.Drawing.Point(241, 271);
+            ChkContentPropertyIsError.Location = new System.Drawing.Point(241, 331);
             ChkContentPropertyIsError.Name = "ChkContentPropertyIsError";
-            ChkContentPropertyIsError.Size = new System.Drawing.Size(373, 20);
+            ChkContentPropertyIsError.Size = new System.Drawing.Size(326, 20);
             ChkContentPropertyIsError.TabIndex = 36;
             ChkContentPropertyIsError.Text = "Markeert een error";
             ChkContentPropertyIsError.UseVisualStyleBackColor = true;
@@ -808,32 +835,21 @@ namespace LogScraper.Log
             // 
             pictureBox17.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             pictureBox17.Image = Properties.Resources.help;
-            pictureBox17.Location = new System.Drawing.Point(684, 292);
+            pictureBox17.Location = new System.Drawing.Point(684, 357);
             pictureBox17.Name = "pictureBox17";
             pictureBox17.Size = new System.Drawing.Size(16, 16);
             pictureBox17.TabIndex = 35;
             pictureBox17.TabStop = false;
             toolTip.SetToolTip(pictureBox17, resources.GetString("pictureBox17.ToolTip"));
             // 
-            // LblContentFilterMarksEnd
-            // 
-            LblContentFilterMarksEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            LblContentFilterMarksEnd.AutoSize = true;
-            LblContentFilterMarksEnd.Enabled = false;
-            LblContentFilterMarksEnd.Location = new System.Drawing.Point(260, 318);
-            LblContentFilterMarksEnd.Name = "LblContentFilterMarksEnd";
-            LblContentFilterMarksEnd.Size = new System.Drawing.Size(100, 15);
-            LblContentFilterMarksEnd.TabIndex = 34;
-            LblContentFilterMarksEnd.Text = "En het einde door";
-            // 
             // ChkContentFilterMarksBegin
             // 
             ChkContentFilterMarksBegin.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkContentFilterMarksBegin.Location = new System.Drawing.Point(241, 292);
+            ChkContentFilterMarksBegin.Location = new System.Drawing.Point(241, 352);
             ChkContentFilterMarksBegin.Name = "ChkContentFilterMarksBegin";
-            ChkContentFilterMarksBegin.Size = new System.Drawing.Size(373, 20);
+            ChkContentFilterMarksBegin.Size = new System.Drawing.Size(336, 20);
             ChkContentFilterMarksBegin.TabIndex = 33;
-            ChkContentFilterMarksBegin.Text = "Markeert het begin van een (sub)flow";
+            ChkContentFilterMarksBegin.Text = "Markeert het begin van een (sub)flow, en het einde door";
             ChkContentFilterMarksBegin.UseVisualStyleBackColor = true;
             ChkContentFilterMarksBegin.CheckedChanged += ChkContentFilterMarksBegin_CheckedChanged;
             // 
@@ -842,9 +858,9 @@ namespace LogScraper.Log
             CboContentFilterMarksEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             CboContentFilterMarksEnd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboContentFilterMarksEnd.FormattingEnabled = true;
-            CboContentFilterMarksEnd.Location = new System.Drawing.Point(393, 315);
+            CboContentFilterMarksEnd.Location = new System.Drawing.Point(583, 349);
             CboContentFilterMarksEnd.Name = "CboContentFilterMarksEnd";
-            CboContentFilterMarksEnd.Size = new System.Drawing.Size(121, 23);
+            CboContentFilterMarksEnd.Size = new System.Drawing.Size(97, 23);
             CboContentFilterMarksEnd.TabIndex = 32;
             CboContentFilterMarksEnd.SelectedIndexChanged += CboContentFilterMarksEnd_SelectedIndexChanged;
             // 
@@ -863,7 +879,7 @@ namespace LogScraper.Log
             // 
             pictureBox10.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox10.Image = Properties.Resources.help;
-            pictureBox10.Location = new System.Drawing.Point(684, 22);
+            pictureBox10.Location = new System.Drawing.Point(684, 19);
             pictureBox10.Name = "pictureBox10";
             pictureBox10.Size = new System.Drawing.Size(16, 16);
             pictureBox10.TabIndex = 30;
@@ -900,7 +916,7 @@ namespace LogScraper.Log
             TxtContentBeforeAndAfterPhrases.Multiline = true;
             TxtContentBeforeAndAfterPhrases.Name = "TxtContentBeforeAndAfterPhrases";
             TxtContentBeforeAndAfterPhrases.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(459, 87);
+            TxtContentBeforeAndAfterPhrases.Size = new System.Drawing.Size(459, 125);
             TxtContentBeforeAndAfterPhrases.TabIndex = 21;
             TxtContentBeforeAndAfterPhrases.TextChanged += TxtContentBeforeAndAfterPhrases_TextChanged;
             // 
@@ -908,7 +924,7 @@ namespace LogScraper.Log
             // 
             LblContentDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblContentDescription.AutoSize = true;
-            LblContentDescription.Location = new System.Drawing.Point(241, 22);
+            LblContentDescription.Location = new System.Drawing.Point(241, 19);
             LblContentDescription.Name = "LblContentDescription";
             LblContentDescription.Size = new System.Drawing.Size(78, 15);
             LblContentDescription.TabIndex = 20;
@@ -920,7 +936,7 @@ namespace LogScraper.Log
             TxtContentDescription.BackColor = System.Drawing.Color.MistyRose;
             TxtContentDescription.IsRequired = true;
             TxtContentDescription.IsWhiteSpaceAllowed = false;
-            TxtContentDescription.Location = new System.Drawing.Point(241, 40);
+            TxtContentDescription.Location = new System.Drawing.Point(241, 37);
             TxtContentDescription.Name = "TxtContentDescription";
             TxtContentDescription.Size = new System.Drawing.Size(459, 23);
             TxtContentDescription.TabIndex = 19;
@@ -933,14 +949,14 @@ namespace LogScraper.Log
             LstContent.IntegralHeight = false;
             LstContent.Location = new System.Drawing.Point(6, 22);
             LstContent.Name = "LstContent";
-            LstContent.Size = new System.Drawing.Size(220, 300);
+            LstContent.Size = new System.Drawing.Size(220, 322);
             LstContent.TabIndex = 10;
             LstContent.SelectedIndexChanged += LstContent_SelectedIndexChanged;
             // 
             // BtnContentAdd
             // 
             BtnContentAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentAdd.Location = new System.Drawing.Point(6, 328);
+            BtnContentAdd.Location = new System.Drawing.Point(6, 350);
             BtnContentAdd.Name = "BtnContentAdd";
             BtnContentAdd.Size = new System.Drawing.Size(80, 23);
             BtnContentAdd.TabIndex = 15;
@@ -951,7 +967,7 @@ namespace LogScraper.Log
             // BtnContentRemove
             // 
             BtnContentRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnContentRemove.Location = new System.Drawing.Point(90, 328);
+            BtnContentRemove.Location = new System.Drawing.Point(90, 350);
             BtnContentRemove.Name = "BtnContentRemove";
             BtnContentRemove.Size = new System.Drawing.Size(80, 23);
             BtnContentRemove.TabIndex = 16;
@@ -963,7 +979,7 @@ namespace LogScraper.Log
             // 
             BtnContentDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnContentDown.Image = Properties.Resources.down;
-            BtnContentDown.Location = new System.Drawing.Point(204, 328);
+            BtnContentDown.Location = new System.Drawing.Point(204, 350);
             BtnContentDown.Name = "BtnContentDown";
             BtnContentDown.Size = new System.Drawing.Size(22, 23);
             BtnContentDown.TabIndex = 18;
@@ -974,7 +990,7 @@ namespace LogScraper.Log
             // 
             BtnContentUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnContentUp.Image = Properties.Resources.up;
-            BtnContentUp.Location = new System.Drawing.Point(180, 328);
+            BtnContentUp.Location = new System.Drawing.Point(180, 350);
             BtnContentUp.Name = "BtnContentUp";
             BtnContentUp.Size = new System.Drawing.Size(22, 23);
             BtnContentUp.TabIndex = 17;
@@ -984,7 +1000,7 @@ namespace LogScraper.Log
             // ChkColorContentPropertyLogEntries
             // 
             ChkColorContentPropertyLogEntries.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            ChkColorContentPropertyLogEntries.Location = new System.Drawing.Point(241, 177);
+            ChkColorContentPropertyLogEntries.Location = new System.Drawing.Point(241, 237);
             ChkColorContentPropertyLogEntries.Name = "ChkColorContentPropertyLogEntries";
             ChkColorContentPropertyLogEntries.Size = new System.Drawing.Size(373, 20);
             ChkColorContentPropertyLogEntries.TabIndex = 41;
@@ -998,7 +1014,7 @@ namespace LogScraper.Log
             tabPageTransformers.Controls.Add(chkTransformReverse);
             tabPageTransformers.Location = new System.Drawing.Point(4, 24);
             tabPageTransformers.Name = "tabPageTransformers";
-            tabPageTransformers.Size = new System.Drawing.Size(712, 363);
+            tabPageTransformers.Size = new System.Drawing.Size(712, 389);
             tabPageTransformers.TabIndex = 2;
             tabPageTransformers.Text = "Transformeren";
             tabPageTransformers.UseVisualStyleBackColor = true;
@@ -1127,6 +1143,7 @@ namespace LogScraper.Log
             tabPageContentFilters.ResumeLayout(false);
             GrpContent.ResumeLayout(false);
             GrpContent.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox12).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox18).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox17).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox9).EndInit();
@@ -1224,5 +1241,8 @@ namespace LogScraper.Log
         private System.Windows.Forms.Button BtnContentTextColor;
         private System.Windows.Forms.CheckBox ChkColorContentPropertyLogEntries;
         private System.Windows.Forms.CheckBox ChkContentBackColorFillLine;
+        private System.Windows.Forms.CheckBox ChkContentPropertyUserCanFilter;
+        private System.Windows.Forms.PictureBox pictureBox12;
+        private System.Windows.Forms.CheckBox ChkContentPropertyIsNavigationEnabled;
     }
 }

@@ -61,6 +61,11 @@ namespace LogScraper.Log.Content
         public bool IsCustomBackColorFillLine { get; set; } = false;
 
         /// <summary>
+        /// Indicates whether navigation to this log content property is enabled.
+        /// </summary>
+        public bool IsNavigationEnabled { get; set; } = true;
+
+        /// <summary>
         /// Description of the content property which is a filter for the end of a flow tree.
         /// Used for JSON serilization and only when <see cref="IsBeginFlowTreeFilter"/> is true.
         /// </summary>
@@ -147,6 +152,7 @@ namespace LogScraper.Log.Content
                 Description = Description,
                 IsErrorProperty = IsErrorProperty,
                 IsBeginFlowTreeFilter = IsBeginFlowTreeFilter,
+                IsNavigationEnabled = IsNavigationEnabled,
                 IsCustomStyleEnabled = IsCustomStyleEnabled,
                 IsCustomBackColorFillLine = IsCustomBackColorFillLine,
                 CustomTextColor = CustomTextColor,

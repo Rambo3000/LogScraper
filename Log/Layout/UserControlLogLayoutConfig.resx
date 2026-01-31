@@ -145,6 +145,10 @@ Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY
 
 Let op! De applicatie kan langzamer worden indien metadata wordt gebruikt die vaak wijzigd (bijvoorbeeld een trace-id). Probeer voor deze gevallen het in te lezen log klein te houden.</value>
   </data>
+  <data name="pictureBox12.ToolTip" xml:space="preserve">
+    <value>Indien ingeschakeld kan dit filter worden gebruikt om snel naar bijbehorende logregels te springen.
+Indien uitgeschakeld wordt het filter alleen gebruikt voor visuele markering (kleuren en inspringen).</value>
+  </data>
   <data name="pictureBox18.ToolTip" xml:space="preserve">
     <value>Als deze optie is ingeschakeld en de opgegeven content wordt gevonden, wordt de betreffende logregel als een fout gemarkeerd.
 

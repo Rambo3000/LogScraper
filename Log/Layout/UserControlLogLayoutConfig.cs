@@ -342,6 +342,7 @@ namespace LogScraper.Log
                 ChkContentFilterMarksBegin.Checked = selected.IsBeginFlowTreeFilter;
                 ChkColorContentPropertyLogEntries.Checked = selected.IsCustomStyleEnabled;
                 ChkContentBackColorFillLine.Checked = selected.IsCustomBackColorFillLine;
+                ChkContentPropertyIsNavigationEnabled.Checked = selected.IsNavigationEnabled;
                 UpdateTxtCustomStyleExample();
                 CboContentFilterMarksEnd.Items.Clear();
                 CboContentFilterMarksEnd.Items.AddRange([.. LstContent.Items.Cast<LogContentProperty>().Where(item => item != selected)]);
@@ -679,7 +680,6 @@ namespace LogScraper.Log
         private void ChkContentFilterMarksBegin_CheckedChanged(object sender, EventArgs e)
         {
             CboContentFilterMarksEnd.Enabled = ChkContentFilterMarksBegin.Checked;
-            LblContentFilterMarksEnd.Enabled = ChkContentFilterMarksBegin.Checked;
             if (UpdatingInformation) return;
 
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsBeginFlowTreeFilter = ChkContentFilterMarksBegin.Checked;
@@ -790,5 +790,11 @@ namespace LogScraper.Log
             }
         }
 
+        private void ChkContentPropertyIsNavigationEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstContent.SelectedItem is LogContentProperty selected) selected.IsNavigationEnabled = ChkContentPropertyIsNavigationEnabled.Checked;
+        }
     }
 }
