@@ -318,7 +318,7 @@ namespace LogScraper.Log.VisualIndex
             int postRenderLogEntriesEndIndex = Math.Min(postRenderTopLogEntry.VisibleLogEntriesListIndex + linesOnScreen, postRenderLayout.VisibleLogEntries.Count - 1);
 
             // Select each visible log entry in the post render layout within the visible range
-            for (int i = postRenderTopLogEntry.VisibleLogEntriesListIndex; i < postRenderLogEntriesEndIndex + linesOnScreen; i++)
+            for (int i = postRenderTopLogEntry.VisibleLogEntriesListIndex; i < postRenderLogEntriesEndIndex; i++)
             {
                 LogEntry newLogEntry = postRenderLayout.VisibleLogEntries[i];
 
