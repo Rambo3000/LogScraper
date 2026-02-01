@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using LogScraper.Log.Content;
 using LogScraper.LogPostProcessors;
 
-namespace LogScraper.Log.VisualIndex
+namespace LogScraper.Log.Rendering
 {
     /// <summary>
     /// Provides utility methods for calculating visual line indexes for log entries based on their processed visual
@@ -158,7 +157,7 @@ namespace LogScraper.Log.VisualIndex
         /// <param name="visualLineIndexPerVisibleEntry">An array mapping each visible log entry to its starting visual line index. Cannot be null.</param>
         /// <param name="visibleLogEntries">The list of log entries that are currently visible. Cannot be null.</param>
         /// <returns>true if a matching log entry is found; otherwise, false.</returns>
-        public static bool TryGetRenderPosition(int visualLineIndex, LogRenderLayout renderLayout, out LogEntryRenderPosition logRenderPosition)
+        public static bool TryGetRenderPosition(int visualLineIndex, LogEntriesRenderMap renderLayout, out LogEntryRenderPosition logRenderPosition)
         {
             logRenderPosition = new()
             {
@@ -213,52 +212,56 @@ namespace LogScraper.Log.VisualIndex
         /// <remarks>This method determines the new scroll position based on the top visible log entry
         /// before and after a re-rendering of the log view. It attempts to preserve the user's context by finding
         /// an anchored position in the new layout that corresponds to the previous top entry.</remarks>
-        /// <param name="preRenderTopLogEntry">The log entry render position that was at the top of the view before re-rendering. Cannot be null.</param>
-        /// <param name="preRenderLayout">The layout of rendered log entries before re-rendering. Cannot be null.</param>
-        /// <param name="postRenderLayout">The layout of rendered log entries after re-rendering. Cannot be null.</param>
+        /// <param name="preRenderTopLogEntryRenderPosition">The log entry render position that was at the top of the view before re-rendering. Cannot be null.</param>
+        /// <param name="preRenderLogEntriesRenderMap">The layout of rendered log entries before re-rendering. Cannot be null.</param>
+        /// <param name="postRenderLogEntriesRenderMap">The layout of rendered log entries after re-rendering. Cannot be null.</param>
         /// <param name="linesOnScreen">The number of visual lines that can be displayed on the screen at once.</param>
         /// <param name="scrollToPosition">When this method returns, contains the calculated scroll position to maintain context.</param>
         /// <returns>true if a scroll position is successfully calculated; otherwise, false.</returns>
-        internal static bool TryGetScrollToPosition(LogEntryRenderPosition preRenderTopLogEntry, LogRenderLayout preRenderLayout, LogRenderLayout postRenderLayout, int linesOnScreen, out int scrollToPosition)
+        internal static bool TryGetScrollToPosition(LogEntryRenderPosition preRenderTopLogEntryRenderPosition, LogEntriesRenderMap preRenderLogEntriesRenderMap, LogEntriesRenderMap postRenderLogEntriesRenderMap, int linesOnScreen, out int scrollToPosition)
         {
-            if (preRenderTopLogEntry == null || preRenderTopLogEntry.LogEntry == null || preRenderLayout == null || postRenderLayout == null || preRenderLayout.VisibleLogEntries == null || postRenderLayout.VisibleLogEntries == null || preRenderLayout.VisualLineIndexPerEntry == null || postRenderLayout.VisualLineIndexPerEntry == null)
+            if (preRenderTopLogEntryRenderPosition == null || preRenderTopLogEntryRenderPosition.LogEntry == null ||
+                preRenderLogEntriesRenderMap == null || postRenderLogEntriesRenderMap == null || 
+                preRenderLogEntriesRenderMap.VisibleLogEntries == null || postRenderLogEntriesRenderMap.VisibleLogEntries == null || 
+                preRenderLogEntriesRenderMap.VisualLineIndexPerEntry == null || postRenderLogEntriesRenderMap.VisualLineIndexPerEntry == null)
             {
                 scrollToPosition = -1;
                 return false;
             }
 
             // Find the top most log entry in the post render layout
-            if (!TryGetPostRenderTopMostPosition(preRenderTopLogEntry, postRenderLayout, out LogEntryRenderPosition postRenderTopLogEntry))
+            if (!TryGetPostRenderTopMostPosition(preRenderTopLogEntryRenderPosition, postRenderLogEntriesRenderMap, out LogEntryRenderPosition postRenderTopLogEntryRenderPosition))
             {
-                // Since no log entry is found beyond the previously visible lines, the logical choice is to show the bottom part of the log
-                scrollToPosition = postRenderLayout.VisualLineIndexPerEntry[^1];
+                // Since no log entry is found beyond the previously visible lines,
+                // the logical choice is to show the bottom part of the log
+                scrollToPosition = postRenderLogEntriesRenderMap.VisualLineIndexPerEntry[^1];
                 return true;
             }
 
-            // The top most entry pre and post render are the same, so the post render offset can be directly calculated
-            if (preRenderTopLogEntry.LogEntry == postRenderTopLogEntry.LogEntry)
+            // The top most entry pre- and post render are the same, so the post render offset can be directly calculated
+            if (preRenderTopLogEntryRenderPosition.LogEntry == postRenderTopLogEntryRenderPosition.LogEntry)
             {
                 // Make sure to retain the pre render offset
-                scrollToPosition = postRenderTopLogEntry.RenderedLineIndex + preRenderTopLogEntry.OffsetIntoLogEntry;
+                scrollToPosition = postRenderTopLogEntryRenderPosition.RenderedLineIndex + preRenderTopLogEntryRenderPosition.OffsetIntoLogEntry;
                 return true;
             }
 
             // Try to get the first line in the post render layout which also existed in the pre render layout within the visible range
-            if (!TryGetAnchoredPosition(preRenderTopLogEntry, postRenderTopLogEntry, preRenderLayout, postRenderLayout, linesOnScreen, out LogEntryRenderPosition preRenderNewAnchorPosition, out LogEntryRenderPosition postRenderNewAnchorPosition))
+            if (!TryGetAnchoredPosition(preRenderTopLogEntryRenderPosition, postRenderTopLogEntryRenderPosition, preRenderLogEntriesRenderMap, postRenderLogEntriesRenderMap, linesOnScreen, out LogEntryRenderPosition preRenderNewAnchorPosition, out LogEntryRenderPosition postRenderNewAnchorPosition))
             {
                 // If no matching entry is found in both pre- and post render, the user will scroll further into the log to the first found line
-                scrollToPosition = postRenderTopLogEntry.RenderedLineIndex;
+                scrollToPosition = postRenderTopLogEntryRenderPosition.RenderedLineIndex;
                 return true;
             }
 
             // Calculate the distance in the pre render layout from the top log entry to the new anchor position
-            int preRenderAnchorDistanceFromTop = Math.Max(0, preRenderNewAnchorPosition.RenderedLineIndex - preRenderTopLogEntry.RenderedLineIndex);
+            int preRenderAnchorDistanceFromTop = Math.Max(0, preRenderNewAnchorPosition.RenderedLineIndex - preRenderTopLogEntryRenderPosition.RenderedLineIndex);
 
             // Correct the post render scroll position to maintain the same distance from the new anchor position
             int postRenderTopScrollToLine = postRenderNewAnchorPosition.RenderedLineIndex - preRenderAnchorDistanceFromTop;
 
             // Make sure we set the scroll position between 0 and the last entry
-            scrollToPosition = Math.Max(0, Math.Min(postRenderTopScrollToLine, postRenderLayout.VisualLineIndexPerEntry[^1]));
+            scrollToPosition = Math.Max(0, Math.Min(postRenderTopScrollToLine, postRenderLogEntriesRenderMap.VisualLineIndexPerEntry[^1]));
 
             return true;
         }
@@ -274,7 +277,7 @@ namespace LogScraper.Log.VisualIndex
         /// <param name="postRenderLayout">The layout of rendered log entries after re-rendering. Cannot be null.</param>
         /// <param name="postRenderTopMostPosition">When this method returns, contains the topmost log entry position in the post-render layout if found; otherwise, null. This parameter is passed uninitialized.</param>
         /// <returns>true if a topmost position is found; otherwise, false.</returns>
-        private static bool TryGetPostRenderTopMostPosition(LogEntryRenderPosition preRenderTopLogEntry, LogRenderLayout postRenderLayout, out LogEntryRenderPosition postRenderTopMostPosition)
+        private static bool TryGetPostRenderTopMostPosition(LogEntryRenderPosition preRenderTopLogEntry, LogEntriesRenderMap postRenderLayout, out LogEntryRenderPosition postRenderTopMostPosition)
         {
             postRenderTopMostPosition = null;
             for (int i = 0; i < postRenderLayout.VisibleLogEntries.Count; i++)
@@ -310,7 +313,7 @@ namespace LogScraper.Log.VisualIndex
         /// <param name="anchorPreRenderPosition">When this method returns, contains the anchored log entry position in the pre-render layout if found; otherwise, null. This parameter is passed uninitialized.</param>
         /// <param name="anchorPostRenderPosition">When this method returns, contains the anchored log entry position in the post-render layout if found; otherwise, null. This parameter is passed uninitialized.</param>
         /// <returns>true if an anchored position is found; otherwise, false.</returns>
-        private static bool TryGetAnchoredPosition(LogEntryRenderPosition preRenderTopLogEntry, LogEntryRenderPosition postRenderTopLogEntry, LogRenderLayout preRenderLayout, LogRenderLayout postRenderLayout, int linesOnScreen, out LogEntryRenderPosition anchorPreRenderPosition, out LogEntryRenderPosition anchorPostRenderPosition)
+        private static bool TryGetAnchoredPosition(LogEntryRenderPosition preRenderTopLogEntry, LogEntryRenderPosition postRenderTopLogEntry, LogEntriesRenderMap preRenderLayout, LogEntriesRenderMap postRenderLayout, int linesOnScreen, out LogEntryRenderPosition anchorPreRenderPosition, out LogEntryRenderPosition anchorPostRenderPosition)
         {
             anchorPreRenderPosition = null;
             anchorPostRenderPosition = null;

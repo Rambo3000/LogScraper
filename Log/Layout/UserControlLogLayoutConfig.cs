@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Rendering;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
 using LogScraper.Utilities;

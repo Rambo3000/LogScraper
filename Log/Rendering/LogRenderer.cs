@@ -7,12 +7,12 @@ using LogScraper.Log.Metadata;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Rendering
 {
     /// <summary>
     /// Provides functionality to render log entries based on specified export settings.
     /// </summary>
-    internal class LogRenderer
+    internal static class LogRenderer
     {
         /// <summary>
         /// Retrieves the log entries to be rendered based on the provided metadata filter result and render settings.

@@ -2,7 +2,7 @@
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Rendering
 {
     /// <summary>
     /// Represents the settings used for exporting log data.

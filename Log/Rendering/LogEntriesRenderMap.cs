@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace LogScraper.Log.VisualIndex
+namespace LogScraper.Log.Rendering
 {
     /// <summary>
-    /// Describes the layout of rendered log entries, including which entries are visible and their corresponding visual line indices.
+    /// Represents a mapping of log entries to their rendered visual lines in the log view.
     /// </summary>
-    public sealed class LogRenderLayout
+    public sealed class LogEntriesRenderMap
     {
         /// <summary>
         /// The list of log entries that are visible in the rendered view.

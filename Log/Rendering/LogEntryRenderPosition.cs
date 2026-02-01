@@ -1,7 +1,7 @@
-﻿namespace LogScraper.Log.VisualIndex
+﻿namespace LogScraper.Log.Rendering
 {
     /// <summary>
-    /// Describes a specific position within a rendered log entry.
+    /// Represents the position of a rendered log entry within the log view.
     /// </summary>
     public sealed class LogEntryRenderPosition
     {
@@ -26,5 +26,4 @@
         /// </summary>
         public int VisibleLogEntriesListIndex { get; set; } = -1;
     }
-
 }

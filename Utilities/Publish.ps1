@@ -72,7 +72,7 @@ if (!$test.IsPresent) {
 }
 
 Write-Host "----- Cleaning up -----"
-# Remove-Item ".\bin\Release\" -Recurse -Force
+Remove-Item ".\bin\Release\" -Recurse -Force
 
 Write-Host "----- Open explorer -----"
 Start ".\bin\"

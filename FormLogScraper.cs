@@ -9,6 +9,7 @@ using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Rendering;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
@@ -190,9 +191,9 @@ namespace LogScraper
             UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
 
-            WriteLogToScreenAndFile(currentLogMetadataFilterResult);
+            RenderLog(currentLogMetadataFilterResult);
         }
-        private void WriteLogToScreenAndFile(LogMetadataFilterResult logMetadataFilterResult)
+        private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
         {
             LogRenderSettings logRenderSettings = new()
             {
@@ -255,7 +256,7 @@ namespace LogScraper
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
             UserControlSearch.IsMetadataSearchEnabled = UsrControlMetadataFormating.IsOriginalMetadataShown;
-            if (currentLogMetadataFilterResult != null) WriteLogToScreenAndFile(currentLogMetadataFilterResult);
+            if (currentLogMetadataFilterResult != null) RenderLog(currentLogMetadataFilterResult);
         }
         private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)
         {
