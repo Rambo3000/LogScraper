@@ -26,9 +26,19 @@ namespace LogScraper
     {
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
+
+        LogHeatmapControl logHeatmapControl = new()
+        {
+            Name = "logHeatmapControl",
+            Dock = DockStyle.Fill,
+            TabIndex = 0
+        };
         public FormLogScraper()
         {
             InitializeComponent();
+
+            splitContainer4.Panel2.Controls.Add(logHeatmapControl);
+            logHeatmapControl.HeatmapCellClicked += LogHeatmapControl_HeatmapCellClicked;
 
             CultureInfo culture = new("nl"); // of "en", "fr", etc.
             Thread.CurrentThread.CurrentUICulture = culture;
@@ -58,6 +68,11 @@ namespace LogScraper
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void LogHeatmapControl_HeatmapCellClicked(object sender, LogEntry e)
+        {
+            UserControlLogEntriesTextBox.SelectLogEntry(e);
         }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
@@ -207,7 +222,7 @@ namespace LogScraper
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
-
+            logHeatmapControl.UpdateLogEntries(visibleLogEntries);
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
         }
         #endregion

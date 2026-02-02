@@ -53,7 +53,7 @@
             usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
-            groupBox2 = new System.Windows.Forms.GroupBox();
+            splitContainer4 = new System.Windows.Forms.SplitContainer();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -81,7 +81,9 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
-            groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer4).BeginInit();
+            splitContainer4.Panel1.SuspendLayout();
+            splitContainer4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
             splitContainer3.Panel1.SuspendLayout();
             splitContainer3.Panel2.SuspendLayout();
@@ -353,7 +355,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            splitContainer2.Panel1.Controls.Add(groupBox2);
+            splitContainer2.Panel1.Controls.Add(splitContainer4);
             // 
             // splitContainer2.Panel2
             // 
@@ -362,24 +364,28 @@
             splitContainer2.SplitterDistance = 685;
             splitContainer2.TabIndex = 8;
             // 
-            // groupBox2
+            // splitContainer4
             // 
-            groupBox2.Controls.Add(TxtErrorMessage);
-            groupBox2.Controls.Add(UserControlLogEntriesTextBox);
-            groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox2.Location = new System.Drawing.Point(0, 0);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(685, 447);
-            groupBox2.TabIndex = 4;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Log";
+            splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer4.Location = new System.Drawing.Point(0, 0);
+            splitContainer4.Margin = new System.Windows.Forms.Padding(0);
+            splitContainer4.Name = "splitContainer4";
+            splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer4.Panel1
+            // 
+            splitContainer4.Panel1.Controls.Add(TxtErrorMessage);
+            splitContainer4.Panel1.Controls.Add(UserControlLogEntriesTextBox);
+            splitContainer4.Size = new System.Drawing.Size(685, 447);
+            splitContainer4.SplitterDistance = 389;
+            splitContainer4.TabIndex = 5;
             // 
             // TxtErrorMessage
             // 
             TxtErrorMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtErrorMessage.BackColor = System.Drawing.SystemColors.Window;
             TxtErrorMessage.ForeColor = System.Drawing.Color.DarkRed;
-            TxtErrorMessage.Location = new System.Drawing.Point(91, 32);
+            TxtErrorMessage.Location = new System.Drawing.Point(94, 19);
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
@@ -391,9 +397,9 @@
             // UserControlLogEntriesTextBox
             // 
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            UserControlLogEntriesTextBox.Location = new System.Drawing.Point(3, 19);
+            UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(679, 425);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(685, 389);
             UserControlLogEntriesTextBox.TabIndex = 38;
             // 
             // splitContainer3
@@ -626,8 +632,10 @@
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
+            splitContainer4.Panel1.ResumeLayout(false);
+            splitContainer4.Panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer4).EndInit();
+            splitContainer4.ResumeLayout(false);
             splitContainer3.Panel1.ResumeLayout(false);
             splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
@@ -672,7 +680,6 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private UserControlLogContentFilter UserControlContentFilter;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TabControl tabControl2;
         private System.Windows.Forms.TabPage tabPage3;
@@ -700,5 +707,6 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
         private System.Windows.Forms.ImageList imageListBtnErase;
         private System.Windows.Forms.Button BtnClearFilters;
+        private System.Windows.Forms.SplitContainer splitContainer4;
     }
 }
