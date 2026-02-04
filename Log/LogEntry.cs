@@ -66,6 +66,15 @@ namespace LogScraper.Log
         /// </summary>
         public int Index { get; set; }
         /// <summary>
+        /// Gets or sets the zero-based index associated with the current item.
+        /// </summary>
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this log entry is classified as an error log entry.
+        /// </summary>
+        public bool IsErrorLogEntry { get; set; }
+
+        /// <summary>
         /// Gets or sets the results of the log post-processing operation.
         /// </summary>
         public LogPostProcessResults LogPostProcessResults { get; set; }

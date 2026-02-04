@@ -39,6 +39,7 @@ namespace LogScraper
 
             splitContainer4.Panel2.Controls.Add(logHeatmapControl);
             logHeatmapControl.HeatmapCellClicked += LogHeatmapControl_HeatmapCellClicked;
+            logHeatmapControl.ErrorMarkerClicked += LogHeatmapControl_HeatmapCellClicked;
 
             CultureInfo culture = new("nl"); // of "en", "fr", etc.
             Thread.CurrentThread.CurrentUICulture = culture;

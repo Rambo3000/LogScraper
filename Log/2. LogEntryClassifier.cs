@@ -107,8 +107,8 @@ namespace LogScraper.Log
             {
                 SetLogEntryStartPositionContent(logEntry, logLayout);
                 ClassifyLogEntryMetadataProperties(logEntry, logLayout);
-                ClassifyLogEntryContentProperties(logEntry, logLayout, out bool errorFound);
-                if (errorFound) Interlocked.Increment(ref logCollection.ErrorCount);
+                ClassifyLogEntryContentProperties(logEntry, logLayout);
+                if (logEntry.IsErrorLogEntry) Interlocked.Increment(ref logCollection.ErrorCount);
             });
         }
 
@@ -182,10 +182,8 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="logEntry">The log entry to classify content properties for.</param>
         /// <param name="logLayout">The layout defining content properties and their criteria.</param>
-        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout, out bool errorFound)
+        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout)
         {
-            errorFound = false;
-
             // Skip log entries that already have content properties classified.
             if (logLayout.LogMetadataProperties == null || logEntry.LogContentProperties != null) return;
 
@@ -204,7 +202,7 @@ namespace LogScraper.Log
                     if (value != null)
                     {
                         logEntry.LogContentProperties[logContentProperty] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
-                        if (logContentProperty.IsErrorProperty) errorFound = true;
+                        if (logContentProperty.IsErrorProperty) logEntry.IsErrorLogEntry = true;
                         break; // Exit the loop after finding a valid value.
                     }
                 }

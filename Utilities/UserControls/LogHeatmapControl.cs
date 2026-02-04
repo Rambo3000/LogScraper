@@ -12,19 +12,27 @@ namespace LogScraper.Utilities.UserControls
     {
         private List<LogEntry> allLogEntries = new List<LogEntry>();
         private Dictionary<DateTime, List<LogEntry>> buckets = new Dictionary<DateTime, List<LogEntry>>();
+        private List<LogEntry> errorLogEntries = new List<LogEntry>();
         private TimeSpan currentBucketSize;
         private DateTime minimumTimestamp;
         private DateTime maximumTimestamp;
         private double maximumRawValue;
         private int hoveredBucketIndex = -1;
+        private int hoveredErrorIndex = -1;
+        private DateTime? currentScrollPosition = null;
         private const double SCALE_POWER = 0.4;
         private const int MINIMUM_BUCKET_COUNT = 10;
+        private const int ERROR_MARKER_SIZE = 8;
 
         private static readonly Color BAR_COLOR = Color.FromArgb(70, 130, 180);
         private static readonly Color BAR_HOVER_COLOR = Color.FromArgb(100, 160, 210);
         private static readonly Color LABEL_COLOR = Color.LightGray;
+        private static readonly Color SCROLL_INDICATOR_COLOR = Color.FromArgb(100, 128, 128, 128);
+        private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
+        private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
 
         public event EventHandler<LogEntry> HeatmapCellClicked;
+        public event EventHandler<LogEntry> ErrorMarkerClicked;
 
         public LogHeatmapControl()
         {
@@ -47,6 +55,7 @@ namespace LogScraper.Utilities.UserControls
             {
                 allLogEntries.Clear();
                 buckets.Clear();
+                errorLogEntries.Clear();
                 this.Invalidate();
                 return;
             }
@@ -79,6 +88,20 @@ namespace LogScraper.Utilities.UserControls
                 RecalculateBuckets();
             }
 
+            errorLogEntries = allLogEntries.Where(entry => entry.IsErrorLogEntry).ToList();
+
+            this.Invalidate();
+        }
+
+        public void SetScrollPosition(DateTime timestamp)
+        {
+            currentScrollPosition = timestamp;
+            this.Invalidate();
+        }
+
+        public void ClearScrollPosition()
+        {
+            currentScrollPosition = null;
             this.Invalidate();
         }
 
@@ -174,6 +197,21 @@ namespace LogScraper.Utilities.UserControls
             return bucketStart.Add(TimeSpan.FromSeconds(bucketIndex * bucketSize.TotalSeconds));
         }
 
+        private float GetXPositionForTimestamp(DateTime timestamp)
+        {
+            if (allLogEntries.Count == 0)
+                return 0;
+
+            if (timestamp < minimumTimestamp || timestamp > maximumTimestamp)
+                return -1;
+
+            TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
+            TimeSpan offset = timestamp - minimumTimestamp;
+
+            double percentage = offset.TotalSeconds / totalSpan.TotalSeconds;
+            return (float)(percentage * this.Width);
+        }
+
         private void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
@@ -218,9 +256,59 @@ namespace LogScraper.Utilities.UserControls
 
             DrawTimeLabels(graphics);
 
+            DrawErrorMarkers(graphics, drawableHeight);
+
+            if (currentScrollPosition.HasValue)
+            {
+                DrawScrollIndicator(graphics, drawableHeight);
+            }
+
             if (hoveredBucketIndex >= 0 && hoveredBucketIndex < bucketCount)
             {
                 DrawTooltip(graphics, sortedBucketKeys[hoveredBucketIndex], totalBarWidth);
+            }
+            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
+            {
+                DrawErrorTooltip(graphics, errorLogEntries[hoveredErrorIndex]);
+            }
+        }
+
+        private void DrawErrorMarkers(Graphics graphics, int drawableHeight)
+        {
+            for (int i = 0; i < errorLogEntries.Count; i++)
+            {
+                LogEntry errorEntry = errorLogEntries[i];
+                float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
+
+                if (xPosition < 0)
+                    continue;
+
+                Color markerColor = (i == hoveredErrorIndex) ? ERROR_MARKER_HOVER_COLOR : ERROR_MARKER_COLOR;
+
+                float markerX = xPosition - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - ERROR_MARKER_SIZE;
+
+                using (SolidBrush brush = new SolidBrush(markerColor))
+                {
+                    graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
+                }
+            }
+        }
+
+        private void DrawScrollIndicator(Graphics graphics, int drawableHeight)
+        {
+            if (allLogEntries.Count == 0)
+                return;
+
+            DateTime scrollTime = currentScrollPosition.Value;
+            float xPosition = GetXPositionForTimestamp(scrollTime);
+
+            if (xPosition < 0)
+                return;
+
+            using (Pen pen = new Pen(SCROLL_INDICATOR_COLOR, 2))
+            {
+                graphics.DrawLine(pen, xPosition, 0, xPosition, drawableHeight);
             }
         }
 
@@ -260,8 +348,8 @@ namespace LogScraper.Utilities.UserControls
             {
                 SizeF textSize = graphics.MeasureString(tooltipText, font);
 
-                float tooltipWidth = textSize.Width + 2;
-                float tooltipHeight = textSize.Height;
+                float tooltipWidth = textSize.Width + 16;
+                float tooltipHeight = textSize.Height + 4;
 
                 float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
                 float tooltipY = 5;
@@ -271,7 +359,7 @@ namespace LogScraper.Utilities.UserControls
                 if (tooltipX + tooltipWidth > this.Width - 5)
                     tooltipX = this.Width - tooltipWidth - 5;
 
-                using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(125, 50, 50, 50)))
+                using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(240, 50, 50, 50)))
                 using (Pen borderPen = new Pen(Color.FromArgb(100, 100, 100), 1))
                 {
                     graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
@@ -280,7 +368,41 @@ namespace LogScraper.Utilities.UserControls
 
                 using (SolidBrush textBrush = new SolidBrush(Color.White))
                 {
-                    graphics.DrawString(tooltipText, font, textBrush, tooltipX, tooltipY + 1);
+                    graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
+                }
+            }
+        }
+
+        private void DrawErrorTooltip(Graphics graphics, LogEntry errorEntry)
+        {
+            string tooltipText = $"Error at {errorEntry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
+
+            using (Font font = new Font("Segoe UI", 9))
+            {
+                SizeF textSize = graphics.MeasureString(tooltipText, font);
+
+                float tooltipWidth = textSize.Width + 16;
+                float tooltipHeight = textSize.Height + 4;
+
+                float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
+                float tooltipX = xPosition - (tooltipWidth / 2);
+                float tooltipY = 5;
+
+                if (tooltipX < 5)
+                    tooltipX = 5;
+                if (tooltipX + tooltipWidth > this.Width - 5)
+                    tooltipX = this.Width - tooltipWidth - 5;
+
+                using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(240, 80, 20, 20)))
+                using (Pen borderPen = new Pen(ERROR_MARKER_COLOR, 1))
+                {
+                    graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+                    graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+                }
+
+                using (SolidBrush textBrush = new SolidBrush(Color.White))
+                {
+                    graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
                 }
             }
         }
@@ -294,33 +416,62 @@ namespace LogScraper.Utilities.UserControls
                 return;
             }
 
-            int drawableWidth = this.Width;
+            bool cursorChanged = false;
 
-            List<DateTime> sortedBucketKeys = buckets.Keys.OrderBy(key => key).ToList();
-            int bucketCount = sortedBucketKeys.Count;
-            float barWidth = (float)drawableWidth / bucketCount;
+            int newHoveredErrorIndex = GetErrorMarkerIndexAtPosition(e.X, e.Y);
 
-            int newHoveredIndex = (int)(e.X / barWidth);
-
-            if (newHoveredIndex >= 0 && newHoveredIndex < bucketCount)
+            if (newHoveredErrorIndex != -1)
             {
-                DateTime bucketKey = sortedBucketKeys[newHoveredIndex];
-                int entryCount = buckets[bucketKey].Count;
-
-                bool hasEntries = entryCount > 0;
-
-                if (newHoveredIndex != hoveredBucketIndex)
+                if (newHoveredErrorIndex != hoveredErrorIndex)
                 {
-                    hoveredBucketIndex = newHoveredIndex;
+                    hoveredErrorIndex = newHoveredErrorIndex;
+                    hoveredBucketIndex = -1;
                     this.Invalidate();
                 }
 
-                if (hasEntries && this.Cursor != Cursors.Hand)
+                if (this.Cursor != Cursors.Hand)
                     this.Cursor = Cursors.Hand;
-                else if (!hasEntries && this.Cursor != Cursors.Default)
-                    this.Cursor = Cursors.Default;
+
+                cursorChanged = true;
             }
             else
+            {
+                if (hoveredErrorIndex != -1)
+                {
+                    hoveredErrorIndex = -1;
+                    this.Invalidate();
+                }
+
+                int drawableWidth = this.Width;
+                List<DateTime> sortedBucketKeys = buckets.Keys.OrderBy(key => key).ToList();
+                int bucketCount = sortedBucketKeys.Count;
+                float barWidth = (float)drawableWidth / bucketCount;
+
+                int newHoveredIndex = (int)(e.X / barWidth);
+
+                if (newHoveredIndex >= 0 && newHoveredIndex < bucketCount)
+                {
+                    DateTime bucketKey = sortedBucketKeys[newHoveredIndex];
+                    int entryCount = buckets[bucketKey].Count;
+
+                    bool hasEntries = entryCount > 0;
+
+                    if (newHoveredIndex != hoveredBucketIndex)
+                    {
+                        hoveredBucketIndex = newHoveredIndex;
+                        this.Invalidate();
+                    }
+
+                    if (hasEntries && this.Cursor != Cursors.Hand)
+                        this.Cursor = Cursors.Hand;
+                    else if (!hasEntries && this.Cursor != Cursors.Default)
+                        this.Cursor = Cursors.Default;
+
+                    cursorChanged = true;
+                }
+            }
+
+            if (!cursorChanged)
             {
                 if (hoveredBucketIndex != -1)
                 {
@@ -332,11 +483,41 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
+        private int GetErrorMarkerIndexAtPosition(int mouseX, int mouseY)
+        {
+            int drawableHeight = this.Height;
+
+            for (int i = 0; i < errorLogEntries.Count; i++)
+            {
+                LogEntry errorEntry = errorLogEntries[i];
+                float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
+
+                if (xPosition < 0)
+                    continue;
+
+                float markerX = xPosition - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - ERROR_MARKER_SIZE;
+
+                if (mouseX >= markerX && mouseX <= markerX + ERROR_MARKER_SIZE &&
+                    mouseY >= markerY && mouseY <= markerY + ERROR_MARKER_SIZE)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         private void OnMouseLeave(object sender, EventArgs e)
         {
             if (hoveredBucketIndex != -1)
             {
                 hoveredBucketIndex = -1;
+                this.Invalidate();
+            }
+            if (hoveredErrorIndex != -1)
+            {
+                hoveredErrorIndex = -1;
                 this.Invalidate();
             }
             if (this.Cursor != Cursors.Default)
@@ -347,6 +528,15 @@ namespace LogScraper.Utilities.UserControls
         {
             if (buckets.Count == 0 || e.Button != MouseButtons.Left)
                 return;
+
+            int clickedErrorIndex = GetErrorMarkerIndexAtPosition(e.X, e.Y);
+
+            if (clickedErrorIndex != -1)
+            {
+                LogEntry errorEntry = errorLogEntries[clickedErrorIndex];
+                ErrorMarkerClicked?.Invoke(this, errorEntry);
+                return;
+            }
 
             int drawableWidth = this.Width;
 

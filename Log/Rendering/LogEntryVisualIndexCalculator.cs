@@ -154,8 +154,7 @@ namespace LogScraper.Log.Rendering
         /// entry. If no matching entry is found, the method returns false.</remarks>
         /// <param name="visualLineIndex">The zero-based index of the visual line in the rendered log view.</param>
         /// <param name="renderLayout">The layout of rendered log entries, including visible entries and their visual line indices. Cannot be null.</param>
-        /// <param name="visualLineIndexPerVisibleEntry">An array mapping each visible log entry to its starting visual line index. Cannot be null.</param>
-        /// <param name="visibleLogEntries">The list of log entries that are currently visible. Cannot be null.</param>
+        /// <param name="logRenderPosition">When this method returns, contains the log entry render position if found; otherwise, a default instance. This parameter is passed uninitialized.</param>
         /// <returns>true if a matching log entry is found; otherwise, false.</returns>
         public static bool TryGetRenderPosition(int visualLineIndex, LogEntriesRenderMap renderLayout, out LogEntryRenderPosition logRenderPosition)
         {
