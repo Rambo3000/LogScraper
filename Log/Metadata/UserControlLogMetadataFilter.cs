@@ -30,7 +30,7 @@ namespace LogScraper
 
         private LogMetadataPropertyAndValues LogMetadataPropertyAndValues;
         private List<LogMetadataValue> sortedValues = [];
-        private HashSet<string> checkedItems = [];
+        private readonly HashSet<string> checkedItems = [];
         private bool updateInProgress = false;
         private Point savedScrollPosition = Point.Empty;
 
@@ -56,7 +56,7 @@ namespace LogScraper
         /// </summary>
         private void SetupListView()
         {
-            ListView listView = new ListView
+            ListView listView = new()
             {
                 Name = "ListViewItems",
                 View = View.Details,
@@ -207,12 +207,10 @@ namespace LogScraper
             updateInProgress = true;
 
             // Preserve checkbox states across updates
-            HashSet<string> previousCheckedItems = new HashSet<string>(checkedItems);
+            HashSet<string> previousCheckedItems = [.. checkedItems];
 
             // Sort values alphabetically
-            sortedValues = logMetadataPropertyAndValuesNew.LogMetadataValues.Keys
-                .OrderBy(lmv => lmv.Value)
-                .ToList();
+            sortedValues = [.. logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.OrderBy(lmv => lmv.Value)];
 
             // Restore checkbox states
             checkedItems.Clear();
@@ -294,7 +292,7 @@ namespace LogScraper
 
             LogMetadataValue value = sortedValues[e.ItemIndex];
 
-            ListViewItem item = new ListViewItem(value.Value)
+            ListViewItem item = new(value.Value)
             {
                 ForeColor = value.Count == 0 ? Color.Gray : Color.Black,
                 Tag = value
@@ -344,14 +342,11 @@ namespace LogScraper
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
                 // Center checkbox vertically in the row
-                Point checkBoxLocation = new Point(
-                    bounds.Left + checkBoxPadding,
-                    bounds.Top + (bounds.Height - checkBoxSize.Height) / 2
-                );
+                Point checkBoxLocation = new(bounds.Left + checkBoxPadding, bounds.Top + (bounds.Height - checkBoxSize.Height) / 2);
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, checkBoxLocation, state);
 
-                Rectangle textBounds = new Rectangle(
+                Rectangle textBounds = new(
                     checkBoxLocation.X + checkBoxSize.Width + checkBoxPadding,
                     bounds.Top,
                     bounds.Width - checkBoxLocation.X - checkBoxSize.Width - checkBoxPadding,
@@ -370,7 +365,7 @@ namespace LogScraper
 
                 TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
 
-                Rectangle textBounds = new Rectangle(
+                Rectangle textBounds = new(
                     bounds.Left,
                     bounds.Top,
                     bounds.Width - ScaleByDpi(5),
@@ -437,8 +432,7 @@ namespace LogScraper
         /// </summary>
         private void ToggleCheckbox(ListViewItem item, ListView listView)
         {
-            LogMetadataValue value = item.Tag as LogMetadataValue;
-            if (value == null) return;
+            if (item.Tag is not LogMetadataValue value) return;
 
             bool wasChecked = checkedItems.Contains(value.Value);
 
@@ -462,8 +456,7 @@ namespace LogScraper
         /// </summary>
         private void ListView_MouseWheel(object sender, MouseEventArgs e)
         {
-            HandledMouseEventArgs handledArgs = e as HandledMouseEventArgs;
-            if (handledArgs != null)
+            if (e is HandledMouseEventArgs handledArgs)
             {
                 handledArgs.Handled = true;
             }
