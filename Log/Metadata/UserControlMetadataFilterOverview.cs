@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Log.Layout;
 using LogScraper.Utilities.Extensions;
@@ -132,6 +133,7 @@ namespace LogScraper.Log.Metadata
         /// <param name="filterProperties">The list of metadata properties and their values to update.</param>
         public void UpdateFilterControlsCount(List<LogMetadataPropertyAndValues> filterProperties)
         {
+            this.SuspendDrawing();
             foreach (LogMetadataPropertyAndValues filterProperty in filterProperties)
             {
                 if (logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
@@ -139,8 +141,12 @@ namespace LogScraper.Log.Metadata
                     userControlLogFilter.UpdateCountInListView(filterProperty);
                 }
             }
+            this.ResumeDrawing();
         }
-
+        protected override Point ScrollToControl(Control activeControl)
+        {
+            return AutoScrollPosition;
+        }
         /// <summary>
         /// Enables filtering on a specific metadata value for a given metadata property.
         /// </summary>

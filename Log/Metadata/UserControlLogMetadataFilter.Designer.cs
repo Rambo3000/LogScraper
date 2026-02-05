@@ -42,10 +42,10 @@ namespace LogScraper
             FlowLayoutPanelItems.Size = new System.Drawing.Size(274, 200);
             FlowLayoutPanelItems.TabIndex = 2;
             FlowLayoutPanelItems.WrapContents = false;
-            FlowLayoutPanelItems.Resize += FlowLayoutPanelItems_Resize;
             // 
             // UserControlLogMetadataFilter
             // 
+            BackColor = System.Drawing.Color.White;
             Controls.Add(FlowLayoutPanelItems);
             Controls.Add(LblLogFilterDescription);
             Name = "UserControlLogMetadataFilter";
