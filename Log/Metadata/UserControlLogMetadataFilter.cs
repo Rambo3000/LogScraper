@@ -85,9 +85,9 @@ namespace LogScraper
             int itemHeight = TextRenderer.MeasureText("Test", ListViewItems.Font).Height + ScaleByDpi(4);
             int totalHeight = sortedValues.Count * itemHeight;
 
-            // Cap height at 500px to show internal scrollbar for very large lists
-            int maxHeight = 20 * itemHeight;
-            int actualHeight = Math.Min(totalHeight, maxHeight);
+            int maxHeight = 50 * itemHeight;
+            int actualHeight = totalHeight;
+            if (actualHeight > maxHeight) actualHeight = 15 * itemHeight;
 
             int newHeight = ListViewItems.Top + actualHeight + Padding.Bottom;
 
