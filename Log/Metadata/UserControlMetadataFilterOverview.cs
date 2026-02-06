@@ -174,6 +174,7 @@ namespace LogScraper.Log.Metadata
         /// </summary>
         public void Reset()
         {
+            this.SuspendDrawing();
             foreach (Control control in Controls)
             {
                 if (control is UserControlLogMetadataFilter userControlLogMetadataFilter)
@@ -184,10 +185,12 @@ namespace LogScraper.Log.Metadata
 
             Controls.Clear();
             logMetadataPropertyControls.Clear();
+            this.ResumeDrawing();
         }
         private bool isResetFiltersInProgress = false;
         internal void ResetFilters()
         {
+            this.SuspendDrawing();
             isResetFiltersInProgress = true;
             foreach (Control control in Controls)
             {
@@ -198,6 +201,7 @@ namespace LogScraper.Log.Metadata
             }
             isResetFiltersInProgress = false;
             OnFilterChanged(this, EventArgs.Empty);
+            this.ResumeDrawing();
         }
     }
 }

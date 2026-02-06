@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using LogScraper.Log.Metadata;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
@@ -43,57 +42,6 @@ namespace LogScraper
             InitializeComponent();
             Collapsed = false;
             LblLogFilterDescription.Text = description;
-            SetupListView();
-        }
-
-        #endregion
-
-        #region ListView Setup
-
-        /// <summary>
-        /// Creates and configures the virtual ListView that replaces the FlowLayoutPanel.
-        /// Virtual mode ensures only visible items are created, preventing handle exhaustion.
-        /// </summary>
-        private void SetupListView()
-        {
-            ListView listView = new()
-            {
-                Name = "ListViewItems",
-                View = View.Details,
-                FullRowSelect = true,
-                HeaderStyle = ColumnHeaderStyle.None,
-                VirtualMode = true,
-                BorderStyle = BorderStyle.None,
-                Dock = DockStyle.Fill,
-                OwnerDraw = true
-            };
-
-            // Description column (auto-sized) and count column (fixed width, adjusted dynamically)
-            listView.Columns.Add("Description", -2);
-            listView.Columns.Add("Count", 50, HorizontalAlignment.Right);
-
-            // Wire up event handlers
-            listView.RetrieveVirtualItem += ListView_RetrieveVirtualItem;
-            listView.DrawColumnHeader += ListView_DrawColumnHeader;
-            listView.DrawItem += ListView_DrawItem;
-            listView.DrawSubItem += ListView_DrawSubItem;
-            listView.MouseClick += ListView_MouseClick;
-            listView.MouseDown += ListView_MouseDown;
-            listView.Resize += ListView_Resize;
-            listView.MouseWheel += ListView_MouseWheel;
-
-            // Replace the FlowLayoutPanel with the ListView
-            Controls.Remove(FlowLayoutPanelItems);
-            listView.Top = FlowLayoutPanelItems.Top;
-            listView.Left = FlowLayoutPanelItems.Left + 2;
-            listView.Width = FlowLayoutPanelItems.Width - 4;
-            listView.Height = FlowLayoutPanelItems.Height;
-            Controls.Add(listView);
-        }
-
-        private ListView GetListView()
-        {
-            return Controls.Find("ListViewItems", false).FirstOrDefault() as ListView;
         }
 
         #endregion
@@ -115,10 +63,9 @@ namespace LogScraper
             int textHeight = TextRenderer.MeasureText(LblLogFilterDescription.Text, LblLogFilterDescription.Font).Height;
             int desiredTopPosition = textHeight + 1;
 
-            ListView listView = GetListView();
-            if (listView != null && listView.Top != desiredTopPosition)
+            if (ListViewItems.Top != desiredTopPosition)
             {
-                listView.Top = desiredTopPosition;
+                ListViewItems.Top = desiredTopPosition;
             }
         }
 
@@ -128,26 +75,24 @@ namespace LogScraper
         /// </summary>
         private void ResizeVertically()
         {
-            ListView listView = GetListView();
-
             if (sortedValues.Count == 0)
             {
-                listView.Height = 0;
-                Height = listView.Top + Padding.Bottom;
+                ListViewItems.Height = 0;
+                Height = ListViewItems.Top + Padding.Bottom;
                 return;
             }
 
-            int itemHeight = TextRenderer.MeasureText("Test", listView.Font).Height + ScaleByDpi(4);
+            int itemHeight = TextRenderer.MeasureText("Test", ListViewItems.Font).Height + ScaleByDpi(4);
             int totalHeight = sortedValues.Count * itemHeight;
 
             // Cap height at 500px to show internal scrollbar for very large lists
-            int maxHeight = ScaleByDpi(500);
+            int maxHeight = 20 * itemHeight;
             int actualHeight = Math.Min(totalHeight, maxHeight);
 
-            int newHeight = listView.Top + actualHeight + Padding.Bottom;
+            int newHeight = ListViewItems.Top + actualHeight + Padding.Bottom;
 
             if (Height != newHeight) Height = newHeight;
-            if (listView.Height != actualHeight) listView.Height = actualHeight;
+            if (ListViewItems.Height != actualHeight) ListViewItems.Height = actualHeight;
         }
 
         /// <summary>
@@ -158,16 +103,15 @@ namespace LogScraper
         {
             if (sortedValues.Count == 0) return;
 
-            ListView listView = GetListView();
             int maxCount = sortedValues.Max(v => v.Count);
             string maxCountText = maxCount.ToString("N0");
-            int textWidth = TextRenderer.MeasureText(maxCountText, listView.Font).Width;
+            int textWidth = TextRenderer.MeasureText(maxCountText, ListViewItems.Font).Width;
             int newWidth = textWidth + ScaleByDpi(10);
 
-            if (listView.Columns[1].Width != newWidth)
+            if (ListViewItems.Columns.Count > 0 && ListViewItems.Columns[1].Width != newWidth)
             {
-                listView.Columns[1].Width = newWidth;
-                listView.Columns[0].Width = listView.ClientSize.Width - newWidth - 4;
+                ListViewItems.Columns[1].Width = newWidth;
+                ListViewItems.Columns[0].Width = ListViewItems.ClientSize.Width - newWidth - 4;
             }
         }
 
@@ -229,11 +173,8 @@ namespace LogScraper
             LogMetadataPropertyAndValues = logMetadataPropertyAndValuesNew;
 
             // Update ListView
-            ListView listView = GetListView();
-            listView.SuspendDrawing();
-            listView.VirtualListSize = sortedValues.Count;
+            ListViewItems.VirtualListSize = sortedValues.Count;
             AdjustCountColumnWidth();
-            listView.ResumeDrawing();
 
             ResizeVertically();
 
@@ -246,12 +187,10 @@ namespace LogScraper
         /// </summary>
         public void UpdateCountInListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
         {
-            ListView listView = GetListView();
-
             // Save scroll position to restore after update
-            int topItemIndex = listView.TopItem?.Index ?? 0;
+            int topItemIndex = ListViewItems.TopItem?.Index ?? 0;
 
-            listView.BeginUpdate();
+            ListViewItems.BeginUpdate();
 
             // Update counts for existing items
             for (int i = 0; i < sortedValues.Count; i++)
@@ -269,12 +208,12 @@ namespace LogScraper
 
             AdjustCountColumnWidth();
 
-            listView.EndUpdate();
+            ListViewItems.EndUpdate();
 
             // Restore scroll position
-            if (topItemIndex < listView.VirtualListSize && listView.VirtualListSize > 0)
+            if (topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)
             {
-                listView.EnsureVisible(topItemIndex);
+                ListViewItems.EnsureVisible(topItemIndex);
             }
         }
 
@@ -537,10 +476,7 @@ namespace LogScraper
                 checkedItems.Remove(value);
             }
 
-            ListView listView = GetListView();
-            listView.SuspendDrawing();
-            listView.Invalidate();
-            listView.ResumeDrawing();
+            ListViewItems.Invalidate();
 
             OnFilterChanged(EventArgs.Empty);
         }
@@ -552,10 +488,7 @@ namespace LogScraper
         {
             checkedItems.Clear();
 
-            ListView listView = GetListView();
-            listView.SuspendDrawing();
-            listView.Invalidate();
-            listView.ResumeDrawing();
+            ListViewItems.Invalidate();
 
             OnFilterChanged(EventArgs.Empty);
         }

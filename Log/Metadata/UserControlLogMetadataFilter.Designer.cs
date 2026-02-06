@@ -1,4 +1,6 @@
 ﻿using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ListView = System.Windows.Forms.ListView;
 
 namespace LogScraper
 {
@@ -6,7 +8,7 @@ namespace LogScraper
     {
         private System.ComponentModel.IContainer components = null;
         private Label LblLogFilterDescription;
-        private FlowLayoutPanel FlowLayoutPanelItems;
+        private ListView ListViewItems;
 
         protected override void Dispose(bool disposing)
         {
@@ -20,7 +22,7 @@ namespace LogScraper
         private void InitializeComponent()
         {
             LblLogFilterDescription = new Label();
-            FlowLayoutPanelItems = new FlowLayoutPanel();
+            ListViewItems = new ListView();
             SuspendLayout();
             // 
             // LblLogFilterDescription
@@ -33,21 +35,37 @@ namespace LogScraper
             LblLogFilterDescription.TabIndex = 0;
             LblLogFilterDescription.Text = "Title";
             // 
-            // FlowLayoutPanelItems
+            // ListViewItems
             // 
-            FlowLayoutPanelItems.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            FlowLayoutPanelItems.FlowDirection = FlowDirection.TopDown;
-            FlowLayoutPanelItems.Location = new System.Drawing.Point(6, 20);
-            FlowLayoutPanelItems.Name = "FlowLayoutPanelItems";
-            FlowLayoutPanelItems.Size = new System.Drawing.Size(274, 200);
-            FlowLayoutPanelItems.TabIndex = 2;
-            FlowLayoutPanelItems.WrapContents = false;
+            ListViewItems.BorderStyle = BorderStyle.None;
+            ListViewItems.Dock = DockStyle.Fill;
+            ListViewItems.FullRowSelect = true;
+            ListViewItems.HeaderStyle = ColumnHeaderStyle.None;
+            ListViewItems.Location = new System.Drawing.Point(0, 0);
+            ListViewItems.Margin = new Padding(0);
+            ListViewItems.Name = "ListViewItems";
+            ListViewItems.OwnerDraw = true;
+            ListViewItems.Size = new System.Drawing.Size(280, 232);
+            ListViewItems.TabIndex = 3;
+            ListViewItems.UseCompatibleStateImageBehavior = false;
+            ListViewItems.View = View.Details;
+            ListViewItems.VirtualMode = true;
+            ListViewItems.Columns.Add("Description", -2);
+            ListViewItems.Columns.Add("Count", 50, HorizontalAlignment.Right);
+            ListViewItems.DrawColumnHeader += ListView_DrawColumnHeader;
+            ListViewItems.DrawItem += ListView_DrawItem;
+            ListViewItems.DrawSubItem += ListView_DrawSubItem;
+            ListViewItems.RetrieveVirtualItem += ListView_RetrieveVirtualItem;
+            ListViewItems.MouseClick += ListView_MouseClick;
+            ListViewItems.MouseDown += ListView_MouseDown;
+            ListViewItems.MouseWheel += ListView_MouseWheel;
+            ListViewItems.Resize += ListView_Resize;
             // 
             // UserControlLogMetadataFilter
             // 
             BackColor = System.Drawing.Color.White;
-            Controls.Add(FlowLayoutPanelItems);
             Controls.Add(LblLogFilterDescription);
+            Controls.Add(ListViewItems);
             Name = "UserControlLogMetadataFilter";
             Size = new System.Drawing.Size(280, 232);
             ResumeLayout(false);
