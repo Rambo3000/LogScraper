@@ -10,9 +10,9 @@ namespace LogScraper.Utilities.UserControls
 {
     public partial class LogTimeLineControl : UserControl
     {
-        private List<LogEntry> allLogEntries = new List<LogEntry>();
-        private Dictionary<DateTime, List<LogEntry>> buckets = new Dictionary<DateTime, List<LogEntry>>();
-        private List<LogEntry> errorLogEntries = new List<LogEntry>();
+        private List<LogEntry> allLogEntries = [];
+        private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
+        private List<LogEntry> errorLogEntries = [];
         private TimeSpan currentBucketSize;
         private DateTime minimumTimestamp;
         private DateTime maximumTimestamp;
@@ -65,7 +65,7 @@ namespace LogScraper.Utilities.UserControls
             if (allLogEntries.Count > 0 && entries.Count > allLogEntries.Count)
             {
                 LogEntry currentFirst = allLogEntries[0];
-                LogEntry currentLast = allLogEntries[allLogEntries.Count - 1];
+                LogEntry currentLast = allLogEntries[^1];
 
                 LogEntry newFirst = entries[0];
                 LogEntry newLast = entries[allLogEntries.Count - 1];
@@ -78,17 +78,17 @@ namespace LogScraper.Utilities.UserControls
 
             if (isAppend)
             {
-                List<LogEntry> newEntries = entries.Skip(allLogEntries.Count).ToList();
+                List<LogEntry> newEntries = [.. entries.Skip(allLogEntries.Count)];
                 allLogEntries.AddRange(newEntries);
                 RecalculateBuckets();
             }
             else
             {
-                allLogEntries = new List<LogEntry>(entries);
+                allLogEntries = [.. entries];
                 RecalculateBuckets();
             }
 
-            errorLogEntries = allLogEntries.Where(entry => entry.IsErrorLogEntry).ToList();
+            errorLogEntries = [.. allLogEntries.Where(entry => entry.IsErrorLogEntry)];
 
             this.Invalidate();
         }
@@ -113,7 +113,7 @@ namespace LogScraper.Utilities.UserControls
                 return;
 
             minimumTimestamp = allLogEntries[0].TimeStamp;
-            maximumTimestamp = allLogEntries[allLogEntries.Count - 1].TimeStamp;
+            maximumTimestamp = allLogEntries[^1].TimeStamp;
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
 
@@ -131,7 +131,7 @@ namespace LogScraper.Utilities.UserControls
             DateTime currentBucket = bucketStart;
             while (currentBucket < bucketEnd)
             {
-                buckets[currentBucket] = new List<LogEntry>();
+                buckets[currentBucket] = [];
                 currentBucket = currentBucket.Add(currentBucketSize);
             }
 
@@ -139,8 +139,8 @@ namespace LogScraper.Utilities.UserControls
             {
                 DateTime bucketKey = GetBucketKeyForTimestamp(entry.TimeStamp, bucketStart, currentBucketSize);
 
-                if (buckets.ContainsKey(bucketKey))
-                    buckets[bucketKey].Add(entry);
+                if (buckets.TryGetValue(bucketKey, out List<LogEntry> value))
+                    value.Add(entry);
             }
 
             if (buckets.Count > 0)
@@ -151,12 +151,12 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        private TimeSpan CalculateOptimalBucketSize(TimeSpan totalSpan, int desiredBuckets)
+        private static TimeSpan CalculateOptimalBucketSize(TimeSpan totalSpan, int desiredBuckets)
         {
             double secondsPerBucket = totalSpan.TotalSeconds / desiredBuckets;
 
-            TimeSpan[] niceIntervals = new[]
-            {
+            TimeSpan[] niceIntervals =
+            [
             TimeSpan.FromSeconds(1),
             TimeSpan.FromSeconds(5),
             TimeSpan.FromSeconds(10),
@@ -171,7 +171,7 @@ namespace LogScraper.Utilities.UserControls
             TimeSpan.FromDays(1),
             TimeSpan.FromDays(7),
             TimeSpan.FromDays(30)
-        };
+        ];
 
             foreach (TimeSpan interval in niceIntervals)
             {
@@ -182,7 +182,7 @@ namespace LogScraper.Utilities.UserControls
             return TimeSpan.FromDays(30);
         }
 
-        private DateTime RoundDownToNearestBucket(DateTime timestamp, TimeSpan bucketSize)
+        private static DateTime RoundDownToNearestBucket(DateTime timestamp, TimeSpan bucketSize)
         {
             long ticks = timestamp.Ticks;
             long bucketTicks = bucketSize.Ticks;
@@ -190,7 +190,7 @@ namespace LogScraper.Utilities.UserControls
             return new DateTime(roundedTicks);
         }
 
-        private DateTime GetBucketKeyForTimestamp(DateTime timestamp, DateTime bucketStart, TimeSpan bucketSize)
+        private static DateTime GetBucketKeyForTimestamp(DateTime timestamp, DateTime bucketStart, TimeSpan bucketSize)
         {
             TimeSpan offset = timestamp - bucketStart;
             long bucketIndex = (long)(offset.TotalSeconds / bucketSize.TotalSeconds);
@@ -227,7 +227,7 @@ namespace LogScraper.Utilities.UserControls
             if (drawableWidth <= 0 || drawableHeight <= 0)
                 return;
 
-            List<DateTime> sortedBucketKeys = buckets.Keys.OrderBy(key => key).ToList();
+            List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)drawableWidth / bucketCount;
             float barWidth = totalBarWidth - 1;
@@ -247,10 +247,8 @@ namespace LogScraper.Utilities.UserControls
 
                     Color barColor = (i == hoveredBucketIndex) ? BAR_HOVER_COLOR : BAR_COLOR;
 
-                    using (SolidBrush brush = new SolidBrush(barColor))
-                    {
-                        graphics.FillRectangle(brush, x, y, barWidth, barHeight);
-                    }
+                    using SolidBrush brush = new(barColor);
+                    graphics.FillRectangle(brush, x, y, barWidth, barHeight);
                 }
             }
 
@@ -288,10 +286,8 @@ namespace LogScraper.Utilities.UserControls
                 float markerX = xPosition - (ERROR_MARKER_SIZE / 2);
                 float markerY = drawableHeight - ERROR_MARKER_SIZE;
 
-                using (SolidBrush brush = new SolidBrush(markerColor))
-                {
-                    graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
-                }
+                using SolidBrush brush = new(markerColor);
+                graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
             }
         }
 
@@ -306,25 +302,21 @@ namespace LogScraper.Utilities.UserControls
             if (xPosition < 0)
                 return;
 
-            using (Pen pen = new Pen(SCROLL_INDICATOR_COLOR, 2))
-            {
-                graphics.DrawLine(pen, xPosition, 0, xPosition, drawableHeight);
-            }
+            using Pen pen = new(SCROLL_INDICATOR_COLOR, 2);
+            graphics.DrawLine(pen, xPosition, 0, xPosition, drawableHeight);
         }
 
         private void DrawTimeLabels(Graphics graphics)
         {
-            using (Font font = new Font("Segoe UI", 8))
-            using (SolidBrush brush = new SolidBrush(LABEL_COLOR))
-            {
-                string startTime = minimumTimestamp.ToString("HH:mm");
-                string endTime = maximumTimestamp.ToString("HH:mm");
+            using Font font = new("Segoe UI", 8);
+            using SolidBrush brush = new(LABEL_COLOR);
+            string startTime = minimumTimestamp.ToString("HH:mm");
+            string endTime = maximumTimestamp.ToString("HH:mm");
 
-                graphics.DrawString(startTime, font, brush, 5, 5);
+            graphics.DrawString(startTime, font, brush, 5, 5);
 
-                SizeF endTimeSize = graphics.MeasureString(endTime, font);
-                graphics.DrawString(endTime, font, brush, this.Width - endTimeSize.Width - 5, 5);
-            }
+            SizeF endTimeSize = graphics.MeasureString(endTime, font);
+            graphics.DrawString(endTime, font, brush, this.Width - endTimeSize.Width - 5, 5);
         }
 
         private void DrawTooltip(Graphics graphics, DateTime bucketKey, float barWidth)
@@ -344,67 +336,59 @@ namespace LogScraper.Utilities.UserControls
                 tooltipText = $"{entryCount} {eventText} at {firstEntry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
             }
 
-            using (Font font = new Font("Segoe UI", 9))
+            using Font font = new("Segoe UI", 9);
+            SizeF textSize = graphics.MeasureString(tooltipText, font);
+
+            float tooltipWidth = textSize.Width + 16;
+            float tooltipHeight = textSize.Height + 4;
+
+            float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
+            float tooltipY = 5;
+
+            if (tooltipX < 5)
+                tooltipX = 5;
+            if (tooltipX + tooltipWidth > this.Width - 5)
+                tooltipX = this.Width - tooltipWidth - 5;
+
+            using (SolidBrush backgroundBrush = new(Color.FromArgb(240, 50, 50, 50)))
+            using (Pen borderPen = new(Color.FromArgb(100, 100, 100), 1))
             {
-                SizeF textSize = graphics.MeasureString(tooltipText, font);
-
-                float tooltipWidth = textSize.Width + 16;
-                float tooltipHeight = textSize.Height + 4;
-
-                float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
-                float tooltipY = 5;
-
-                if (tooltipX < 5)
-                    tooltipX = 5;
-                if (tooltipX + tooltipWidth > this.Width - 5)
-                    tooltipX = this.Width - tooltipWidth - 5;
-
-                using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(240, 50, 50, 50)))
-                using (Pen borderPen = new Pen(Color.FromArgb(100, 100, 100), 1))
-                {
-                    graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                    graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                }
-
-                using (SolidBrush textBrush = new SolidBrush(Color.White))
-                {
-                    graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
-                }
+                graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+                graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
             }
+
+            using SolidBrush textBrush = new(Color.White);
+            graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
         }
 
         private void DrawErrorTooltip(Graphics graphics, LogEntry errorEntry)
         {
             string tooltipText = $"Error at {errorEntry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
 
-            using (Font font = new Font("Segoe UI", 9))
+            using Font font = new("Segoe UI", 9);
+            SizeF textSize = graphics.MeasureString(tooltipText, font);
+
+            float tooltipWidth = textSize.Width + 16;
+            float tooltipHeight = textSize.Height + 4;
+
+            float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
+            float tooltipX = xPosition - (tooltipWidth / 2);
+            float tooltipY = 5;
+
+            if (tooltipX < 5)
+                tooltipX = 5;
+            if (tooltipX + tooltipWidth > this.Width - 5)
+                tooltipX = this.Width - tooltipWidth - 5;
+
+            using (SolidBrush backgroundBrush = new(Color.FromArgb(240, 80, 20, 20)))
+            using (Pen borderPen = new(ERROR_MARKER_COLOR, 1))
             {
-                SizeF textSize = graphics.MeasureString(tooltipText, font);
-
-                float tooltipWidth = textSize.Width + 16;
-                float tooltipHeight = textSize.Height + 4;
-
-                float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
-                float tooltipX = xPosition - (tooltipWidth / 2);
-                float tooltipY = 5;
-
-                if (tooltipX < 5)
-                    tooltipX = 5;
-                if (tooltipX + tooltipWidth > this.Width - 5)
-                    tooltipX = this.Width - tooltipWidth - 5;
-
-                using (SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(240, 80, 20, 20)))
-                using (Pen borderPen = new Pen(ERROR_MARKER_COLOR, 1))
-                {
-                    graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                    graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
-                }
-
-                using (SolidBrush textBrush = new SolidBrush(Color.White))
-                {
-                    graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
-                }
+                graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
+                graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
             }
+
+            using SolidBrush textBrush = new(Color.White);
+            graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
@@ -443,7 +427,7 @@ namespace LogScraper.Utilities.UserControls
                 }
 
                 int drawableWidth = this.Width;
-                List<DateTime> sortedBucketKeys = buckets.Keys.OrderBy(key => key).ToList();
+                List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
                 int bucketCount = sortedBucketKeys.Count;
                 float barWidth = (float)drawableWidth / bucketCount;
 
@@ -540,7 +524,7 @@ namespace LogScraper.Utilities.UserControls
 
             int drawableWidth = this.Width;
 
-            List<DateTime> sortedBucketKeys = buckets.Keys.OrderBy(key => key).ToList();
+            List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float barWidth = (float)drawableWidth / bucketCount;
 
