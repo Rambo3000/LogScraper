@@ -136,6 +136,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 _clusters.Remove(cluster);
             }
+            LstClusters_SelectedIndexChanged(sender, e);
             UpdateButtons();
         }
 
@@ -215,6 +216,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 {
                     cluster.Namespaces = [.. _namespaces];
                 }
+                LstNamespaces_SelectedIndexChanged(sender, e);
             }
             UpdateButtons();
         }
@@ -399,7 +401,7 @@ namespace LogScraper.LogProviders.Kubernetes
             if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
 
             KubernetesCluster newCluster = selected.Copy();
-            newCluster.Description = newCluster.Description + " (kopie)";
+            newCluster.Description += " (kopie)";
 
             _namespaces = [.. newCluster.Namespaces];
             _clusters.Add(newCluster);

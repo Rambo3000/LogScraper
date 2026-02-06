@@ -131,6 +131,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 _instances.Remove(instance);
             }
+            LstUrls_SelectedIndexChanged(sender, e);
             UpdateButtons();
         }
 
@@ -289,10 +290,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstUrls.SelectedItem is RuntimeInstance selected)
             {
-                if (selected.HttpAuthenticationSettings != null)
-                {
-                    selected.HttpAuthenticationSettings.LoginPageUrl = TxtLoginPageUrl.Text;
-                }
+                selected.HttpAuthenticationSettings?.LoginPageUrl = TxtLoginPageUrl.Text;
             }
         }
 
@@ -302,10 +300,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstUrls.SelectedItem is RuntimeInstance selected)
             {
-                if (selected.HttpAuthenticationSettings != null)
-                {
-                    selected.HttpAuthenticationSettings.UserFieldName = TxtUserFieldName.Text;
-                }
+                selected.HttpAuthenticationSettings?.UserFieldName = TxtUserFieldName.Text;
             }
         }
 
@@ -315,10 +310,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstUrls.SelectedItem is RuntimeInstance selected)
             {
-                if (selected.HttpAuthenticationSettings != null)
-                {
-                    selected.HttpAuthenticationSettings.PasswordFieldName = TxtPasswordFieldName.Text;
-                }
+                selected.HttpAuthenticationSettings?.PasswordFieldName = TxtPasswordFieldName.Text;
             }
         }
 
@@ -328,10 +320,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
             if (LstUrls.SelectedItem is RuntimeInstance selected)
             {
-                if (selected.HttpAuthenticationSettings != null)
-                {
-                    selected.HttpAuthenticationSettings.CsrfFieldName = TxtCsrfFieldName.Text;
-                }
+                selected.HttpAuthenticationSettings?.CsrfFieldName = TxtCsrfFieldName.Text;
             }
         }
 

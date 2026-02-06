@@ -174,6 +174,7 @@ namespace LogScraper.Log
         private void BtnRemoveLayout_Click(object sender, EventArgs e)
         {
             ButtonRemove(LstLayouts, _layouts);
+            LstLogLayouts_SelectedIndexChanged(this, EventArgs.Empty);
         }
 
         private void UpdateButtons()
@@ -213,7 +214,7 @@ namespace LogScraper.Log
         {
             if (listbox.SelectedItem is T selected)
             {
-                bindingList.Remove(selected);
+                bindingList.Remove(selected); 
                 UpdateButtons();
             }
         }
@@ -366,6 +367,7 @@ namespace LogScraper.Log
         private void BtnContentRemove_Click(object sender, EventArgs e)
         {
             ButtonRemove(LstContent, _contentProperties);
+            LstContent_SelectedIndexChanged(this, EventArgs.Empty);
             if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
         }
 
@@ -395,6 +397,7 @@ namespace LogScraper.Log
         private void BtnMetadataRemove_Click(object sender, EventArgs e)
         {
             ButtonRemove(LstMetadata, _metadataProperties);
+            LstMetadata_SelectedIndexChanged(this, EventArgs.Empty);
 
             if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
         }
