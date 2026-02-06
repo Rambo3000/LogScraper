@@ -214,4 +214,8 @@ De tekst na de waarde mag leeg blijven.
 
 Let op! De applicatie kan langzamer worden indien er veel filters zijn opgegeven</value>
   </data>
+  <data name="pictureBox12.ToolTip" xml:space="preserve">
+    <value>Indien ingeschakeld kan dit filter worden gebruikt om snel naar bijbehorende logregels te springen.
+Indien uitgeschakeld wordt het filter alleen gebruikt voor visuele markering (kleuren en inspringen).</value>
+  </data>
 </root>

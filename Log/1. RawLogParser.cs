@@ -96,6 +96,7 @@ namespace LogScraper.Log
             {
                 if (rawLogEntries[i] == string.Empty) continue;
 
+                // Note that the == operator uses ordinal string comparison
                 if (rawLogEntries[i] == lastLogEntry.Entry)
                 {
                     startIndex = i + 1;

@@ -1230,7 +1230,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox ChkContentFilterMarksBegin;
         private System.Windows.Forms.ComboBox CboContentFilterMarksEnd;
         private System.Windows.Forms.PictureBox pictureBox17;
-        private System.Windows.Forms.Label LblContentFilterMarksEnd;
         private System.Windows.Forms.PictureBox pictureBox18;
         private System.Windows.Forms.CheckBox ChkContentPropertyIsError;
         private System.Windows.Forms.CheckBox ChkShowMetadataByDefault;
@@ -1241,7 +1240,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.Button BtnContentTextColor;
         private System.Windows.Forms.CheckBox ChkColorContentPropertyLogEntries;
         private System.Windows.Forms.CheckBox ChkContentBackColorFillLine;
-        private System.Windows.Forms.CheckBox ChkContentPropertyUserCanFilter;
         private System.Windows.Forms.PictureBox pictureBox12;
         private System.Windows.Forms.CheckBox ChkContentPropertyIsNavigationEnabled;
     }
