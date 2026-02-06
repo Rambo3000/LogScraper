@@ -8,7 +8,7 @@ using LogScraper.Log;
 
 namespace LogScraper.Utilities.UserControls
 {
-    public partial class LogHeatmapControl : UserControl
+    public partial class LogTimeLineControl : UserControl
     {
         private List<LogEntry> allLogEntries = new List<LogEntry>();
         private Dictionary<DateTime, List<LogEntry>> buckets = new Dictionary<DateTime, List<LogEntry>>();
@@ -34,7 +34,7 @@ namespace LogScraper.Utilities.UserControls
         public event EventHandler<LogEntry> HeatmapCellClicked;
         public event EventHandler<LogEntry> ErrorMarkerClicked;
 
-        public LogHeatmapControl()
+        public LogTimeLineControl()
         {
             InitializeComponent();
 

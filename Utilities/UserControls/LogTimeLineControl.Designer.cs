@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Utilities.UserControls
 {
-    partial class LogHeatmapControl
+    partial class LogTimeLineControl
     {
         /// <summary> 
         /// Required designer variable.

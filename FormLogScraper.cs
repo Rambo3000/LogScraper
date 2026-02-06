@@ -27,7 +27,7 @@ namespace LogScraper
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
 
-        private readonly LogHeatmapControl logHeatmapControl = new()
+        private readonly LogTimeLineControl logHeatmapControl = new()
         {
             Name = "logHeatmapControl",
             Dock = DockStyle.Fill,
