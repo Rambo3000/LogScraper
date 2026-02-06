@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using LogScraper.Configuration;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
@@ -11,8 +13,9 @@ using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
+using ScintillaNET;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
-using System.ComponentModel;
 
 namespace LogScraper.Utilities.UserControls
 {
@@ -36,6 +39,7 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
             UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
+            ChkTimelineVisible.Checked = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
         private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, System.EventArgs e)
@@ -150,6 +154,9 @@ namespace LogScraper.Utilities.UserControls
 
             // Update caches for the next render cycle
             logEntriesRenderMapCache = postRenderLogEntriesRenderMap;
+
+            //Raise the event that the visible range changed
+            RaiseVisibleRangeChanged(true);
 
             // Resume drawing once the content and scroll position are fully restored
             this.ResumeDrawing();
@@ -376,5 +383,45 @@ namespace LogScraper.Utilities.UserControls
         }
         #endregion
 
+        #region Scroll handling
+        public class VisibleRangeChangedEventArgs(LogEntryRenderPosition topPosition, LogEntryRenderPosition bottomPosition) : EventArgs
+        {
+            public LogEntryRenderPosition TopPosition { get; } = topPosition;
+            public LogEntryRenderPosition BottomPosition { get; } = bottomPosition;
+        }
+        private int lastTopVisibleLine = -1;
+
+        public event EventHandler<VisibleRangeChangedEventArgs> VisibleRangeChanged;
+
+        private void TrackedScintilla_UpdateUI(object sender, UpdateUIEventArgs e)
+        {
+            RaiseVisibleRangeChanged();
+        }
+
+        private void RaiseVisibleRangeChanged(bool force = false)
+        {
+            if (VisibleRangeChanged == null) return;
+
+            int topVisibleLine = TxtLogEntries.FirstVisibleLine;
+
+            if (!force && topVisibleLine == lastTopVisibleLine)
+                return;
+
+            lastTopVisibleLine = topVisibleLine;
+
+            int bottomVisibleLine = Math.Min(topVisibleLine + TxtLogEntries.LinesOnScreen - 1, TxtLogEntries.Lines.Count - 1);
+
+            if (!LogEntryVisualIndexCalculator.TryGetRenderPosition(topVisibleLine, logEntriesRenderMapCache, out LogEntryRenderPosition topPosition)) return;
+
+            if (!LogEntryVisualIndexCalculator.TryGetRenderPosition(bottomVisibleLine, logEntriesRenderMapCache, out LogEntryRenderPosition bottomPosition)) return;
+
+            VisibleRangeChanged?.Invoke(this, new VisibleRangeChangedEventArgs(topPosition, bottomPosition));
+        }
+        #endregion
+
+        private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ChkTimelineVisible.Checked) RaiseVisibleRangeChanged(true);
+        }
     }
 }

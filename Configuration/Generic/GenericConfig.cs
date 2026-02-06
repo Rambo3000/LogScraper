@@ -55,7 +55,12 @@ namespace LogScraper.Configuration.Generic
         /// <summary>
         /// Gets or sets a value indicating whether to automatically toggle the hierarchy when the session filter is applied
         /// </summary>
-        public bool AutoToggleHierarchy { get; set; } = false;
+        public bool AutoToggleHierarchy { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show the timeline by default when opening a log session.
+        /// </summary>
+        public bool ShowTimelineByDefault { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether to check for updates for beta releases.

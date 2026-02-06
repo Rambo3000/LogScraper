@@ -47,6 +47,7 @@ namespace LogScraper.Configuration
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
+            ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
             ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -55,7 +56,7 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
-            ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
+            ChkShowTimeLine = new System.Windows.Forms.CheckBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -84,7 +85,7 @@ namespace LogScraper.Configuration
             GrpExportSettings.Controls.Add(TxtEditorLocation);
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Enabled = false;
-            GrpExportSettings.Location = new System.Drawing.Point(29, 178);
+            GrpExportSettings.Location = new System.Drawing.Point(29, 200);
             GrpExportSettings.Name = "GrpExportSettings";
             GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
@@ -156,7 +157,7 @@ namespace LogScraper.Configuration
             // ChkExportToFile
             // 
             ChkExportToFile.AutoSize = true;
-            ChkExportToFile.Location = new System.Drawing.Point(6, 153);
+            ChkExportToFile.Location = new System.Drawing.Point(6, 175);
             ChkExportToFile.Name = "ChkExportToFile";
             ChkExportToFile.Size = new System.Drawing.Size(241, 19);
             ChkExportToFile.TabIndex = 5;
@@ -213,6 +214,7 @@ namespace LogScraper.Configuration
             // GrpGeneralSettings
             // 
             GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpGeneralSettings.Controls.Add(ChkShowTimeLine);
             GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
             GrpGeneralSettings.Controls.Add(pictureBox3);
             GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
@@ -234,6 +236,16 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
+            // 
+            // ChkIncludePrereleaseUpdates
+            // 
+            ChkIncludePrereleaseUpdates.AutoSize = true;
+            ChkIncludePrereleaseUpdates.Location = new System.Drawing.Point(6, 288);
+            ChkIncludePrereleaseUpdates.Name = "ChkIncludePrereleaseUpdates";
+            ChkIncludePrereleaseUpdates.Size = new System.Drawing.Size(264, 19);
+            ChkIncludePrereleaseUpdates.TabIndex = 41;
+            ChkIncludePrereleaseUpdates.Text = "Controleer ook op beta-updates (prereleases)";
+            ChkIncludePrereleaseUpdates.UseVisualStyleBackColor = true;
             // 
             // pictureBox3
             // 
@@ -314,15 +326,15 @@ namespace LogScraper.Configuration
             PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 326);
             PnlUsedForScalingCompatiblity.TabIndex = 9;
             // 
-            // ChkIncludePrereleaseUpdates
+            // ChkShowTimeLine
             // 
-            ChkIncludePrereleaseUpdates.AutoSize = true;
-            ChkIncludePrereleaseUpdates.Location = new System.Drawing.Point(6, 266);
-            ChkIncludePrereleaseUpdates.Name = "ChkIncludePrereleaseUpdates";
-            ChkIncludePrereleaseUpdates.Size = new System.Drawing.Size(264, 19);
-            ChkIncludePrereleaseUpdates.TabIndex = 41;
-            ChkIncludePrereleaseUpdates.Text = "Controleer ook op beta-updates (prereleases)";
-            ChkIncludePrereleaseUpdates.UseVisualStyleBackColor = true;
+            ChkShowTimeLine.AutoSize = true;
+            ChkShowTimeLine.Location = new System.Drawing.Point(6, 150);
+            ChkShowTimeLine.Name = "ChkShowTimeLine";
+            ChkShowTimeLine.Size = new System.Drawing.Size(223, 19);
+            ChkShowTimeLine.TabIndex = 42;
+            ChkShowTimeLine.Text = "Toon standaard het tijdlijn-histogram";
+            ChkShowTimeLine.UseVisualStyleBackColor = true;
             // 
             // UserControlGenericConfig
             // 
@@ -369,5 +381,6 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Panel PnlUsedForScalingCompatiblity;
         private System.Windows.Forms.CheckBox ChkIncludePrereleaseUpdates;
+        private System.Windows.Forms.CheckBox ChkShowTimeLine;
     }
 }

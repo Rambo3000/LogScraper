@@ -367,6 +367,7 @@
             // splitContainer4
             // 
             splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             splitContainer4.Location = new System.Drawing.Point(0, 0);
             splitContainer4.Margin = new System.Windows.Forms.Padding(0);
             splitContainer4.Name = "splitContainer4";
@@ -377,7 +378,7 @@
             splitContainer4.Panel1.Controls.Add(TxtErrorMessage);
             splitContainer4.Panel1.Controls.Add(UserControlLogEntriesTextBox);
             splitContainer4.Size = new System.Drawing.Size(685, 447);
-            splitContainer4.SplitterDistance = 389;
+            splitContainer4.SplitterDistance = 394;
             splitContainer4.TabIndex = 5;
             // 
             // TxtErrorMessage
@@ -399,7 +400,7 @@
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(685, 389);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(685, 394);
             UserControlLogEntriesTextBox.TabIndex = 38;
             // 
             // splitContainer3
@@ -496,6 +497,7 @@
             // UsrMetadataFilterOverview
             // 
             UsrMetadataFilterOverview.AutoScroll = true;
+            UsrMetadataFilterOverview.BackColor = System.Drawing.Color.White;
             UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 3);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);

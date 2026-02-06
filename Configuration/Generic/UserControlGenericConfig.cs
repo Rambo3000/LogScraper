@@ -20,6 +20,7 @@ namespace LogScraper.Configuration
             CboAutomaticReadTime.SelectedItem = config.AutomaticReadTimeMinutes;
             ChkExportToFile.Checked = config.ExportToFile;
             ChkShowErrorsInBeginAndEndFilters.Checked = config.ShowErrorLinesInBeginAndEndFilters;
+            ChkShowTimeLine.Checked = config.ShowTimelineByDefault;
             ChkAutoToggleHierarchy.Checked = config.AutoToggleHierarchy;
             TxtEditorLocation.Text = config.EditorFileName;
             TxtExportFileName.Text = config.ExportFileName;
@@ -64,6 +65,7 @@ namespace LogScraper.Configuration
                 ExportToFile = ChkExportToFile.Checked,
                 AutoToggleHierarchy = ChkAutoToggleHierarchy.Checked,
                 ShowErrorLinesInBeginAndEndFilters = ChkShowErrorsInBeginAndEndFilters.Checked,
+                ShowTimelineByDefault = ChkShowTimeLine.Checked,
                 AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
                 LogProviderTypeDefault = (LogProviderType)CboLogProviderType.SelectedItem,
                 HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0,

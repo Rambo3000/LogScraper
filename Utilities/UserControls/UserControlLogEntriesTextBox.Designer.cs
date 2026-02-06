@@ -34,8 +34,8 @@
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             PnlViewMode = new System.Windows.Forms.Panel();
-            UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
             ChkTimelineVisible = new System.Windows.Forms.CheckBox();
+            UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
             PnlViewMode.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,6 +50,7 @@
             TxtLogEntries.Size = new System.Drawing.Size(712, 403);
             TxtLogEntries.TabIndents = true;
             TxtLogEntries.TabIndex = 42;
+            TxtLogEntries.UpdateUI += TrackedScintilla_UpdateUI;
             TxtLogEntries.SizeChanged += TxtLogEntries_SizeChanged;
             // 
             // ChkShowNoTree
@@ -106,20 +107,10 @@
             PnlViewMode.Size = new System.Drawing.Size(245, 31);
             PnlViewMode.TabIndex = 46;
             // 
-            // UserControlPostProcessing
-            // 
-            UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            UserControlPostProcessing.Location = new System.Drawing.Point(206, 3);
-            UserControlPostProcessing.Name = "UserControlPostProcessing";
-            UserControlPostProcessing.Size = new System.Drawing.Size(36, 25);
-            UserControlPostProcessing.TabIndex = 47;
-            // 
             // ChkTimelineVisible
             // 
             ChkTimelineVisible.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkTimelineVisible.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkTimelineVisible.Checked = true;
-            ChkTimelineVisible.CheckState = System.Windows.Forms.CheckState.Checked;
             ChkTimelineVisible.Image = (System.Drawing.Image)resources.GetObject("ChkTimelineVisible.Image");
             ChkTimelineVisible.Location = new System.Drawing.Point(175, 3);
             ChkTimelineVisible.Name = "ChkTimelineVisible";
@@ -127,6 +118,15 @@
             ChkTimelineVisible.TabIndex = 48;
             ChkTimelineVisible.Tag = "asd";
             ChkTimelineVisible.UseVisualStyleBackColor = true;
+            ChkTimelineVisible.CheckedChanged += ChkTimelineVisible_CheckedChanged;
+            // 
+            // UserControlPostProcessing
+            // 
+            UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            UserControlPostProcessing.Location = new System.Drawing.Point(206, 3);
+            UserControlPostProcessing.Name = "UserControlPostProcessing";
+            UserControlPostProcessing.Size = new System.Drawing.Size(36, 25);
+            UserControlPostProcessing.TabIndex = 47;
             // 
             // UserControlLogEntriesTextBox
             // 

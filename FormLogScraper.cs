@@ -27,7 +27,7 @@ namespace LogScraper
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
 
-        private readonly LogTimeLineControl logHeatmapControl = new()
+        private readonly LogTimeLineControl logTimelineControl = new()
         {
             Name = "logHeatmapControl",
             Dock = DockStyle.Fill,
@@ -37,9 +37,7 @@ namespace LogScraper
         {
             InitializeComponent();
 
-            splitContainer4.Panel2.Controls.Add(logHeatmapControl);
-            logHeatmapControl.HeatmapCellClicked += LogHeatmapControl_HeatmapCellClicked;
-            logHeatmapControl.ErrorMarkerClicked += LogHeatmapControl_HeatmapCellClicked;
+            splitContainer4.Panel2.Controls.Add(logTimelineControl);
 
             CultureInfo culture = new("nl"); // of "en", "fr", etc.
             Thread.CurrentThread.CurrentUICulture = culture;
@@ -64,6 +62,14 @@ namespace LogScraper
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
             UserControlLogEntriesTextBox.TimeLineVisibilityChanged += ChkTimelineVisible_CheckedChanged;
+            UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
+
+            //Set the default for showing the timeline from the configuration and trigger the event to set the correct state of the timeline and button
+            UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+            ChkTimelineVisible_CheckedChanged(this, EventArgs.Empty);
+
+            logTimelineControl.HeatmapCellClicked += LogHeatmapControl_HeatmapCellClicked;
+            logTimelineControl.ErrorMarkerClicked += LogHeatmapControl_HeatmapCellClicked;
 
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
@@ -72,10 +78,18 @@ namespace LogScraper
             UpdateBtnErase();
         }
 
+        private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
+        {
+            if (UserControlLogEntriesTextBox.IsTimelineVisible)
+            {
+                logTimelineControl.SetVisibleRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
+            }
+        }
+
         private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
         {
             splitContainer4.Panel2Collapsed = !UserControlLogEntriesTextBox.IsTimelineVisible;
-            if (UserControlLogEntriesTextBox.IsTimelineVisible) logHeatmapControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
+            if (UserControlLogEntriesTextBox.IsTimelineVisible && currentLogMetadataFilterResult != null) logTimelineControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
         }
 
         private void LogHeatmapControl_HeatmapCellClicked(object sender, LogEntry e)
@@ -230,7 +244,7 @@ namespace LogScraper
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
-            if (UserControlLogEntriesTextBox.IsTimelineVisible) logHeatmapControl.UpdateLogEntries(visibleLogEntries);
+            if (UserControlLogEntriesTextBox.IsTimelineVisible) logTimelineControl.UpdateLogEntries(visibleLogEntries);
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
         }
         #endregion
@@ -240,6 +254,7 @@ namespace LogScraper
         {
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
+            logTimelineControl.ClearVisibleRange();
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
