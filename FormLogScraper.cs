@@ -484,7 +484,7 @@ namespace LogScraper
             if (ConfigurationManager.LogLayouts != null)
             {
                 cboLogLayout.Items.AddRange([.. ConfigurationManager.LogLayouts]);
-                if (cboLogLayout.Items.Count > 0) cboLogLayout.SelectedIndex = 0;
+                if (cboLogLayout.Items.Count > 0) CboLogProvider_SelectedIndexChanged(this, EventArgs.Empty);
             }
         }
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
@@ -498,6 +498,8 @@ namespace LogScraper
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
+            if (logProviderConfig == null) return;
+
             usrRuntime.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
             usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
             usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
