@@ -35,6 +35,7 @@
             CboLogContentType = new System.Windows.Forms.ComboBox();
             PnlViewMode = new System.Windows.Forms.Panel();
             UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
+            ChkTimelineVisible = new System.Windows.Forms.CheckBox();
             PnlViewMode.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,7 +60,7 @@
             ChkShowNoTree.CheckState = System.Windows.Forms.CheckState.Checked;
             ChkShowNoTree.Enabled = false;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(120, 3);
+            ChkShowNoTree.Location = new System.Drawing.Point(119, 3);
             ChkShowNoTree.Name = "ChkShowNoTree";
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 44;
@@ -72,7 +73,7 @@
             ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(145, 3);
+            ChkShowFlowTree.Location = new System.Drawing.Point(144, 3);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 43;
@@ -85,7 +86,7 @@
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(13, 4);
+            CboLogContentType.Location = new System.Drawing.Point(12, 4);
             CboLogContentType.Name = "CboLogContentType";
             CboLogContentType.Size = new System.Drawing.Size(105, 23);
             CboLogContentType.TabIndex = 45;
@@ -95,22 +96,37 @@
             // 
             PnlViewMode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             PnlViewMode.BackColor = System.Drawing.Color.White;
+            PnlViewMode.Controls.Add(ChkTimelineVisible);
             PnlViewMode.Controls.Add(UserControlPostProcessing);
             PnlViewMode.Controls.Add(CboLogContentType);
             PnlViewMode.Controls.Add(ChkShowFlowTree);
             PnlViewMode.Controls.Add(ChkShowNoTree);
-            PnlViewMode.Location = new System.Drawing.Point(494, 3);
+            PnlViewMode.Location = new System.Drawing.Point(464, 3);
             PnlViewMode.Name = "PnlViewMode";
-            PnlViewMode.Size = new System.Drawing.Size(215, 31);
+            PnlViewMode.Size = new System.Drawing.Size(245, 31);
             PnlViewMode.TabIndex = 46;
             // 
             // UserControlPostProcessing
             // 
             UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            UserControlPostProcessing.Location = new System.Drawing.Point(176, 3);
+            UserControlPostProcessing.Location = new System.Drawing.Point(206, 3);
             UserControlPostProcessing.Name = "UserControlPostProcessing";
             UserControlPostProcessing.Size = new System.Drawing.Size(36, 25);
             UserControlPostProcessing.TabIndex = 47;
+            // 
+            // ChkTimelineVisible
+            // 
+            ChkTimelineVisible.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            ChkTimelineVisible.Appearance = System.Windows.Forms.Appearance.Button;
+            ChkTimelineVisible.Checked = true;
+            ChkTimelineVisible.CheckState = System.Windows.Forms.CheckState.Checked;
+            ChkTimelineVisible.Image = (System.Drawing.Image)resources.GetObject("ChkTimelineVisible.Image");
+            ChkTimelineVisible.Location = new System.Drawing.Point(175, 3);
+            ChkTimelineVisible.Name = "ChkTimelineVisible";
+            ChkTimelineVisible.Size = new System.Drawing.Size(25, 25);
+            ChkTimelineVisible.TabIndex = 48;
+            ChkTimelineVisible.Tag = "asd";
+            ChkTimelineVisible.UseVisualStyleBackColor = true;
             // 
             // UserControlLogEntriesTextBox
             // 
@@ -131,5 +147,6 @@
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Panel PnlViewMode;
         private LogPostProcessors.UserControlPostProcessing UserControlPostProcessing;
+        private System.Windows.Forms.CheckBox ChkTimelineVisible;
     }
 }

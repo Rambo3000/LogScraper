@@ -27,7 +27,7 @@ namespace LogScraper
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
 
-        LogHeatmapControl logHeatmapControl = new()
+        private readonly LogHeatmapControl logHeatmapControl = new()
         {
             Name = "logHeatmapControl",
             Dock = DockStyle.Fill,
@@ -63,12 +63,19 @@ namespace LogScraper
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
+            UserControlLogEntriesTextBox.TimeLineVisibilityChanged += ChkTimelineVisible_CheckedChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            splitContainer4.Panel2Collapsed = !UserControlLogEntriesTextBox.IsTimelineVisible;
+            if (UserControlLogEntriesTextBox.IsTimelineVisible) logHeatmapControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
         }
 
         private void LogHeatmapControl_HeatmapCellClicked(object sender, LogEntry e)
@@ -223,7 +230,7 @@ namespace LogScraper
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
-            logHeatmapControl.UpdateLogEntries(visibleLogEntries);
+            if (UserControlLogEntriesTextBox.IsTimelineVisible) logHeatmapControl.UpdateLogEntries(visibleLogEntries);
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
         }
         #endregion

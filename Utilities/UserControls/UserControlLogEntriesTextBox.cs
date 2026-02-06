@@ -12,6 +12,7 @@ using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
+using System.ComponentModel;
 
 namespace LogScraper.Utilities.UserControls
 {
@@ -301,6 +302,24 @@ namespace LogScraper.Utilities.UserControls
         private void TxtLogEntries_SizeChanged(object sender, System.EventArgs e)
         {
             UpdatePnlViewModePosition();
+        }
+
+        public event EventHandler TimeLineVisibilityChanged
+        {
+            add
+            {
+                ChkTimelineVisible.CheckedChanged += value;
+            }
+            remove
+            {
+                ChkTimelineVisible.CheckedChanged -= value;
+            }
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsTimelineVisible
+        {
+            get => ChkTimelineVisible.Checked;
+            set => ChkTimelineVisible.Checked = value;
         }
         #endregion
 

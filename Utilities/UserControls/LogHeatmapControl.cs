@@ -24,9 +24,9 @@ namespace LogScraper.Utilities.UserControls
         private const int MINIMUM_BUCKET_COUNT = 10;
         private const int ERROR_MARKER_SIZE = 8;
 
-        private static readonly Color BAR_COLOR = Color.FromArgb(70, 130, 180);
+        private static readonly Color BAR_COLOR = Color.LightGray;
         private static readonly Color BAR_HOVER_COLOR = Color.FromArgb(100, 160, 210);
-        private static readonly Color LABEL_COLOR = Color.LightGray;
+        private static readonly Color LABEL_COLOR = Color.FromArgb(225, 225, 225);
         private static readonly Color SCROLL_INDICATOR_COLOR = Color.FromArgb(100, 128, 128, 128);
         private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
