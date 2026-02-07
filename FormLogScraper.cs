@@ -100,6 +100,8 @@ namespace LogScraper
 
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)
         {
+            UserControlContentFilter.ClearSelectedLogEntry();
+            UserControlSearch.ClearSelectedLogEntry();
             UserControlLogEntriesTextBox.SelectLogEntry(e);
         }
 
