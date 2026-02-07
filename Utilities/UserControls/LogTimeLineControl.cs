@@ -510,7 +510,9 @@ namespace LogScraper.Utilities.UserControls
 
             return -1;
         }
-
+        /// <summary>
+        /// Draws time tick marks along the x-axis of the timeline, with labels formatted based on the total time span of the data.
+        /// </summary>
         private void DrawTimeTickMarks(Graphics graphics)
         {
             using Pen tickPen = new(Color.FromArgb(150, 180, 180, 180), 1);
@@ -539,22 +541,24 @@ namespace LogScraper.Utilities.UserControls
                 graphics.DrawString(label, font, brush, labelX, 0);
             }
         }
-
+        /// <summary>
+        /// Formats tick labels based on the total time span of the data, using more granular formats for shorter spans and more general formats for longer spans.
+        /// </summary>
         private static string FormatTickLabelBySpan(DateTime timestamp, TimeSpan totalSpan)
         {
             if (totalSpan.TotalDays >= 2)
-                return timestamp.ToString("MMM-d");
+                return timestamp.ToString("MMM-dd");
             else if (totalSpan.TotalDays >= 1)
-                return timestamp.ToString("d H:mm");
+                return timestamp.ToString("d HH:mm");
             else if (totalSpan.TotalHours >= 1)
-                return timestamp.ToString("H:mm");
+                return timestamp.ToString("HH:mm");
             else if (totalSpan.TotalMinutes >= 1)
-                return timestamp.ToString("m:ss");
+                return timestamp.ToString("H:mm:ss");
             else if (totalSpan.TotalSeconds >= 5)
-                return timestamp.ToString("m:ss");
+                return timestamp.ToString("H:mm:ss");
             else if (totalSpan.TotalSeconds >= 1)
                 return timestamp.ToString("s.ff") + " s";
-            elseved 
+            else
                 return timestamp.ToString("s.fff") + " s";
         }
 

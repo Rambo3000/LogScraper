@@ -26,7 +26,7 @@ namespace LogScraper
     {
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
-
+        List<LogEntry> visibleLogEntries;
         private readonly LogTimeLineControl logTimelineControl = new()
         {
             Name = "logTimelineControl",
@@ -43,7 +43,7 @@ namespace LogScraper
             Thread.CurrentThread.CurrentUICulture = culture;
 
             FormCompactView.Instance.SetFormLogScraper(this);
-
+            
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
             usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
@@ -89,7 +89,7 @@ namespace LogScraper
         private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
         {
             splitContainer4.Panel2Collapsed = !UserControlLogEntriesTextBox.IsTimelineVisible;
-            if (UserControlLogEntriesTextBox.IsTimelineVisible && currentLogMetadataFilterResult != null) logTimelineControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
+            if (UserControlLogEntriesTextBox.IsTimelineVisible && visibleLogEntries != null) logTimelineControl.UpdateLogEntries(visibleLogEntries);
         }
 
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)
@@ -240,7 +240,7 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-            List<LogEntry> visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
+            visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
