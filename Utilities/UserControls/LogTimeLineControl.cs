@@ -226,6 +226,9 @@ namespace LogScraper.Utilities.UserControls
 
             TimeSpan[] niceIntervals =
             [
+                TimeSpan.FromMilliseconds(10),
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(500),
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromSeconds(10),
@@ -346,8 +349,7 @@ namespace LogScraper.Utilities.UserControls
                 }
             }
 
-            // Draw time labels
-            DrawTimeLabels(graphics);
+            DrawTimeTickMarks(graphics);
 
             // Draw error markers at the top of bars
             DrawErrorMarkers(graphics, drawableHeight);
@@ -370,7 +372,7 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>
-        /// Draws error markers at the top line of their corresponding histogram bars.
+        /// Draws error markers at their exact timestamp positions on top of histogram bars.
         /// </summary>
         private void DrawErrorMarkers(Graphics graphics, int drawableHeight)
         {
@@ -393,23 +395,15 @@ namespace LogScraper.Utilities.UserControls
 
                 DateTime bucketKey = sortedBucketKeys[bucketIndex];
 
-                // Get the bar height for this bucket
-                int entryCount = buckets[bucketKey].Count;
-                float barY = drawableHeight; // Default to bottom if no entries
-
-                if (entryCount > 0)
-                {
-                    double scaledValue = Math.Pow(entryCount, SCALE_POWER);
-                    float barHeight = (float)((scaledValue / maximumRawValue) * drawableHeight);
-                    barY = drawableHeight - barHeight;
-                }
+                // Calculate exact x position within the bucket
+                float bucketStartX = bucketIndex * totalBarWidth;
+                double fractionWithinBucket = (errorEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
+                float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
 
                 Color markerColor = (i == hoveredErrorIndex) ? ERROR_MARKER_HOVER_COLOR : ERROR_MARKER_COLOR;
 
-                // Calculate x position at center of the bucket
-                float bucketCenterX = (bucketIndex * totalBarWidth) + (totalBarWidth / 2);
-                float markerX = bucketCenterX - (ERROR_MARKER_SIZE / 2);
-                float markerY = barY - ERROR_MARKER_SIZE; // Position at top of bar
+                float markerX = exactX - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - (ERROR_MARKER_SIZE + 2);
 
                 using SolidBrush brush = new(markerColor);
                 graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
@@ -517,21 +511,51 @@ namespace LogScraper.Utilities.UserControls
             return -1;
         }
 
-        /// <summary>
-        /// Draws time labels at the start and end of the timeline.
-        /// </summary>
-        private void DrawTimeLabels(Graphics graphics)
+        private void DrawTimeTickMarks(Graphics graphics)
         {
-            using Font font = new("Segoe UI", 8);
-            using SolidBrush brush = new(LABEL_COLOR);
+            using Pen tickPen = new(Color.FromArgb(150, 180, 180, 180), 1);
+            using Font font = new("Segoe UI", 7);
+            using SolidBrush brush = new(Color.FromArgb(120, 120, 120));
+            TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
 
-            string startTime = minimumTimestamp.ToString("HH:mm");
-            string endTime = maximumTimestamp.ToString("HH:mm");
+            int tickCount = Math.Min(10, buckets.Count / 5);
+            if (tickCount < 3) tickCount = 3;
 
-            graphics.DrawString(startTime, font, brush, 0, 0);
+            for (int i = 0; i <= tickCount; i++)
+            {
+                float x = (float)i / tickCount * this.Width;
 
-            SizeF endTimeSize = graphics.MeasureString(endTime, font);
-            graphics.DrawString(endTime, font, brush, this.Width - endTimeSize.Width - 1, 1);
+                TimeSpan offset = TimeSpan.FromSeconds(totalSpan.TotalSeconds * i / tickCount);
+                DateTime tickTime = minimumTimestamp.Add(offset);
+
+                string label = FormatTickLabelBySpan(tickTime, totalSpan);
+                SizeF labelSize = graphics.MeasureString(label, font);
+
+                float labelX = x - labelSize.Width / 2;
+
+                if (i == 0) labelX = 0;
+                else if (i == tickCount) labelX = this.Width - labelSize.Width;
+
+                graphics.DrawString(label, font, brush, labelX, 0);
+            }
+        }
+
+        private static string FormatTickLabelBySpan(DateTime timestamp, TimeSpan totalSpan)
+        {
+            if (totalSpan.TotalDays >= 2)
+                return timestamp.ToString("MMM-d");
+            else if (totalSpan.TotalDays >= 1)
+                return timestamp.ToString("d H:mm");
+            else if (totalSpan.TotalHours >= 1)
+                return timestamp.ToString("H:mm");
+            else if (totalSpan.TotalMinutes >= 1)
+                return timestamp.ToString("m:ss");
+            else if (totalSpan.TotalSeconds >= 5)
+                return timestamp.ToString("m:ss");
+            else if (totalSpan.TotalSeconds >= 1)
+                return timestamp.ToString("s.ff") + " s";
+            elseved 
+                return timestamp.ToString("s.fff") + " s";
         }
 
         /// <summary>
@@ -557,7 +581,7 @@ namespace LogScraper.Utilities.UserControls
             using Font font = new("Segoe UI", 9);
             SizeF textSize = graphics.MeasureString(tooltipText, font);
 
-            float tooltipWidth = textSize.Width+2;
+            float tooltipWidth = textSize.Width + 2;
             float tooltipHeight = textSize.Height;
 
             float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
@@ -725,21 +749,13 @@ namespace LogScraper.Utilities.UserControls
 
                 DateTime bucketKey = sortedBucketKeys[bucketIndex];
 
-                // Get the bar height for this bucket
-                int entryCount = buckets[bucketKey].Count;
-                float barY = drawableHeight;
+                // Calculate exact x position within the bucket (same as DrawErrorMarkers)
+                float bucketStartX = bucketIndex * totalBarWidth;
+                double fractionWithinBucket = (errorEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
+                float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
 
-                if (entryCount > 0)
-                {
-                    double scaledValue = Math.Pow(entryCount, SCALE_POWER);
-                    float barHeight = (float)((scaledValue / maximumRawValue) * drawableHeight);
-                    barY = drawableHeight - barHeight;
-                }
-
-                // Calculate marker position (same as in DrawErrorMarkers)
-                float bucketCenterX = (bucketIndex * totalBarWidth) + (totalBarWidth / 2);
-                float markerX = bucketCenterX - (ERROR_MARKER_SIZE / 2);
-                float markerY = barY - ERROR_MARKER_SIZE;
+                float markerX = exactX - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - (ERROR_MARKER_SIZE + 2);
 
                 if (mouseX >= markerX && mouseX <= markerX + ERROR_MARKER_SIZE &&
                     mouseY >= markerY && mouseY <= markerY + ERROR_MARKER_SIZE)
