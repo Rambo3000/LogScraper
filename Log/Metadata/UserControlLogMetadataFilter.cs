@@ -132,6 +132,10 @@ namespace LogScraper
         /// Updates the ListView with new metadata values.
         /// If only counts changed, performs lightweight update. Otherwise rebuilds the list.
         /// </summary>
+        /// <summary>
+        /// Updates the ListView with new metadata values.
+        /// If only counts changed, performs lightweight update. Otherwise rebuilds the list.
+        /// </summary>
         public void UpdateListView(LogMetadataPropertyAndValues logMetadataPropertyAndValuesNew)
         {
             // Optimize: if keys haven't changed, only update counts
@@ -156,14 +160,17 @@ namespace LogScraper
             // Sort values alphabetically
             sortedValues = [.. logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.OrderBy(lmv => lmv.Value)];
 
-            // Restore checkbox states
+            // Restore checkbox states for items that still exist
             checkedItems.Clear();
             foreach (LogMetadataValue value in sortedValues)
             {
-                if (previousCheckedItems.Contains(value.Value) && value.IsFilterEnabled)
+                // If item was previously checked, keep it checked
+                if (previousCheckedItems.Contains(value.Value))
                 {
                     checkedItems.Add(value.Value);
+                    value.IsFilterEnabled = true;
                 }
+                // Otherwise use the value from the new data
                 else if (value.IsFilterEnabled)
                 {
                     checkedItems.Add(value.Value);
