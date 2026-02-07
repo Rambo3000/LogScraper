@@ -57,7 +57,7 @@ namespace LogScraper.Utilities.UserControls
         /// <summary>
         /// Raised when a histogram bar is clicked.
         /// </summary>
-        public event EventHandler<LogEntry> HeatmapCellClicked;
+        public event EventHandler<LogEntry> CellClicked;
 
         /// <summary>
         /// Raised when an error marker is clicked.
@@ -804,7 +804,7 @@ namespace LogScraper.Utilities.UserControls
                 if (bucketEntries.Count > 0)
                 {
                     LogEntry firstEntry = bucketEntries[0];
-                    HeatmapCellClicked?.Invoke(this, firstEntry);
+                    CellClicked?.Invoke(this, firstEntry);
                 }
             }
         }

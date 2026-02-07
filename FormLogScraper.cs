@@ -29,7 +29,7 @@ namespace LogScraper
 
         private readonly LogTimeLineControl logTimelineControl = new()
         {
-            Name = "logHeatmapControl",
+            Name = "logTimelineControl",
             Dock = DockStyle.Fill,
             TabIndex = 0
         };
@@ -68,8 +68,8 @@ namespace LogScraper
             UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
             ChkTimelineVisible_CheckedChanged(this, EventArgs.Empty);
 
-            logTimelineControl.HeatmapCellClicked += LogHeatmapControl_HeatmapCellClicked;
-            logTimelineControl.ErrorMarkerClicked += LogHeatmapControl_HeatmapCellClicked;
+            logTimelineControl.CellClicked += LogTimelineControl_CellClicked;
+            logTimelineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
 
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
@@ -92,7 +92,7 @@ namespace LogScraper
             if (UserControlLogEntriesTextBox.IsTimelineVisible && currentLogMetadataFilterResult != null) logTimelineControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries);
         }
 
-        private void LogHeatmapControl_HeatmapCellClicked(object sender, LogEntry e)
+        private void LogTimelineControl_CellClicked(object sender, LogEntry e)
         {
             UserControlLogEntriesTextBox.SelectLogEntry(e);
         }
@@ -464,6 +464,7 @@ namespace LogScraper
                 {
                     SetDynamicToolTips();
                     btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
+                    UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
                 }
 
                 if (logLayoutsChanged) PopulateLogLayouts();
