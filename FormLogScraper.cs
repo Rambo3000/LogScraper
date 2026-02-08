@@ -52,7 +52,6 @@ namespace LogScraper
             usrRuntime.StatusUpdate += HandleErrorMessages;
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
-            usrFileLogProvider.SourceSelectionChanged += FileProvider_SourceSelectionChanged;
 
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
@@ -77,11 +76,6 @@ namespace LogScraper
 
             SetDynamicToolTips();
             UpdateBtnErase();
-        }
-
-        private void FileProvider_SourceSelectionChanged(object sender, EventArgs e)
-        {
-            if (BtnRecord.Enabled) BtnRecord_Click(sender, e);
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
