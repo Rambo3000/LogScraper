@@ -390,7 +390,7 @@
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(497, 59);
+            TxtErrorMessage.Size = new System.Drawing.Size(497, 75);
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;

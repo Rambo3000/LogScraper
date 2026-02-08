@@ -70,8 +70,12 @@ namespace LogScraper.Log
             {
                 // Provide an explanation for the failure to parse the log entries, including the expected date-time format.
                 int maxLength = rawLogEntries[0].Length < logLayout.DateTimeFormat.Length ? rawLogEntries[0].Length : logLayout.DateTimeFormat.Length;
-                string message = "The log could not be interpreted. The timestamp required at the beginning of each entry could not be parsed. Make sure you have selected the correct log layout and its date-time format matches the format of the log." + Environment.NewLine;
-                message += $"Expected date time format {logLayout.DateTimeFormat} at the start of log entries but instead found (for example) " + rawLogEntries[0][..maxLength];
+                string message =
+                    "The log could not be parsed using the selected layout." + Environment.NewLine +
+                    $"Expected datetime format at the start of each entry: {logLayout.DateTimeFormat}" + Environment.NewLine +
+                    "Found content at start of entry (example): " + rawLogEntries[0][..maxLength] + Environment.NewLine +
+                    "Select the correct log layout or adjust the configuration of the selected layout.";
+
                 throw new Exception(message);
             }
             return true;
