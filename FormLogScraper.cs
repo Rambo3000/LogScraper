@@ -241,7 +241,7 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
-            visibleLogEntries = LogRenderer.GetLogEntriesToRenderFromMetadataFilterResult(logMetadataFilterResult, logRenderSettings);
+            visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);

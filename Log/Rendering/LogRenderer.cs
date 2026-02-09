@@ -10,36 +10,45 @@ using LogScraper.Utilities.IndexDictionary;
 namespace LogScraper.Log.Rendering
 {
     /// <summary>
-    /// Provides functionality to render log entries based on specified export settings.
+    /// Provides functionality to render log entries based on specified render settings.
     /// </summary>
     internal static class LogRenderer
     {
         /// <summary>
         /// Retrieves the log entries to be rendered based on the provided metadata filter result and render settings.
         /// </summary>
-        /// <param name="metadataFilterResult">The result of filtering log metadata.</param>
-        /// <param name="logRenderSettings">Settings for rendering the log data.</param>
+        /// <remarks> This method filters the original list of log entries, typically after applying a metadata filter, to determine which entries should be included in the final rendered output.
+        /// It uses the <see cref="LogRenderSettings"/> to determine the range of entries to include based on the specified begin and end log entries.</remarks>
+        /// <param name="originalLogEntriesList">The original list of log entries to filter and render. Cannot be null.</param>
+        /// <param name="logRenderSettings">Settings for rendering the log data. Cannot be null</param>
         /// <returns>A string containing the formatted log entries.</returns>
-        public static List<LogEntry> GetLogEntriesToRenderFromMetadataFilterResult(LogMetadataFilterResult metadataFilterResult, LogRenderSettings logRenderSettings)
+        public static List<LogEntry> GetLogEntriesListToRender(List<LogEntry> originalLogEntriesList, LogRenderSettings logRenderSettings)
         {
-            // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
-            (int startIndex, int endIndex) = CalculateLogRenderRange(metadataFilterResult, logRenderSettings);
+            if (originalLogEntriesList == null || logRenderSettings == null) return [];
 
-            // If the calculated indices are invalid, return an empty ExportedLogData object.
+            if (logRenderSettings.LogEntryBegin == null && logRenderSettings.LogEntryEnd == null)
+            {
+                return originalLogEntriesList;
+            }
+
+            // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
+            (int startIndex, int endIndex) = CalculateLogRenderRange(originalLogEntriesList, logRenderSettings);
+
+            // If the calculated indices are invalid, return an empty list.
             if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return [];
 
-            return metadataFilterResult.LogEntries[startIndex..endIndex];
+            return originalLogEntriesList[startIndex..endIndex];
         }
 
         /// <summary>
-        /// Determines the start and end indices for the log entries to be exported based on the export settings.
+        /// Determines the start and end indices for the log entries to be rendered based on the render settings.
         /// </summary>
-        /// <param name="metadataFilterResult">The result of filtering log metadata.</param>
-        /// <param name="logRenderSettings">Settings for exporting the log data.</param>
+        /// <param name="logEntries">The list of log entries to filter and render. Cannot be null.</param>
+        /// <param name="logRenderSettings">Settings for rendinge the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
-        private static (int startIndex, int endIndex) CalculateLogRenderRange(LogMetadataFilterResult metadataFilterResult, LogRenderSettings logRenderSettings)
+        private static (int startIndex, int endIndex) CalculateLogRenderRange(List<LogEntry> logEntries, LogRenderSettings logRenderSettings)
         {
-            int numberOfLogEntriesTotal = metadataFilterResult.LogEntries.Count;
+            int numberOfLogEntriesTotal = logEntries.Count;
 
             int startindex = 0;
             int endindex = numberOfLogEntriesTotal;
@@ -49,7 +58,7 @@ namespace LogScraper.Log.Rendering
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (metadataFilterResult.LogEntries[i] == logRenderSettings.LogEntryBegin)
+                    if (logEntries[i] == logRenderSettings.LogEntryBegin)
                     {
                         startindex = i;
                         break;
@@ -63,7 +72,7 @@ namespace LogScraper.Log.Rendering
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (metadataFilterResult.LogEntries[i] == logRenderSettings.LogEntryEnd)
+                    if (logEntries[i] == logRenderSettings.LogEntryEnd)
                     {
                         endindex = i + 1;
                         break;
@@ -120,13 +129,13 @@ namespace LogScraper.Log.Rendering
         /// <summary>
         /// Appends a formatted log entry and its associated metadata to the specified <see cref="StringBuilder"/>.
         /// </summary>
-        /// <remarks>This method processes the log entry based on the provided export settings, including
+        /// <remarks>This method processes the log entry based on the provided render settings, including
         /// whether to include or modify metadata, and optionally adds tree structure information if <paramref
         /// name="showTree"/> is <see langword="true"/>. Additional log entries associated with the primary log entry
         /// are also appended, with formatting applied as needed.</remarks>
         /// <param name="stringBuilder">The <see cref="StringBuilder"/> to which the log entry will be appended.</param>
         /// <param name="logEntry">The log entry to append, including its content and metadata.</param>
-        /// <param name="logRenderSettings">The settings that control how the log entry is formatted and exported.</param>
+        /// <param name="logRenderSettings">The settings that control how the log entry is rendered.</param>
         /// <param name="treeNode">A reference to the current node in the log flow tree, used to determine hierarchical relationships between
         /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
         /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
