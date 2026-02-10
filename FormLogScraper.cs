@@ -43,7 +43,7 @@ namespace LogScraper
             Thread.CurrentThread.CurrentUICulture = culture;
 
             FormCompactView.Instance.SetFormLogScraper(this);
-            
+
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
             usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
@@ -405,15 +405,6 @@ namespace LogScraper
             if (isResetUiEnabled) Reset();
             else Erase();
         }
-        private void BtnErase_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right)
-            {
-                return;
-            }
-
-            ContextMenuReset.Show(BtnErase, e.Location);
-        }
         private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
         {
             isResetUiEnabled = true;
@@ -625,5 +616,6 @@ namespace LogScraper
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
+
     }
 }

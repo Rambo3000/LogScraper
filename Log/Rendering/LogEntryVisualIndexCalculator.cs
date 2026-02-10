@@ -163,7 +163,7 @@ namespace LogScraper.Log.Rendering
                 RenderedLineIndex = visualLineIndex
             };
 
-            if (renderLayout == null || renderLayout.VisualLineIndexPerEntry == null || renderLayout.VisibleLogEntries == null)
+            if (renderLayout == null || renderLayout.VisualLineIndexPerEntry == null || renderLayout.VisibleLogEntries == null || renderLayout.VisibleLogEntries.Count == 0)
             {
                 return false;
             }

@@ -37,11 +37,14 @@
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
             BtnClearFilters = new System.Windows.Forms.Button();
+            BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
+            ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
+            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
+            imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
-            BtnErase = new System.Windows.Forms.Button();
-            imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
@@ -73,10 +76,8 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
-            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
-            ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
             groupBox3.SuspendLayout();
+            ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
@@ -100,7 +101,6 @@
             splitContainer1.SuspendLayout();
             GrpLogProvidersSettings.SuspendLayout();
             GrpSourceAndLayout.SuspendLayout();
-            ContextMenuReset.SuspendLayout();
             SuspendLayout();
             // 
             // BtnRecord
@@ -154,11 +154,11 @@
             // groupBox3
             // 
             groupBox3.Controls.Add(BtnClearFilters);
+            groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(BtnConfig);
             groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
             groupBox3.Controls.Add(BtnRecord);
-            groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(LbllogEntriesTotal);
             groupBox3.Controls.Add(lblLogEntriesFiltered);
             groupBox3.Controls.Add(BtnStop);
@@ -170,7 +170,7 @@
             groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(297, 147);
+            groupBox3.Size = new System.Drawing.Size(308, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
@@ -190,11 +190,54 @@
             BtnClearFilters.UseVisualStyleBackColor = true;
             BtnClearFilters.Click += BtnClearFilters_Click;
             // 
+            // BtnErase
+            // 
+            BtnErase.DropDownMenu = ContextMenuReset;
+            BtnErase.DropDownWidth = 15;
+            BtnErase.Icon = (System.Drawing.Image)resources.GetObject("BtnErase.Icon");
+            BtnErase.ImageIndex = 0;
+            BtnErase.ImageList = imageListBtnErase;
+            BtnErase.Location = new System.Drawing.Point(257, 22);
+            BtnErase.Name = "BtnErase";
+            BtnErase.Size = new System.Drawing.Size(45, 40);
+            BtnErase.TabIndex = 10;
+            BtnErase.ButtonClick += BtnErase_Click;
+            // 
+            // ContextMenuReset
+            // 
+            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemReset, ToolStripMenuItemClear });
+            ContextMenuReset.Name = "ContextMenuReset";
+            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
+            // 
+            // ToolStripMenuItemReset
+            // 
+            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
+            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
+            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
+            ToolStripMenuItemReset.Text = "Reset log en filters";
+            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
+            // 
+            // ToolStripMenuItemClear
+            // 
+            ToolStripMenuItemClear.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemClear.Image");
+            ToolStripMenuItemClear.Name = "ToolStripMenuItemClear";
+            ToolStripMenuItemClear.Size = new System.Drawing.Size(210, 22);
+            ToolStripMenuItemClear.Text = "Wis log (filters behouden)";
+            ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
+            // 
+            // imageListBtnErase
+            // 
+            imageListBtnErase.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageListBtnErase.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListBtnErase.ImageStream");
+            imageListBtnErase.TransparentColor = System.Drawing.Color.Transparent;
+            imageListBtnErase.Images.SetKeyName(0, "trash-can-outline-24x24.png");
+            imageListBtnErase.Images.SetKeyName(1, "reset 24x24.png");
+            // 
             // BtnConfig
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(266, 117);
+            BtnConfig.Location = new System.Drawing.Point(277, 117);
             BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
@@ -228,27 +271,6 @@
             ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-R]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
-            // 
-            // BtnErase
-            // 
-            BtnErase.ImageIndex = 0;
-            BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(251, 22);
-            BtnErase.Name = "BtnErase";
-            BtnErase.Size = new System.Drawing.Size(40, 40);
-            BtnErase.TabIndex = 11;
-            BtnErase.TabStop = false;
-            BtnErase.UseVisualStyleBackColor = true;
-            BtnErase.Click += BtnErase_Click;
-            BtnErase.MouseUp += BtnErase_MouseUp;
-            // 
-            // imageListBtnErase
-            // 
-            imageListBtnErase.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            imageListBtnErase.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListBtnErase.ImageStream");
-            imageListBtnErase.TransparentColor = System.Drawing.Color.Transparent;
-            imageListBtnErase.Images.SetKeyName(0, "trash-can-outline-with-dropdown-36x24.png");
-            imageListBtnErase.Images.SetKeyName(1, "Reset-with-dropwdown-36x24.png");
             // 
             // BtnStop
             // 
@@ -295,7 +317,7 @@
             // 
             userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(228, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(239, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
             userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
             userControlMemoryUsage1.TabIndex = 24;
@@ -548,7 +570,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(506, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(517, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -570,7 +592,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(308, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(319, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
@@ -630,6 +652,7 @@
             Load += FormLogScraper_Load;
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
+            ContextMenuReset.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
@@ -664,13 +687,13 @@
         //Make these controls public so that they can be accessed from the mini controls form
         public System.Windows.Forms.Button BtnRecord;
         public System.Windows.Forms.Button BtnRecordWithTimer;
-        public System.Windows.Forms.Button BtnErase;
         public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnOpenWithEditor;
         public System.Windows.Forms.Label lblLogEntriesTotalValue;
         public System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
         public System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
         public System.Windows.Forms.Label lblLogEntriesFilteredWithError;
+        public Utilities.UserControls.SplitButton BtnErase;
 
         private System.Windows.Forms.Label LbllogEntriesTotal;
 
