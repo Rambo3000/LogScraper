@@ -58,7 +58,6 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
-            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox5 = new System.Windows.Forms.GroupBox();
             UserControlSearch = new UserControlSearch();
@@ -76,6 +75,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -202,12 +202,6 @@
             BtnErase.Size = new System.Drawing.Size(45, 40);
             BtnErase.TabIndex = 10;
             BtnErase.ButtonClick += BtnErase_Click;
-            // 
-            // ContextMenuReset
-            // 
-            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemReset, ToolStripMenuItemClear });
-            ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
             // 
             // ToolStripMenuItemReset
             // 
@@ -616,7 +610,7 @@
             // 
             // ContextMenuReset
             // 
-            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemReset, ToolStripMenuItemClear });
+            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
             ContextMenuReset.Name = "ContextMenuReset";
             ContextMenuReset.Size = new System.Drawing.Size(211, 48);
             // 
@@ -678,7 +672,6 @@
             GrpLogProvidersSettings.ResumeLayout(false);
             GrpSourceAndLayout.ResumeLayout(false);
             GrpSourceAndLayout.PerformLayout();
-            ContextMenuReset.ResumeLayout(false);
             ResumeLayout(false);
         }
 

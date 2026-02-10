@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogEntriesTextBox));
             TxtLogEntries = new ScintillaNET.Scintilla();
             ChkShowNoTree = new System.Windows.Forms.CheckBox();
@@ -36,6 +37,7 @@
             PnlViewMode = new System.Windows.Forms.Panel();
             ChkTimelineVisible = new System.Windows.Forms.CheckBox();
             UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
+            toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlViewMode.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,6 +68,7 @@
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 44;
             ChkShowNoTree.Tag = "asd";
+            toolTip1.SetToolTip(ChkShowNoTree, "Niet inspringen");
             ChkShowNoTree.UseVisualStyleBackColor = true;
             ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
             // 
@@ -79,6 +82,7 @@
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 43;
             ChkShowFlowTree.Tag = "asd";
+            toolTip1.SetToolTip(ChkShowFlowTree, "Inspringen");
             ChkShowFlowTree.UseVisualStyleBackColor = true;
             ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
             // 
@@ -91,6 +95,7 @@
             CboLogContentType.Name = "CboLogContentType";
             CboLogContentType.Size = new System.Drawing.Size(105, 23);
             CboLogContentType.TabIndex = 45;
+            toolTip1.SetToolTip(CboLogContentType, "Selecteer op welke inhoudsfilter ingesprongen moet worden");
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
             // PnlViewMode
@@ -112,21 +117,27 @@
             ChkTimelineVisible.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkTimelineVisible.Appearance = System.Windows.Forms.Appearance.Button;
             ChkTimelineVisible.Image = (System.Drawing.Image)resources.GetObject("ChkTimelineVisible.Image");
-            ChkTimelineVisible.Location = new System.Drawing.Point(175, 3);
+            ChkTimelineVisible.Location = new System.Drawing.Point(173, 3);
             ChkTimelineVisible.Name = "ChkTimelineVisible";
             ChkTimelineVisible.Size = new System.Drawing.Size(25, 25);
             ChkTimelineVisible.TabIndex = 48;
             ChkTimelineVisible.Tag = "asd";
+            toolTip1.SetToolTip(ChkTimelineVisible, "Tijdlijn histogram tonen/verbergen");
             ChkTimelineVisible.UseVisualStyleBackColor = true;
             ChkTimelineVisible.CheckedChanged += ChkTimelineVisible_CheckedChanged;
             // 
             // UserControlPostProcessing
             // 
             UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            UserControlPostProcessing.Location = new System.Drawing.Point(206, 3);
+            UserControlPostProcessing.Location = new System.Drawing.Point(202, 3);
             UserControlPostProcessing.Name = "UserControlPostProcessing";
-            UserControlPostProcessing.Size = new System.Drawing.Size(36, 25);
+            UserControlPostProcessing.Size = new System.Drawing.Size(40, 25);
             UserControlPostProcessing.TabIndex = 47;
+            toolTip1.SetToolTip(UserControlPostProcessing, "Pretty print JSON en/of XML");
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutomaticDelay = 250;
             // 
             // UserControlLogEntriesTextBox
             // 
@@ -148,5 +159,6 @@
         private System.Windows.Forms.Panel PnlViewMode;
         private LogPostProcessors.UserControlPostProcessing UserControlPostProcessing;
         private System.Windows.Forms.CheckBox ChkTimelineVisible;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

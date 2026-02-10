@@ -423,12 +423,12 @@ namespace LogScraper
 
             if (!isResetUiEnabled)
             {
-                toolTipText = "Wis log. Rechtermuisklik voor reset.";
+                toolTipText = "Wis log (filters behouden)";
                 BtnErase.ImageIndex = 0;
             }
             else
             {
-                toolTipText = "Reset log en filters. Rechtermuisklik voor log wissen.";
+                toolTipText = "Reset log en filters";
                 BtnErase.ImageIndex = 1;
             }
             ToolTip.SetToolTip(BtnErase, toolTipText);

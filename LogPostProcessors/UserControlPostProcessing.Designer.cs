@@ -31,8 +31,7 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlPostProcessing));
             PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
-            BtnPostProcess = new System.Windows.Forms.Button();
-            imageList1 = new System.Windows.Forms.ImageList(components);
+            BtnPostProcess = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuPostProcessing = new System.Windows.Forms.ContextMenuStrip(components);
             ApplyToVisibleLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             StopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,6 +39,7 @@
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             prettyPrintJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             prettyPrintXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            imageList1 = new System.Windows.Forms.ImageList(components);
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatibility.SuspendLayout();
             ContextMenuPostProcessing.SuspendLayout();
@@ -57,25 +57,16 @@
             // BtnPostProcess
             // 
             BtnPostProcess.Dock = System.Windows.Forms.DockStyle.Fill;
+            BtnPostProcess.DropDownMenu = ContextMenuPostProcessing;
+            BtnPostProcess.DropDownWidth = 15;
+            BtnPostProcess.Icon = null;
             BtnPostProcess.ImageIndex = 0;
             BtnPostProcess.ImageList = imageList1;
             BtnPostProcess.Location = new System.Drawing.Point(0, 0);
             BtnPostProcess.Name = "BtnPostProcess";
             BtnPostProcess.Size = new System.Drawing.Size(50, 35);
             BtnPostProcess.TabIndex = 0;
-            BtnPostProcess.TabStop = false;
-            toolTip1.SetToolTip(BtnPostProcess, "Pretty print XML en JSON. Rechtermuisklik voor meer opties");
-            BtnPostProcess.UseVisualStyleBackColor = true;
-            BtnPostProcess.Click += BtnPostProcess_Click;
-            BtnPostProcess.MouseUp += BtnPostProcess_MouseUp;
-            // 
-            // imageList1
-            // 
-            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-            imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "auto-fix-with-dropdown-16x16.png");
-            imageList1.Images.SetKeyName(1, "cogs-custom-with-dropdown-24x16.png");
+            BtnPostProcess.ButtonClick += BtnPostProcess_Click;
             // 
             // ContextMenuPostProcessing
             // 
@@ -135,6 +126,14 @@
             prettyPrintXMLToolStripMenuItem.Text = "Pretty print XML";
             prettyPrintXMLToolStripMenuItem.Click += PrettyPrintXMLToolStripMenuItem_Click;
             // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            imageList1.Images.SetKeyName(0, "auto-fix-custom 16x16.png");
+            imageList1.Images.SetKeyName(1, "cogs-custom 16x16.png");
+            // 
             // toolTip1
             // 
             toolTip1.AutoPopDelay = 99999999;
@@ -155,7 +154,6 @@
 
         #endregion
         private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
-        private System.Windows.Forms.Button BtnPostProcess;
         private System.Windows.Forms.ContextMenuStrip ContextMenuPostProcessing;
         private System.Windows.Forms.ToolStripMenuItem prettyPrintJSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem prettyPrintXMLToolStripMenuItem;
@@ -165,5 +163,6 @@
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem StopToolStripMenuItem;
+        private Utilities.UserControls.SplitButton BtnPostProcess;
     }
 }

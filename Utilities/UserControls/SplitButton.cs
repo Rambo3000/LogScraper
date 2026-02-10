@@ -115,10 +115,10 @@ namespace LogScraper.Utilities.UserControls
         #region Drawing
 
         /// <summary>Gets the rectangle for the left (main button) area</summary>
-        private Rectangle LeftRect => new Rectangle(0, 0, Width - _dropDownWidth, Height);
+        private Rectangle LeftRect => new(0, 0, Width - _dropDownWidth, Height);
 
         /// <summary>Gets the rectangle for the right (dropdown) area</summary>
-        private Rectangle RightRect => new Rectangle(Width - _dropDownWidth, 0, _dropDownWidth, Height);
+        private Rectangle RightRect => new(Width - _dropDownWidth, 0, _dropDownWidth, Height);
 
         /// <summary>
         /// Retrieves the currently active icon based on priority:
@@ -152,7 +152,7 @@ namespace LogScraper.Utilities.UserControls
             var currentIcon = GetCurrentIcon();
             if (currentIcon != null)
             {
-                int iconX = (LeftRect.Width - currentIcon.Width) / 2;
+                int iconX = (LeftRect.Width - currentIcon.Width) / 2 + 1;
                 int iconY = (Height - currentIcon.Height) / 2;
                 g.DrawImage(currentIcon, iconX, iconY, currentIcon.Width, currentIcon.Height);
             }
@@ -183,14 +183,23 @@ namespace LogScraper.Utilities.UserControls
                 try
                 {
                     // Draw outer border with appropriate state
-                    RECT rc = new RECT { Left = 0, Top = 0, Right = Width, Bottom = Height };
-                    DrawThemeBackground(hTheme, hdc, BP_PUSHBUTTON, stateId, ref rc, IntPtr.Zero);
-
+                    RECT rc = new() { Left = 0, Top = 0, Right = Width, Bottom = Height };
+                    int result = DrawThemeBackground(hTheme, hdc, BP_PUSHBUTTON, stateId, ref rc, IntPtr.Zero);
+                    if (result != 0) // If themed drawing failed, fallback to classic
+                    {
+                        DrawClassicControl(g);
+                        return;
+                    }
                     // Overdraw interior with normal state to show only border highlight
                     if (overallState == ButtonState.Hot)
                     {
-                        RECT innerRc = new RECT { Left = 1, Top = 1, Right = Width - 1, Bottom = Height - 1 };
-                        DrawThemeBackground(hTheme, hdc, BP_PUSHBUTTON, PBS_NORMAL, ref innerRc, IntPtr.Zero);
+                        RECT innerRc = new() { Left = 1, Top = 1, Right = Width - 1, Bottom = Height - 1 };
+                        result = DrawThemeBackground(hTheme, hdc, BP_PUSHBUTTON, PBS_NORMAL, ref innerRc, IntPtr.Zero);
+                        if (result != 0) // If themed drawing failed, fallback to classic
+                        {
+                            DrawClassicControl(g);
+                            return;
+                        }
                     }
                 }
                 finally
@@ -202,7 +211,11 @@ namespace LogScraper.Utilities.UserControls
             }
             finally
             {
-                CloseThemeData(hTheme);
+                int result = CloseThemeData(hTheme);
+                if (result != 0)
+                {
+                    // Log or handle theme closing error if necessary
+                }
             }
         }
 
@@ -215,25 +228,25 @@ namespace LogScraper.Utilities.UserControls
             // Left section highlight
             if (_leftState == ButtonState.Hot)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(30, SystemColors.Highlight)))
-                    g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 2, Height - 4);
+                using var brush = new SolidBrush(Color.FromArgb(30, SystemColors.Highlight));
+                g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 2, Height - 4);
             }
             else if (_leftState == ButtonState.Pressed)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(50, SystemColors.ControlDark)))
-                    g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 2, Height - 4);
+                using var brush = new SolidBrush(Color.FromArgb(50, SystemColors.ControlDark));
+                g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 2, Height - 4);
             }
 
             // Right section highlight
             if (_rightState == ButtonState.Hot)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(30, SystemColors.Highlight)))
-                    g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 4, Height - 4);
+                using var brush = new SolidBrush(Color.FromArgb(30, SystemColors.Highlight));
+                g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 4, Height - 4);
             }
             else if (_rightState == ButtonState.Pressed)
             {
-                using (var brush = new SolidBrush(Color.FromArgb(50, SystemColors.ControlDark)))
-                    g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 4, Height - 4);
+                using var brush = new SolidBrush(Color.FromArgb(50, SystemColors.ControlDark));
+                g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 4, Height - 4);
             }
         }
 
@@ -255,8 +268,8 @@ namespace LogScraper.Utilities.UserControls
         private void DrawSeparator(Graphics g)
         {
             int x = Width - _dropDownWidth;
-            using (var pen = new Pen(Color.FromArgb(100, SystemColors.ControlDark)))
-                g.DrawLine(pen, x, 4, x, Height - 5);
+            using var pen = new Pen(Color.FromArgb(100, SystemColors.ControlDark));
+            g.DrawLine(pen, x, 4, x, Height - 5);
         }
 
         /// <summary>
@@ -280,25 +293,25 @@ namespace LogScraper.Utilities.UserControls
             // Left section highlight
             if (_leftState == ButtonState.Hot)
             {
-                using (var brush = new SolidBrush(SystemColors.ControlLight))
-                    g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 3, Height - 4);
+                using var brush = new SolidBrush(SystemColors.ControlLight);
+                g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 3, Height - 4);
             }
             else if (_leftState == ButtonState.Pressed)
             {
-                using (var brush = new SolidBrush(SystemColors.ControlDark))
-                    g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 3, Height - 4);
+                using var brush = new SolidBrush(SystemColors.ControlDark);
+                g.FillRectangle(brush, 2, 2, Width - _dropDownWidth - 3, Height - 4);
             }
 
             // Right section highlight
             if (_rightState == ButtonState.Hot)
             {
-                using (var brush = new SolidBrush(SystemColors.ControlLight))
-                    g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 3, Height - 4);
+                using var brush = new SolidBrush(SystemColors.ControlLight);
+                g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 3, Height - 4);
             }
             else if (_rightState == ButtonState.Pressed)
             {
-                using (var brush = new SolidBrush(SystemColors.ControlDark))
-                    g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 3, Height - 4);
+                using var brush = new SolidBrush(SystemColors.ControlDark);
+                g.FillRectangle(brush, Width - _dropDownWidth + 1, 2, _dropDownWidth - 3, Height - 4);
             }
         }
 
@@ -307,20 +320,20 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         /// <param name="g">Graphics object to draw on</param>
         /// <param name="rect">Rectangle defining the dropdown area</param>
-        private void DrawArrow(Graphics g, Rectangle rect)
+        private static void DrawArrow(Graphics g, Rectangle rect)
         {
             int arrowWidth = 7, arrowHeight = 4;
             int arrowX = rect.X + (rect.Width - arrowWidth) / 2;
             int arrowY = rect.Y + (rect.Height - arrowHeight) / 2;
 
             var points = new Point[] {
-                new Point(arrowX, arrowY),
-                new Point(arrowX + arrowWidth, arrowY),
-                new Point(arrowX + arrowWidth / 2, arrowY + arrowHeight)
+                new (arrowX, arrowY),
+                new (arrowX + arrowWidth, arrowY),
+                new (arrowX + arrowWidth / 2, arrowY + arrowHeight)
             };
 
-            using (var brush = new SolidBrush(SystemColors.ControlText))
-                g.FillPolygon(brush, points);
+            using var brush = new SolidBrush(SystemColors.ControlText);
+            g.FillPolygon(brush, points);
         }
 
         #endregion
@@ -438,14 +451,14 @@ namespace LogScraper.Utilities.UserControls
         /// <param name="hwnd">Window handle</param>
         /// <param name="pszClassList">Theme class name</param>
         /// <returns>Theme handle</returns>
-        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr OpenThemeData(IntPtr hwnd, string pszClassList);
+        [LibraryImport("uxtheme.dll", StringMarshalling = StringMarshalling.Utf16)]
+        private static partial IntPtr OpenThemeData(IntPtr hwnd, string pszClassList);
 
         /// <summary>Closes an open theme data handle</summary>
         /// <param name="hTheme">Theme handle to close</param>
         /// <returns>Status code</returns>
-        [DllImport("uxtheme.dll")]
-        private static extern int CloseThemeData(IntPtr hTheme);
+        [LibraryImport("uxtheme.dll")]
+        private static partial int CloseThemeData(IntPtr hTheme);
 
         /// <summary>Draws themed background</summary>
         /// <param name="hTheme">Theme handle</param>
@@ -455,8 +468,8 @@ namespace LogScraper.Utilities.UserControls
         /// <param name="pRect">Drawing rectangle</param>
         /// <param name="pClipRect">Clipping rectangle (use IntPtr.Zero for none)</param>
         /// <returns>Status code</returns>
-        [DllImport("uxtheme.dll")]
-        private static extern int DrawThemeBackground(IntPtr hTheme, IntPtr hdc, int iPartId, int iStateId, ref RECT pRect, IntPtr pClipRect);
+        [LibraryImport("uxtheme.dll")]
+        private static partial int DrawThemeBackground(IntPtr hTheme, IntPtr hdc, int iPartId, int iStateId, ref RECT pRect, IntPtr pClipRect);
 
         /// <summary>Rectangle structure for theme drawing</summary>
         [StructLayout(LayoutKind.Sequential)]
