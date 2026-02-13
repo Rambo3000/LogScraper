@@ -150,10 +150,7 @@ namespace LogScraper
                     {
                         // Only search the new entries that were added since the last search
                         List<LogEntryDisplayObject> newResults = SearchLogEntriesInRange(LogEntries, startIndex, LogEntries.Count - 1, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
-                        for (int i = 0; i < newResults.Count; i++)
-                        {
-                            LstLogContent.Items.Add(newResults[i]);
-                        }
+                        LstLogContent.Items.AddRange([.. newResults]);
 
                         didIncrementalAppend = true;
                     }
@@ -176,10 +173,7 @@ namespace LogScraper
                 }
 
                 List<LogEntryDisplayObject> results = SearchLogEntries(LogEntries, txtSearch.Text.Trim(), chkCaseSensitive.Checked, chkWholeWordsOnly.Checked);
-                for (int i = 0; i < results.Count; i++)
-                {
-                    LstLogContent.Items.Add(results[i]);
-                }
+                LstLogContent.Items.AddRange([..results]);
             }
 
             // Try to restore the previous selection
@@ -354,7 +348,7 @@ namespace LogScraper
         /// than or equal to the length of the text.</param>
         /// <returns>The zero-based index of the first occurrence of the search text that matches the specified criteria;
         /// otherwise, -1 if no match is found or if either input string is null.</returns>
-        public int FindMatchIndex(string text, string searchText, bool caseSensitive, bool wholeWord, int contentStartIndex)
+        public static int FindMatchIndex(string text, string searchText, bool caseSensitive, bool wholeWord, int contentStartIndex)
         {
             if (text == null || searchText == null)
             {
@@ -402,7 +396,7 @@ namespace LogScraper
         /// <param name="index">The zero-based starting index of the substring to check within the input text.</param>
         /// <param name="length">The length of the substring to check for whole word boundaries.</param>
         /// <returns>true if the substring at the specified index and length is a whole word; otherwise, false.</returns>
-        public bool IsWholeWordAt(string text, int index, int length)
+        public static bool IsWholeWordAt(string text, int index, int length)
         {
             if (text == null)
             {
@@ -412,7 +406,7 @@ namespace LogScraper
             int beforeIndex = index - 1;
             int afterIndex = index + length;
 
-            bool IsWordChar(char c)
+            static bool IsWordChar(char c)
             {
                 return char.IsLetterOrDigit(c) || c == '_';
             }

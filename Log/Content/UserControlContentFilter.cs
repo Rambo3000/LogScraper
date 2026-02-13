@@ -211,14 +211,14 @@ namespace LogScraper
                 {
                     if (!showErrors || !logEntry.IsErrorLogEntry) continue;
 
-                        foreach (LogContentProperty logContentPropertyError in LogContentPropertiesError)
-                        {
-                            //If the log entry has an error content property, get the content value and continue using this value
+                    foreach (LogContentProperty logContentPropertyError in LogContentPropertiesError)
+                    {
+                        //If the log entry has an error content property, get the content value and continue using this value
                         //We are only interested in the formatted time description of the error content, so we can show the log entry in the correct order in the list
                         // but the actual value is not relevant as it will be shown as "ERROR"
-                            if (logEntry.LogContentProperties.TryGetValue(logContentPropertyError, out contentValue)) break;
-                        }
+                        if (logEntry.LogContentProperties.TryGetValue(logContentPropertyError, out contentValue)) break;
                     }
+                }
 
                 // Filter if applicable
                 if (filterEnabled && contentValue != null)
@@ -286,10 +286,7 @@ namespace LogScraper
                 }
                 if (ChkShowFlowTree.Checked) LstLogContent.Invalidate();
 
-                for (int i = currentCount; i < newCount; i++)
-                {
-                    LstLogContent.Items.Add(newLogEntries[i]);
-                }
+                LstLogContent.Items.AddRange([.. newLogEntries.Skip(currentCount)]);
                 LstLogContent.ResumeDrawing();
                 return;
             }
