@@ -82,7 +82,6 @@ namespace LogScraper
             public int Index { get; set; }
             public LogEntry OriginalLogEntry { get; set; }
             public LogContentValue ContentValue { get; set; }
-            public bool IsError { get; set; }
             public LogFlowTreeNode FlowTreeNode { get; set; }
             public override string ToString()
             { return ContentValue != null ? ContentValue.Value : string.Empty; }
@@ -190,6 +189,9 @@ namespace LogScraper
             string filter = txtSearch.Text.Trim();
             if (filter == DefaulSearchtText) filter = null;
 
+            bool showErrors = ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters;
+            bool filterEnabled = !string.IsNullOrEmpty(filter);
+
             List<LogEntryDisplayObject> logEntryDisplayObjects = [];
             int index = 0;
             // Iterate through the latest version of log entries
@@ -203,54 +205,39 @@ namespace LogScraper
 
                 // Try to get the content for the selected log content property
                 logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
-                bool isError = false;
 
-                // If no normal content is found, check for error content if the "Show Errors" checkbox is checked
+                // If no content is found, check for error content if the "Show Errors" checkbox is checked
                 if (contentValue == null)
                 {
-                    if (ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters)
-                    {
+                    if (!showErrors || !logEntry.IsErrorLogEntry) continue;
+
                         foreach (LogContentProperty logContentPropertyError in LogContentPropertiesError)
                         {
                             //If the log entry has an error content property, get the content value and continue using this value
+                        //We are only interested in the formatted time description of the error content, so we can show the log entry in the correct order in the list
+                        // but the actual value is not relevant as it will be shown as "ERROR"
                             if (logEntry.LogContentProperties.TryGetValue(logContentPropertyError, out contentValue)) break;
                         }
-                        //If no error content is found, continue to the next log entry
-                        if (contentValue == null) continue;
-                        isError = true;
                     }
-                }
 
-                // Skip the log entry if it is not an error and the content value does not match the filter
-                if (!isError && !string.IsNullOrEmpty(filter))
+                // Filter if applicable
+                if (filterEnabled && contentValue != null)
                 {
-                    if (!contentValue.Value.Contains(filter, StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (!contentValue.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)) continue;
                 }
 
                 // Get the log tree flow beforehand, so we can use it to find the corresponding node for each log entry.
-                List<LogFlowTreeNode> treeNodes = LogMetadataFilterResult.LogFlowTrees[logContentProperty];
+                LogFlowTree logFlowTree = LogMetadataFilterResult.LogFlowTrees[logContentProperty];
 
-                // In order to show the flow tree, we need to find the corresponding node in the tree
                 LogFlowTreeNode flowtreeNode = null;
-                if (contentValue != null && treeNodes != null)
-                {
-                    foreach (LogFlowTreeNode node in treeNodes)
-                    {
-                        if (node.TryGetContentValueNodeFromTree(contentValue, out flowtreeNode))
-                        {
-                            break;
-                        }
-                    }
-                }
+                logFlowTree?.LogEntryDictionary?.TryGetValue(logEntry, out flowtreeNode);
 
                 LogEntryDisplayObject logEntryDisplayObject = new()
                 {
                     Index = index,
                     OriginalLogEntry = logEntry,
                     ContentValue = contentValue,
-                    FlowTreeNode = flowtreeNode,
-                    IsError = isError
-
+                    FlowTreeNode = flowtreeNode
                 };
                 logEntryDisplayObjects.Add(logEntryDisplayObject);
             }
@@ -522,7 +509,7 @@ namespace LogScraper
                 else g.FillRectangle(SystemBrushes.Window, e.Bounds);
             }
 
-            if (item.IsError)
+            if (item.OriginalLogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
             {
                 e.Graphics.DrawString(item.ContentValue.TimeDescription + " ERROR", LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
 
@@ -633,7 +620,7 @@ namespace LogScraper
             {
                 return isSelected ? Brushes.Gray : LogScraperBrushes.GrayLogEntriesOutOfScope;
             }
-            return logEntryDisplayObject.IsError ? Brushes.DarkRed : SystemBrushes.ControlText; // Default text color
+            return logEntryDisplayObject.OriginalLogEntry.IsErrorLogEntry ? Brushes.DarkRed : SystemBrushes.ControlText; // Default text color
         }
 
         /// <summary>

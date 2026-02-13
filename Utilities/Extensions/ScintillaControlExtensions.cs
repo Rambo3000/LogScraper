@@ -449,7 +449,7 @@ namespace LogScraper.Utilities.Extensions
             {
                 int start = scintillaControl.CurrentPosition;
                 if (start + searchText.Length <= scintillaControl.TextLength &&
-                    scintillaControl.Text.Substring(start, searchText.Length).Equals(searchText, System.StringComparison.CurrentCultureIgnoreCase))
+                    scintillaControl.Text.Substring(start, searchText.Length).Equals(searchText, StringComparison.CurrentCultureIgnoreCase))
                 {
                     start += searchText.Length;
                 }

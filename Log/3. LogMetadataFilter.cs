@@ -46,12 +46,12 @@ namespace LogScraper.Log
         /// <param name="logLayout">The layout configuration that defines the log content properties and their relationships.</param>
         /// <param name="logEntries">A list of log entries to be processed for building the log flow trees.</param>
         /// <returns>An <see cref="IndexDictionary{TKey, TValue}"/> where each key is a <see cref="LogContentProperty"/> that
-        /// serves as the starting point of a flow tree, and the value is a list of <see cref="LogFlowTreeNode"/>
-        /// objects representing the nodes in the corresponding flow tree. Returns an empty dictionary if no flow trees
+        /// serves as the starting point of a flow tree, and the <see cref="LogFlowTree"/>
+        /// representing the nodes in the corresponding flow tree. Returns an empty dictionary if no flow trees
         /// are created.</returns>
-        private static IndexDictionary<LogContentProperty, List<LogFlowTreeNode>> PopulateLogFlowTrees(LogLayout logLayout, List<LogEntry> logEntries)
+        private static IndexDictionary<LogContentProperty, LogFlowTree> PopulateLogFlowTrees(LogLayout logLayout, List<LogEntry> logEntries)
         {
-            IndexDictionary<LogContentProperty, List<LogFlowTreeNode>> logFlowTrees = new(logLayout.LogContentProperties.Count);
+            IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees = new(logLayout.LogContentProperties.Count);
 
             if (logLayout.LogContentProperties == null && logLayout.LogContentProperties.Count == 0) return logFlowTrees;
 
@@ -59,7 +59,9 @@ namespace LogScraper.Log
             {
                 if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
                 {
-                    logFlowTrees[logContentProperty] = LogFlowTreeBuilder.BuildLogFlowTree(logEntries, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
+                    LogFlowTree tree = LogFlowTreeBuilder.BuildLogFlowTree(logEntries, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
+
+                    logFlowTrees[logContentProperty] = tree;
                 }
             }
             return logFlowTrees;

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Linq;
 using LogScraper.Log.Content;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.FlowTree
 {
@@ -14,14 +16,14 @@ namespace LogScraper.Log.FlowTree
         /// <param name="entries">The log entries to process, in chronological order.</param>
         /// <param name="beginProperty">The property indicating the start of a flow (e.g., method entry).</param>
         /// <param name="endProperty">The property indicating the end of a flow (e.g., method exit).</param>
-        /// <returns>
-        /// A list of root <see cref="LogFlowTreeNode"/> objects representing the top-level flows.
-        /// Nested flows are represented as children of their parent nodes.
-        /// Unmatched end entries are ignored to keep the tree clean.
-        /// </returns>
-        public static List<LogFlowTreeNode> BuildLogFlowTree(List<LogEntry> entries, LogContentProperty beginProperty, LogContentProperty endProperty)
+        /// <returns>A <see cref="LogFlowTree"/> representing the hierarchical structure of log entries based on the specified begin and end properties.</returns>
+        public static LogFlowTree BuildLogFlowTree(List<LogEntry> entries, LogContentProperty beginProperty, LogContentProperty endProperty)
         {
+            if (entries == null || entries.Count == 0) return null;
+
             List<LogFlowTreeNode> roots = [];
+            IndexDictionary<LogEntry, LogFlowTreeNode> logEntryDictionary = new(entries[^1].Index + 1);
+
             // Stack tracks open (unclosed) begin nodes and their keys.
             Stack<(LogContentValue Key, LogFlowTreeNode Node)> stack = new();
 
@@ -30,20 +32,25 @@ namespace LogScraper.Log.FlowTree
                 // If this entry marks the beginning of a flow, create a new node and push it onto the stack.
                 if (entry.LogContentProperties.TryGetValue(beginProperty, out LogContentValue beginValue))
                 {
-                    AddBeginNode(roots, stack, entry, beginValue);
+                    LogFlowTreeNode logFlowTreeNodeBegin = AddBeginNode(roots, stack, entry, beginValue);
+                    logEntryDictionary[entry] = logFlowTreeNodeBegin;
                     continue;
                 }
 
                 // If this entry marks the end of a flow, try to find and close the most recent matching begin node.
                 if (entry.LogContentProperties.TryGetValue(endProperty, out LogContentValue endValue))
                 {
-                    TryMatchEndNode(stack, entry, endValue);
+                    if (TryMatchEndNode(stack, entry, endValue, out LogFlowTreeNode logFlowTreeNodeEnd))
+                    {
+                        logEntryDictionary[entry] = logFlowTreeNodeEnd;
+                    }
+
                 }
             }
 
-            return roots;
+            return new(roots, logEntryDictionary);
         }
-        
+
         /// <summary>
         /// Adds a new "begin" node to the log flow tree structure, either as a root node or as a child of the current
         /// parent node.
@@ -57,7 +64,8 @@ namespace LogScraper.Log.FlowTree
         /// matching with corresponding "end" entries.</param>
         /// <param name="entry">The log entry associated with the "begin" node being added.</param>
         /// <param name="beginValue">The key value that uniquely identifies the "begin" node.</param>
-        private static void AddBeginNode(List<LogFlowTreeNode> roots, Stack<(LogContentValue Key, LogFlowTreeNode Node)> stack, LogEntry entry, LogContentValue beginValue)
+        /// <returns>The newly created <see cref="LogFlowTreeNode"/> representing the "begin" node.</returns>
+        private static LogFlowTreeNode AddBeginNode(List<LogFlowTreeNode> roots, Stack<(LogContentValue Key, LogFlowTreeNode Node)> stack, LogEntry entry, LogContentValue beginValue)
         {
             LogFlowTreeNode node = new()
             {
@@ -80,6 +88,8 @@ namespace LogScraper.Log.FlowTree
 
             // Push the new node onto the stack for future matching with end entries.
             stack.Push((beginValue, node));
+
+            return node;
         }
         /// <summary>
         /// Attempts to match an end node in the stack with the specified end value.
@@ -98,11 +108,12 @@ namespace LogScraper.Log.FlowTree
         /// <returns><see langword="false"/> if no matching begin node is found for the specified end value, indicating that  the
         /// end node is orphaned and ignored; otherwise, <see langword="true"/> if a matching begin node is found and
         /// successfully closed.</returns>
-        private static bool TryMatchEndNode(Stack<(LogContentValue Key, LogFlowTreeNode Node)> stack, LogEntry entry, LogContentValue endValue)
+        private static bool TryMatchEndNode(Stack<(LogContentValue Key, LogFlowTreeNode Node)> stack, LogEntry entry, LogContentValue endValue, out LogFlowTreeNode logFlowTreeNode)
         {
             // Use a temporary stack to hold nodes that do not match the current end value.
             Stack<(LogContentValue, LogFlowTreeNode)> temp = new();
             bool matched = false;
+            logFlowTreeNode = null;
 
             while (stack.Count > 0)
             {
@@ -114,6 +125,7 @@ namespace LogScraper.Log.FlowTree
                     // Found the matching begin node; set its end and stop searching.
                     top.Node.End = entry;
                     matched = true;
+                    logFlowTreeNode = top.Node;
                     break;
                 }
                 else

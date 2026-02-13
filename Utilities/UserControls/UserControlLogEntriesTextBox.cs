@@ -114,7 +114,7 @@ namespace LogScraper.Utilities.UserControls
             LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.FirstVisibleLine, logEntriesRenderMapCache, out LogEntryRenderPosition preRenderTopLogEntryRenderPosition);
 
             // Optional flow tree visualization based on the selected content property
-            List<LogFlowTreeNode> logFlowTree = null;
+            LogFlowTree logFlowTree = null;
             if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
             {
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];

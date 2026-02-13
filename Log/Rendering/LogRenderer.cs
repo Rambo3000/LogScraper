@@ -91,33 +91,26 @@ namespace LogScraper.Log.Rendering
         /// <param name="logEntries">The list of log entries to be converted. Cannot be null.</param>
         /// <param name="logRenderSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
         /// <param name="logContentPropertyForFlowTree">The log content property used to build the flow tree structure. Can be null.</param>
-        /// <param name="logFlowTreeNodes">The list of log flow tree nodes representing the hierarchical structure of log entries. Can be null.</param>
+        /// <param name="logFlowTree">The list of log flow tree nodes representing the hierarchical structure of log entries. Can be null.</param>
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string RenderLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, List<LogFlowTreeNode> logFlowTreeNodes, List<LogPostProcessorKind> logPostProcessorKinds)
+        public static string RenderLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, LogFlowTree logFlowTree, List<LogPostProcessorKind> logPostProcessorKinds)
         {
-            bool showTree = logFlowTreeNodes != null && logContentPropertyForFlowTree != null;
+            bool showTree = logFlowTree != null && logFlowTree.LogEntryDictionary != null && logContentPropertyForFlowTree != null;
             StringBuilder stringBuilder = new();
 
-            LogFlowTreeNode currentTreeNode = null;
 
             // Set the log post processor kinds to null if the list is empty to avoid unnecessary processing
             if (logPostProcessorKinds != null && logPostProcessorKinds.Count == 0) logPostProcessorKinds = null;
 
+            // Check if the flow tree content item is available
+            LogFlowTreeNode currentTreeNode = null;
             foreach (LogEntry logEntry in logEntries)
             {
-                // Check if the flow tree content item is available
-                if (showTree && logEntry.LogContentProperties != null && logEntry.LogContentProperties.ContainsKey(logContentPropertyForFlowTree))
+                if (showTree)
                 {
-                    // If the log entry has such a content property, find the corresponding tree node
-                    foreach (LogFlowTreeNode node in logFlowTreeNodes)
-                    {
-                        if (node.TryGetLogEntryNodeFromTree(logEntry, out LogFlowTreeNode matchedNode))
-                        {
-                            currentTreeNode = matchedNode;
-                            break;
-                        }
-                    }
+                    logFlowTree.LogEntryDictionary.TryGetValue(logEntry, out LogFlowTreeNode foundNode);
+                    if (foundNode != null) currentTreeNode = foundNode;
                 }
 
                 AppendLogEntryToStringBuilder(stringBuilder, logEntry, logRenderSettings, ref currentTreeNode, showTree, logPostProcessorKinds);

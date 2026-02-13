@@ -26,6 +26,6 @@ namespace LogScraper.Log.Metadata
         /// </summary>
         /// <remarks>This property provides a structured representation of log flow data, allowing for
         /// efficient  access and manipulation of log flow trees based on specific log content properties.</remarks>
-        public IndexDictionary<LogContentProperty, List<LogFlowTreeNode>> LogFlowTrees { get; set; }
+        public IndexDictionary<LogContentProperty, LogFlowTree> LogFlowTrees { get; set; }
     }
 }
