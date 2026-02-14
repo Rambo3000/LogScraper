@@ -46,7 +46,7 @@ namespace LogScraper.Log.Rendering
                 {
                     LogEntry logEntry = visibleLogEntries[i];
 
-                    if (logEntry.LogContentProperties == null || logEntry.LogContentProperties.Count == 0) continue;
+                    if (logEntry.LogContentProperties == null) continue;
 
                     if (!logEntry.LogContentProperties.ContainsKey(logContentProperty)) continue;
 

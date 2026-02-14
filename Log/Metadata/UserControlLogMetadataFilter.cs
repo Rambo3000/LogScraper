@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
@@ -197,6 +198,7 @@ namespace LogScraper
             // Save scroll position to restore after update
             int topItemIndex = ListViewItems.TopItem?.Index ?? 0;
 
+            ListViewItems.SuspendDrawing();
             ListViewItems.BeginUpdate();
 
             // Update counts for existing items
@@ -216,6 +218,7 @@ namespace LogScraper
             AdjustCountColumnWidth();
 
             ListViewItems.EndUpdate();
+            ListViewItems.ResumeDrawing();
 
             // Restore scroll position
             if (topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)

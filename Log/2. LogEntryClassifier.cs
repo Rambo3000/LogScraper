@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,63 +26,51 @@ namespace LogScraper.Log
         /// <returns>A list of LogMetadataPropertyAndValues objects containing metadata properties and their values.</returns>
         public static List<LogMetadataPropertyAndValues> GetLogEntriesListOfMetadataPropertyAndValues(List<LogEntry> logEntries, List<LogMetadataProperty> logMetadataProperties)
         {
-            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = [];
+            if (logEntries == null || logMetadataProperties == null) return [];
 
-            if (logEntries == null || logMetadataProperties == null) return logMetadataPropertyAndValuesList;
+            //Note: the code below is optimized for performance, since its in the hot UI path
+            int propertyCount = logMetadataProperties.Count;
 
-            // Dictionary to store the count of each value for each metadata property.
-            Dictionary<LogMetadataProperty, Dictionary<string, int>> valueCounts = [];
+            // Use array of dictionaries instead of IndexDictionary for faster index-based access.
+            // Each array position corresponds to a metadata property by index.
+            Dictionary<string, int>[] valueCounts = new Dictionary<string, int>[propertyCount];
 
-            foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
-            {
-                valueCounts[logMetadataProperty] = [];
-            }
+            // Initialize each dictionary with estimated capacity to reduce rehashing during population.
+            for (int i = 0; i < propertyCount; i++)
+                valueCounts[i] = new Dictionary<string, int>(32);
 
-            // Iterate through each log entry to populate the value counts.
+            // Iterate through all log entries to count occurrences of each property value.
             foreach (LogEntry logEntry in logEntries)
             {
-                foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
+                // Use index-based loop to avoid dictionary lookups - directly access valueCounts[i].
+                for (int i = 0; i < propertyCount; i++)
                 {
-                    // Try to get the value of the current metadata property from the log entry.
-                    if (!logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string propertyValue))
-                    {
-                        // If the metadata property is not present in the log entry, skip it.
+                    // Skip if this log entry doesn't contain the current metadata property.
+                    if (!logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperties[i], out string propertyValue))
                         continue;
-                    }
 
-                    // Get the dictionary for the current metadata property.
-                    Dictionary<string, int> ValueCountDictionary = valueCounts[logMetadataProperty];
-
-                    // Increment the count for the property value or initialize it to 1 if it doesn't exist.
-                    if (ValueCountDictionary.TryGetValue(propertyValue, out int value))
-                    {
-                        ValueCountDictionary[propertyValue] = ++value;
-                    }
-                    else
-                    {
-                        ValueCountDictionary[propertyValue] = 1;
-                    }
+                    // CollectionsMarshal.GetValueRefOrAddDefault returns a reference to the value in the dictionary.
+                    // If the key doesn't exist, it adds it with default value (0 for int) and returns a ref to it.
+                    // This eliminates the need for TryGetValue + separate assignment (single dictionary operation instead of two).
+                    ref int count = ref CollectionsMarshal.GetValueRefOrAddDefault(valueCounts[i], propertyValue, out _);
+                    count++; // Increment directly via reference - no second dictionary lookup needed.
                 }
             }
 
-            // Create LogMetadataPropertyAndValues objects based on the value counts.
-            foreach (LogMetadataProperty logMetadataProperty in logMetadataProperties)
+            // Build the final result list with pre-allocated capacity.
+            // This is faster than building the LogMetadataValues dictionary on the fly
+            List<LogMetadataPropertyAndValues> result = new(propertyCount);
+            for (int i = 0; i < propertyCount; i++)
             {
-                LogMetadataPropertyAndValues LogMetadataPropertyAndValues = new()
+                // Transform the counted values into the required LogMetadataPropertyAndValues structure.
+                result.Add(new LogMetadataPropertyAndValues
                 {
-                    // Convert the value counts into a dictionary of LogMetadataValue objects.
-                    LogMetadataValues = valueCounts[logMetadataProperty].ToDictionary(
-                            kvp => new LogMetadataValue(kvp.Key, kvp.Value, false),
-                            kvp => kvp.Value.ToString()
-                        ),
-
-                    LogMetadataProperty = logMetadataProperty
-                };
-
-                logMetadataPropertyAndValuesList.Add(LogMetadataPropertyAndValues);
+                    LogMetadataProperty = logMetadataProperties[i],
+                    LogMetadataValues = valueCounts[i].ToDictionary(kvp => new LogMetadataValue(kvp.Key, kvp.Value, false), kvp => kvp.Value.ToString())
+                });
             }
 
-            return logMetadataPropertyAndValuesList;
+            return result;
         }
 
         /// <summary>
