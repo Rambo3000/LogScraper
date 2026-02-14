@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LogScraper.Log.Layout;
 using LogScraper.LogTransformers;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {
@@ -66,7 +68,11 @@ namespace LogScraper.Log
             BuildLogEntriesFromParsedLines(parsedLogLines, logCollection);
 
             // Reverse the order of the log entries in place if necessary to ensure chronological order
-            if (logCollection.LogEntries[0].TimeStamp > logCollection.LogEntries[^1].TimeStamp) Array.Reverse(parsedLogLines);
+            if (logCollection.LogEntries[0].TimeStamp > logCollection.LogEntries[^1].TimeStamp)
+            {
+                logCollection.LogEntries.Reverse();
+                logCollection.LogEntries.AssignIndexes();
+            }
 
             // Handle the case where no valid log entries were added.
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
