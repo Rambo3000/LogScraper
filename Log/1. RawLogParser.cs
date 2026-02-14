@@ -21,12 +21,12 @@ namespace LogScraper.Log
         /// <remarks>This class encapsulates the details of a single log entry, including whether it
         /// contains a timestamp and the timestamp value if present. It is intended for internal use in log processing
         /// scenarios.</remarks>
-        /// <param name="rawEntry"></param>
+        /// <param name="rawLogEntry"></param>
         /// <param name="hasTimestamp"></param>
         /// <param name="timestamp"></param>
-        private class ParsedLogLine(string rawEntry, bool hasTimestamp, DateTime timestamp)
+        private class ParsedLogEntry(string rawLogEntry, bool hasTimestamp, DateTime timestamp)
         {
-            public string RawEntry = rawEntry;
+            public string RawLogEntry = rawLogEntry;
             public bool HasTimestamp = hasTimestamp;
             public DateTime Timestamp = timestamp;
         }
@@ -57,22 +57,23 @@ namespace LogScraper.Log
             int startIndex = GetLogEntriesStartIndex(rawLogEntries, logCollection);
 
             // Parse the timestamp in the log entries starting from the determined index.
-            ParsedLogLine[] parsedLogLines = PreParseLogTimestamps(rawLogEntries, startIndex, logLayout.DateTimeFormat);
+            ParsedLogEntry[] parsedLogLines = PreParseLogTimestamps(rawLogEntries, startIndex, logLayout.DateTimeFormat);
 
             if (parsedLogLines.Length == 0)
             {
                 return false;
             }
 
+            // Reverse the order of the log entries in place if necessary to ensure chronological order
+            // Apply this to the parsed log lines which are used to create the log entries, so that the
+            // log entries are created in the correct order and additional log entries are added to the correct log entry.
+            if (ShouldReverseParsedLogEntries(parsedLogLines))
+            {
+                Array.Reverse(parsedLogLines);
+            }
+
             // Combine additional log entries into the last log entry if applicable and add the log entries to the collection.
             BuildLogEntriesFromParsedLines(parsedLogLines, logCollection);
-
-            // Reverse the order of the log entries in place if necessary to ensure chronological order
-            if (logCollection.LogEntries[0].TimeStamp > logCollection.LogEntries[^1].TimeStamp)
-            {
-                logCollection.LogEntries.Reverse();
-                logCollection.LogEntries.AssignIndexes();
-            }
 
             // Handle the case where no valid log entries were added.
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
@@ -127,13 +128,13 @@ namespace LogScraper.Log
         /// <param name="rawLogEntries">An array of raw log entry strings to be parsed.</param>
         /// <param name="startIndex">The zero-based index in <paramref name="rawLogEntries"/> from which parsing should begin.</param>
         /// <param name="dateTimeFormat">The expected date-time format used to parse timestamps from the log entries.</param>
-        /// <returns>An array of <see cref="ParsedLogLine"/> objects representing the parsed log entries. Each element contains
+        /// <returns>An array of <see cref="ParsedLogEntry"/> objects representing the parsed log entries. Each element contains
         /// the original log entry, a flag indicating whether the timestamp was successfully parsed, and the parsed
         /// timestamp if available.</returns>
-        private static ParsedLogLine[] PreParseLogTimestamps(string[] rawLogEntries, int startIndex, string dateTimeFormat)
+        private static ParsedLogEntry[] PreParseLogTimestamps(string[] rawLogEntries, int startIndex, string dateTimeFormat)
         {
             int length = rawLogEntries.Length - startIndex;
-            ParsedLogLine[] parsedLines = new ParsedLogLine[length];
+            ParsedLogEntry[] parsedLogEntries = new ParsedLogEntry[length];
 
             // Process the log entries in parallel to improve performance.
             Parallel.For(0, length, i =>
@@ -143,25 +144,64 @@ namespace LogScraper.Log
                 // Skip empty log entries
                 if (rawEntry == string.Empty)
                 {
-                    parsedLines[i] = null;
+                    parsedLogEntries[i] = null;
                     return;
                 }
 
                 if (TryGetDateTimeFromRawLogEntry(rawEntry, dateTimeFormat, out DateTime timestamp))
                 {
-                    parsedLines[i] = new ParsedLogLine(rawEntry, true, timestamp);
+                    parsedLogEntries[i] = new ParsedLogEntry(rawEntry, true, timestamp);
                 }
                 else
                 {
-                    parsedLines[i] = new ParsedLogLine(rawEntry, false, default);
+                    parsedLogEntries[i] = new ParsedLogEntry(rawEntry, false, default);
                 }
             });
 
             // Handle the case when only a trailing empty line is present in the new set of log entries.
             // This happens often in logs with incremental reading, where the log is not changed since the last readout
-            if (length == 1 && parsedLines[0] == null) return [];
+            if (length == 1 && parsedLogEntries[0] == null) return [];
 
-            return parsedLines;
+            return parsedLogEntries;
+        }
+
+        /// <summary>
+        /// Determines whether the order of log entries should be reversed based on the timestamps of the first and last entries.
+        /// </summary>
+        /// <remarks>This method checks the timestamps of the first and last log entries to determine if they are in descending order.
+        /// If the first timestamp is greater than the last timestamp, it indicates that the log entries are in reverse chronological order and should be reversed to ensure correct ordering.</remarks>
+        /// <param name="parsedLogEntries">An array of <see cref="LogEntry"/> objects to be evaluated for order. The method will check the timestamps of the first and last entries in this array.</param>
+        /// <returns>Returns true if the log entries should be reversed to ensure chronological order; returns false if the entries are already in the correct order or if timestamps are not available.</returns>
+        private static bool ShouldReverseParsedLogEntries(ParsedLogEntry[] parsedLogEntries)
+        {
+            // Find first entry with timestamp
+            DateTime? firstTimestamp = null;
+            for (int i = 0; i < parsedLogEntries.Length; i++)
+            {
+                if (parsedLogEntries[i] != null && parsedLogEntries[i].HasTimestamp)
+                {
+                    firstTimestamp = parsedLogEntries[i].Timestamp;
+                    break;
+                }
+            }
+
+            if (firstTimestamp == null) return false; // No timestamps found
+
+            // Find last entry with timestamp
+            DateTime? lastTimestamp = null;
+            for (int i = parsedLogEntries.Length - 1; i >= 0; i--)
+            {
+                if (parsedLogEntries[i] != null && parsedLogEntries[i].HasTimestamp)
+                {
+                    lastTimestamp = parsedLogEntries[i].Timestamp;
+                    break;
+                }
+            }
+
+            if (lastTimestamp == null) return false; // Only one timestamp found
+
+            // Reverse if descending order
+            return firstTimestamp > lastTimestamp;
         }
 
         /// <summary>
@@ -171,19 +211,19 @@ namespace LogScraper.Log
         /// entries for lines that contain a timestamp. Lines without a timestamp are treated as additional log data and
         /// appended to the most recent log entry, if one exists. If no log entry has been created yet, lines without a
         /// timestamp are ignored.</remarks>
-        /// <param name="parsedLines">An array of <see cref="ParsedLogLine"/> objects representing the parsed log lines. Each element may contain
+        /// <param name="parsedLogEntries">An array of <see cref="ParsedLogEntry"/> objects representing the parsed log lines. Each element may contain
         /// a timestamp and raw log entry data.</param>
         /// <param name="logCollection">The <see cref="LogCollection"/> to which the processed log entries will be added. This collection will be
         /// updated with new log entries based on the parsed lines.</param>
-        private static void BuildLogEntriesFromParsedLines(ParsedLogLine[] parsedLines, LogCollection logCollection)
+        private static void BuildLogEntriesFromParsedLines(ParsedLogEntry[] parsedLogEntries, LogCollection logCollection)
         {
             bool logEntryIsAdded = false;
             LogEntry lastLogEntry = null;
 
             int indexOffset = logCollection.LogEntries.Count;
-            for (int i = 0; i < parsedLines.Length; i++)
+            for (int i = 0; i < parsedLogEntries.Length; i++)
             {
-                ref ParsedLogLine line = ref parsedLines[i];
+                ref ParsedLogEntry line = ref parsedLogEntries[i];
                 if (line == null) continue;
 
                 if (!line.HasTimestamp)
@@ -193,11 +233,11 @@ namespace LogScraper.Log
                     if (!logEntryIsAdded || lastLogEntry == null) continue;
 
                     lastLogEntry.AdditionalLogEntries ??= [];
-                    lastLogEntry.AdditionalLogEntries.Add(line.RawEntry);
+                    lastLogEntry.AdditionalLogEntries.Add(line.RawLogEntry);
                     continue;
                 }
 
-                LogEntry newLogEntry = new(line.RawEntry, line.Timestamp, i + indexOffset);
+                LogEntry newLogEntry = new(line.RawLogEntry, line.Timestamp, i + indexOffset);
                 logCollection.LogEntries.Add(newLogEntry);
                 logEntryIsAdded = true;
                 lastLogEntry = newLogEntry;

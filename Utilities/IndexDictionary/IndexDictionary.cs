@@ -3,10 +3,13 @@ using System.Collections.Generic;
 
 namespace LogScraper.Utilities.IndexDictionary
 {
+    /// <summary>
+    /// Interface for objects that have an integer index. This is used to ensure that keys in the IndexDictionary can provide a unique index for fast access.
+    /// </summary>
     public static class IndexDictionary
     {
         /// <summary>
-        /// Assigns indexes to a list of objects implementing <see cref="IHasIndex"/>.
+        /// Assigns sequential indexes to a list of objects that implement the IHasIndex interface. This is useful for preparing a list of keys before using them in an IndexDictionary, ensuring that each key has a unique index corresponding to its position in the list.
         /// </summary>
         /// <typeparam name="T">Type implementing IHasIndex.</typeparam>
         public static void AssignIndexes<T>(this IList<T> list) where T : IHasIndex
