@@ -247,7 +247,10 @@ namespace LogScraper.Configuration
                 logLayout.LogTransformers = [];
                 foreach (var logTransformerConfig in logLayout.LogTransformersConfig)
                 {
-                    logLayout.LogTransformers.Add(logTransformerConfig.CreateTransformer());
+                    // Use the construction below for old transformers in the config (like ReverseOrder)
+                    // which are not needed anymore
+                    ILogTransformer logTransformer = logTransformerConfig.CreateTransformer();
+                    if (logTransformer != null) logLayout.LogTransformers.Add(logTransformer);
                 }
             }
         }

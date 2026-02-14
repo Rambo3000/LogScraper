@@ -111,7 +111,6 @@ namespace LogScraper.Log
             chkTransformJson = new System.Windows.Forms.CheckBox();
             lbl = new System.Windows.Forms.Label();
             TxtJsonPath = new ValidatedTextBox();
-            chkTransformReverse = new System.Windows.Forms.CheckBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             GrpLayouts.SuspendLayout();
@@ -463,7 +462,7 @@ namespace LogScraper.Log
             tabPageMetadata.Location = new System.Drawing.Point(4, 24);
             tabPageMetadata.Name = "tabPageMetadata";
             tabPageMetadata.Padding = new System.Windows.Forms.Padding(3);
-            tabPageMetadata.Size = new System.Drawing.Size(712, 389);
+            tabPageMetadata.Size = new System.Drawing.Size(712, 385);
             tabPageMetadata.TabIndex = 0;
             tabPageMetadata.Text = "Metadata";
             tabPageMetadata.UseVisualStyleBackColor = true;
@@ -491,7 +490,7 @@ namespace LogScraper.Log
             grpMetadata.Dock = System.Windows.Forms.DockStyle.Fill;
             grpMetadata.Location = new System.Drawing.Point(3, 3);
             grpMetadata.Name = "grpMetadata";
-            grpMetadata.Size = new System.Drawing.Size(706, 383);
+            grpMetadata.Size = new System.Drawing.Size(706, 379);
             grpMetadata.TabIndex = 19;
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
@@ -643,14 +642,14 @@ namespace LogScraper.Log
             LstMetadata.IntegralHeight = false;
             LstMetadata.Location = new System.Drawing.Point(6, 22);
             LstMetadata.Name = "LstMetadata";
-            LstMetadata.Size = new System.Drawing.Size(220, 326);
+            LstMetadata.Size = new System.Drawing.Size(220, 322);
             LstMetadata.TabIndex = 10;
             LstMetadata.SelectedIndexChanged += LstMetadata_SelectedIndexChanged;
             // 
             // BtnMetadataAdd
             // 
             BtnMetadataAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataAdd.Location = new System.Drawing.Point(6, 354);
+            BtnMetadataAdd.Location = new System.Drawing.Point(6, 350);
             BtnMetadataAdd.Name = "BtnMetadataAdd";
             BtnMetadataAdd.Size = new System.Drawing.Size(80, 23);
             BtnMetadataAdd.TabIndex = 15;
@@ -661,7 +660,7 @@ namespace LogScraper.Log
             // BtnMetadataRemove
             // 
             BtnMetadataRemove.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnMetadataRemove.Location = new System.Drawing.Point(90, 354);
+            BtnMetadataRemove.Location = new System.Drawing.Point(90, 350);
             BtnMetadataRemove.Name = "BtnMetadataRemove";
             BtnMetadataRemove.Size = new System.Drawing.Size(80, 23);
             BtnMetadataRemove.TabIndex = 16;
@@ -673,7 +672,7 @@ namespace LogScraper.Log
             // 
             BtnMetadataDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataDown.Image = Properties.Resources.down;
-            BtnMetadataDown.Location = new System.Drawing.Point(204, 354);
+            BtnMetadataDown.Location = new System.Drawing.Point(204, 350);
             BtnMetadataDown.Name = "BtnMetadataDown";
             BtnMetadataDown.Size = new System.Drawing.Size(22, 23);
             BtnMetadataDown.TabIndex = 18;
@@ -684,7 +683,7 @@ namespace LogScraper.Log
             // 
             BtnMetadataUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnMetadataUp.Image = Properties.Resources.up;
-            BtnMetadataUp.Location = new System.Drawing.Point(180, 354);
+            BtnMetadataUp.Location = new System.Drawing.Point(180, 350);
             BtnMetadataUp.Name = "BtnMetadataUp";
             BtnMetadataUp.Size = new System.Drawing.Size(22, 23);
             BtnMetadataUp.TabIndex = 17;
@@ -1011,10 +1010,9 @@ namespace LogScraper.Log
             // tabPageTransformers
             // 
             tabPageTransformers.Controls.Add(GrpExtractJson);
-            tabPageTransformers.Controls.Add(chkTransformReverse);
             tabPageTransformers.Location = new System.Drawing.Point(4, 24);
             tabPageTransformers.Name = "tabPageTransformers";
-            tabPageTransformers.Size = new System.Drawing.Size(712, 389);
+            tabPageTransformers.Size = new System.Drawing.Size(712, 385);
             tabPageTransformers.TabIndex = 2;
             tabPageTransformers.Text = "Transformeren";
             tabPageTransformers.UseVisualStyleBackColor = true;
@@ -1026,7 +1024,7 @@ namespace LogScraper.Log
             GrpExtractJson.Controls.Add(chkTransformJson);
             GrpExtractJson.Controls.Add(lbl);
             GrpExtractJson.Controls.Add(TxtJsonPath);
-            GrpExtractJson.Location = new System.Drawing.Point(3, 28);
+            GrpExtractJson.Location = new System.Drawing.Point(2, 3);
             GrpExtractJson.Name = "GrpExtractJson";
             GrpExtractJson.Size = new System.Drawing.Size(281, 100);
             GrpExtractJson.TabIndex = 35;
@@ -1084,16 +1082,6 @@ namespace LogScraper.Log
             TxtJsonPath.Size = new System.Drawing.Size(247, 23);
             TxtJsonPath.TabIndex = 33;
             TxtJsonPath.TextChanged += TxtJsonPath_TextChanged;
-            // 
-            // chkTransformReverse
-            // 
-            chkTransformReverse.Location = new System.Drawing.Point(3, 3);
-            chkTransformReverse.Name = "chkTransformReverse";
-            chkTransformReverse.Size = new System.Drawing.Size(494, 19);
-            chkTransformReverse.TabIndex = 0;
-            chkTransformReverse.Text = "Draai de volgorde van het log om (eerst regel wordt laatste)";
-            chkTransformReverse.UseVisualStyleBackColor = true;
-            chkTransformReverse.CheckedChanged += ChkTransformReverse_CheckedChanged;
             // 
             // pictureBox2
             // 
@@ -1214,7 +1202,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox chkTransformJson;
         private System.Windows.Forms.Label lbl;
         private ValidatedTextBox TxtJsonPath;
-        private System.Windows.Forms.CheckBox chkTransformReverse;
         private System.Windows.Forms.PictureBox pictureBox15;
         private System.Windows.Forms.PictureBox pictureBox14;
         private ValidatedTextBox TxtExampleLogEntry;

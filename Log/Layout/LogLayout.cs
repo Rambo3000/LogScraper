@@ -158,11 +158,6 @@ namespace LogScraper.Log.Layout
             {
                 foreach (ILogTransformer transformer in LogTransformers)
                 {
-                    if (transformer is OrderReversalTransformer)
-                    {
-                        ILogTransformer newTransformer = new OrderReversalTransformer();
-                        layoutCopy.LogTransformers.Add(newTransformer);
-                    }
                     if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
                     {
                         ILogTransformer newTransformer = new JsonPathExtractionTranformer(jsonPathExtractionTranformer.JsonPath);

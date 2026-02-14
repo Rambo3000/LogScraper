@@ -1,4 +1,5 @@
 ﻿using System;
+using HtmlAgilityPack;
 using LogScraper.LogTransformers.Implementations;
 
 namespace LogScraper.LogTransformers
@@ -19,9 +20,8 @@ namespace LogScraper.LogTransformers
             // Determine the transformer type based on the configuration and create the appropriate instance.
             return config.Type.ToLower() switch
             {
-                "reverseorder" => new OrderReversalTransformer(),
                 "extractjsonpathfromeachline" => new JsonPathExtractionTranformer(config.JsonPath),
-                _ => throw new ArgumentException($"Unknown transformer type: {config.Type}"),
+                _ => null,
             };
         }
 
@@ -36,12 +36,6 @@ namespace LogScraper.LogTransformers
             // Initialize a new configuration object.
             LogTransformerConfig logTransformerConfig = new();
 
-            // Check the type of the transformer and populate the configuration accordingly.
-            if (transformer is OrderReversalTransformer)
-            {
-                logTransformerConfig.Type = "ReverseOrder";
-                return logTransformerConfig;
-            }
             if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
             {
                 logTransformerConfig.Type = "ExtractJsonPathFromEachLine";

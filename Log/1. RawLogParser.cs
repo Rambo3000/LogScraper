@@ -65,6 +65,9 @@ namespace LogScraper.Log
             // Combine additional log entries into the last log entry if applicable and add the log entries to the collection.
             BuildLogEntriesFromParsedLines(parsedLogLines, logCollection);
 
+            // Reverse the order of the log entries in place if necessary to ensure chronological order
+            if (logCollection.LogEntries[0].TimeStamp > logCollection.LogEntries[^1].TimeStamp) Array.Reverse(parsedLogLines);
+
             // Handle the case where no valid log entries were added.
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
             {

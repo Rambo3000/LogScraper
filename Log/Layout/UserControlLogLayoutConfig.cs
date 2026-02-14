@@ -280,17 +280,12 @@ namespace LogScraper.Log
                 }
                 if (_contentProperties.Count > 0) LstContent_SelectedIndexChanged(null, null);
 
-                chkTransformReverse.Checked = false;
                 chkTransformJson.Checked = false;
                 TxtJsonPath.Text = string.Empty;
                 if (selected.LogTransformers != null)
                 {
                     foreach (ILogTransformer transformer in selected.LogTransformers)
                     {
-                        if (transformer is OrderReversalTransformer)
-                        {
-                            chkTransformReverse.Checked = true;
-                        }
                         if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer)
                         {
                             chkTransformJson.Checked = true;
@@ -468,34 +463,6 @@ namespace LogScraper.Log
 
             if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.AfterPhrase = TxtMetadataEnd.Text;
 
-        }
-
-        private void ChkTransformReverse_CheckedChanged(object sender, EventArgs e)
-        {
-            if (UpdatingInformation) return;
-
-            if (LstLayouts.SelectedItem is LogLayout layout)
-            {
-                bool transformerFound = false;
-                foreach (ILogTransformer transformer in layout.LogTransformers)
-                {
-                    if (transformer is OrderReversalTransformer)
-                    {
-                        transformerFound = true;
-                        if (chkTransformReverse.Checked == false)
-                        {
-                            layout.LogTransformers.Remove(transformer);
-                            return;
-                        }
-                    }
-                }
-
-                if (chkTransformReverse.Checked && transformerFound == false)
-                {
-                    ILogTransformer newTransformer = new OrderReversalTransformer();
-                    layout.LogTransformers.Add(newTransformer);
-                }
-            }
         }
 
         private void ChkTransformJson_CheckedChanged(object sender, EventArgs e)
