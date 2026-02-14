@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.LogPostProcessors;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Rendering
 {
@@ -28,12 +29,13 @@ namespace LogScraper.Log.Rendering
         /// <returns>A dictionary mapping each specified log content property to a list of visual line indices representing the
         /// lines that should be styled for that property. If no entries are visible or no properties require styling,
         /// the dictionary will be empty.</returns>
-        public static Dictionary<LogContentProperty, List<int>> GetVisualLineIndexesPerContentProperty(List<LogEntry> visibleLogEntries, List<LogContentProperty> contentPropertiesWithCustomColoring, List<LogPostProcessorKind> kinds, out int[] visualLineIndexPerVisibleEntry)
+        public static IndexDictionary<LogContentProperty, List<int>> GetVisualLineIndexesPerContentProperty(List<LogEntry> visibleLogEntries, List<LogContentProperty> contentPropertiesWithCustomColoring, List<LogPostProcessorKind> kinds, out int[] visualLineIndexPerVisibleEntry)
         {
-            Dictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring.Count);
-
             visualLineIndexPerVisibleEntry = null;
-            if (visibleLogEntries == null) return logEntriesToStylePerContentProperty;
+         
+            if (visibleLogEntries == null || contentPropertiesWithCustomColoring == null || contentPropertiesWithCustomColoring.Count == 0) return null;
+            
+            IndexDictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring[^1].Index + 1);
 
             visualLineIndexPerVisibleEntry = BuildCache(visibleLogEntries, kinds);
 

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
+using LogScraper.Utilities.IndexDictionary;
 using ScintillaNET;
 
 namespace LogScraper.Utilities.Extensions
@@ -122,7 +123,7 @@ namespace LogScraper.Utilities.Extensions
         /// styling enabled are considered.</param>
         /// <param name="contentLinesToStyleDictionary">A mapping of log content properties to the lists of line numbers that should be styled using each property's
         /// custom style.</param>
-        public static void StyleLines(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties, Dictionary<LogContentProperty, List<int>> contentLinesToStyleDictionary)
+        public static void StyleLines(this Scintilla scintillaControl, List<LogContentProperty> logContentProperties, IndexDictionary<LogContentProperty, List<int>> contentLinesToStyleDictionary)
         {
             // Reorder the properties so the errors are always prioritised and styled last,
             // after sorting on error inverse the order

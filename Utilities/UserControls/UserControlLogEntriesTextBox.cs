@@ -13,6 +13,7 @@ using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
+using LogScraper.Utilities.IndexDictionary;
 using ScintillaNET;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
@@ -29,7 +30,7 @@ namespace LogScraper.Utilities.UserControls
         private LogEntry logEntryBegin = null;
         private LogEntry logEntryEnd = null;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
-        private Dictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
+        private IndexDictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private LogEntry selectedLogEntry = null;
 
         public UserControlLogEntriesTextBox()
