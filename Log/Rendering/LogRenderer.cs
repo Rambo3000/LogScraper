@@ -142,10 +142,10 @@ namespace LogScraper.Log.Rendering
             {
                 if (logRenderSettings.LogLayout.RemoveMetaDataCriteria != null)
                 {
-                    text = RemoveTextByCriteria(text, logRenderSettings.LogLayout.StartIndexMetadata, logEntry.StartIndexContent);
+                    text = RemoveTextByCriteria(text, logEntry.StartIndexMetadata, logEntry.StartIndexContent);
                 }
 
-                text = InsertMetadataIntoLogEntry(text, logRenderSettings.LogLayout.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logRenderSettings);
+                text = InsertMetadataIntoLogEntry(text, logEntry.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logRenderSettings);
             }
 
             string treePrefix = string.Empty;
@@ -157,13 +157,13 @@ namespace LogScraper.Log.Rendering
                 if (isEndNode) treeNode = treeNode.Parent;
             }
 
-            text = text.Insert(logRenderSettings.LogLayout.StartIndexMetadata, treePrefix);
+            text = text.Insert(logEntry.StartIndexMetadata, treePrefix);
 
             stringBuilder.AppendLine(text);
 
             if (logEntry.AdditionalLogEntries != null)
             {
-                string additionLogEntryPrefix = string.Concat(logEntry.Entry.AsSpan(0, logRenderSettings.LogLayout.StartIndexMetadata), " ", treePrefix);
+                string additionLogEntryPrefix = string.Concat(logEntry.Entry.AsSpan(0, logEntry.StartIndexMetadata), " ", treePrefix);
                 foreach (string extra in logEntry.AdditionalLogEntries)
                 {
                     if (showTree)

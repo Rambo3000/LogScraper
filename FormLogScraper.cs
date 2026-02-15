@@ -9,6 +9,7 @@ using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.RawLogParsing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;

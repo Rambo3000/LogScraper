@@ -40,6 +40,11 @@ namespace LogScraper.Log
         public List<string> AdditionalLogEntries { get; set; }
 
         /// <summary>
+        /// The starting position of the metadata of the log entry based. This excludes the timestamp
+        /// </summary>
+        public int StartIndexMetadata { get; set; }
+
+        /// <summary>
         /// The starting position of the content of the log entry based. This excludes the timestamp and metadata (if applicable)
         /// This is derived from the position of the metadata-content seperator
         /// </summary>

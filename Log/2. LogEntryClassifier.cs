@@ -117,7 +117,7 @@ namespace LogScraper.Log
             // Match on precompiled regex
             if (logLayout.RemoveMetaDataCriteria.IsRegex)
             {
-                Match match = logLayout.RemoveMetaDataCriteria.RegexCompiled.Match(logEntry.Entry, logLayout.StartIndexMetadata);
+                Match match = logLayout.RemoveMetaDataCriteria.RegexCompiled.Match(logEntry.Entry, logEntry.StartIndexMetadata);
 
                 if (match.Success)
                 {
@@ -127,7 +127,7 @@ namespace LogScraper.Log
             //Match on index
             else
             {
-                index = logEntry.Entry.IndexOf(logLayout.RemoveMetaDataCriteria.AfterPhrase, logLayout.StartIndexMetadata, StringComparison.Ordinal);
+                index = logEntry.Entry.IndexOf(logLayout.RemoveMetaDataCriteria.AfterPhrase, logEntry.StartIndexMetadata, StringComparison.Ordinal);
                 if (index != -1)
                 {
                     index += logLayout.RemoveMetaDataCriteria.AfterPhrase.Length;
@@ -137,7 +137,7 @@ namespace LogScraper.Log
             if (index == -1)
             {
                 // fallback: no match found, set to startIndexMetadata
-                index = logLayout.StartIndexMetadata;
+                index = logEntry.StartIndexMetadata;
             }
 
             logEntry.StartIndexContent = index;
@@ -159,7 +159,7 @@ namespace LogScraper.Log
             foreach (var logMetadataProperty in logLayout.LogMetadataProperties)
             {
                 // Extract the property value based on the criteria.
-                string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logLayout.StartIndexMetadata);
+                string propertyValue = ExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logEntry.StartIndexMetadata);
 
                 // Add the property value to the log entry if it exists.
                 if (propertyValue != null) logEntry.LogMetadataPropertiesWithStringValue[logMetadataProperty] = propertyValue;
@@ -186,7 +186,7 @@ namespace LogScraper.Log
                 {
                     // Extract the content value based on the criteria.
                     // For error content items search the entire line
-                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logContentProperty.IsErrorProperty ? logLayout.StartIndexMetadata : logEntry.StartIndexContent);
+                    value = ExtractValue(logEntry.Entry, filterCriteria, false, logContentProperty.IsErrorProperty ? logEntry.StartIndexMetadata : logEntry.StartIndexContent);
                     // Add the content value to the log entry if it exists.
                     if (value != null)
                     {

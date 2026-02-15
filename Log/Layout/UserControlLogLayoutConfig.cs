@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.RawLogParsing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
@@ -539,7 +540,7 @@ namespace LogScraper.Log
                     information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += $"Log regel zonder metadata:" + Environment.NewLine;
-                    information += $"   {LogRenderer.RemoveTextByCriteria(logEntry.Entry, logLayout.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
+                    information += $"   {LogRenderer.RemoveTextByCriteria(logEntry.Entry, logEntry.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
                     information += Environment.NewLine;
                     information += "Metadata:" + Environment.NewLine;
                     foreach (var property in logLayout.LogMetadataProperties)

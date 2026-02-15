@@ -32,28 +32,8 @@ namespace LogScraper.Log.Layout
             set
             {
                 DateTimeFormatCache = value;
-
-                // Update the StartPositionCache based on the length of the DateTimeFormat.
-                if (null != value)
-                {
-                    StartPositionCache = value.Length;
-                }
-                else
-                {
-                    StartPositionCache = 0; // Reset the cache if the format is null.
-                }
             }
         }
-
-        [JsonIgnore]
-        private int StartPositionCache { get; set; }
-
-        /// <summary>
-        /// The starting position of the log entry based on the DateTimeFormat.
-        /// This is derived from the DateTimeFormat length.
-        /// </summary>
-        [JsonIgnore]
-        public int StartIndexMetadata { get { return StartPositionCache; } }
 
         /// <summary>
         /// A list of metadata properties associated with the log layout.
