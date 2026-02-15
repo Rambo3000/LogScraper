@@ -14,48 +14,60 @@ namespace LogScraper.Log.RawLogParsing
     /// </summary>
     public class LogTimestampParser
     {
+        private readonly struct FormatInfo
+        {
+            public readonly string Format;
+            public readonly int ActualLength;
+
+            public FormatInfo(string format, int? explicitLength = null)
+            {
+                Format = format;
+                ActualLength = explicitLength ?? format.Length;
+            }
+        }
+
         /// <summary>
-        /// A thread-safe dictionary to keep track of recognized format indices. 
-        /// This allows the parser to quickly identify which formats have been successfully parsed in previous log entries.
+        /// A thread-safe dictionary to keep track of recognized format indices and their actual timestamp lengths.
+        /// Key: format index, Value: actual parsed timestamp length
         /// </summary>
-        private readonly ConcurrentDictionary<int, byte> recognizedFormatIndices = [];
+        private readonly ConcurrentDictionary<int, int> recognizedFormatIndices = [];
 
         /// <summary>
         /// An array of common date-time formats that the parser will attempt to use when extracting timestamps from log entries.
+        /// For formats with variable length (zzz, zz, Z), an explicit length is provided.
         /// </summary>
-        private static readonly string[] commonFormats =
+        private static readonly FormatInfo[] commonFormats =
         [
             // Rank the longest formats on top to prevent partial matches
-            // Note: do NOT use zzz as this will not parse correctly as the length of the format will not match the entry length
-            "yyyy-MM-dd HH:mm:ss.fff+00:00",
-            "yyyy-MM-ddTHH:mm:ss.fff+00:00",
-            "yyyy-MM-dd HH:mm:ss.fffffff",
-            "yyyy-MM-ddTHH:mm:ss.fffffff",
-            "yyyy-MM-dd HH:mm:ss.ffffff",
-            "yyyy-MM-ddTHH:mm:ss.ffffff",
-            "yyyy-MM-dd HH:mm:ss.fffZ",
-            "yyyy-MM-ddTHH:mm:ss.fffZ",
-            "yyyy-MM-dd HH:mm:ss.fff",
-            "yyyy-MM-ddTHH:mm:ss.fff",
-            "yyyy-MM-dd HH:mm:ss,fff",
-            "yyyy-MM-dd'T'HH:mm:ss,fff",
-            "yyyy-MM-ddTHH:mm:ss+00:00",
-            "yyyy-MM-dd HH:mm:ss+00:00",
-            "yyyy-MM-dd HH:mm:ss",
-            "yyyy-MM-ddTHH:mm:ss",
-            "[yyyy-MM-dd HH:mm:ss]",
-            "[yyyy-MM-ddTHH:mm:ss]",
-            "[yyyy-MM-dd HH:mm:ss.fff]",
-            "[yyyy-MM-ddTHH:mm:ss.fff]",
-            "dd/MM/yyyy HH:mm:ss",
-            "MM/dd/yyyy HH:mm:ss",
-            "dd-MM-yyyy HH:mm:ss",
-            "yyyyMMddHHmmss",
-            "yyyyMMddHHmmssfff",
-            "MMM dd HH:mm:ss",
-            "MMM  d HH:mm:ss",
-            "HH:mm:ss.fff",
-            "HH:mm:ss",
+            new("yyyy-MM-dd HH:mm:ss.fffzzz", 29),      // zzz expands to +00:00 (6 chars instead of 3)
+            new("yyyy-MM-ddTHH:mm:ss.fffzzz", 29),
+            new("yyyy-MM-dd HH:mm:ss.fffffff"),
+            new("yyyy-MM-ddTHH:mm:ss.fffffff"),
+            new("yyyy-MM-dd HH:mm:ss.ffffff"),
+            new("yyyy-MM-ddTHH:mm:ss.ffffff"),
+            new("yyyy-MM-dd HH:mm:ss.fffZ"),
+            new("yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new("yyyy-MM-dd HH:mm:ss.fff"),
+            new("yyyy-MM-ddTHH:mm:ss.fff"),
+            new("yyyy-MM-dd HH:mm:ss,fff"),
+            new("yyyy-MM-dd'T'HH:mm:ss,fff"),
+            new("yyyy-MM-ddTHH:mm:sszzz", 25),          // zzz expands to +00:00
+            new("yyyy-MM-dd HH:mm:sszzz", 25),
+            new("yyyy-MM-dd HH:mm:ss"),
+            new("yyyy-MM-ddTHH:mm:ss"),
+            new("[yyyy-MM-dd HH:mm:ss]"),
+            new("[yyyy-MM-ddTHH:mm:ss]"),
+            new("[yyyy-MM-dd HH:mm:ss.fff]"),
+            new("[yyyy-MM-ddTHH:mm:ss.fff]"),
+            new("dd/MM/yyyy HH:mm:ss"),
+            new("MM/dd/yyyy HH:mm:ss"),
+            new("dd-MM-yyyy HH:mm:ss"),
+            new("yyyyMMddHHmmss"),
+            new("yyyyMMddHHmmssfff"),
+            new("MMM dd HH:mm:ss"),
+            new("MMM  d HH:mm:ss"),
+            new("HH:mm:ss.fff"),
+            new("HH:mm:ss"),
         ];
 
         /// <summary>
@@ -71,6 +83,9 @@ namespace LogScraper.Log.RawLogParsing
             if (length == 0) return [];
 
             ParsedLogEntry[] result = new ParsedLogEntry[length];
+
+            // Calculate the expected length of the timestamp based on the forced format, accounting for variable-length timezone components
+            int forceDateTimeFormatLength = forceDateTimeFormat == null ? -1 : (forceDateTimeFormat.Contains("zzz") ? forceDateTimeFormat.Length + 3 : forceDateTimeFormat.Length);
 
             Parallel.For(0, length, i =>
             {
@@ -91,9 +106,9 @@ namespace LogScraper.Log.RawLogParsing
                 // If a specific format is forced, try it first
                 if (forceDateTimeFormat != null)
                 {
-                    if (TryParseTimestamp(entry, forceDateTimeFormat, out DateTime timestamp))
+                    if (TryParseTimestamp(entry, forceDateTimeFormat, forceDateTimeFormatLength, out DateTime timestamp))
                     {
-                        result[i] = new ParsedLogEntry(entry, true, timestamp, forceDateTimeFormat.Length);
+                        result[i] = new ParsedLogEntry(entry, true, timestamp, forceDateTimeFormatLength);
                     }
                     else
                     {
@@ -102,25 +117,30 @@ namespace LogScraper.Log.RawLogParsing
                     return;
                 }
 
-                // Try recognized format indices first
-                foreach (int formatIndex in recognizedFormatIndices.Keys)
+                // Try recognized format indices first (hot path)
+                foreach (var kvp in recognizedFormatIndices)
                 {
-                    if (TryParseTimestamp(entry, commonFormats[formatIndex], out DateTime timestamp))
+                    int formatIndex = kvp.Key;
+                    int actualLength = kvp.Value;
+
+                    if (TryParseTimestamp(entry, commonFormats[formatIndex].Format, actualLength, out DateTime timestamp))
                     {
-                        result[i] = new ParsedLogEntry(entry, true, timestamp, commonFormats[formatIndex].Length);
+                        result[i] = new ParsedLogEntry(entry, true, timestamp, actualLength);
                         return;
                     }
                 }
 
-                // Try all formats to detect
+                // Try all formats to detect (cold path)
                 for (int formatIndex = 0; formatIndex < commonFormats.Length; formatIndex++)
                 {
                     if (recognizedFormatIndices.ContainsKey(formatIndex)) continue;
 
-                    if (TryParseTimestamp(entry, commonFormats[formatIndex], out DateTime timestamp))
+                    FormatInfo formatInfo = commonFormats[formatIndex];
+
+                    if (TryParseTimestamp(entry, formatInfo.Format, formatInfo.ActualLength, out DateTime timestamp))
                     {
-                        result[i] = new ParsedLogEntry(entry, true, timestamp, commonFormats[formatIndex].Length);
-                        recognizedFormatIndices.TryAdd(formatIndex, 0);
+                        result[i] = new ParsedLogEntry(entry, true, timestamp, formatInfo.ActualLength);
+                        recognizedFormatIndices.TryAdd(formatIndex, formatInfo.ActualLength);
                         return;
                     }
                 }
@@ -130,23 +150,21 @@ namespace LogScraper.Log.RawLogParsing
 
             return length == 1 && result[0] == null ? [] : result;
         }
+
         /// <summary>
-        /// Attempts to parse a timestamp from a log entry using a specified date-time format. 
-        /// The method checks if the log entry is long enough to contain the format and then tries 
-        /// to parse the timestamp using the provided format. 
+        /// Attempts to parse a timestamp from a log entry using a specified date-time format.
         /// </summary>
         /// <param name="entry">The raw log entry from which to extract the timestamp.</param>
         /// <param name="format">The date-time format to use for parsing the timestamp.</param>
+        /// <param name="length">The length of the timestamp to extract.</param>
         /// <param name="timestamp">An output parameter that will contain the parsed DateTime value if the parsing is successful.</param>
         /// <returns>True if the timestamp was successfully parsed using the specified format; otherwise, false.</returns>
-        private static bool TryParseTimestamp(string entry, string format, out DateTime timestamp)
+        private static bool TryParseTimestamp(string entry, string format, int length, out DateTime timestamp)
         {
-            if (entry.Length < format.Length)
-            {
-                timestamp = default;
-                return false;
-            }
-            return DateTime.TryParseExact(entry[..format.Length], format, CultureInfo.InvariantCulture,
+            timestamp = default;
+            if (entry.Length < length) return false;
+
+            return DateTime.TryParseExact(entry[..length], format, CultureInfo.InvariantCulture,
                 DateTimeStyles.None, out timestamp);
         }
 
