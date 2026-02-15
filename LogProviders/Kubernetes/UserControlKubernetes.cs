@@ -1,5 +1,6 @@
 ﻿using LogScraper.Configuration;
 using LogScraper.Credentials;
+using LogScraper.Log;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
 using System;
@@ -219,7 +220,8 @@ namespace LogScraper.LogProviders.Kubernetes
         private void CboKubernetesTimespan_SelectedIndexChanged(object sender, EventArgs e)
         {
             KubernetesTimespan newTimeSpan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem;
-            if (cboKubernetesPod.SelectedIndex != -1 &&
+            if ( LogCollection.Instance.LogEntries.Count > 0 &&
+                cboKubernetesPod.SelectedIndex != -1 &&
                 previousTimeSpan != null && previousTimeSpan != KubernetesTimespan.Everything &&
                 (newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
                 MessageBox.Show("Om oudere loggegevens op te halen moeten het log eerst gewist worden, wil je dit doen?", "Log wissen", MessageBoxButtons.YesNo) == DialogResult.Yes)
