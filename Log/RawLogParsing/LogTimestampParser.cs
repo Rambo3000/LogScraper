@@ -14,16 +14,10 @@ namespace LogScraper.Log.RawLogParsing
     /// </summary>
     public class LogTimestampParser
     {
-        private readonly struct FormatInfo
+        private readonly struct FormatInfo(string format, int? explicitLength = null)
         {
-            public readonly string Format;
-            public readonly int ActualLength;
-
-            public FormatInfo(string format, int? explicitLength = null)
-            {
-                Format = format;
-                ActualLength = explicitLength ?? format.Length;
-            }
+            public readonly string Format = format;
+            public readonly int ActualLength = explicitLength ?? format.Length;
         }
 
         /// <summary>
@@ -39,35 +33,54 @@ namespace LogScraper.Log.RawLogParsing
         private static readonly FormatInfo[] commonFormats =
         [
             // Rank the longest formats on top to prevent partial matches
-            new("yyyy-MM-dd HH:mm:ss.fffzzz", 29),      // zzz expands to +00:00 (6 chars instead of 3)
-            new("yyyy-MM-ddTHH:mm:ss.fffzzz", 29),
-            new("yyyy-MM-dd HH:mm:ss.fffffff"),
-            new("yyyy-MM-ddTHH:mm:ss.fffffff"),
-            new("yyyy-MM-dd HH:mm:ss.ffffff"),
-            new("yyyy-MM-ddTHH:mm:ss.ffffff"),
-            new("yyyy-MM-dd HH:mm:ss.fffZ"),
-            new("yyyy-MM-ddTHH:mm:ss.fffZ"),
-            new("yyyy-MM-dd HH:mm:ss.fff"),
-            new("yyyy-MM-ddTHH:mm:ss.fff"),
-            new("yyyy-MM-dd HH:mm:ss,fff"),
-            new("yyyy-MM-dd'T'HH:mm:ss,fff"),
-            new("yyyy-MM-ddTHH:mm:sszzz", 25),          // zzz expands to +00:00
-            new("yyyy-MM-dd HH:mm:sszzz", 25),
-            new("yyyy-MM-dd HH:mm:ss"),
-            new("yyyy-MM-ddTHH:mm:ss"),
-            new("[yyyy-MM-dd HH:mm:ss]"),
-            new("[yyyy-MM-ddTHH:mm:ss]"),
-            new("[yyyy-MM-dd HH:mm:ss.fff]"),
-            new("[yyyy-MM-ddTHH:mm:ss.fff]"),
-            new("dd/MM/yyyy HH:mm:ss"),
-            new("MM/dd/yyyy HH:mm:ss"),
-            new("dd-MM-yyyy HH:mm:ss"),
-            new("yyyyMMddHHmmss"),
-            new("yyyyMMddHHmmssfff"),
-            new("MMM dd HH:mm:ss"),
-            new("MMM  d HH:mm:ss"),
-            new("HH:mm:ss.fff"),
-            new("HH:mm:ss"),
+            new("yyyy-MM-dd HH:mm:ss.fffzzz", 29),      // ISO 8601 with space separator + timezone offset (common in APIs, ASP.NET, cloud logs)
+            new("yyyy-MM-ddTHH:mm:ss.fffzzz", 29),      // RFC3339 / ISO 8601 with 'T' + offset (REST, JSON, Kubernetes, modern services)
+
+            new("yyyy-MM-dd HH:mm:ss.fffffff"),         // .NET default 7-digit fractional precision (DateTime.ToString default custom logs)
+            new("yyyy-MM-ddTHH:mm:ss.fffffff"),         // .NET ISO-like with full precision (Serilog, structured logging)
+
+            new("yyyy-MM-dd HH:mm:ss.ffffff"),          // Microsecond precision (some Java frameworks, database logs)
+            new("yyyy-MM-ddTHH:mm:ss.ffffff"),          // ISO-style microseconds (container/platform logs)
+
+            new("yyyy-MM-dd HH:mm:ss.fffZ"),            // ISO UTC literal 'Z' (JSON serializers, APIs)
+            new("yyyy-MM-ddTHH:mm:ss.fffZ"),            // RFC3339 UTC format (very common in REST responses)
+
+            new("yyyy-MM-dd HH:mm:ss.fff"),             // Common enterprise log format (Java, .NET, middleware)
+            new("yyyy-MM-ddTHH:mm:ss.fff"),             // ISO without timezone (application logs, structured logging)
+
+            new("yyyy-MM-dd HH:mm:ss,fff"),             // Java / Log4j default (comma milliseconds)
+            new("yyyy-MM-dd'T'HH:mm:ss,fff"),           // Java ISO-style with comma milliseconds
+
+            new("yyyy-MM-ddTHH:mm:sszzz", 25),          // ISO 8601 with offset, no milliseconds (APIs, infrastructure logs)
+            new("yyyy-MM-dd HH:mm:sszzz", 25),          // Space-separated variant with offset (less common but seen in app logs)
+            
+            new("ddd, dd MMM yyyy HH:mm:ss 'GMT'"),     // RFC1123 HTTP-date (IIS, Azure, reverse proxies, HTTP headers)
+            new("dd-MMM-yyyy HH:mm:ss.fff"),            // Log4j / legacy enterprise logs (textual month)
+            new("dd-MMM-yyyy HH:mm:ss"),                // Same without milliseconds (older systems)
+            
+            new("yyyy-MM-ddTHH:mm:ssZ"),                // ISO 8601 UTC without milliseconds (common in REST APIs)
+            new("yyyy-MM-dd HH:mm:ss"),                 // Very common default log format (generic apps, SQL exports)
+            new("yyyy-MM-ddTHH:mm:ss"),                 // ISO without milliseconds or offset (minimal structured logs)
+
+            new("[yyyy-MM-dd HH:mm:ss]"),               // Bracketed classic log style (custom frameworks, older .NET apps)
+            new("[yyyy-MM-ddTHH:mm:ss]"),               // Bracketed ISO style (structured logs with prefix metadata)
+
+            new("[yyyy-MM-dd HH:mm:ss.fff]"),           // Bracketed with milliseconds (common in enterprise logging)
+            new("[yyyy-MM-ddTHH:mm:ss.fff]"),           // Bracketed ISO with milliseconds (modern structured logs)
+
+            new("dd/MM/yyyy HH:mm:ss"),                 // European regional logs (custom apps, Windows exports)
+            new("MM/dd/yyyy HH:mm:ss"),                 // US regional logs (legacy Windows / IIS exports)
+            new("dd-MM-yyyy HH:mm:ss"),                 // European dash-separated variant (custom business apps)
+            new("dd/MMM/yyyy:HH:mm:ss zzz",27),            // Apache / Nginx combined log format
+
+            new("yyyyMMddHHmmss"),                      // Compact sortable timestamp (batch jobs, file naming)
+            new("yyyyMMddHHmmssfff"),                   // Compact with milliseconds (ETL, financial systems)
+
+            new("MMM dd HH:mm:ss"),                     // Syslog format (Linux, Docker, Kubernetes node logs)
+            new("MMM  d HH:mm:ss"),                     // Syslog single-digit day variant (double-space padding)
+
+            new("HH:mm:ss.fff"),                        // Time-only logs (embedded systems, continuation entries)
+            new("HH:mm:ss"),                            // Minimal time-only format (rare as standalone, often trace continuation)
         ];
 
         /// <summary>
