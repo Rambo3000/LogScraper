@@ -61,9 +61,9 @@ namespace LogScraper.Log.RawLogParsing
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
             {
                 // Provide an explanation for the failure to parse the log entries
-                string message =
-                        "No timestamp detected at the start of the log entries. Log filtering and navigation is disabled" + Environment.NewLine +
-                        "Select the correct log layout or configure a custom timestamp format." + Environment.NewLine;
+                string message = 
+                    "No timestamp detected at the start of each log line. Log filtering and navigation are disabled." + Environment.NewLine +
+                    "If the timestamp is not recognized, configure a timestamp format in the log layout settings." + Environment.NewLine;
 
                 throw new Exception(message);
             }
