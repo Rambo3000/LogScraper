@@ -24,7 +24,7 @@ namespace LogScraper.Log.RawLogParsing
         {
             if (rawLogEntries == null) return false;
             if (rawLogEntries.Length == 0) return false;
-            if (string.IsNullOrEmpty(logLayout.DateTimeFormat)) throw new Exception("The date time format is not provided for the given log layout");
+            if (!logLayout.IsAutomaticTimeStampRecognitionEnabled && string.IsNullOrEmpty(logLayout.DateTimeFormat)) throw new Exception("The date time format is not provided for the given log layout");
 
             // Transform log entries using the provided transformers in the layout.
             if (logLayout.LogTransformers != null && logLayout.LogTransformers.Count > 0)
@@ -39,7 +39,7 @@ namespace LogScraper.Log.RawLogParsing
             int startIndex = GetLogEntriesStartIndex(rawLogEntries, logCollection);
 
             // Parse the timestamp in the log entries starting from the determined index.
-            ParsedLogEntry[] parsedLogLines = new LogTimestampParser().Parse(rawLogEntries, startIndex, logLayout.DateTimeFormat);
+            ParsedLogEntry[] parsedLogLines = new LogTimestampParser().Parse(rawLogEntries, startIndex, !logLayout.IsAutomaticTimeStampRecognitionEnabled ? logLayout.DateTimeFormat : null);
 
             if (parsedLogLines.Length == 0)
             {
@@ -63,10 +63,9 @@ namespace LogScraper.Log.RawLogParsing
                 // Provide an explanation for the failure to parse the log entries, including the expected date-time format.
                 int maxLength = rawLogEntries[0].Length < logLayout.DateTimeFormat.Length ? rawLogEntries[0].Length : logLayout.DateTimeFormat.Length;
                 string message =
-                    "The log could not be parsed using the selected layout." + Environment.NewLine +
-                    $"Expected datetime format at the start of each entry: {logLayout.DateTimeFormat}" + Environment.NewLine +
-                    "Found content at start of entry (example): " + rawLogEntries[0][..maxLength] + Environment.NewLine +
-                    "Select the correct log layout or adjust the configuration of the selected layout.";
+                        "No timestamp detected at the start of the log entries." + Environment.NewLine +
+                        "Select the correct log layout or configure a custom timestamp format." + Environment.NewLine +
+                        "Example log content: " + rawLogEntries[0][..maxLength];
 
                 throw new Exception(message);
             }

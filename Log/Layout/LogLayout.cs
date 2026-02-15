@@ -19,21 +19,16 @@ namespace LogScraper.Log.Layout
         /// </summary>
         public string Description { get; set; }
 
-        [JsonIgnore]
-        public string DateTimeFormatCache;
+        /// <summary>
+        /// Indicates whether automatic timestamp recognition is enabled for the log layout.
+        /// </summary>
+        public bool IsAutomaticTimeStampRecognitionEnabled { get; set; } = true;
 
         /// <summary>
-        /// The format used for parsing date and time in the log.
-        /// Setting this property also updates the StartPositionCache based on the length of the format.
+        /// The date and time format used in the log entries in case automatic timestamp recognition is not enabled.
+        /// This format is used to parse timestamps from the log entries based on the specified format.
         /// </summary>
-        public string DateTimeFormat
-        {
-            get { return DateTimeFormatCache; }
-            set
-            {
-                DateTimeFormatCache = value;
-            }
-        }
+        public string DateTimeFormat { get; set; }
 
         /// <summary>
         /// A list of metadata properties associated with the log layout.
@@ -114,6 +109,7 @@ namespace LogScraper.Log.Layout
             LogLayout layoutCopy = new()
             {
                 Description = Description,
+                IsAutomaticTimeStampRecognitionEnabled = IsAutomaticTimeStampRecognitionEnabled,
                 DateTimeFormat = DateTimeFormat,
                 RemoveMetaDataCriteria = new()
                 {

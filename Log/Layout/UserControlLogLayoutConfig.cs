@@ -69,7 +69,7 @@ namespace LogScraper.Log
             foreach (LogLayout layout in _layouts)
             {
                 if (string.IsNullOrWhiteSpace(layout.Description) ||
-                    string.IsNullOrWhiteSpace(layout.DateTimeFormat) ||
+                    (!layout.IsAutomaticTimeStampRecognitionEnabled && string.IsNullOrWhiteSpace(layout.DateTimeFormat)) ||
                     string.IsNullOrEmpty(layout.RemoveMetaDataCriteria.AfterPhrase))
                 {
                     errorMessages.Add($"Layout '{layout.Description}' is niet compleet ingevuld.");
@@ -154,7 +154,7 @@ namespace LogScraper.Log
             LogLayout layout = new()
             {
                 Description = "Nieuwe layout",
-                DateTimeFormat = "yyyy-MM-ddTHH:mm:ss,fff",
+                DateTimeFormat = "",
                 RemoveMetaDataCriteria = new(),
                 LogMetadataProperties = [CreateLogMetadataProperty()],
                 LogContentProperties = [CreateLogContentProperty()],
@@ -215,7 +215,7 @@ namespace LogScraper.Log
         {
             if (listbox.SelectedItem is T selected)
             {
-                bindingList.Remove(selected); 
+                bindingList.Remove(selected);
                 UpdateButtons();
             }
         }
@@ -263,6 +263,7 @@ namespace LogScraper.Log
             {
                 UpdatingInformation = true;
                 TxtDescription.Text = selected.Description;
+                ChkAutomaticTimestampDetection.Checked = selected.IsAutomaticTimeStampRecognitionEnabled;
                 TxtDateTimeFormat.Text = selected.DateTimeFormat;
                 TxtMetadataEnd.Text = selected.RemoveMetaDataCriteria.AfterPhrase;
                 ChkMetadataEndRegex.Checked = selected.RemoveMetaDataCriteria.IsRegex;
@@ -298,6 +299,7 @@ namespace LogScraper.Log
                 UpdatingInformation = false;
             }
             UpdateButtons();
+            ChkAutomaticTimestampDetection_CheckedChanged(this, EventArgs.Empty);
         }
 
         private void TxtDescription_TextChanged(object sender, EventArgs e)
@@ -308,6 +310,26 @@ namespace LogScraper.Log
 
             LstLayouts.DisplayMember = string.Empty; // Force update
             LstLayouts.DisplayMember = "Description";
+        }
+        private void ChkAutomaticTimestampDetection_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+
+            if (LstLayouts.SelectedItem is LogLayout selected)
+            {
+                selected.IsAutomaticTimeStampRecognitionEnabled = ChkAutomaticTimestampDetection.Checked;
+                if (ChkAutomaticTimestampDetection.Checked)
+                {
+                    TxtDateTimeFormat.Text = string.Empty;
+                    TxtDateTimeFormat.Visible = false;
+                    LblDateTimeFormat.Visible = false;
+                }
+                else
+                {
+                    TxtDateTimeFormat.Visible = true;
+                    LblDateTimeFormat.Visible = true;
+                }
+            }
         }
 
         private void TxtDateTimeFormat_TextChanged(object sender, EventArgs e)
