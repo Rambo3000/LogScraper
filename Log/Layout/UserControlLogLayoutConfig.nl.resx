@@ -218,4 +218,42 @@ Let op! De applicatie kan langzamer worden indien er veel filters zijn opgegeven
     <value>Indien ingeschakeld kan dit filter worden gebruikt om snel naar bijbehorende logregels te springen.
 Indien uitgeschakeld wordt het filter alleen gebruikt voor visuele markering (kleuren en inspringen).</value>
   </data>
+  <data name="pictureBox13.ToolTip" xml:space="preserve">
+    <value>Detecteert automatisch de timestamp aan het begin van elke logregel. Mocht automatische detectie niet werken, schakel deze uit en geef een eigen datetime format op.
+
+d: Represents the day of the month as a number from 1 through 31.
+dd: Represents the day of the month as a number from 01 through 31.
+ddd: Represents the abbreviated name of the day (Mon, Tues, Wed, etc).
+dddd: Represents the full name of the day (Monday, Tuesday, etc).
+h: 12-hour clock hour (e.g. 4).
+hh: 12-hour clock, with a leading 0 (e.g. 06)
+H: 24-hour clock hour (e.g. 15)
+HH: 24-hour clock hour, with a leading 0 (e.g. 22)
+m: Minutes
+mm: Minutes with a leading zero
+M: Month number(eg.3)
+MM: Month number with leading zero(eg.04)
+MMM: Abbreviated Month Name (e.g. Dec)
+MMMM: Full month name (e.g. December)
+s: Seconds
+ss: Seconds with leading zero
+t: Abbreviated AM / PM (e.g. A or P)
+tt: AM / PM (e.g. AM or PM
+y: Year, no leading zero (e.g. 2015 would be 15)
+yy: Year, leading zero (e.g. 2015 would be 015)
+yyy: Year, (e.g. 2015)
+yyyy: Year, (e.g. 2015)
+K: Represents the time zone information of a date and time value (e.g. +05:00)
+z: With DateTime values represent the signed offset of the local operating system's time zone from
+Coordinated Universal Time (UTC), measured in hours. (e.g. +6)
+zz: As z, but with leading zero (e.g. +06)
+zzz: With DateTime values represents the signed offset of the local operating system's time zone from UTC, measured in hours and minutes. (e.g. +06:00)
+f: Represents the most significant digit of the seconds fraction; that is, it represents the tenths of a second in a date and time value.
+ff: Represents the two most significant digits of the second's fraction in date and time
+fff: Represents the three most significant digits of the second's fraction; that is, it represents the milliseconds in a date and time value.
+ffff: Represents the four most significant digits of the second's fraction; that is, it represents the ten-thousandths of a second in a date and time value. While it is possible to display the ten thousandths of a second component of a time value, that value may not be meaningful.
+fffff: Represents the five most significant digits of the second's fraction; that is, it represents the hundred-thousandths of a second in a date and time value.
+ffffff: Represents the six most significant digits of the second's fraction; that is, it represents the millionths of a second in a date and time value.
+fffffff: Represents the seven most significant digits of the second's fraction; that is, it represents the ten-millionths of a second in a date and time value.</value>
+  </data>
 </root>

@@ -26,21 +26,25 @@ namespace LogScraper.Log.RawLogParsing
         private static readonly string[] commonFormats =
         [
             // Rank the longest formats on top to prevent partial matches
+            // Note: do NOT use zzz as this will not parse correctly as the length of the format will not match the entry length
+            "yyyy-MM-dd HH:mm:ss.fff+00:00",
+            "yyyy-MM-ddTHH:mm:ss.fff+00:00",
             "yyyy-MM-dd HH:mm:ss.fffffff",
             "yyyy-MM-ddTHH:mm:ss.fffffff",
-            "yyyy-MM-dd HH:mm:ss.ffffff",  // Microseconds (veel frameworks)
-            "yyyy-MM-ddTHH:mm:ss.fffzzz",
-            "yyyy-MM-dd HH:mm:ss.fffzzz",
+            "yyyy-MM-dd HH:mm:ss.ffffff",
+            "yyyy-MM-ddTHH:mm:ss.ffffff",
+            "yyyy-MM-dd HH:mm:ss.fffZ",
             "yyyy-MM-ddTHH:mm:ss.fffZ",
             "yyyy-MM-dd HH:mm:ss.fff",
             "yyyy-MM-ddTHH:mm:ss.fff",
             "yyyy-MM-dd HH:mm:ss,fff",
             "yyyy-MM-dd'T'HH:mm:ss,fff",
-            "yyyy-MM-ddTHH:mm:sszzz",
-            "yyyy-MM-dd HH:mm:sszzz",
+            "yyyy-MM-ddTHH:mm:ss+00:00",
+            "yyyy-MM-dd HH:mm:ss+00:00",
             "yyyy-MM-dd HH:mm:ss",
-            "yyyy-MM-ddTHH:mm:ss",    // ISO zonder timezone
+            "yyyy-MM-ddTHH:mm:ss",
             "[yyyy-MM-dd HH:mm:ss]",
+            "[yyyy-MM-ddTHH:mm:ss]",
             "[yyyy-MM-dd HH:mm:ss.fff]",
             "[yyyy-MM-ddTHH:mm:ss.fff]",
             "dd/MM/yyyy HH:mm:ss",

@@ -60,12 +60,10 @@ namespace LogScraper.Log.RawLogParsing
             // Handle the case where no valid log entries were added.
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
             {
-                // Provide an explanation for the failure to parse the log entries, including the expected date-time format.
-                int maxLength = rawLogEntries[0].Length < logLayout.DateTimeFormat.Length ? rawLogEntries[0].Length : logLayout.DateTimeFormat.Length;
+                // Provide an explanation for the failure to parse the log entries
                 string message =
-                        "No timestamp detected at the start of the log entries." + Environment.NewLine +
-                        "Select the correct log layout or configure a custom timestamp format." + Environment.NewLine +
-                        "Example log content: " + rawLogEntries[0][..maxLength];
+                        "No timestamp detected at the start of the log entries. Log filtering and navigation is disabled" + Environment.NewLine +
+                        "Select the correct log layout or configure a custom timestamp format." + Environment.NewLine;
 
                 throw new Exception(message);
             }
