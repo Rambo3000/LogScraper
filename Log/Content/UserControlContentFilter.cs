@@ -521,8 +521,10 @@ namespace LogScraper
             }
             else
             {
+                string value = string.Empty;
+                if (item.ContentValue.Value != null) value = item.ContentValue.Value.Length > 128 ? item.ContentValue.Value[0..127] : item.ContentValue.Value;
                 //Default drawing, without tree
-                string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + item.ContentValue.Value, g, e.Bounds.Width);
+                string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + value, g, e.Bounds.Width);
                 e.Graphics.DrawString(truncatedValue, LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
             }
 
@@ -585,7 +587,9 @@ namespace LogScraper
             g.DrawString(item.ContentValue.TimeDescription, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
 
             // Truncate description if it doesn’t fit
-            string value = item.ContentValue.Value ?? string.Empty;
+
+            string value = string.Empty;
+            if (item.ContentValue.Value != null) value = item.ContentValue.Value.Length > 128 ? item.ContentValue.Value[0..127] : item.ContentValue.Value;
             string truncatedValue = TruncateTextToFit(value, g, e.Bounds.Right - textX);
 
             // Draw text
