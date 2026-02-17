@@ -37,8 +37,9 @@ namespace LogScraper.LogPostProcessors
         public void Clear()
         {
             CancelPostProcessing();
-            isVirtuallyReset = false;
+            isVirtuallyReset = true;
             hasPostProcessingData = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
+            RecalculateEffectiveVisibility();
         }
         #endregion
 
@@ -84,27 +85,29 @@ namespace LogScraper.LogPostProcessors
                 return;
             }
 
+            postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
+            CancelPostProcessing();
+
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
 
-            // Update the hasPostProcessingData array based on the changes reported by the event args
+            bool dataChanged = false;
             foreach (var kind in Enum.GetValues<LogPostProcessorKind>())
             {
-                // Skip if we already have data for this kind or if there were no changes, do not reset existing data
-                if (hasPostProcessingData[(int)kind] || eventArgs.HasChanges[(int)kind] == false) continue;
-
+                if (hasPostProcessingData[(int)kind] || !eventArgs.HasChanges[(int)kind]) continue;
                 hasPostProcessingData[(int)kind] = true;
+                dataChanged = true;
             }
 
             isVirtuallyReset = false;
             IsProcessing = false;
-
-            RecalculateEffectiveVisibility();
-
             UpdateControlsEnabledState();
 
-            postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
+            List<LogPostProcessorKind> previousKinds = effectiveVisibleKinds;
+            RecalculateEffectiveVisibility(); // updates effectiveVisibleKinds, fires event if changed
 
-            CancelPostProcessing();
+            // Force fire if RecalculateEffectiveVisibility didnt change and thus didnt fire the event
+            if (ReferenceEquals(effectiveVisibleKinds, previousKinds))
+                VisibleProcessorsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
@@ -217,10 +220,7 @@ namespace LogScraper.LogPostProcessors
 
         private void CancelPostProcessing()
         {
-            RecalculateEffectiveVisibility();
-
             if (postProcessCancellationSource == null) return;
-
             postProcessCancellationSource.Cancel();
             postProcessCancellationSource.Dispose();
             postProcessCancellationSource = null;
