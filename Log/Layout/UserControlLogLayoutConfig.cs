@@ -22,6 +22,10 @@ namespace LogScraper.Log
         private readonly BindingList<LogLayout> _layouts = [];
         private readonly BindingList<LogMetadataProperty> _metadataProperties = [];
         private readonly BindingList<LogContentProperty> _contentProperties = [];
+
+        // Tracks which layout currently owns the sub-lists so we can detach before switching
+        private LogLayout _activeLayout;
+
         public UserControlLogLayoutConfig()
         {
             InitializeComponent();
@@ -31,6 +35,10 @@ namespace LogScraper.Log
             LstLayouts.DisplayMember = "Description";
             LstContent.DisplayMember = "Description";
             LstMetadata.DisplayMember = "Description";
+
+            // Keep the layout's own lists in sync when the binding lists change
+            _metadataProperties.ListChanged += (_, _) => SyncMetadataToLayout();
+            _contentProperties.ListChanged += (_, _) => SyncContentToLayout();
 
             TxtCustomStyleExample.Initialize();
             TxtCustomStyleExample.HideUnusedMargins();
@@ -43,25 +51,45 @@ namespace LogScraper.Log
             TxtCustomStyleExample.ReadOnly = true;
             TxtCustomStyleExample.HighlightSingleLine(2, 11);
         }
+
+        // Syncs the binding list back to the active layout — called automatically via ListChanged
+        private void SyncMetadataToLayout()
+        {
+            _activeLayout?.LogMetadataProperties = [.. _metadataProperties];
+        }
+
+        private void SyncContentToLayout()
+        {
+            _activeLayout?.LogContentProperties = [.. _contentProperties];
+        }
+
+        /// <summary>
+        /// Refreshes a single item in the ListBox by triggering a ResetItem on the BindingList.
+        /// </summary>
+        private static void RefreshListBoxItem<T>(ListBox listBox, BindingList<T> bindingList, T item)
+        {
+            int index = bindingList.IndexOf(item);
+            if (index >= 0) bindingList.ResetItem(index);
+        }
+
         public void Clear()
         {
             LstLayouts.SelectedIndex = -1;
+            _activeLayout = null;
             _layouts.Clear();
             _metadataProperties.Clear();
             _contentProperties.Clear();
         }
+
         internal void SetLogLayoutsConfig(List<LogLayout> layouts)
         {
-            // Copy instances so we dont mix them with the ones already in the config
             if (layouts != null && layouts.Count > 0)
             {
-                foreach (var layout in layouts)
-                {
-                    _layouts.Add(layout.Copy());
-                }
-                if (layouts.Count > 0) LstLayouts.SelectedIndex = 0;
+                foreach (var layout in layouts) _layouts.Add(layout.Copy());
+                LstLayouts.SelectedIndex = 0;
             }
         }
+
         internal bool TryGetLogLayoutsConfig(out LogLayoutsConfig config)
         {
             List<string> errorMessages = [];
@@ -101,9 +129,9 @@ namespace LogScraper.Log
                     if (property.IsBeginFlowTreeFilter && property.EndFlowTreeContentProperty == null)
                     {
                         errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft geen einde flow geselecteerd.");
-
                     }
                 }
+
                 foreach (ILogTransformer transformer in layout.LogTransformers)
                 {
                     if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer && string.IsNullOrWhiteSpace(jsonPathExtractionTranformer.JsonPath))
@@ -112,7 +140,6 @@ namespace LogScraper.Log
                     }
                 }
 
-                //Reindex the properties for the index dictionary.
                 layout.LogMetadataProperties?.AssignIndexes();
                 layout.LogContentProperties?.AssignIndexes();
             }
@@ -124,18 +151,13 @@ namespace LogScraper.Log
                 return false;
             }
 
-            config = new LogLayoutsConfig
-            {
-                layouts = [.. _layouts]
-            };
+            config = new LogLayoutsConfig { layouts = [.. _layouts] };
 
             foreach (LogLayout layout in config.layouts)
             {
                 layout.LogTransformersConfig = [];
                 foreach (ILogTransformer transformer in layout.LogTransformers)
-                {
                     layout.LogTransformersConfig.Add(transformer.CreateTransformerConfig());
-                }
             }
 
             return true;
@@ -145,32 +167,22 @@ namespace LogScraper.Log
         {
             LogLayout logLayout = CreateLayout();
             _layouts.Add(logLayout);
-
             LstLayouts.SelectedItem = logLayout;
             UpdateButtons();
         }
-        private static LogLayout CreateLayout()
-        {
-            LogLayout layout = new()
-            {
-                Description = "Nieuwe layout",
-                DateTimeFormat = "",
-                RemoveMetaDataCriteria = new(),
-                LogMetadataProperties = [CreateLogMetadataProperty()],
-                LogContentProperties = [CreateLogContentProperty()],
-                LogTransformers = []
-            };
 
-            return layout;
-        }
-        private static LogMetadataProperty CreateLogMetadataProperty()
+        private static LogLayout CreateLayout() => new()
         {
-            return new() { Description = "Nieuwe metadata", Criteria = new() };
-        }
-        private static LogContentProperty CreateLogContentProperty()
-        {
-            return new() { Description = "Nieuwe metadata", Criterias = [] };
-        }
+            Description = "Nieuwe layout",
+            DateTimeFormat = "",
+            RemoveMetaDataCriteria = new(),
+            LogMetadataProperties = [CreateLogMetadataProperty()],
+            LogContentProperties = [CreateLogContentProperty()],
+            LogTransformers = []
+        };
+
+        private static LogMetadataProperty CreateLogMetadataProperty() => new() { Description = "Nieuwe metadata", Criteria = new() };
+        private static LogContentProperty CreateLogContentProperty() => new() { Description = "Nieuwe metadata", Criterias = [] };
 
         private void BtnRemoveLayout_Click(object sender, EventArgs e)
         {
@@ -211,18 +223,23 @@ namespace LogScraper.Log
             TxtContentDescription.Enabled = LstContent.Items.Count > 0;
             TxtContentBeforeAndAfterPhrases.Enabled = LstContent.Items.Count > 0;
         }
+
         private void ButtonRemove<T>(ListBox listbox, BindingList<T> bindingList)
         {
+            listbox.SuspendDrawing();
             if (listbox.SelectedItem is T selected)
             {
                 bindingList.Remove(selected);
                 UpdateButtons();
             }
+            listbox.ResumeDrawing();
         }
+
         private void ButtonUp<T>(ListBox listbox, BindingList<T> bindingList)
         {
+            listbox.SuspendDrawing();
             if (listbox.SelectedItem is not T selected) return;
-
+            listbox.SelectedIndex = -1;
             int index = bindingList.IndexOf(selected);
             if (index > 0)
             {
@@ -230,12 +247,14 @@ namespace LogScraper.Log
                 bindingList.Insert(index - 1, selected);
                 listbox.SelectedIndex = index - 1;
             }
+            listbox.ResumeDrawing();
             UpdateButtons();
         }
+
         private void ButtonDown<T>(ListBox listbox, BindingList<T> bindingList)
         {
+            listbox.SuspendDrawing();
             if (listbox.SelectedItem is not T selected) return;
-
             int index = bindingList.IndexOf(selected);
             if (index < bindingList.Count - 1)
             {
@@ -243,25 +262,23 @@ namespace LogScraper.Log
                 bindingList.Insert(index + 1, selected);
                 listbox.SelectedIndex = index + 1;
             }
+            listbox.ResumeDrawing();
             UpdateButtons();
         }
-        private void BtnUpLayout_Click(object sender, EventArgs e)
-        {
-            ButtonUp(LstLayouts, _layouts);
-        }
 
-        private void BtnDownLayout_Click(object sender, EventArgs e)
-        {
-            ButtonDown(LstLayouts, _layouts);
-        }
+        private void BtnUpLayout_Click(object sender, EventArgs e) => ButtonUp(LstLayouts, _layouts);
+        private void BtnDownLayout_Click(object sender, EventArgs e) => ButtonDown(LstLayouts, _layouts);
 
         private bool UpdatingInformation = false;
+
         private void LstLogLayouts_SelectedIndexChanged(object sender, EventArgs e)
         {
             BtnCopy.Enabled = LstLayouts.SelectedItem != null;
             if (LstLayouts.SelectedItem is LogLayout selected)
             {
                 UpdatingInformation = true;
+                _activeLayout = null; // Prevent ListChanged from syncing back during population
+
                 TxtDescription.Text = selected.Description;
                 ChkAutomaticTimestampDetection.Checked = selected.IsAutomaticTimeStampRecognitionEnabled;
                 TxtDateTimeFormat.Text = selected.DateTimeFormat;
@@ -269,18 +286,14 @@ namespace LogScraper.Log
                 ChkMetadataEndRegex.Checked = selected.RemoveMetaDataCriteria.IsRegex;
 
                 _metadataProperties.Clear();
-                foreach (LogMetadataProperty property in selected.LogMetadataProperties)
-                {
-                    _metadataProperties.Add(property);
-                }
+                foreach (LogMetadataProperty property in selected.LogMetadataProperties) _metadataProperties.Add(property);
                 if (_metadataProperties.Count > 0) LstMetadata_SelectedIndexChanged(null, null);
 
                 _contentProperties.Clear();
-                foreach (LogContentProperty property in selected.LogContentProperties)
-                {
-                    _contentProperties.Add(property);
-                }
+                foreach (LogContentProperty property in selected.LogContentProperties) _contentProperties.Add(property);
                 if (_contentProperties.Count > 0) LstContent_SelectedIndexChanged(null, null);
+
+                _activeLayout = selected; // Now safe to sync changes back
 
                 chkTransformJson.Checked = false;
                 TxtJsonPath.Text = string.Empty;
@@ -298,6 +311,10 @@ namespace LogScraper.Log
 
                 UpdatingInformation = false;
             }
+            else
+            {
+                _activeLayout = null;
+            }
             UpdateButtons();
             ChkAutomaticTimestampDetection_CheckedChanged(this, EventArgs.Empty);
         }
@@ -305,37 +322,28 @@ namespace LogScraper.Log
         private void TxtDescription_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.Description = TxtDescription.Text;
-
-            LstLayouts.DisplayMember = string.Empty; // Force update
-            LstLayouts.DisplayMember = "Description";
+            if (LstLayouts.SelectedItem is LogLayout selected)
+            {
+                selected.Description = TxtDescription.Text;
+                RefreshListBoxItem(LstLayouts, _layouts, selected);
+            }
         }
+
         private void ChkAutomaticTimestampDetection_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstLayouts.SelectedItem is LogLayout selected)
             {
                 selected.IsAutomaticTimeStampRecognitionEnabled = ChkAutomaticTimestampDetection.Checked;
-                if (ChkAutomaticTimestampDetection.Checked)
-                {
-                    TxtDateTimeFormat.Text = string.Empty;
-                    TxtDateTimeFormat.Visible = false;
-                    LblDateTimeFormat.Visible = false;
-                }
-                else
-                {
-                    TxtDateTimeFormat.Visible = true;
-                    LblDateTimeFormat.Visible = true;
-                }
+                TxtDateTimeFormat.Text = ChkAutomaticTimestampDetection.Checked ? string.Empty : TxtDateTimeFormat.Text;
+                TxtDateTimeFormat.Visible = !ChkAutomaticTimestampDetection.Checked;
+                LblDateTimeFormat.Visible = !ChkAutomaticTimestampDetection.Checked;
             }
         }
 
         private void TxtDateTimeFormat_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstLayouts.SelectedItem is LogLayout selected) selected.DateTimeFormat = TxtDateTimeFormat.Text;
         }
 
@@ -373,12 +381,9 @@ namespace LogScraper.Log
 
         private void BtnContentAdd_Click(object sender, EventArgs e)
         {
-            LogContentProperty property = CreateLogContentProperty();
-            _contentProperties.Add(property);
-
+            _contentProperties.Add(CreateLogContentProperty());
             LstContent.SelectedIndex = -1;
             LstContent.SelectedIndex = LstContent.Items.Count - 1;
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
             UpdateButtons();
         }
 
@@ -386,29 +391,16 @@ namespace LogScraper.Log
         {
             ButtonRemove(LstContent, _contentProperties);
             LstContent_SelectedIndexChanged(this, EventArgs.Empty);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
         }
 
-        private void BtnContentUp_Click(object sender, EventArgs e)
-        {
-            ButtonUp(LstContent, _contentProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
-        }
-
-        private void BtnContentDown_Click(object sender, EventArgs e)
-        {
-            ButtonDown(LstContent, _contentProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogContentProperties = [.. _contentProperties];
-        }
+        private void BtnContentUp_Click(object sender, EventArgs e) => ButtonUp(LstContent, _contentProperties);
+        private void BtnContentDown_Click(object sender, EventArgs e) => ButtonDown(LstContent, _contentProperties);
 
         private void BtnMetadataAdd_Click(object sender, EventArgs e)
         {
-            LogMetadataProperty property = CreateLogMetadataProperty();
-            _metadataProperties.Add(property);
-
+            _metadataProperties.Add(CreateLogMetadataProperty());
             LstMetadata.SelectedIndex = -1;
             LstMetadata.SelectedIndex = LstMetadata.Items.Count - 1;
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
             UpdateButtons();
         }
 
@@ -416,76 +408,53 @@ namespace LogScraper.Log
         {
             ButtonRemove(LstMetadata, _metadataProperties);
             LstMetadata_SelectedIndexChanged(this, EventArgs.Empty);
-
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
         }
 
-        private void BtnMetadataUp_Click(object sender, EventArgs e)
-        {
-            ButtonUp(LstMetadata, _metadataProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
-        }
-
-        private void BtnMetadataDown_Click(object sender, EventArgs e)
-        {
-            ButtonDown(LstMetadata, _metadataProperties);
-            if (LstLayouts.SelectedItem is LogLayout selected) selected.LogMetadataProperties = [.. _metadataProperties];
-        }
+        private void BtnMetadataUp_Click(object sender, EventArgs e) => ButtonUp(LstMetadata, _metadataProperties);
+        private void BtnMetadataDown_Click(object sender, EventArgs e) => ButtonDown(LstMetadata, _metadataProperties);
 
         private void TxtMetadataDescription_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstMetadata.SelectedItem is LogMetadataProperty selected)
             {
                 selected.Description = TxtMetadataDescription.Text;
-                LstMetadata.DisplayMember = string.Empty;
-                LstMetadata.DisplayMember = "Description";
+                RefreshListBoxItem(LstMetadata, _metadataProperties, selected);
             }
-
         }
 
         private void TxtMetadataBeforePhrase_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.Criteria.BeforePhrase = TxtMetadataBeforePhrase.Text;
         }
 
         private void TxtMetadataAfterPhrase_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.Criteria.AfterPhrase = TxtMetadataAfterPhrase.Text;
-
         }
 
         private void TxtContentDescription_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected)
             {
                 selected.Description = TxtContentDescription.Text;
-                LstContent.DisplayMember = string.Empty;
-                LstContent.DisplayMember = "Description";
+                RefreshListBoxItem(LstContent, _contentProperties, selected);
             }
-
         }
 
         private void TxtContentBeforeAndAfterPhrases_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected) selected.Criterias = ParseFilterCriteria(TxtContentBeforeAndAfterPhrases.Text);
         }
 
         private void TxtMetadataEnd_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.AfterPhrase = TxtMetadataEnd.Text;
-
         }
 
         private void ChkTransformJson_CheckedChanged(object sender, EventArgs e)
@@ -514,8 +483,7 @@ namespace LogScraper.Log
 
                 if (chkTransformJson.Checked && transformerFound == false)
                 {
-                    ILogTransformer newTransformer = new JsonPathExtractionTranformer(string.Empty);
-                    layout.LogTransformers.Add(newTransformer);
+                    layout.LogTransformers.Add(new JsonPathExtractionTranformer(string.Empty));
                 }
             }
         }
@@ -523,7 +491,6 @@ namespace LogScraper.Log
         private void TxtJsonPath_TextChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstLayouts.SelectedItem is LogLayout layout)
             {
                 foreach (ILogTransformer transformer in layout.LogTransformers)
@@ -539,59 +506,55 @@ namespace LogScraper.Log
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            if (LstLayouts.SelectedItem is LogLayout logLayout) // Ensure 'logLayout' is defined
-            {
-                //Clear any compiled regex to ensure they are recompiled with the current settings.
-                logLayout.RemoveMetaDataCriteria.RegexCompiled = null;
-                LogCollection logCollection = new();
-                try
-                {
-                    if (TxtExampleLogEntry.Text == string.Empty)
-                    {
-                        throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
-                    }
-
-                    RawLogParser.TryParseAndAppendLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout);
-                    logLayout.LogContentProperties.AssignIndexes();
-                    logLayout.LogMetadataProperties.AssignIndexes();
-                    LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
-
-                    string information = string.Empty;
-                    LogEntry logEntry = logCollection.LogEntries[0];
-
-                    information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
-                    information += Environment.NewLine;
-                    information += $"Log regel zonder metadata:" + Environment.NewLine;
-                    information += $"   {LogRenderer.RemoveTextByCriteria(logEntry.Entry, logEntry.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
-                    information += Environment.NewLine;
-                    information += "Metadata:" + Environment.NewLine;
-                    foreach (var property in logLayout.LogMetadataProperties)
-                    {
-                        logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
-                        information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
-                    }
-                    information += Environment.NewLine;
-                    information += "Inhoudsfilters:" + Environment.NewLine;
-                    foreach (var property in logLayout.LogContentProperties)
-                    {
-                        logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
-                        bool hasContentValue = contentValue != null && contentValue.Value != null;
-                        string valueToShow = hasContentValue ? contentValue.Value : "<niet gevonden>";
-                        information += $"   {property.Description}: {valueToShow}" + Environment.NewLine;
-                    }
-                    TxtTestResponse.ForeColor = Color.Black;
-                    TxtTestResponse.Text = information;
-
-                }
-                catch (Exception exception)
-                {
-                    TxtTestResponse.ForeColor = Color.DarkRed;
-                    TxtTestResponse.Text = $"Error: {exception.Message}";
-                }
-            }
-            else
+            if (LstLayouts.SelectedItem is not LogLayout logLayout)
             {
                 MessageBox.Show("Please select a layout before testing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            logLayout.RemoveMetaDataCriteria.RegexCompiled = null;
+            LogCollection logCollection = new();
+            try
+            {
+                if (TxtExampleLogEntry.Text == string.Empty)
+                {
+                    throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
+                }
+
+                RawLogParser.TryParseAndAppendLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout);
+                logLayout.LogContentProperties.AssignIndexes();
+                logLayout.LogMetadataProperties.AssignIndexes();
+                LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
+
+                string information = string.Empty;
+                LogEntry logEntry = logCollection.LogEntries[0];
+
+                information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
+                information += Environment.NewLine;
+                information += $"Log regel zonder metadata:" + Environment.NewLine;
+                information += $"   {LogRenderer.RemoveTextByCriteria(logEntry.Entry, logEntry.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
+                information += Environment.NewLine;
+                information += "Metadata:" + Environment.NewLine;
+                foreach (var property in logLayout.LogMetadataProperties)
+                {
+                    logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
+                    information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
+                }
+                information += Environment.NewLine;
+                information += "Inhoudsfilters:" + Environment.NewLine;
+                foreach (var property in logLayout.LogContentProperties)
+                {
+                    logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
+                    bool hasContentValue = contentValue != null && contentValue.Value != null;
+                    information += $"   {property.Description}: {(hasContentValue ? contentValue.Value : "<niet gevonden>")}" + Environment.NewLine;
+                }
+                TxtTestResponse.ForeColor = Color.Black;
+                TxtTestResponse.Text = information;
+            }
+            catch (Exception exception)
+            {
+                TxtTestResponse.ForeColor = Color.DarkRed;
+                TxtTestResponse.Text = $"Error: {exception.Message}";
             }
         }
 
@@ -602,72 +565,37 @@ namespace LogScraper.Log
             logLayoutCopy.Description += " (kopie)";
             _layouts.Add(logLayoutCopy);
         }
+
         private static List<FilterCriteria> ParseFilterCriteria(string input)
         {
             List<FilterCriteria> result = [];
-
-            string[] lines = input.Split(["\r\n", "\n"], StringSplitOptions.None);
-
-            foreach (string line in lines)
+            foreach (string line in input.Split(["\r\n", "\n"], StringSplitOptions.None))
             {
-
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
-
-                string before;
-                string after;
-
+                if (string.IsNullOrWhiteSpace(line)) continue;
                 int separatorIndex = line.IndexOf("=>", StringComparison.Ordinal);
-
-                if (separatorIndex >= 0)
-                {
-                    before = line[..separatorIndex];
-                    after = line[(separatorIndex + 2)..];
-                }
-                else
-                {
-                    before = line;
-                    after = null;
-                }
-
-                if (!string.IsNullOrEmpty(before))
-                {
-                    result.Add(new FilterCriteria
-                    {
-                        BeforePhrase = before,
-                        AfterPhrase = after
-                    });
-                }
+                string before = separatorIndex >= 0 ? line[..separatorIndex] : line;
+                string after = separatorIndex >= 0 ? line[(separatorIndex + 2)..] : null;
+                if (!string.IsNullOrEmpty(before)) result.Add(new FilterCriteria { BeforePhrase = before, AfterPhrase = after });
             }
-
             return result;
         }
+
         private static string GenerateFilterCriteriaText(List<FilterCriteria> criteriaList)
         {
             List<string> lines = [];
-
             foreach (FilterCriteria criteria in criteriaList)
             {
                 string before = criteria.BeforePhrase ?? string.Empty;
                 string after = criteria.AfterPhrase ?? string.Empty;
-
                 if (!string.IsNullOrEmpty(before))
-                {
-                    string line = string.IsNullOrEmpty(after)
-                        ? before
-                        : $"{before}=>{after}";
-
-                    lines.Add(line);
-                }
+                    lines.Add(string.IsNullOrEmpty(after) ? before : $"{before}=>{after}");
             }
-
             return string.Join(Environment.NewLine, lines);
         }
 
         private void ChkMetadataIsSessionData_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsSessionData = ChkMetadataIsSessionData.Checked;
         }
 
@@ -675,52 +603,42 @@ namespace LogScraper.Log
         {
             CboContentFilterMarksEnd.Enabled = ChkContentFilterMarksBegin.Checked;
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsBeginFlowTreeFilter = ChkContentFilterMarksBegin.Checked;
         }
 
         private void CboContentFilterMarksEnd_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
-            if (LstContent.SelectedItem is LogContentProperty selectedContentProperty)
+            if (LstContent.SelectedItem is LogContentProperty selectedContentProperty &&
+                CboContentFilterMarksEnd.SelectedItem is LogContentProperty selectedEndFilter)
             {
-                if (CboContentFilterMarksEnd.SelectedItem is LogContentProperty selectedEndFilter)
-                {
-                    selectedContentProperty.EndFlowTreeContentProperty = selectedEndFilter;
-                    selectedContentProperty.EndFlowTreeContentPropertyDescription = selectedEndFilter.Description;
-                }
+                selectedContentProperty.EndFlowTreeContentProperty = selectedEndFilter;
+                selectedContentProperty.EndFlowTreeContentPropertyDescription = selectedEndFilter.Description;
             }
         }
 
         private void ChkContentPropertyIsError_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsErrorProperty = ChkContentPropertyIsError.Checked;
-
         }
 
         private void ChkShowMetadataByDefault_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsDefaultVisibleInLog = ChkShowMetadataByDefault.Checked;
         }
 
         private void ChkMetadataEndRegex_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstLayouts.SelectedItem is LogLayout selected) selected.RemoveMetaDataCriteria.IsRegex = ChkMetadataEndRegex.Checked;
-
         }
 
         private void BtnContentBackColor_Click(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
             if (LstContent.SelectedItem is not LogContentProperty selectedContentProperty) return;
-
             if (GdiColorPickerDialog.ShowDialog(this, selectedContentProperty.CustomBackColor, out Color? selectedColor) == DialogResult.OK)
             {
                 selectedContentProperty.CustomBackColor = (Color)selectedColor;
@@ -732,7 +650,6 @@ namespace LogScraper.Log
         {
             if (UpdatingInformation) return;
             if (LstContent.SelectedItem is not LogContentProperty selectedContentProperty) return;
-
             if (GdiColorPickerDialog.ShowDialog(this, selectedContentProperty.CustomTextColor, out Color? selectedColor) == DialogResult.OK)
             {
                 selectedContentProperty.CustomTextColor = (Color)selectedColor;
@@ -761,12 +678,11 @@ namespace LogScraper.Log
                 }
                 UpdateTxtCustomStyleExample();
             }
-
         }
+
         private void ChkContentBackColorFillLine_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsCustomBackColorFillLine = ChkContentBackColorFillLine.Checked;
             UpdateTxtCustomStyleExample();
         }
@@ -787,7 +703,6 @@ namespace LogScraper.Log
         private void ChkContentPropertyIsNavigationEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (UpdatingInformation) return;
-
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsNavigationEnabled = ChkContentPropertyIsNavigationEnabled.Checked;
         }
     }
