@@ -90,12 +90,10 @@ namespace LogScraper.LogPostProcessors
 
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
 
-            bool dataChanged = false;
             foreach (var kind in Enum.GetValues<LogPostProcessorKind>())
             {
                 if (hasPostProcessingData[(int)kind] || !eventArgs.HasChanges[(int)kind]) continue;
                 hasPostProcessingData[(int)kind] = true;
-                dataChanged = true;
             }
 
             isVirtuallyReset = false;
