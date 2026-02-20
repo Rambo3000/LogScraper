@@ -33,7 +33,7 @@ namespace LogScraper.Configuration
 
             kubernetesChanged = !oldKubernetesConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
             runtimeChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-            fileChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
+            fileChanged = !oldFileConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.FileConfig);
         }
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
