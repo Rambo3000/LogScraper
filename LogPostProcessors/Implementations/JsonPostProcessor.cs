@@ -46,7 +46,7 @@ namespace LogScraper.LogPostProcessors.Implementations
             }
 
             //Smallest possible accepted JSON content is {"x":""} with length 6
-            if ((possibleEndIndex - possibleStartIndex - 1) <= 6) return false;
+            if ((possibleEndIndex - possibleStartIndex - 1) < 6) return false;
 
             // Additional checks to filter out non-JSON data
             int possibleSubComma = logEntry.Entry.IndexOf('\"', possibleStartIndex + 1, possibleEndIndex - possibleStartIndex - 2);
