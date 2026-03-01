@@ -180,25 +180,6 @@ namespace LogScraper.Log.RawLogParsing
                 lastLogEntry = newLogEntry;
             }
         }
-
-        /// <summary>
-        /// Attempts to extract a DateTime object from a raw log entry based on the provided date-time format.
-        /// </summary>
-        /// <param name="rawLogEntry">The raw log entry to parse.</param>
-        /// <param name="dateTimeFormat">The expected date-time format at the start of the log entry.</param>
-        /// <param name="timestamp">The parsed DateTime object.</param>
-        /// <returns></returns>
-        private static bool TryGetDateTimeFromRawLogEntry(string rawLogEntry, string dateTimeFormat, out DateTime timestamp)
-        {
-            if (rawLogEntry.Length < dateTimeFormat.Length)
-            {
-                timestamp = default;
-                return false;
-            }
-
-            string dateTimeStampString = rawLogEntry[..dateTimeFormat.Length];
-            return DateTime.TryParseExact(dateTimeStampString, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out timestamp);
-        }
         /// <summary>
         /// Joins an array of raw log entries into a single string, separating each entry with a newline character.
         /// </summary>

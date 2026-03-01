@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -14,17 +14,30 @@ namespace LogScraper.Log.RawLogParsing
     /// </summary>
     public class LogTimestampParser
     {
-        private readonly struct FormatInfo(string format, int? explicitLength = null)
+        private readonly struct FormatInfo
         {
-            public readonly string Format = format;
-            public readonly int ActualLength = explicitLength ?? format.Length;
+            public readonly string Format;
+            public readonly int ActualLength;
+            public FormatInfo(string format)
+            { 
+                if (format == null || string.IsNullOrWhiteSpace(format)) return;
+                Format = format;
+                ActualLength = format.Length;
+
+                // 2009-06-15T13:45:30-07:00 -> -07:00 is 6 chars but zzz is 3 chars, so we need to adjust the length accordingly
+                if (format.Contains("zzz")) ActualLength += 3;
+                // 2009-06-15T13:45:30-07 -> -07 is 3 chars but zz is 2 chars, so we need to adjust the length accordingly
+                else if (format.Contains("zz")) ActualLength += 1;
+                // 2009-06-15T13:45:30-7 -> -7 is 2 chars but z is 1 char, so we need to adjust the length accordingly
+                else if (format.Contains('z')) ActualLength += 1;
+            }
         }
 
         /// <summary>
-        /// A thread-safe dictionary to keep track of recognized format indices and their actual timestamp lengths.
-        /// Key: format index, Value: actual parsed timestamp length
+        /// An immutable sorted set to keep track of recognized format indices in order.
+        /// Formats are always tried in the order they appear in commonFormats array.
         /// </summary>
-        private readonly ConcurrentDictionary<int, int> recognizedFormatIndices = [];
+        private ImmutableSortedSet<int> recognizedFormatIndices = ImmutableSortedSet<int>.Empty;
 
         /// <summary>
         /// An array of common date-time formats that the parser will attempt to use when extracting timestamps from log entries.
@@ -33,8 +46,8 @@ namespace LogScraper.Log.RawLogParsing
         private static readonly FormatInfo[] commonFormats =
         [
             // Rank the longest formats on top to prevent partial matches
-            new("yyyy-MM-dd HH:mm:ss.fffzzz", 29),      // ISO 8601 with space separator + timezone offset (common in APIs, ASP.NET, cloud logs)
-            new("yyyy-MM-ddTHH:mm:ss.fffzzz", 29),      // RFC3339 / ISO 8601 with 'T' + offset (REST, JSON, Kubernetes, modern services)
+            new("yyyy-MM-dd HH:mm:ss.fffzzz"),      // ISO 8601 with space separator + timezone offset (common in APIs, ASP.NET, cloud logs)
+            new("yyyy-MM-ddTHH:mm:ss.fffzzz"),      // RFC3339 / ISO 8601 with 'T' + offset (REST, JSON, Kubernetes, modern services)
 
             new("yyyy-MM-dd HH:mm:ss.fffffff"),         // .NET default 7-digit fractional precision (DateTime.ToString default custom logs)
             new("yyyy-MM-ddTHH:mm:ss.fffffff"),         // .NET ISO-like with full precision (Serilog, structured logging)
@@ -51,8 +64,8 @@ namespace LogScraper.Log.RawLogParsing
             new("yyyy-MM-dd HH:mm:ss,fff"),             // Java / Log4j default (comma milliseconds)
             new("yyyy-MM-dd'T'HH:mm:ss,fff"),           // Java ISO-style with comma milliseconds
 
-            new("yyyy-MM-ddTHH:mm:sszzz", 25),          // ISO 8601 with offset, no milliseconds (APIs, infrastructure logs)
-            new("yyyy-MM-dd HH:mm:sszzz", 25),          // Space-separated variant with offset (less common but seen in app logs)
+            new("yyyy-MM-ddTHH:mm:sszzz"),          // ISO 8601 with offset, no milliseconds (APIs, infrastructure logs)
+            new("yyyy-MM-dd HH:mm:sszzz"),          // Space-separated variant with offset (less common but seen in app logs)
             
             new("ddd, dd MMM yyyy HH:mm:ss 'GMT'"),     // RFC1123 HTTP-date (IIS, Azure, reverse proxies, HTTP headers)
             new("dd-MMM-yyyy HH:mm:ss.fff"),            // Log4j / legacy enterprise logs (textual month)
@@ -71,7 +84,7 @@ namespace LogScraper.Log.RawLogParsing
             new("dd/MM/yyyy HH:mm:ss"),                 // European regional logs (custom apps, Windows exports)
             new("MM/dd/yyyy HH:mm:ss"),                 // US regional logs (legacy Windows / IIS exports)
             new("dd-MM-yyyy HH:mm:ss"),                 // European dash-separated variant (custom business apps)
-            new("dd/MMM/yyyy:HH:mm:ss zzz",27),            // Apache / Nginx combined log format
+            new("dd/MMM/yyyy:HH:mm:ss zzz"),            // Apache / Nginx combined log format
 
             new("yyyyMMddHHmmss"),                      // Compact sortable timestamp (batch jobs, file naming)
             new("yyyyMMddHHmmssfff"),                   // Compact with milliseconds (ETL, financial systems)
@@ -96,9 +109,7 @@ namespace LogScraper.Log.RawLogParsing
             if (length == 0) return [];
 
             ParsedLogEntry[] result = new ParsedLogEntry[length];
-
-            // Calculate the expected length of the timestamp based on the forced format, accounting for variable-length timezone components
-            int forceDateTimeFormatLength = forceDateTimeFormat == null ? -1 : (forceDateTimeFormat.Contains("zzz") ? forceDateTimeFormat.Length + 3 : forceDateTimeFormat.Length);
+            FormatInfo forceFormat = new(forceDateTimeFormat);
 
             Parallel.For(0, length, i =>
             {
@@ -116,12 +127,11 @@ namespace LogScraper.Log.RawLogParsing
                     return;
                 }
 
-                // If a specific format is forced, try it first
                 if (forceDateTimeFormat != null)
                 {
-                    if (TryParseTimestamp(entry, forceDateTimeFormat, forceDateTimeFormatLength, out DateTime timestamp))
+                    if (TryParseTimestamp(entry, forceFormat, out DateTime timestamp))
                     {
-                        result[i] = new ParsedLogEntry(entry, true, timestamp, forceDateTimeFormatLength);
+                        result[i] = new ParsedLogEntry(entry, true, timestamp, forceFormat.ActualLength);
                     }
                     else
                     {
@@ -130,15 +140,14 @@ namespace LogScraper.Log.RawLogParsing
                     return;
                 }
 
-                // Try recognized format indices first (hot path)
-                foreach (var kvp in recognizedFormatIndices)
+                // Try recognized format indices first (hot path) - automatically sorted
+                foreach (int formatIndex in recognizedFormatIndices)
                 {
-                    int formatIndex = kvp.Key;
-                    int actualLength = kvp.Value;
+                    FormatInfo formatInfo = commonFormats[formatIndex];
 
-                    if (TryParseTimestamp(entry, commonFormats[formatIndex].Format, actualLength, out DateTime timestamp))
+                    if (TryParseTimestamp(entry, formatInfo, out DateTime timestamp))
                     {
-                        result[i] = new ParsedLogEntry(entry, true, timestamp, actualLength);
+                        result[i] = new ParsedLogEntry(entry, true, timestamp, formatInfo.ActualLength);
                         return;
                     }
                 }
@@ -146,14 +155,14 @@ namespace LogScraper.Log.RawLogParsing
                 // Try all formats to detect (cold path)
                 for (int formatIndex = 0; formatIndex < commonFormats.Length; formatIndex++)
                 {
-                    if (recognizedFormatIndices.ContainsKey(formatIndex)) continue;
+                    if (recognizedFormatIndices.Contains(formatIndex)) continue;
 
                     FormatInfo formatInfo = commonFormats[formatIndex];
 
-                    if (TryParseTimestamp(entry, formatInfo.Format, formatInfo.ActualLength, out DateTime timestamp))
+                    if (TryParseTimestamp(entry, formatInfo, out DateTime timestamp))
                     {
                         result[i] = new ParsedLogEntry(entry, true, timestamp, formatInfo.ActualLength);
-                        recognizedFormatIndices.TryAdd(formatIndex, formatInfo.ActualLength);
+                        ImmutableInterlocked.Update(ref recognizedFormatIndices, set => set.Add(formatIndex));
                         return;
                     }
                 }
@@ -168,16 +177,14 @@ namespace LogScraper.Log.RawLogParsing
         /// Attempts to parse a timestamp from a log entry using a specified date-time format.
         /// </summary>
         /// <param name="entry">The raw log entry from which to extract the timestamp.</param>
-        /// <param name="format">The date-time format to use for parsing the timestamp.</param>
-        /// <param name="length">The length of the timestamp to extract.</param>
         /// <param name="timestamp">An output parameter that will contain the parsed DateTime value if the parsing is successful.</param>
         /// <returns>True if the timestamp was successfully parsed using the specified format; otherwise, false.</returns>
-        private static bool TryParseTimestamp(string entry, string format, int length, out DateTime timestamp)
+        private static bool TryParseTimestamp(string entry, FormatInfo formatInfo, out DateTime timestamp)
         {
             timestamp = default;
-            if (entry.Length < length) return false;
+            if (entry.Length < formatInfo.ActualLength) return false;
 
-            return DateTime.TryParseExact(entry[..length], format, CultureInfo.InvariantCulture,
+            return DateTime.TryParseExact(entry[..formatInfo.ActualLength], formatInfo.Format, CultureInfo.InvariantCulture,
                 DateTimeStyles.None, out timestamp);
         }
 
