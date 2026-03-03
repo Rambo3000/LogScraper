@@ -7,6 +7,7 @@ using LogScraper.Credentials;
 using LogScraper.Log.Layout;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -389,6 +390,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtTestMessage.Text = exception.Message;
                 TxtTestMessage.Text += Environment.NewLine + url;
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkRed;
+                exception.LogStackTraceToFile("Error testing Kubernetes configuration");
             }
             finally
             {

@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using LogScraper.Configuration.Generic;
 using LogScraper.LogProviders;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Configuration
 {
@@ -22,6 +23,7 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters.Checked = config.ShowErrorLinesInBeginAndEndFilters;
             ChkShowTimeLine.Checked = config.ShowTimelineByDefault;
             ChkAutoToggleHierarchy.Checked = config.AutoToggleHierarchy;
+            ChkIsDebugModeEnabled.Checked = config.IsDebugModeEnabled;
             TxtEditorLocation.Text = config.EditorFileName;
             TxtExportFileName.Text = config.ExportFileName;
             TxtTimeOut.Text = config.HttpCLientTimeOUtSeconds.ToString();
@@ -66,6 +68,7 @@ namespace LogScraper.Configuration
                 AutoToggleHierarchy = ChkAutoToggleHierarchy.Checked,
                 ShowErrorLinesInBeginAndEndFilters = ChkShowErrorsInBeginAndEndFilters.Checked,
                 ShowTimelineByDefault = ChkShowTimeLine.Checked,
+                IsDebugModeEnabled = ChkIsDebugModeEnabled.Checked,
                 AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
                 LogProviderTypeDefault = (LogProviderType)CboLogProviderType.SelectedItem,
                 HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0,
@@ -97,9 +100,10 @@ namespace LogScraper.Configuration
                         dialog.InitialDirectory = directory;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     // The current path is invalid, fall back to the default behaviour.
+                    ex.LogStackTraceToFile("Error setting initial directory in export file dialog.");
                 }
             }
 
@@ -138,9 +142,10 @@ namespace LogScraper.Configuration
                         dialog.FileName = filename;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     // ongeldig pad, negeren
+                    ex.LogStackTraceToFile("Error setting initial directory or file name in editor location dialog.");
                 }
             }
 

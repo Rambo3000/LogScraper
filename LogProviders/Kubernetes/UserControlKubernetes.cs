@@ -1,13 +1,14 @@
-﻿using LogScraper.Configuration;
-using LogScraper.Credentials;
-using LogScraper.Log;
-using LogScraper.Sources.Adapters;
-using LogScraper.Sources.Adapters.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
+using LogScraper.Configuration;
+using LogScraper.Credentials;
+using LogScraper.Log;
+using LogScraper.Sources.Adapters;
+using LogScraper.Sources.Adapters.Http;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -182,6 +183,7 @@ namespace LogScraper.LogProviders.Kubernetes
             catch (Exception ex)
             {
                 OnStatusUpdate(ex.Message, false);
+                ex.LogStackTraceToFile("Error populating Kubernetes pods");
             }
         }
 

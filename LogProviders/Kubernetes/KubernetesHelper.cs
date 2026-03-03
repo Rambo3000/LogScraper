@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogScraper.Utilities.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -92,6 +93,7 @@ namespace LogScraper.LogProviders.Kubernetes
             {
                 // Log an error message if JSON parsing fails.
                 Console.WriteLine("Error parsing JSON: " + ex.Message);
+                ex.LogStackTraceToFile("Error during JSON parsing in ExtractPodsInfo method.");
             }
 
             // Return the list of extracted pod information.

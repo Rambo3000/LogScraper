@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Utilities
 {
@@ -28,8 +29,9 @@ namespace LogScraper.Utilities
                 {
                     await CheckForUpdateAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ex.LogStackTraceToFile("Error during update check.");
                     // Swallow any exceptions to avoid disrupting the user experience.
                 }
             });
@@ -130,9 +132,10 @@ namespace LogScraper.Utilities
                     return (release.GetProperty("tag_name").GetString(), release.GetProperty("html_url").GetString(), true);
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Intentionally ignored
+                ex.LogStackTraceToFile("Error fetching latest release information from GitHub.");
             }
 
             return (null, null, false);

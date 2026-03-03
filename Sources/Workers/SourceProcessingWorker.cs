@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Sources.Adapters;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Sources.Workers
 {
@@ -70,6 +71,7 @@ namespace LogScraper.Sources.Workers
             {
                 // Notify listeners of any exceptions that occur during execution.
                 OnExceptionOccurred(ex.Message, false);
+                ex.LogStackTraceToFile("Error in SourceProcessingWorker.DoWorkAsync");
             }
         }
 

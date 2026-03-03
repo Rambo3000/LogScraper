@@ -555,6 +555,7 @@ namespace LogScraper.Log
             {
                 TxtTestResponse.ForeColor = Color.DarkRed;
                 TxtTestResponse.Text = $"Error: {exception.Message}";
+                exception.LogStackTraceToFile("Error while testing log layout configuration");
             }
         }
 

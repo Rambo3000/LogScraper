@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using LogScraper.Sources.Adapters;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.File
 {
@@ -155,19 +156,22 @@ namespace LogScraper.LogProviders.File
 
                 return ValidateFileContent(filePath, fileInfo.Length, out errorMessage);
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException ex)
             {
                 errorMessage = "Access denied - insufficient permissions";
+                ex.LogStackTraceToFile("UnauthorizedAccessException while validating file.");
                 return false;
             }
             catch (IOException ex)
             {
                 errorMessage = $"File is locked or inaccessible: {ex.Message}";
+                ex.LogStackTraceToFile("IOException while validating file.");
                 return false;
             }
             catch (Exception ex)
             {
                 errorMessage = $"Error accessing file: {ex.Message}";
+                ex.LogStackTraceToFile("General exception while validating file.");
                 return false;
             }
         }
@@ -305,6 +309,7 @@ namespace LogScraper.LogProviders.File
             catch (Exception ex)
             {
                 LblFileSizeValue.Text = $"Error reading metadata: {ex.Message}";
+                ex.LogStackTraceToFile("Exception while reading file metadata.");
                 LblModificationDateTimeValue.Text = string.Empty;
                 PctWarning.Visible = false;
             }

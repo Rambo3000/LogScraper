@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using LogScraper.Configuration;
 
 namespace LogScraper.Utilities.Extensions
 {
@@ -36,18 +37,26 @@ namespace LogScraper.Utilities.Extensions
         /// Logs the full stack trace of an exception to a file.
         /// </summary>
         /// <param name="ex">The exception to log.</param>
-        public static void LogStackTraceToFile(this Exception ex)
+        /// <param name="context">Additional context information to include in the log entry.</param>
+        public static void LogStackTraceToFile(this Exception ex, string context = null)
         {
             try
             {
+                if (!ConfigurationManager.GenericConfig.IsDebugModeEnabled) return;
+
                 // Get the full stack trace of the exception.
                 string fullStackTrace = ex.GetFullStackTrace();
 
                 // Define the log file path in the application's base directory.
-                string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "StackTrace.log");
+                string date = DateTime.Now.ToString("yyyy-MM-dd");
+                string logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"LogScraper_StackTrace_{date}.log");
+
+                if (context == null) context = string.Empty;
+                else context += Environment.NewLine;
+
 
                 // Append the stack trace to the log file with a timestamp.
-                File.AppendAllText(logFilePath, $"{DateTime.Now}: {fullStackTrace}\n");
+                File.AppendAllText(logFilePath, $"[{DateTime.Now:HH:mm:ss}] {context}{ex.GetFullStackTrace()}{Environment.NewLine}");
             }
             catch
             {

@@ -8,6 +8,7 @@ using LogScraper.Configuration;
 using LogScraper.Credentials;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Runtime
 {
@@ -151,6 +152,7 @@ namespace LogScraper.LogProviders.Runtime
             catch (Exception ex)
             {
                 OnStatusUpdate(ex.Message, false);
+                ex.LogStackTraceToFile("Error selecting runtime instance");
             }
 
         }
@@ -327,6 +329,7 @@ namespace LogScraper.LogProviders.Runtime
                 catch (Exception ex)
                 {
                     OnStatusUpdate(ex.Message, false);
+                    ex.LogStackTraceToFile("Error selecting folder link");
                 }
             }
         }

@@ -378,7 +378,10 @@ namespace LogScraper.Configuration
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ex.LogStackTraceToFile("Error loading configuration export from file: " + filePath);
+            }
             // Try loading as individual config objects
             // This way we can also import the files stored as settings by the user previously
             try
@@ -390,7 +393,10 @@ namespace LogScraper.Configuration
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ex.LogStackTraceToFile("Error loading generic config from file: " + filePath);
+            }
             try
             {
                 LogLayoutsConfig maybeLayouts = ConfigurationManager.LoadFromFile<LogLayoutsConfig>(filePath);
@@ -400,7 +406,11 @@ namespace LogScraper.Configuration
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ex.LogStackTraceToFile("Error loading log layouts config from file: " + filePath);
+            }
+
             try
             {
                 LogProvidersConfig maybeProviders = ConfigurationManager.LoadFromFile<LogProvidersConfig>(filePath);
@@ -410,7 +420,10 @@ namespace LogScraper.Configuration
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ex.LogStackTraceToFile("Error loading log providers config from file: " + filePath);
+            }
 
             return false;
         }

@@ -9,6 +9,7 @@ using LogScraper.Configuration;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Layout;
 using System.Net.Http;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -251,6 +252,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkRed;
                 TxtTestMessage.Text = exception.Message;
                 TxtTestMessage.Text += Environment.NewLine + Environment.NewLine + url;
+                exception.LogStackTraceToFile("Error while testing Runtime url");
             }
             finally
             {

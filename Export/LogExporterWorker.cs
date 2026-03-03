@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Export
 {
@@ -42,6 +43,7 @@ namespace LogScraper.Export
             {
                 // Notify that an error occurred during the export process.
                 OnStatusUpdate(ex.Message, false);
+                ex.LogStackTraceToFile("Error during log export in DoWorkAsync");
             }
         }
 

@@ -47,6 +47,8 @@ namespace LogScraper.Configuration
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
+            ChkIsDebugModeEnabled = new System.Windows.Forms.CheckBox();
+            ChkShowTimeLine = new System.Windows.Forms.CheckBox();
             ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
             ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
@@ -56,7 +58,6 @@ namespace LogScraper.Configuration
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
-            ChkShowTimeLine = new System.Windows.Forms.CheckBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -214,6 +215,7 @@ namespace LogScraper.Configuration
             // GrpGeneralSettings
             // 
             GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpGeneralSettings.Controls.Add(ChkIsDebugModeEnabled);
             GrpGeneralSettings.Controls.Add(ChkShowTimeLine);
             GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
             GrpGeneralSettings.Controls.Add(pictureBox3);
@@ -232,10 +234,30 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.Controls.Add(TxtTimeOut);
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
-            GrpGeneralSettings.Size = new System.Drawing.Size(848, 326);
+            GrpGeneralSettings.Size = new System.Drawing.Size(848, 349);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "Algemene instellingen";
+            // 
+            // ChkIsDebugModeEnabled
+            // 
+            ChkIsDebugModeEnabled.AutoSize = true;
+            ChkIsDebugModeEnabled.Location = new System.Drawing.Point(6, 313);
+            ChkIsDebugModeEnabled.Name = "ChkIsDebugModeEnabled";
+            ChkIsDebugModeEnabled.Size = new System.Drawing.Size(237, 19);
+            ChkIsDebugModeEnabled.TabIndex = 43;
+            ChkIsDebugModeEnabled.Text = "Sla foutmeldingen op in een logbestand";
+            ChkIsDebugModeEnabled.UseVisualStyleBackColor = true;
+            // 
+            // ChkShowTimeLine
+            // 
+            ChkShowTimeLine.AutoSize = true;
+            ChkShowTimeLine.Location = new System.Drawing.Point(6, 150);
+            ChkShowTimeLine.Name = "ChkShowTimeLine";
+            ChkShowTimeLine.Size = new System.Drawing.Size(223, 19);
+            ChkShowTimeLine.TabIndex = 42;
+            ChkShowTimeLine.Text = "Toon standaard het tijdlijn-histogram";
+            ChkShowTimeLine.UseVisualStyleBackColor = true;
             // 
             // ChkIncludePrereleaseUpdates
             // 
@@ -323,18 +345,8 @@ namespace LogScraper.Configuration
             PnlUsedForScalingCompatiblity.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForScalingCompatiblity.Location = new System.Drawing.Point(0, 0);
             PnlUsedForScalingCompatiblity.Name = "PnlUsedForScalingCompatiblity";
-            PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 326);
+            PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 349);
             PnlUsedForScalingCompatiblity.TabIndex = 9;
-            // 
-            // ChkShowTimeLine
-            // 
-            ChkShowTimeLine.AutoSize = true;
-            ChkShowTimeLine.Location = new System.Drawing.Point(6, 150);
-            ChkShowTimeLine.Name = "ChkShowTimeLine";
-            ChkShowTimeLine.Size = new System.Drawing.Size(223, 19);
-            ChkShowTimeLine.TabIndex = 42;
-            ChkShowTimeLine.Text = "Toon standaard het tijdlijn-histogram";
-            ChkShowTimeLine.UseVisualStyleBackColor = true;
             // 
             // UserControlGenericConfig
             // 
@@ -342,7 +354,7 @@ namespace LogScraper.Configuration
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForScalingCompatiblity);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(848, 326);
+            Size = new System.Drawing.Size(848, 349);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
@@ -382,5 +394,6 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.Panel PnlUsedForScalingCompatiblity;
         private System.Windows.Forms.CheckBox ChkIncludePrereleaseUpdates;
         private System.Windows.Forms.CheckBox ChkShowTimeLine;
+        private System.Windows.Forms.CheckBox ChkIsDebugModeEnabled;
     }
 }

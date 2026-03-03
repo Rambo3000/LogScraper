@@ -66,6 +66,11 @@ namespace LogScraper.Configuration.Generic
         /// Gets or sets a value indicating whether to check for updates for beta releases.
         /// </summary>
         public bool IncludeBetaUpdates { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether debug mode is enabled for the application.
+        /// </summary>
+        public bool IsDebugModeEnabled { get; set; } = false;
     }
 
     /// <summary>

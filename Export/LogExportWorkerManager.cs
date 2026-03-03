@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Export
 {
@@ -140,6 +141,7 @@ namespace LogScraper.Export
             {
                 // Show an error message if the file cannot be opened.
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.LogStackTraceToFile("Error when trying to open the exported log file in the external editor.");
             }
         }
 

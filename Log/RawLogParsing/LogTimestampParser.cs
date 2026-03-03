@@ -37,7 +37,7 @@ namespace LogScraper.Log.RawLogParsing
         /// An immutable sorted set to keep track of recognized format indices in order.
         /// Formats are always tried in the order they appear in commonFormats array.
         /// </summary>
-        private ImmutableSortedSet<int> recognizedFormatIndices = ImmutableSortedSet<int>.Empty;
+        private ImmutableSortedSet<int> recognizedFormatIndices = [];
 
         /// <summary>
         /// An array of common date-time formats that the parser will attempt to use when extracting timestamps from log entries.

@@ -116,11 +116,13 @@ namespace LogScraper.Configuration
             catch (JsonException jex)
             {
                 MessageBox.Show("Import failed - invalid JSON:\n" + jex.Message, "Import error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                jex.LogStackTraceToFile("Error parsing JSON during import");
                 return;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Import failed:\n" + ex.Message, "Import error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.LogStackTraceToFile("Error during import");
                 return;
             }
         }
@@ -252,6 +254,7 @@ namespace LogScraper.Configuration
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to export settings:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.LogStackTraceToFile("Error during export");
             }
         }
         private bool TryCreateExportObject(out ConfigurationExport configurationExport)

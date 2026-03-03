@@ -122,7 +122,11 @@ namespace LogScraper
                 PopulateLogLayouts();
                 PopulateLogProviderControls();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) 
+            {
+                ex.LogStackTraceToFile();
+                MessageBox.Show(ex.Message); 
+            }
 
             RefreshLogStatistics();
 
@@ -179,8 +183,9 @@ namespace LogScraper
                 {
                     newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogCollection.Instance, logLayout);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
                     //Write the raw log to the text box to not leave the user completely in the dark
                     UserControlLogEntriesTextBox.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
@@ -351,6 +356,7 @@ namespace LogScraper
             catch (Exception ex)
             {
                 MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
+                ex.LogStackTraceToFile("Fout tijdens zoeken in log.");
             }
             finally
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogPostProcessors
 {
@@ -117,8 +118,7 @@ namespace LogScraper.LogPostProcessors
             }
             catch (Exception ex)
             {
-                // optionally log errors
-                Console.WriteLine($"PostProcessing error: {ex}");
+                ex.LogStackTraceToFile("Error during post-processing");
             }
             finally
             {
