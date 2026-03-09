@@ -247,8 +247,7 @@ namespace LogScraper.Log.Rendering
         /// <returns>The modified string with the specified text removed.</returns>
         public static string RemoveTextByCriteria(string inputText, int beforeIndex, int afterIndex)
         {
-
-            if (string.IsNullOrEmpty(inputText) || beforeIndex == -1 || afterIndex == -1)
+            if (string.IsNullOrEmpty(inputText) || beforeIndex == -1 || afterIndex == -1 || beforeIndex > afterIndex)
             {
                 return inputText;
             }
