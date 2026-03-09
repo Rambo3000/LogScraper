@@ -42,13 +42,29 @@ namespace LogScraper
                 {
                     SelectedLogEntryValue = newSelectedLogEntryValue;
                     ListViewItems.Invalidate();
+                    if (IsScrollableViewEnabled) ScrollToSelectedValue();
                 }
             }
         }
+        private void ScrollToSelectedValue()
+        {
+            if (SelectedLogEntryValue == null) return;
+            int index = sortedValues.FindIndex(v => v.Value == SelectedLogEntryValue);
+            if (index < 0) return;
+
+            int visibleRows = ListViewItems.ClientSize.Height / (ListViewItems.Items.Count > 0 ? ListViewItems.GetItemRect(0).Height : 20);
+            int centeredIndex = Math.Max(0, Math.Min(index - visibleRows / 2, ListViewItems.VirtualListSize - visibleRows));
+            ListViewItems.TopItem = ListViewItems.Items[centeredIndex];
+        }
+
+        private bool IsScrollableViewEnabled { get { return sortedValues.Count > MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL; } }
 
         #endregion
 
         #region Private Fields
+
+        private const int MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL = 50;
+        private const int SCROLL_VIEW_NUMBER_OF_ITEMS_SHOWN = 15;
 
         private LogMetadataPropertyAndValues LogMetadataPropertyAndValues;
         private List<LogMetadataValue> sortedValues = [];
@@ -106,8 +122,8 @@ namespace LogScraper
 
             int itemHeight = TextRenderer.MeasureText("Test", ListViewItems.Font).Height + ScaleByDpi(4);
             int totalHeight = sortedValues.Count * itemHeight;
-            int maxHeight = 50 * itemHeight;
-            int actualHeight = totalHeight > maxHeight ? 15 * itemHeight : totalHeight;
+            int maxHeight = MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL * itemHeight;
+            int actualHeight = totalHeight > maxHeight ? SCROLL_VIEW_NUMBER_OF_ITEMS_SHOWN * itemHeight : totalHeight;
             int newHeight = ListViewItems.Top + actualHeight + Padding.Bottom;
 
             if (Height != newHeight) Height = newHeight;
