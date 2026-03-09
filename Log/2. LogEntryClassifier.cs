@@ -96,8 +96,10 @@ namespace LogScraper.Log
             {
                 SetLogEntryStartPositionContent(logEntry, logLayout);
                 ClassifyLogEntryMetadataProperties(logEntry, logLayout);
-                ClassifyLogEntryContentProperties(logEntry, logLayout);
-                if (logEntry.IsErrorLogEntry) Interlocked.Increment(ref logCollection.ErrorCount);
+                if (TryClassifyLogEntryContentProperties(logEntry, logLayout))
+                { 
+                    if (logEntry.IsErrorLogEntry) Interlocked.Increment(ref logCollection.ErrorCount);
+                }
             });
         }
 
@@ -112,6 +114,8 @@ namespace LogScraper.Log
         /// <param name="logLayout">The layout definition that specifies how the content starting position should be identified.</param>
         private static void SetLogEntryStartPositionContent(LogEntry logEntry, LogLayout logLayout)
         {
+            if (logEntry.StartIndexContent != 0) return; // Content start index already set, skip processing. 
+            
             int index = -1;
 
             // Match on precompiled regex
@@ -171,10 +175,11 @@ namespace LogScraper.Log
         /// </summary>
         /// <param name="logEntry">The log entry to classify content properties for.</param>
         /// <param name="logLayout">The layout defining content properties and their criteria.</param>
-        private static void ClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout)
+        /// <returns>True if content properties were classified; otherwise, false.</returns>
+        private static bool TryClassifyLogEntryContentProperties(LogEntry logEntry, LogLayout logLayout)
         {
             // Skip log entries that already have content properties classified.
-            if (logLayout.LogMetadataProperties == null || logEntry.LogContentProperties != null) return;
+            if (logLayout.LogMetadataProperties == null || logEntry.LogContentProperties != null) return false ;
 
             logEntry.LogContentProperties = new IndexDictionary<LogContentProperty, LogContentValue>(logLayout.LogContentProperties.Count);
 
@@ -196,6 +201,7 @@ namespace LogScraper.Log
                     }
                 }
             }
+            return true;
         }
 
         /// <summary>
