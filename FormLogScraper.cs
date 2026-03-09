@@ -56,8 +56,8 @@ namespace LogScraper
 
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
-            UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdateBegin;
-            UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdateEnd;
+            UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdate;
+            UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
@@ -309,17 +309,6 @@ namespace LogScraper
             UserControlSearch.IsMetadataSearchEnabled = UsrControlMetadataFormating.IsOriginalMetadataShown;
             if (currentLogMetadataFilterResult != null) RenderLog(currentLogMetadataFilterResult);
         }
-        private void HandleLogContentFilterUpdateBegin(object sender, EventArgs e)
-        {
-            HandleLogContentFilterUpdate(sender, e);
-            UserControlLogEntriesTextBox.ApplyBeginFilter(UserControlContentFilter.SelectedBeginLogEntry);
-        }
-        private void HandleLogContentFilterUpdateEnd(object sender, EventArgs e)
-        {
-            HandleLogContentFilterUpdate(sender, e);
-            UserControlLogEntriesTextBox.ApplyEndFilter(UserControlContentFilter.SelectedEndLogEntry);
-        }
-
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
             UserControlSearch.ClearSelectedLogEntry();

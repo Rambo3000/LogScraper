@@ -15,7 +15,6 @@ using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.IndexDictionary;
 using ScintillaNET;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper.Utilities.UserControls
@@ -27,8 +26,6 @@ namespace LogScraper.Utilities.UserControls
         private List<LogEntry> VisibleLogEntries;
         private LogMetadataFilterResult LogMetadataFilterResult;
         private LogRenderSettings LogRenderSettings;
-        private LogEntry logEntryBegin = null;
-        private LogEntry logEntryEnd = null;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
         private IndexDictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private LogEntry selectedLogEntry = null;
@@ -44,7 +41,7 @@ namespace LogScraper.Utilities.UserControls
             ChkTimelineVisible.Checked = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
-        private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, System.EventArgs e)
+        private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, EventArgs e)
         {
             RenderLogEntries();
         }
@@ -148,9 +145,6 @@ namespace LogScraper.Utilities.UserControls
             // Render all visible log entries into a single text representation
             Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
 
-            // Begin, End and selected log entry highlighting
-            HighlightLines();
-
             // Recalculate visual line start indexes per visible log entry
             // This also returns an array mapping each visible log entry to the visual line index
             contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds, out int[] visualLineIndexPerVisibleEntry);
@@ -231,29 +225,7 @@ namespace LogScraper.Utilities.UserControls
         #endregion
 
         #region Highlighting
-        private void HighlightLines()
-        {
-            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
-            {
-                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
-                {
-                    HighlightLines(selectedIndex);
-                }
-                else
-                {
-                    HighlightLines(null);
-                }
-            }
-        }
-        private void HighlightLines(int? selectedIndex)
-        {
-            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
-            {
-                int? beginIndex = (logEntryBegin == null) ? null : 0;
-                int? endIndex = (logEntryEnd == null) ? null : TxtLogEntries.Lines.Count - 2;
-                TxtLogEntries.HighlightLines(beginIndex, endIndex, selectedIndex);
-            }
-        }
+
         /// <summary>
         /// Applies custom styling to the currently visible log entries in the log display
         /// control.
@@ -276,30 +248,7 @@ namespace LogScraper.Utilities.UserControls
             if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
             {
                 TxtLogEntries.ScrollToLine(selectedIndex);
-                HighlightLines(selectedIndex);
             }
-            else
-            {
-                HighlightLines(null);
-            }
-
-        }
-        #endregion
-
-        #region Begin and end filter
-        public void ApplyBeginFilter(LogEntry logEntryBeginNew)
-        {
-            logEntryBegin = logEntryBeginNew;
-            HighlightLines();
-            StyleLines();
-            if (logEntryBeginNew != null) TxtLogEntries.ScrollToLine(0);
-        }
-        public void ApplyEndFilter(LogEntry logEntryEndNew)
-        {
-            logEntryEnd = logEntryEndNew;
-            HighlightLines();
-            StyleLines();
-            if (logEntryEndNew != null) TxtLogEntries.ScrollToLine(TxtLogEntries.Lines.Count - 1);
         }
         #endregion
 
