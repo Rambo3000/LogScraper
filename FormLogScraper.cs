@@ -64,6 +64,7 @@ namespace LogScraper
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
             UserControlLogEntriesTextBox.TimeLineVisibilityChanged += ChkTimelineVisible_CheckedChanged;
             UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
+            UserControlLogEntriesTextBox.LogEntryAtCursorChanged += UserControlLogEntriesTextBox_LogEntryAtCursorChanged;
 
             //Set the default for showing the timeline from the configuration and trigger the event to set the correct state of the timeline and button
             UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
@@ -77,6 +78,11 @@ namespace LogScraper
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void UserControlLogEntriesTextBox_LogEntryAtCursorChanged(object sender, LogEntry e)
+        {
+            UsrMetadataFilterOverview.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using LogScraper.Log;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.Extensions;
 
@@ -24,6 +25,27 @@ namespace LogScraper
         public event EventHandler FilterChanged;
         public event EventHandler CollapseChanged;
 
+        /// <summary>
+        /// The currently selected log entry. Set to null to deselect.
+        /// Updates the indicator in the list to show which value matches the selected line.
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public LogEntry SelectedLogEntry
+        {
+            get => selectedLogEntry;
+            set
+            {
+                if (selectedLogEntry == value) return;
+                selectedLogEntry = value;
+                string newSelectedLogEntryValue = GetSelectedEntryValueForProperty();
+                if (newSelectedLogEntryValue != SelectedLogEntryValue)
+                {
+                    SelectedLogEntryValue = newSelectedLogEntryValue;
+                    ListViewItems.Invalidate();
+                }
+            }
+        }
+
         #endregion
 
         #region Private Fields
@@ -33,7 +55,8 @@ namespace LogScraper
         private readonly HashSet<string> checkedItems = [];
         private bool updateInProgress = false;
         private Point savedScrollPosition = Point.Empty;
-
+        private LogEntry selectedLogEntry = null;
+        private string SelectedLogEntryValue = null;
         #endregion
 
         #region Constructor
@@ -65,9 +88,7 @@ namespace LogScraper
             int desiredTopPosition = textHeight + 1;
 
             if (ListViewItems.Top != desiredTopPosition)
-            {
                 ListViewItems.Top = desiredTopPosition;
-            }
         }
 
         /// <summary>
@@ -85,11 +106,8 @@ namespace LogScraper
 
             int itemHeight = TextRenderer.MeasureText("Test", ListViewItems.Font).Height + ScaleByDpi(4);
             int totalHeight = sortedValues.Count * itemHeight;
-
             int maxHeight = 50 * itemHeight;
-            int actualHeight = totalHeight;
-            if (actualHeight > maxHeight) actualHeight = 15 * itemHeight;
-
+            int actualHeight = totalHeight > maxHeight ? 15 * itemHeight : totalHeight;
             int newHeight = ListViewItems.Top + actualHeight + Padding.Bottom;
 
             if (Height != newHeight) Height = newHeight;
@@ -98,15 +116,13 @@ namespace LogScraper
 
         /// <summary>
         /// Dynamically adjusts the count column width to fit the largest number.
-        /// Prevents wasted space and ensures counts are always fully visible.
         /// </summary>
         private void AdjustCountColumnWidth()
         {
             if (sortedValues.Count == 0) return;
 
             int maxCount = sortedValues.Max(v => v.Count);
-            string maxCountText = maxCount.ToString("N0");
-            int textWidth = TextRenderer.MeasureText(maxCountText, ListViewItems.Font).Width;
+            int textWidth = TextRenderer.MeasureText(maxCount.ToString("N0"), ListViewItems.Font).Width;
             int newWidth = textWidth + ScaleByDpi(10);
 
             if (ListViewItems.Columns.Count > 0 && ListViewItems.Columns[1].Width != newWidth)
@@ -120,19 +136,13 @@ namespace LogScraper
         {
             ListView listView = sender as ListView;
             if (listView.Columns.Count > 0)
-            {
                 listView.Columns[0].Width = listView.ClientSize.Width - listView.Columns[1].Width - 4;
-            }
         }
 
         #endregion
 
         #region Data Updates
 
-        /// <summary>
-        /// Updates the ListView with new metadata values.
-        /// If only counts changed, performs lightweight update. Otherwise rebuilds the list.
-        /// </summary>
         /// <summary>
         /// Updates the ListView with new metadata values.
         /// If only counts changed, performs lightweight update. Otherwise rebuilds the list.
@@ -183,7 +193,6 @@ namespace LogScraper
             // Update ListView
             ListViewItems.VirtualListSize = sortedValues.Count;
             AdjustCountColumnWidth();
-
             ResizeVertically();
 
             updateInProgress = false;
@@ -191,7 +200,6 @@ namespace LogScraper
 
         /// <summary>
         /// Lightweight update that only refreshes item counts without rebuilding the list.
-        /// Preserves scroll position to avoid jarring user experience.
         /// </summary>
         public void UpdateCountInListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
         {
@@ -248,7 +256,6 @@ namespace LogScraper
             };
 
             item.SubItems.Add(value.Count.ToString("N0"));
-
             e.Item = item;
         }
 
@@ -256,19 +263,13 @@ namespace LogScraper
 
         #region Owner Draw Implementation
 
-        private void ListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
-        {
-            e.DrawDefault = true;
-        }
+        private void ListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e) => e.DrawDefault = true;
 
-        private void ListView_DrawItem(object sender, DrawListViewItemEventArgs e)
-        {
-            e.DrawDefault = false;
-        }
+        private void ListView_DrawItem(object sender, DrawListViewItemEventArgs e) => e.DrawDefault = false;
 
         /// <summary>
-        /// Custom drawing for list items to render checkboxes and text.
-        /// Mimics the appearance of the original UserControlLogMetadataFilterItem.
+        /// Custom drawing for list items. Renders checkbox, optional selection indicator, and text.
+        /// The ▶ indicator marks the value matching the currently selected log entry.
         /// </summary>
         private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
@@ -276,22 +277,31 @@ namespace LogScraper
 
             LogMetadataValue value = e.Item.Tag as LogMetadataValue;
             bool isChecked = checkedItems.Contains(value.Value);
-
+            bool isSelectedLine = selectedLogEntry != null && SelectedLogEntryValue == value.Value;
             Rectangle bounds = e.Bounds;
 
             if (e.ColumnIndex == 0)
             {
-                // Draw description column with checkbox
                 e.DrawBackground();
 
                 int checkBoxPadding = ScaleByDpi(3);
-
-                // Get the actual checkbox size from the system theme
                 CheckBoxState state = isChecked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal;
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
-                // Center checkbox vertically in the row
-                Point checkBoxLocation = new(bounds.Left + checkBoxPadding, bounds.Top + (bounds.Height - checkBoxSize.Height) / 2);
+                // Draw ▶ indicator if this row matches the selected log entry
+                if (isSelectedLine)
+                {
+                    int size = ScaleByDpi(4);
+                    int cx = bounds.Left + size / 2;
+                    int cy = bounds.Top + bounds.Height / 2;
+                    Point[] triangle = [new(cx, cy - size), new(cx + size, cy), new(cx, cy + size)];
+                    using SolidBrush brush = new(Color.FromArgb(150, 150, 150));
+                    e.Graphics.FillPolygon(brush, triangle);
+                }
+
+                Point checkBoxLocation = new(
+                    bounds.Left + 9,
+                    bounds.Top + (bounds.Height - checkBoxSize.Height) / 2);
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, checkBoxLocation, state);
 
@@ -299,30 +309,29 @@ namespace LogScraper
                     checkBoxLocation.X + checkBoxSize.Width + checkBoxPadding,
                     bounds.Top,
                     bounds.Width - checkBoxLocation.X - checkBoxSize.Width - checkBoxPadding,
-                    bounds.Height
-                );
+                    bounds.Height);
 
-                TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
-                                       TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
-
-                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, e.Item.ForeColor, flags);
+                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, e.Item.ForeColor,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
             }
             else if (e.ColumnIndex == 1)
             {
-                // Draw count column (right-aligned)
                 e.DrawBackground();
 
-                TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
-
-                Rectangle textBounds = new(
-                    bounds.Left,
-                    bounds.Top,
-                    bounds.Width - ScaleByDpi(5),
-                    bounds.Height
-                );
-
-                TextRenderer.DrawText(e.Graphics, value.Count.ToString("N0"), e.Item.Font, textBounds, e.Item.ForeColor, flags);
+                Rectangle textBounds = new(bounds.Left, bounds.Top, bounds.Width - ScaleByDpi(5), bounds.Height);
+                TextRenderer.DrawText(e.Graphics, value.Count.ToString("N0"), e.Item.Font, textBounds, e.Item.ForeColor,
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
+        }
+
+        /// <summary>
+        /// Returns the value of the selected log entry for the property this control represents.
+        /// </summary>
+        private string GetSelectedEntryValueForProperty()
+        {
+            if (selectedLogEntry == null || LogMetadataPropertyAndValues == null) return null;
+
+            return selectedLogEntry.LogMetadataPropertiesWithStringValue.TryGetValue(LogMetadataPropertyAndValues.LogMetadataProperty, out string value) ? value : null;
         }
 
         #endregion
@@ -350,7 +359,6 @@ namespace LogScraper
         {
             ListView listView = sender as ListView;
             ListViewItem item = listView.GetItemAt(e.X, e.Y);
-
             if (item == null) return;
 
             ListViewItem.ListViewSubItem subItem = item.GetSubItemAt(e.X, e.Y);
@@ -444,10 +452,7 @@ namespace LogScraper
             Control parent = Parent;
             while (parent != null)
             {
-                if (parent is ScrollableControl scrollable && scrollable.AutoScroll)
-                {
-                    return scrollable;
-                }
+                if (parent is ScrollableControl scrollable && scrollable.AutoScroll) return scrollable;
                 parent = parent.Parent;
             }
             return null;
@@ -487,19 +492,13 @@ namespace LogScraper
             }
 
             ListViewItems.Invalidate();
-
             OnFilterChanged(EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Clears all filter selections.
-        /// </summary>
         internal void ResetFilters()
         {
             checkedItems.Clear();
-
             ListViewItems.Invalidate();
-
             OnFilterChanged(EventArgs.Empty);
         }
 

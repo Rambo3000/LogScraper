@@ -11,7 +11,10 @@ namespace LogScraper.Utilities.Extensions
 {
     public static class ScintillaControlExtensions
     {
-        private const int INDICATOR_SEARCH = 20;
+        public const int INDICATOR_BEGIN_END = 10;
+        public const int INDICATOR_ACTIVE_LINE = 11;
+        public const int INDICATOR_CAROT_LINE = 12;
+        public const int INDICATOR_SEARCH = 20;
 
         /// <summary>
         /// Initializes custom indicators for highlighting and search in the Scintilla control.
@@ -21,16 +24,22 @@ namespace LogScraper.Utilities.Extensions
         public static void Initialize(this Scintilla scintillacontrol)
         {
             // Begin/End line indicator
-            scintillacontrol.Indicators[10].Style = IndicatorStyle.FullBox;
-            scintillacontrol.Indicators[10].ForeColor = Color.Gray;
-            scintillacontrol.Indicators[10].Alpha = 50;
-            scintillacontrol.Indicators[10].Under = true;
+            scintillacontrol.Indicators[INDICATOR_BEGIN_END].Style = IndicatorStyle.FullBox;
+            scintillacontrol.Indicators[INDICATOR_BEGIN_END].ForeColor = Color.Gray;
+            scintillacontrol.Indicators[INDICATOR_BEGIN_END].Alpha = 50;
+            scintillacontrol.Indicators[INDICATOR_BEGIN_END].Under = true;
 
             // Active line indicator
-            scintillacontrol.Indicators[11].Style = IndicatorStyle.FullBox;
-            scintillacontrol.Indicators[11].ForeColor = Color.FromArgb(155, 205, 232);
-            scintillacontrol.Indicators[11].Alpha = 200;
-            scintillacontrol.Indicators[11].Under = true;
+            scintillacontrol.Indicators[INDICATOR_ACTIVE_LINE].Style = IndicatorStyle.FullBox;
+            scintillacontrol.Indicators[INDICATOR_ACTIVE_LINE].ForeColor = Color.FromArgb(155, 205, 232);
+            scintillacontrol.Indicators[INDICATOR_ACTIVE_LINE].Alpha = 200;
+            scintillacontrol.Indicators[INDICATOR_ACTIVE_LINE].Under = true;
+
+            // Carot position indicator
+            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Style = IndicatorStyle.Plain;
+            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].ForeColor = Color.FromArgb(0, 0, 0);
+            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Alpha = 255;
+            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Under = true;
 
             Indicator indicator = scintillacontrol.Indicators[INDICATOR_SEARCH];
             indicator.Style = IndicatorStyle.StraightBox;
@@ -96,21 +105,51 @@ namespace LogScraper.Utilities.Extensions
         public static void HighlightLines(this Scintilla scintillacontrol, int? beginLine, int? endLine, int? activeLine)
         {
             // Clear previous highlights
-            scintillacontrol.IndicatorCurrent = 10;
-            scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
-            scintillacontrol.IndicatorCurrent = 11;
-            scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
+            ClearLineHighlights(scintillacontrol, INDICATOR_BEGIN_END);
+            ClearLineHighlights(scintillacontrol, INDICATOR_ACTIVE_LINE);
 
             // Apply begin/end line (light gray)
             if (beginLine.HasValue)
-                scintillacontrol.HighlightSingleLine(beginLine.Value, 10);
+                scintillacontrol.HighlightSingleLine(beginLine.Value, INDICATOR_BEGIN_END);
             if (endLine.HasValue && endLine != beginLine)
-                scintillacontrol.HighlightSingleLine(endLine.Value, 10);
+                scintillacontrol.HighlightSingleLine(endLine.Value, INDICATOR_BEGIN_END);
 
             // Apply active line (light blue)
-            if (activeLine.HasValue)
-                scintillacontrol.HighlightSingleLine(activeLine.Value, 11);
+            //if (activeLine.HasValue)
+                //scintillacontrol.HighlightSingleLine(activeLine.Value, INDICATOR_ACTIVE_LINE);
         }
+
+        /// <summary>
+        /// Clears all existing highlights for the specified indicator and applies highlighting to a single line in the
+        /// Scintilla control.
+        /// </summary>
+        /// <remarks>This method first removes any previous highlights associated with the specified
+        /// indicator before highlighting the target line. Use this method to ensure that only one line is highlighted
+        /// at a time for a given indicator.</remarks>
+        /// <param name="scintillacontrol">The Scintilla control on which to clear and apply line highlighting.</param>
+        /// <param name="lineIndex">The zero-based index of the line to highlight.</param>
+        /// <param name="indicatorIndex">The index of the indicator used for highlighting the line.</param>
+        public static void ClearAndHighlightSingleLine(this Scintilla scintillacontrol, int lineIndex, int indicatorIndex)
+        {
+            // Clear previous highlights
+            ClearLineHighlights(scintillacontrol, indicatorIndex);
+
+            scintillacontrol.HighlightSingleLine(lineIndex, indicatorIndex);
+        }
+
+        /// <summary>
+        /// Clears all indicator highlights of the specified indicator type from the entire Scintilla control.
+        /// </summary>
+        /// <remarks>This method removes all highlights for the specified indicator across the entire text
+        /// of the control. It does not affect highlights from other indicators.</remarks>
+        /// <param name="scintillacontrol">The Scintilla control from which to remove indicator highlights.</param>
+        /// <param name="indicatorIndex">The zero-based index of the indicator whose highlights are to be cleared.</param>
+        private static void ClearLineHighlights(this Scintilla scintillacontrol, int indicatorIndex)
+        {
+            scintillacontrol.IndicatorCurrent = indicatorIndex;
+            scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
+        }
+
         /// <summary>
         /// Applies custom styles to specific lines in a Scintilla control based on the provided log content properties
         /// and their associated line numbers.
@@ -209,6 +248,7 @@ namespace LogScraper.Utilities.Extensions
 
             var line = scintillacontrol.Lines[lineNumber];
             scintillacontrol.IndicatorCurrent = indicatorIndex;
+            scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
             scintillacontrol.IndicatorFillRange(line.Position, line.Length);
         }
 
@@ -324,11 +364,11 @@ namespace LogScraper.Utilities.Extensions
         /// <param name="scintillacontrol">The Scintilla control to modify.</param>
         public static void ClearAllLineHighlighting(this Scintilla scintillacontrol)
         {
-            scintillacontrol.IndicatorCurrent = 10;
+            scintillacontrol.IndicatorCurrent = INDICATOR_BEGIN_END;
             scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
-            scintillacontrol.IndicatorCurrent = 11;
+            scintillacontrol.IndicatorCurrent = INDICATOR_ACTIVE_LINE;
             scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
-            scintillacontrol.IndicatorCurrent = 12;
+            scintillacontrol.IndicatorCurrent = INDICATOR_CAROT_LINE;
             scintillacontrol.IndicatorClearRange(0, scintillacontrol.TextLength);
         }
 

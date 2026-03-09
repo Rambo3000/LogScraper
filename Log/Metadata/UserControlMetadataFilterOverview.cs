@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Log.Layout;
@@ -27,6 +28,24 @@ namespace LogScraper.Log.Metadata
         public UserControlMetadataFilterOverview()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// The currently selected log entry. Set to null to deselect.
+        /// Updates the indicator in the list to show which value matches the selected line.
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public LogEntry SelectedLogEntry
+        {
+            get => selectedLogEntry;
+            set
+            {
+                selectedLogEntry = value;
+                foreach (UserControlLogMetadataFilter userControlLogMetadataFilter in logMetadataPropertyControls.Values)
+                {
+                    userControlLogMetadataFilter.SelectedLogEntry = selectedLogEntry;
+                }
+            }
         }
 
         // Tracks the previous width of the panel to avoid unnecessary resizing.
@@ -188,6 +207,8 @@ namespace LogScraper.Log.Metadata
             this.ResumeDrawing();
         }
         private bool isResetFiltersInProgress = false;
+        private LogEntry selectedLogEntry;
+
         internal void ResetFilters()
         {
             this.SuspendDrawing();

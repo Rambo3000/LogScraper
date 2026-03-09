@@ -29,7 +29,7 @@ namespace LogScraper
             // 
             LblLogFilterDescription.AutoSize = true;
             LblLogFilterDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            LblLogFilterDescription.Location = new System.Drawing.Point(3, 1);
+            LblLogFilterDescription.Location = new System.Drawing.Point(1, 1);
             LblLogFilterDescription.Name = "LblLogFilterDescription";
             LblLogFilterDescription.Size = new System.Drawing.Size(32, 15);
             LblLogFilterDescription.TabIndex = 0;

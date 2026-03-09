@@ -32,6 +32,7 @@ namespace LogScraper.Utilities.UserControls
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
         private IndexDictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private LogEntry selectedLogEntry = null;
+        private LogEntry logEntryAtCursor = null;
 
         public UserControlLogEntriesTextBox()
         {
@@ -88,10 +89,30 @@ namespace LogScraper.Utilities.UserControls
 
         public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogRenderSettings logRenderSettings)
         {
+            LogEntry logEntryAtCarot = null;
+            if (TxtLogEntries.SelectionStart > 0)
+            {
+                if (LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.CurrentLine, logEntriesRenderMapCache, out LogEntryRenderPosition logEntryRenderPosition))
+                { 
+                    logEntryAtCarot = logEntryRenderPosition.LogEntry;
+                }
+            }
+
             LogMetadataFilterResult = logMetadataFilterResultNew;
             LogRenderSettings = logRenderSettings;
             VisibleLogEntries = visibleLogEntries;
             RenderLogEntries();
+
+            // Try to restore the log entry at the carot after the render, if it is still visible
+            if (logEntryAtCarot != null)
+            {
+
+                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, logEntryAtCarot, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
+                {
+                    TxtLogEntries.ScrollToLine(selectedIndex);
+                    TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
+                }
+            }
         }
         /// <summary>
         /// Cache of the last rendered log layout, used to preserve scroll position across renders.
@@ -189,6 +210,7 @@ namespace LogScraper.Utilities.UserControls
         public void Clear()
         {
             TxtLogEntries.Clear();
+            LogEntryAtCursorChanged?.Invoke(this, null);
             UserControlPostProcessing.Clear();
         }
         /// <summary>
@@ -384,7 +406,7 @@ namespace LogScraper.Utilities.UserControls
         }
         #endregion
 
-        #region Scroll handling
+        #region Scroll and log entry at cursor handling
         public class VisibleRangeChangedEventArgs(LogEntryRenderPosition topPosition, LogEntryRenderPosition bottomPosition) : EventArgs
         {
             public LogEntryRenderPosition TopPosition { get; } = topPosition;
@@ -394,9 +416,43 @@ namespace LogScraper.Utilities.UserControls
 
         public event EventHandler<VisibleRangeChangedEventArgs> VisibleRangeChanged;
 
+        public event EventHandler<LogEntry> LogEntryAtCursorChanged;
+
+        private int? lastKnownLine = null;
+
         private void TrackedScintilla_UpdateUI(object sender, UpdateUIEventArgs e)
         {
             RaiseVisibleRangeChanged();
+
+            int currentLine = TxtLogEntries.CurrentLine;
+            bool isCarotInDefaultPosition = TxtLogEntries.SelectionStart == 0;
+            bool currentLineChanged = lastKnownLine.HasValue && currentLine != lastKnownLine;
+
+            lastKnownLine = currentLine;
+
+            if (currentLineChanged) TxtLogEntries.ClearAndHighlightSingleLine(currentLine, INDICATOR_CAROT_LINE);
+
+            // Make sure to reset if the carot is returned to 0
+            if (currentLineChanged && isCarotInDefaultPosition)
+            {
+                logEntryAtCursor = null;
+                lastKnownLine = null;
+                LogEntryAtCursorChanged?.Invoke(this, logEntryAtCursor);
+                return;
+            }
+
+            if (currentLineChanged || !isCarotInDefaultPosition)
+            {
+                if (LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.CurrentLine, logEntriesRenderMapCache, out LogEntryRenderPosition cursorPosition))
+                {
+                    LogEntry logEntryAtCursorNew = cursorPosition.LogEntry;
+                    if (logEntryAtCursorNew != logEntryAtCursor)
+                    {
+                        logEntryAtCursor = logEntryAtCursorNew;
+                        LogEntryAtCursorChanged?.Invoke(this, logEntryAtCursor);
+                    }
+                }
+            }
         }
 
         private void RaiseVisibleRangeChanged(bool force = false)
