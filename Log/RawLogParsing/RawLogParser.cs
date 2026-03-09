@@ -153,8 +153,8 @@ namespace LogScraper.Log.RawLogParsing
         {
             bool logEntryIsAdded = false;
             LogEntry lastLogEntry = null;
+            int logEntriesListIndex = logCollection.LogEntries.Count;
 
-            int indexOffset = logCollection.LogEntries.Count;
             for (int i = 0; i < parsedLogEntries.Length; i++)
             {
                 ref ParsedLogEntry line = ref parsedLogEntries[i];
@@ -171,13 +171,15 @@ namespace LogScraper.Log.RawLogParsing
                     continue;
                 }
 
-                LogEntry newLogEntry = new(line.RawLogEntry, line.Timestamp, i + indexOffset)
+                LogEntry newLogEntry = new(line.RawLogEntry, line.Timestamp, logEntriesListIndex)
                 {
                     StartIndexMetadata = line.StartIndexMetadata
                 };
                 logCollection.LogEntries.Add(newLogEntry);
                 logEntryIsAdded = true;
                 lastLogEntry = newLogEntry;
+
+                logEntriesListIndex++;
             }
         }
         /// <summary>
