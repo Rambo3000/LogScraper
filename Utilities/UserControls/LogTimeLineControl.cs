@@ -37,7 +37,7 @@ namespace LogScraper.Utilities.UserControls
 
         // Constants
         private const double SCALE_POWER = 0.4;
-        private const int MINIMUM_BUCKET_COUNT = 50;
+        private const int MINIMUM_BUCKET_COUNT = 256;
         private const int ERROR_MARKER_SIZE = 8;
         private const int MINIMUM_VISIBLE_RANGE_WIDTH = 1; // Minimum width in pixels for visibility
 
