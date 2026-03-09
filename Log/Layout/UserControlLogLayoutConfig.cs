@@ -66,7 +66,7 @@ namespace LogScraper.Log
         /// <summary>
         /// Refreshes a single item in the ListBox by triggering a ResetItem on the BindingList.
         /// </summary>
-        private static void RefreshListBoxItem<T>(ListBox listBox, BindingList<T> bindingList, T item)
+        private static void RefreshListBoxItem<T>(BindingList<T> bindingList, T item)
         {
             int index = bindingList.IndexOf(item);
             if (index >= 0) bindingList.ResetItem(index);
@@ -325,7 +325,7 @@ namespace LogScraper.Log
             if (LstLayouts.SelectedItem is LogLayout selected)
             {
                 selected.Description = TxtDescription.Text;
-                RefreshListBoxItem(LstLayouts, _layouts, selected);
+                RefreshListBoxItem(_layouts, selected);
             }
         }
 
@@ -419,7 +419,7 @@ namespace LogScraper.Log
             if (LstMetadata.SelectedItem is LogMetadataProperty selected)
             {
                 selected.Description = TxtMetadataDescription.Text;
-                RefreshListBoxItem(LstMetadata, _metadataProperties, selected);
+                RefreshListBoxItem(_metadataProperties, selected);
             }
         }
 
@@ -441,7 +441,7 @@ namespace LogScraper.Log
             if (LstContent.SelectedItem is LogContentProperty selected)
             {
                 selected.Description = TxtContentDescription.Text;
-                RefreshListBoxItem(LstContent, _contentProperties, selected);
+                RefreshListBoxItem(_contentProperties, selected);
             }
         }
 
