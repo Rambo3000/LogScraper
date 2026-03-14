@@ -17,9 +17,14 @@ namespace LogScraper.Log.Metadata
         public List<LogEntry> LogEntries { get; set; }
 
         /// <summary>
-        /// A list of metadata properties and their associated values for the filtered log entries.
+        /// Gets or sets the collection of statistics for metadata filters applied to log entries.
         /// </summary>
-        public List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValues { get; set; }
+        public IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> FilterStats { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of active log metadata filters, organized by metadata property.
+        /// </summary>
+        public IndexDictionary<LogMetadataProperty, LogMetadataFilter> FilterStats { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of log flow trees, organized by log content properties.

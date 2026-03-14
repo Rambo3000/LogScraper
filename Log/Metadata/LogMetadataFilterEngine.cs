@@ -3,15 +3,14 @@ using System.Linq;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
-using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Metadata
 {
     /// <summary>
-    /// Provides methods to filter log entries based on metadata properties and values.
+    /// Provides functionality to filter log entries based on specified metadata properties and values, and to generate associated log flow trees.
     /// </summary>
-    internal static class LogMetadataFilter
+    internal static class LogMetadataFilterEngine
     {
         /// <summary>
         /// Filters the log entries based on the provided metadata properties and values, and updates the count of each metadata value.

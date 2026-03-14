@@ -14,30 +14,23 @@ namespace LogScraper.Log.Metadata
         /// <param name="value">The metadata value as a string.</param>
         /// <param name="count">The number of times this value appears in the log.</param>
         /// <param name="isFilterEnabled">Indicates whether this value is enabled for filtering.</param>
-        public LogMetadataValue(string value, int count, bool isFilterEnabled)
+        public LogMetadataValue(LogMetadataProperty logMetadataProperty, string value)
         {
             Value = value;
-            Count = count;
-            IsFilterEnabled = isFilterEnabled;
+            LogMetadataProperty = logMetadataProperty;
 
-            // Cache the hash code for performance, based on the value string.
-            HashCodeCache = Value.GetHashCode();
+            HashCodeCache =  HashCode.Combine(LogMetadataProperty.GetHashCode(), Value);
         }
 
         /// <summary>
         /// The metadata value as a string.
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; private set; }
 
         /// <summary>
-        /// The number of times this metadata value appears in the log.
+        /// Gets or sets the metadata property associated with the log entry.
         /// </summary>
-        public int Count { get; set; }
-
-        /// <summary>
-        /// Indicates whether this metadata value is enabled for filtering.
-        /// </summary>
-        public bool IsFilterEnabled { get; set; }
+        public LogMetadataProperty LogMetadataProperty { get; private set; }
 
         /// <summary>
         /// Cached hash code for the metadata value, calculated from the value string.
