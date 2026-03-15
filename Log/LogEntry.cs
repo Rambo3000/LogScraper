@@ -10,7 +10,7 @@ namespace LogScraper.Log
     /// <summary>
     /// Represents a single log entry with its associated metadata and content properties.
     /// </summary>
-    public class LogEntry: IEquatable<LogEntry>, IComparable<LogEntry>, IHasIndex
+    public class LogEntry : IEquatable<LogEntry>, IComparable<LogEntry>, IHasIndex
     {
         /// <summary>
         /// Initializes a new instance of the LogEntry class with the specified entry content and timestamp.
@@ -19,7 +19,7 @@ namespace LogScraper.Log
         /// <param name="timestamp">The timestamp associated with the log entry.</param>
         public LogEntry(string entry, DateTime timestamp, int index)
         {
-            Entry =  entry.Trim();
+            Entry = entry.Trim();
             TimeStamp = timestamp;
             HashCodeCache = Entry.GetHashCode();
             Index = index;
@@ -32,7 +32,7 @@ namespace LogScraper.Log
         /// <summary>
         /// The timestamp associated with the log entry.
         /// </summary>
-        public DateTime TimeStamp { get; set; } 
+        public DateTime TimeStamp { get; set; }
 
         /// <summary>
         /// Additional log entries that are related to this log entry. These are typically stack traces or other kind of log output which spans multiple log entries.
@@ -57,9 +57,10 @@ namespace LogScraper.Log
         private int HashCodeCache { get; set; }
 
         /// <summary>
-        /// Metadata properties associated with the log entry, represented as key-value pairs.
+        /// Metadata properties associated with the log entry, represented as interned shared key-value pairs.
+        /// Values are shared instances from LogCollection's value pool.
         /// </summary>
-        public IndexDictionary<LogMetadataProperty, string> LogMetadataPropertiesWithStringValue { get; set; }
+        public IndexDictionary<LogMetadataProperty, LogMetadataValue> Metadata { get; set; }
 
         /// <summary>
         /// Content properties associated with the log entry, represented as key-value pairs.
@@ -70,9 +71,6 @@ namespace LogScraper.Log
         /// Gets or sets the zero-based index associated with the current item.
         /// </summary>
         public int Index { get; set; }
-        /// <summary>
-        /// Gets or sets the zero-based index associated with the current item.
-        /// </summary>
 
         /// <summary>
         /// Gets or sets a value indicating whether this log entry is classified as an error log entry.
@@ -131,13 +129,12 @@ namespace LogScraper.Log
         /// <remarks>This method compares <see cref="LogEntry"/> instances based solely on their <see
         /// cref="TimeStamp"/> property.</remarks>
         /// <param name="other">The <see cref="LogEntry"/> to compare to the current instance. Can be <see langword="null"/>.</param>
-        /// <returns>A value indicating the relative order of the <see cref="LogEntry"/> instances: <list type="bullet">
+        /// <returns>A value indicating the relative order of the <see cref="LogEntry"/> instances.</returns>
         public int CompareTo(LogEntry other)
         {
             if (other == null) return 1;
             return this.TimeStamp.CompareTo(other.TimeStamp);
         }
-
         /// <summary>
         /// Determines whether one <see cref="LogEntry"/> instance is greater than another based on their
         /// timestamps.

@@ -24,7 +24,7 @@ namespace LogScraper.Log.Metadata
         /// <summary>
         /// Gets or sets the collection of active log metadata filters, organized by metadata property.
         /// </summary>
-        public IndexDictionary<LogMetadataProperty, LogMetadataFilter> FilterStats { get; set; }
+        public IndexDictionary<LogMetadataProperty, LogMetadataFilter> ActiveFilters { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of log flow trees, organized by log content properties.

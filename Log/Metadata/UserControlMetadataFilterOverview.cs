@@ -14,8 +14,8 @@ namespace LogScraper.Log.Metadata
     /// </summary>
     public partial class UserControlMetadataFilterOverview : UserControl
     {
-        // Dictionary to store metadata property controls for quick access.
-        private readonly Dictionary<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> logMetadataPropertyControls = [];
+        // Dictionary to store per-property filter controls for quick access.
+        private readonly Dictionary<LogMetadataProperty, UserControlLogMetadataFilter> filterControls = [];
 
         /// <summary>
         /// Event triggered when a filter is changed.
@@ -32,7 +32,7 @@ namespace LogScraper.Log.Metadata
 
         /// <summary>
         /// The currently selected log entry. Set to null to deselect.
-        /// Updates the indicator in the list to show which value matches the selected line.
+        /// Updates the indicator in each child control to show which value matches the selected line.
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LogEntry SelectedLogEntry
@@ -41,37 +41,32 @@ namespace LogScraper.Log.Metadata
             set
             {
                 selectedLogEntry = value;
-                foreach (UserControlLogMetadataFilter userControlLogMetadataFilter in logMetadataPropertyControls.Values)
-                {
-                    userControlLogMetadataFilter.SelectedLogEntry = selectedLogEntry;
-                }
+                foreach (UserControlLogMetadataFilter control in filterControls.Values)
+                    control.SelectedLogEntry = selectedLogEntry;
             }
         }
 
-        // Tracks the previous width of the panel to avoid unnecessary resizing.
         private int previousWidth = 0;
+        private bool isResetFiltersInProgress = false;
+        private LogEntry selectedLogEntry;
 
         /// <summary>
-        /// Handles the resize event of the control to adjust the width of child controls.
+        /// Handles resize to adjust child control widths.
         /// </summary>
         private void UserControlMetadataFilterOverview_Resize(object sender, EventArgs e)
         {
             int newWidth = ClientSize.Width;
             if (newWidth == previousWidth) return;
 
-            // Suspend layout updates to improve performance during resizing.
             this.SuspendDrawing();
             SuspendLayout();
 
             foreach (Control ctrl in Controls)
             {
                 if (ctrl.Width != newWidth)
-                {
                     ctrl.Width = newWidth;
-                }
             }
 
-            // Resume layout updates after resizing.
             ResumeLayout();
             this.ResumeDrawing();
             previousWidth = newWidth;
@@ -79,113 +74,92 @@ namespace LogScraper.Log.Metadata
 
         /// <summary>
         /// Updates the filter controls based on the provided log layout and log collection.
+        /// Creates controls for new properties, updates values and counts for existing ones.
         /// </summary>
         /// <param name="logLayout">The layout of the log, including metadata properties.</param>
-        /// <param name="logCollection">The collection of log entries to filter.</param>
-        public void UpdateFilterControls(LogLayout logLayout, LogCollection logCollection)
+        /// <param name="logCollection">The collection of log entries, providing the value pool.</param>
+        /// <param name="stats">Current filter stats (counts per value). Pass null when no filters are active.</param>
+        public void UpdateFilterControls(LogLayout logLayout, LogCollection logCollection, List<LogMetadataFilterStats> stats)
         {
-            // Get the list of metadata properties and their values from the log collection.
-            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValues =
-                LogEntryClassifier.GetLogEntriesListOfMetadataPropertyAndValues(logCollection.LogEntries, logLayout.LogMetadataProperties);
-
-            UserControlLogMetadataFilter previousFilter = null;
-
-            // Suspend layout updates to improve performance during control updates.
             this.SuspendDrawing();
 
-            foreach (LogMetadataPropertyAndValues filterProperty in logMetadataPropertyAndValues)
+            UserControlLogMetadataFilter previousControl = null;
+
+            foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
             {
-                if (!logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
+                if (!logCollection.MetadataValues.TryGetValue(property, out List<LogMetadataValue> allValues))
+                    continue;
+
+                LogMetadataFilterStats propertyStats = stats?.Find(s => s.Property == property);
+
+                if (!filterControls.TryGetValue(property, out UserControlLogMetadataFilter control))
                 {
-                    // Create a new UserControlLogMetadataFilter and add it to the dictionary and the panel.
-                    userControlLogFilter = new UserControlLogMetadataFilter(filterProperty.LogMetadataProperty.Description)
+                    control = new UserControlLogMetadataFilter(property.Description)
                     {
                         Width = ClientSize.Width
                     };
-                    userControlLogFilter.FilterChanged += OnFilterChanged;
-
-                    Controls.Add(userControlLogFilter);
-                    logMetadataPropertyControls[filterProperty] = userControlLogFilter;
+                    control.FilterChanged += OnFilterChanged;
+                    Controls.Add(control);
+                    filterControls[property] = control;
                 }
 
-                // Update the list view of the filter control with the current property values.
-                userControlLogFilter.UpdateListView(filterProperty);
+                control.UpdateListView(property, allValues, propertyStats);
 
-                // Position the filter control below the previous one.
-                if (previousFilter != null)
-                {
-                    userControlLogFilter.Top = previousFilter.Bottom + 5;
-                }
-                previousFilter = userControlLogFilter;
+                if (previousControl != null)
+                    control.Top = previousControl.Bottom + 5;
+
+                previousControl = control;
             }
 
             this.ResumeDrawing();
         }
 
         /// <summary>
-        /// Handles the FilterChanged event from child controls and propagates it to subscribers.
+        /// Updates only the counts in all filter controls without rebuilding the value lists.
+        /// Call this after filtering to reflect the new counts.
         /// </summary>
-        private void OnFilterChanged(object sender, EventArgs e)
-        {
-            if (!isResetFiltersInProgress) FilterChanged?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Retrieves the current metadata properties and their values from all child controls.
-        /// </summary>
-        /// <returns>A list of metadata properties and their values.</returns>
-        public List<LogMetadataPropertyAndValues> GetMetadataPropertyAndValues()
-        {
-            List<LogMetadataPropertyAndValues> logMetadataPropertyAndValuesList = [];
-
-            foreach (UserControlLogMetadataFilter userControlLogFilter in Controls)
-            {
-                logMetadataPropertyAndValuesList.Add(userControlLogFilter.GetCurrentLogMetadataPropertyAndValues());
-            }
-
-            return logMetadataPropertyAndValuesList;
-        }
-
-        /// <summary>
-        /// Updates the count of metadata property values in the filter controls.
-        /// </summary>
-        /// <param name="filterProperties">The list of metadata properties and their values to update.</param>
-        public void UpdateFilterControlsCount(List<LogMetadataPropertyAndValues> filterProperties)
+        /// <param name="stats">Updated filter stats per property.</param>
+        public void UpdateFilterControlsCount(List<LogMetadataFilterStats> stats)
         {
             this.SuspendDrawing();
-            foreach (LogMetadataPropertyAndValues filterProperty in filterProperties)
+
+            foreach (LogMetadataFilterStats propertyStats in stats)
             {
-                if (logMetadataPropertyControls.TryGetValue(filterProperty, out var userControlLogFilter))
-                {
-                    userControlLogFilter.UpdateCountInListView(filterProperty);
-                }
+                if (filterControls.TryGetValue(propertyStats.Property, out UserControlLogMetadataFilter control))
+                    control.UpdateCounts(propertyStats);
             }
+
             this.ResumeDrawing();
         }
-        protected override Point ScrollToControl(Control activeControl)
-        {
-            return AutoScrollPosition;
-        }
+
         /// <summary>
-        /// Enables filtering on a specific metadata value for a given metadata property.
+        /// Retrieves the current metadata filters from all child controls.
+        /// Only returns filters that have active values.
         /// </summary>
-        /// <param name="logMetadataPropertiesAndValues">The metadata properties and their values to enable filtering on.</param>
-        public void EnableFilterOnSpecificMetdataValues(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
+        public List<LogMetadataFilter> GetActiveFilters()
         {
-            // Check if the control for the specified metadata property exists
-            foreach (KeyValuePair<LogMetadataPropertyAndValues, UserControlLogMetadataFilter> control in logMetadataPropertyControls)
+            List<LogMetadataFilter> filters = [];
+
+            foreach (UserControlLogMetadataFilter control in filterControls.Values)
             {
-                foreach (KeyValuePair<LogMetadataProperty, string> kvp in logMetadataPropertiesAndValues)
-                {
-                    // Check if the control's metadata property matches the specified one
-                    if (control.Key.LogMetadataProperty == kvp.Key)
-                    {
-                        // Enable the filter on the specific metadata value
-                        control.Value.EnableDisableFilterOnSpecificMetdataValue(kvp.Value, isEnabled);
-                        return;
-                    }
-                }
+                LogMetadataFilter filter = control.GetCurrentFilter();
+                if (filter.ActiveValues.Count > 0)
+                    filters.Add(filter);
             }
+
+            return filters;
+        }
+
+        /// <summary>
+        /// Enables filtering on a specific metadata value for a given property, in the specified mode.
+        /// </summary>
+        /// <param name="property">The metadata property to target.</param>
+        /// <param name="value">The specific value to enable or disable filtering on.</param>
+        /// <param name="isEnabled">Whether to enable or disable the filter.</param>
+        public void EnableFilterOnSpecificMetadataValue(LogMetadataProperty property, LogMetadataValue value, bool isEnabled)
+        {
+            if (filterControls.TryGetValue(property, out UserControlLogMetadataFilter control))
+                control.EnableDisableFilterOnSpecificMetadataValue(value, isEnabled);
         }
 
         /// <summary>
@@ -194,35 +168,43 @@ namespace LogScraper.Log.Metadata
         public void Reset()
         {
             this.SuspendDrawing();
+
             foreach (Control control in Controls)
             {
-                if (control is UserControlLogMetadataFilter userControlLogMetadataFilter)
-                {
-                    userControlLogMetadataFilter.FilterChanged -= OnFilterChanged;
-                }
+                if (control is UserControlLogMetadataFilter filterControl)
+                    filterControl.FilterChanged -= OnFilterChanged;
             }
 
             Controls.Clear();
-            logMetadataPropertyControls.Clear();
+            filterControls.Clear();
+
             this.ResumeDrawing();
         }
-        private bool isResetFiltersInProgress = false;
-        private LogEntry selectedLogEntry;
 
+        /// <summary>
+        /// Resets all active filter selections without removing the controls.
+        /// </summary>
         internal void ResetFilters()
         {
             this.SuspendDrawing();
             isResetFiltersInProgress = true;
+
             foreach (Control control in Controls)
             {
-                if (control is UserControlLogMetadataFilter userControlLogMetadataFilter)
-                {
-                    userControlLogMetadataFilter.ResetFilters();
-                }
+                if (control is UserControlLogMetadataFilter filterControl)
+                    filterControl.ResetFilters();
             }
+
             isResetFiltersInProgress = false;
             OnFilterChanged(this, EventArgs.Empty);
             this.ResumeDrawing();
         }
+
+        private void OnFilterChanged(object sender, EventArgs e)
+        {
+            if (!isResetFiltersInProgress) FilterChanged?.Invoke(this, e);
+        }
+
+        protected override Point ScrollToControl(Control activeControl) => AutoScrollPosition;
     }
 }

@@ -524,7 +524,7 @@ namespace LogScraper.Log
                 RawLogParser.TryParseAndAppendLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout);
                 logLayout.LogContentProperties.AssignIndexes();
                 logLayout.LogMetadataProperties.AssignIndexes();
-                LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, logCollection);
+                LogEntryClassifier.Classify(logLayout, logCollection);
 
                 string information = string.Empty;
                 LogEntry logEntry = logCollection.LogEntries[0];
@@ -537,8 +537,9 @@ namespace LogScraper.Log
                 information += "Metadata:" + Environment.NewLine;
                 foreach (var property in logLayout.LogMetadataProperties)
                 {
-                    logEntry.LogMetadataPropertiesWithStringValue.TryGetValue(property, out string value);
-                    information += $"   {property.Description}: {value ??= "<niet gevonden>"}" + Environment.NewLine;
+                    string metadataValue = logEntry.Metadata.TryGetValue(property, out LogMetadataValue value) ? value.Value : "<niet gevonden>";
+
+                    information += $"   {property.Description}: {metadataValue}" + Environment.NewLine;
                 }
                 information += Environment.NewLine;
                 information += "Inhoudsfilters:" + Environment.NewLine;

@@ -9,6 +9,7 @@ using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Processors;
 using LogScraper.Log.RawLogParsing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogProviders;
@@ -40,7 +41,7 @@ namespace LogScraper
 
             splitContainer4.Panel2.Controls.Add(logTimelineControl);
 
-            CultureInfo culture = new("nl"); // of "en", "fr", etc.
+            CultureInfo culture = new("nl");
             Thread.CurrentThread.CurrentUICulture = culture;
 
             FormCompactView.Instance.SetFormLogScraper(this);
@@ -66,7 +67,6 @@ namespace LogScraper
             UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
             UserControlLogEntriesTextBox.LogEntryAtCursorChanged += UserControlLogEntriesTextBox_LogEntryAtCursorChanged;
 
-            //Set the default for showing the timeline from the configuration and trigger the event to set the correct state of the timeline and button
             UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
             ChkTimelineVisible_CheckedChanged(this, EventArgs.Empty);
 
@@ -88,15 +88,14 @@ namespace LogScraper
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
         {
             if (UserControlLogEntriesTextBox.IsTimelineVisible)
-            {
                 logTimelineControl.SetVisibleRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
-            }
         }
 
         private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
         {
             splitContainer4.Panel2Collapsed = !UserControlLogEntriesTextBox.IsTimelineVisible;
-            if (UserControlLogEntriesTextBox.IsTimelineVisible && visibleLogEntries != null) logTimelineControl.UpdateLogEntries(visibleLogEntries);
+            if (UserControlLogEntriesTextBox.IsTimelineVisible && visibleLogEntries != null)
+                logTimelineControl.UpdateLogEntries(visibleLogEntries);
         }
 
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)
@@ -112,9 +111,13 @@ namespace LogScraper
             LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.Text);
         }
 
-        private void UsrLogContentBegin_FilterOnMetadata(Dictionary<LogMetadataProperty, string> logMetadataPropertiesAndValues, bool isEnabled)
+        /// <summary>
+        /// Handles filter-on-metadata requests from the content filter control.
+        /// Bridges the selected log entry's metadata values into the metadata filter panel.
+        /// </summary>
+        private void UsrLogContentBegin_FilterOnMetadata(LogMetadataProperty property, LogMetadataValue value, bool isEnabled)
         {
-            UsrMetadataFilterOverview.EnableFilterOnSpecificMetdataValues(logMetadataPropertiesAndValues, isEnabled);
+            UsrMetadataFilterOverview.EnableFilterOnSpecificMetadataValue(property, value, isEnabled);
             UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
         }
 
@@ -128,16 +131,13 @@ namespace LogScraper
                 PopulateLogLayouts();
                 PopulateLogProviderControls();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ex.LogStackTraceToFile();
-                MessageBox.Show(ex.Message); 
+                MessageBox.Show(ex.Message);
             }
 
             RefreshLogStatistics();
-
-            // Check for updates in a separate thread to not block the UI
-            // The update has to occur after the settings are loaded to know if beta updates are allowed
             GitHubUpdateChecker.CheckForUpdateInSeperateThread();
         }
         #endregion
@@ -145,6 +145,7 @@ namespace LogScraper
         #region Initiate getting raw log and processing of raw log
 
         private DateTime? lastTrailTime = null;
+
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
             try
@@ -179,6 +180,7 @@ namespace LogScraper
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
             }
         }
+
         private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime)
         {
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
@@ -192,19 +194,20 @@ namespace LogScraper
                 catch (Exception ex)
                 {
                     ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
-                    //Write the raw log to the text box to not leave the user completely in the dark
                     UserControlLogEntriesTextBox.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
                 if (newLogEntriesReceived)
                 {
-                    LogEntryClassifier.ClassifyMetadataAndContentProperties(logLayout, LogCollection.Instance);
+                    LogEntryClassifier.Classify(logLayout, LogCollection.Instance);
 
-                    UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance);
+                    // Pass null for stats on initial load — no filters active yet, full counts will be shown.
+                    UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
                     FilterLogEntries();
                     RefreshLogStatistics();
                 }
+
                 HandleErrorMessages(string.Empty, true);
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 lastTrailTime = updatedLastTrailTime;
@@ -214,6 +217,7 @@ namespace LogScraper
                 ShowException(ex);
             }
         }
+
         private void RefreshLogStatistics()
         {
             lblLogEntriesTotalValue.Text = LogCollection.Instance.LogEntries.Count.ToString();
@@ -223,6 +227,7 @@ namespace LogScraper
             lblNumberOfLogEntriesFilteredWithError.ForeColor = count > 0 ? Color.DarkRed : Color.Black;
             lblLogEntriesFilteredWithError.ForeColor = lblNumberOfLogEntriesFilteredWithError.ForeColor;
         }
+
         private void ShowException(Exception ex)
         {
             ex.LogStackTraceToFile();
@@ -231,18 +236,24 @@ namespace LogScraper
         #endregion
 
         #region Filter and write log to screen and file
+
         private void FilterLogEntries()
         {
-            // Get all the metadata properties and their values from all the user controls
-            List<LogMetadataPropertyAndValues> LogMetadataPropertyAndValuesList = UsrMetadataFilterOverview.GetMetadataPropertyAndValues();
+            List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
-            // Filter the log entries into the FilterResult and update the count
-            currentLogMetadataFilterResult = LogMetadataFilterEngine.GetLogMetadataFilterResult(LogCollection.Instance.LogEntries, LogMetadataPropertyAndValuesList, (LogLayout)cboLogLayout.SelectedItem);
-            UsrMetadataFilterOverview.UpdateFilterControlsCount(currentLogMetadataFilterResult.LogMetadataPropertyAndValues);
+            currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
+                LogCollection.Instance.LogEntries,
+                activeFilters,
+                (LogLayout)cboLogLayout.SelectedItem);
+
+            // Update counts in the filter panel to reflect the filtered result.
+            UsrMetadataFilterOverview.UpdateFilterControlsCount(
+                [.. currentLogMetadataFilterResult.FilterStats.Values]);
+
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
-
             RenderLog(currentLogMetadataFilterResult);
         }
+
         private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
         {
             LogRenderSettings logRenderSettings = new()
@@ -253,6 +264,7 @@ namespace LogScraper
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
             };
+
             visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
@@ -263,6 +275,7 @@ namespace LogScraper
         #endregion
 
         #region Erase and reset
+
         public void Erase()
         {
             LogCollection.Instance.Clear();
@@ -273,10 +286,10 @@ namespace LogScraper
             UpdateButtonStatus();
             lastTrailTime = null;
             HandleErrorMessages(string.Empty, true);
-            //Force memory cleanup
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
+
         private void Reset()
         {
             Erase();
@@ -288,27 +301,30 @@ namespace LogScraper
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
 
-            //Force memory cleanup
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
         #endregion
 
         #region User controls event handling
+
         private void HandleErrorMessages(string message, bool isSucces)
         {
             TxtErrorMessage.Text = message;
             TxtErrorMessage.Visible = !isSucces;
         }
+
         private void HandleLogProviderManagerQueueUpdate()
         {
             UpdateButtonStatus();
         }
+
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
             UserControlSearch.IsMetadataSearchEnabled = UsrControlMetadataFormating.IsOriginalMetadataShown;
             if (currentLogMetadataFilterResult != null) RenderLog(currentLogMetadataFilterResult);
         }
+
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
             UserControlSearch.ClearSelectedLogEntry();
@@ -325,6 +341,7 @@ namespace LogScraper
         {
             Reset();
         }
+
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
         {
             if (totalDurationInSeconds == -1)
@@ -339,13 +356,13 @@ namespace LogScraper
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
             }
         }
+
         private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
         {
             UserControlSearch.Enabled = false;
             try
             {
                 SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-
                 bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection);
             }
             catch (Exception ex)
@@ -358,6 +375,7 @@ namespace LogScraper
                 UserControlSearch.Enabled = true;
             }
         }
+
         private void SetDynamicToolTips()
         {
             ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
@@ -365,13 +383,13 @@ namespace LogScraper
         #endregion
 
         #region Buttons
+
         private void UpdateButtonStatus()
         {
             bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
             if (!downloadingInProgress)
-            {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-            }
+
             BtnRecord.Visible = !downloadingInProgress;
             BtnRecord.Enabled = !downloadingInProgress;
             BtnRecordWithTimer.Enabled = !downloadingInProgress;
@@ -383,46 +401,49 @@ namespace LogScraper
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
-        public void BtnRecord_Click(object sender, EventArgs e)
-        {
-            FetchRawLogAsync();
-        }
-        public void BtnRecordWithTimer_Click(object sender, EventArgs e)
-        {
+
+        public void BtnRecord_Click(object sender, EventArgs e) => FetchRawLogAsync();
+
+        public void BtnRecordWithTimer_Click(object sender, EventArgs e) =>
             FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
-        }
+
         public void BtnStop_Click(object sender, EventArgs e)
         {
             BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
+
         private void BtnClearFilters_Click(object sender, EventArgs e)
         {
             UsrMetadataFilterOverview.ResetFilters();
             UserControlContentFilter.ResetFilters();
         }
+
         private bool isResetUiEnabled = false;
+
         public void BtnErase_Click(object sender, EventArgs e)
         {
             if (isResetUiEnabled) Reset();
             else Erase();
         }
+
         private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
         {
             isResetUiEnabled = true;
             UpdateBtnErase();
             Reset();
         }
+
         private void ToolStripMenuItemClear_Click(object sender, EventArgs e)
         {
             isResetUiEnabled = false;
             UpdateBtnErase();
             Erase();
         }
+
         private void UpdateBtnErase()
         {
             string toolTipText;
-
             if (!isResetUiEnabled)
             {
                 toolTipText = "Wis log (filters behouden)";
@@ -436,20 +457,19 @@ namespace LogScraper
             ToolTip.SetToolTip(BtnErase, toolTipText);
         }
 
-        public void BtnOpenWithEditor_Click(object sender, EventArgs e)
-        {
+        public void BtnOpenWithEditor_Click(object sender, EventArgs e) =>
             LogExportWorkerManager.OpenFileInExternalEditor();
-        }
+
         private void BtnCompactView_Click(object sender, EventArgs e)
         {
-            if (!SourceProcessingManager.Instance.IsWorkerActive) { BtnRecordWithTimer_Click(sender, e); }
+            if (!SourceProcessingManager.Instance.IsWorkerActive) BtnRecordWithTimer_Click(sender, e);
             FormCompactView.Instance.ShowForm();
         }
+
         private void BtnConfig_Click(object sender, EventArgs e)
         {
             using FormConfiguration form = new();
 
-            // 'this' makes it modal to the main window
             if (form.ShowDialog(this) == DialogResult.OK)
             {
                 form.GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out _);
@@ -468,49 +488,47 @@ namespace LogScraper
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
                         if (kubernetesChanged)
-                        {
                             usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                        }
                         if (runtimeChanged)
-                        {
                             usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                        }
                         CboLogProvider_SelectedIndexChanged(null, null);
                     }
                 }
             }
         }
-        private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e)
-        {
-            FilterLogEntries();
-        }
-        private void ChkShowAllLogEntries_CheckedChanged(object sender, EventArgs e)
-        {
-            HandleLogContentFilterUpdate(sender, e);
-        }
+
+        private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e) => FilterLogEntries();
+
+        private void ChkShowAllLogEntries_CheckedChanged(object sender, EventArgs e) => HandleLogContentFilterUpdate(sender, e);
+
         #endregion
 
         #region Dropdowns log providers and layout
+
         private void PopulateLogProviderControls()
         {
             if (ConfigurationManager.LogProvidersConfig.FileConfig != null)
             {
                 cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.FileConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.File) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig;
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.File)
+                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig;
             }
 
             if (ConfigurationManager.LogProvidersConfig.RuntimeConfig != null)
             {
                 cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime)
+                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
             }
 
             if (ConfigurationManager.LogProvidersConfig.KubernetesConfig != null)
             {
                 cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes) cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
+                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes)
+                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
             }
         }
+
         private void PopulateLogLayouts()
         {
             cboLogLayout.Items.Clear();
@@ -520,6 +538,7 @@ namespace LogScraper
                 if (cboLogLayout.Items.Count > 0) CboLogProvider_SelectedIndexChanged(this, EventArgs.Empty);
             }
         }
+
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboLogLayout.SelectedItem == null) return;
@@ -528,6 +547,7 @@ namespace LogScraper
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
             Reset();
         }
+
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
@@ -557,20 +577,7 @@ namespace LogScraper
         #endregion
 
         #region Form key shortcuts
-        /// <summary>
-        /// Overrides the default command key processing to handle custom keyboard shortcuts at the form level.
-        /// </summary>
-        /// <param name="msg">A <see cref="Message"/> structure that represents the window message to process.</param>
-        /// <param name="keyData">A <see cref="Keys"/> value that specifies the key or key combination to process.</param>
-        /// <returns>
-        /// True if the key combination was handled; otherwise, false to allow the base class to process the key.
-        /// </returns>
-        /// <remarks>
-        /// This method intercepts key combinations such as Ctrl+R and Ctrl+F before they are passed to the focused control.
-        /// - Ctrl+R triggers the "Record" functionality by invoking <see cref="BtnCompactView_Click"/>.
-        /// - Ctrl+F sets focus to the search control (<see cref="UserControlSearch"/>).
-        /// For all other key combinations, the base class implementation is called.
-        /// </remarks>
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.R))
@@ -578,46 +585,31 @@ namespace LogScraper
                 BtnCompactView_Click(this, EventArgs.Empty);
                 return true;
             }
-
-            // CTRL-F focusses the search textbox
             if (keyData == (Keys.Control | Keys.F))
             {
                 UserControlSearch.Focus();
                 return true;
             }
-
-            // CTRL-B enables the begin content filter
             if (keyData == (Keys.Control | Keys.B))
             {
                 UserControlContentFilter.SelectLogEntryBegin();
                 return true;
             }
-
-            // CTRL-E enables the end content filter
             if (keyData == (Keys.Control | Keys.E))
             {
                 UserControlContentFilter.SelectLogEntryEnd();
                 return true;
             }
-
-            // CTRL-E starts ans stops the download
             if (keyData == (Keys.Control | Keys.S))
             {
                 if (SourceProcessingManager.Instance.IsWorkerActive)
-                {
                     BtnStop_Click(this, EventArgs.Empty);
-                }
                 else
-                {
                     BtnRecordWithTimer_Click(this, EventArgs.Empty);
-                }
-                return true; // Indicate that the key combination has been handled
+                return true;
             }
-
-            // Let the base class handle other key combinations
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
-
     }
 }

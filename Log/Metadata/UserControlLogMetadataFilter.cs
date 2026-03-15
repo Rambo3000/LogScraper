@@ -37,19 +37,20 @@ namespace LogScraper
             {
                 if (selectedLogEntry == value) return;
                 selectedLogEntry = value;
-                string newSelectedLogEntryValue = GetSelectedEntryValueForProperty();
-                if (newSelectedLogEntryValue != SelectedLogEntryValue)
+                LogMetadataValue newSelectedValue = GetSelectedEntryValueForProperty();
+                if (newSelectedValue != selectedEntryValue)
                 {
-                    SelectedLogEntryValue = newSelectedLogEntryValue;
+                    selectedEntryValue = newSelectedValue;
                     ListViewItems.Invalidate();
                     if (IsScrollableViewEnabled) ScrollToSelectedValue();
                 }
             }
         }
+
         private void ScrollToSelectedValue()
         {
-            if (SelectedLogEntryValue == null) return;
-            int index = sortedValues.FindIndex(v => v.Value == SelectedLogEntryValue);
+            if (selectedEntryValue == null) return;
+            int index = sortedValues.FindIndex(v => v == selectedEntryValue);
             if (index < 0) return;
 
             int visibleRows = ListViewItems.ClientSize.Height / (ListViewItems.Items.Count > 0 ? ListViewItems.GetItemRect(0).Height : 20);
@@ -57,7 +58,7 @@ namespace LogScraper
             ListViewItems.TopItem = ListViewItems.Items[centeredIndex];
         }
 
-        private bool IsScrollableViewEnabled { get { return sortedValues.Count > MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL; } }
+        private bool IsScrollableViewEnabled => sortedValues.Count > MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL;
 
         #endregion
 
@@ -66,13 +67,31 @@ namespace LogScraper
         private const int MAX_NUMBER_OF_ITEMS_BEFORE_SCOLL = 50;
         private const int SCROLL_VIEW_NUMBER_OF_ITEMS_SHOWN = 15;
 
-        private LogMetadataPropertyAndValues LogMetadataPropertyAndValues;
+        /// <summary>
+        /// The metadata property this control represents.
+        /// </summary>
+        private LogMetadataProperty metadataProperty;
+
+        /// <summary>
+        /// Sorted list of all known values for this property, used for virtual ListView rendering.
+        /// </summary>
         private List<LogMetadataValue> sortedValues = [];
-        private readonly HashSet<string> checkedItems = [];
+
+        /// <summary>
+        /// Per-value filter mode for checked items. Absence means unchecked (no filter).
+        /// </summary>
+        private readonly Dictionary<LogMetadataValue, FilterMode> checkedItems = [];
+
+        /// <summary>
+        /// Lookup from value string to count, updated after each filter pass.
+        /// </summary>
+        private readonly Dictionary<LogMetadataValue, int> valueCounts = [];
+
         private bool updateInProgress = false;
         private Point savedScrollPosition = Point.Empty;
         private LogEntry selectedLogEntry = null;
-        private string SelectedLogEntryValue = null;
+        private LogMetadataValue selectedEntryValue = null;
+
         #endregion
 
         #region Constructor
@@ -96,20 +115,17 @@ namespace LogScraper
 
         /// <summary>
         /// Positions the ListView below the description label based on font size.
-        /// Ensures proper DPI scaling.
         /// </summary>
         private void UpdateHeightFromFont()
         {
             int textHeight = TextRenderer.MeasureText(LblLogFilterDescription.Text, LblLogFilterDescription.Font).Height;
             int desiredTopPosition = textHeight + 1;
-
             if (ListViewItems.Top != desiredTopPosition)
                 ListViewItems.Top = desiredTopPosition;
         }
 
         /// <summary>
         /// Adjusts the control's height based on the number of items.
-        /// Limits maximum height to prevent the control from dominating the screen.
         /// </summary>
         private void ResizeVertically()
         {
@@ -135,9 +151,9 @@ namespace LogScraper
         /// </summary>
         private void AdjustCountColumnWidth()
         {
-            if (sortedValues.Count == 0) return;
+            if (valueCounts.Count == 0) return;
 
-            int maxCount = sortedValues.Max(v => v.Count);
+            int maxCount = valueCounts.Values.DefaultIfEmpty(0).Max();
             int textWidth = TextRenderer.MeasureText(maxCount.ToString("N0"), ListViewItems.Font).Width;
             int newWidth = textWidth + ScaleByDpi(10);
 
@@ -160,53 +176,41 @@ namespace LogScraper
         #region Data Updates
 
         /// <summary>
-        /// Updates the ListView with new metadata values.
-        /// If only counts changed, performs lightweight update. Otherwise rebuilds the list.
+        /// Updates the ListView with all known values for this property.
+        /// Preserves existing checked states. If the set of values has not changed, only updates counts.
         /// </summary>
-        public void UpdateListView(LogMetadataPropertyAndValues logMetadataPropertyAndValuesNew)
+        /// <param name="allValues">All known values for this property from LogCollection.MetadataValues.</param>
+        /// <param name="stats">Current counts per value after filtering. Pass null to show full counts.</param>
+        public void UpdateListView(LogMetadataProperty property, List<LogMetadataValue> allValues, LogMetadataFilterStats stats)
         {
-            // Optimize: if keys haven't changed, only update counts
-            if (LogMetadataPropertyAndValues != null)
-            {
-                bool keysAreEqual =
-                    logMetadataPropertyAndValuesNew.LogMetadataValues.Count == LogMetadataPropertyAndValues.LogMetadataValues.Count &&
-                    logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.All(LogMetadataPropertyAndValues.LogMetadataValues.ContainsKey);
+            metadataProperty = property;
 
-                if (keysAreEqual)
-                {
-                    UpdateCountInListView(logMetadataPropertyAndValuesNew);
-                    return;
-                }
+            bool valuesChanged =
+                sortedValues.Count != allValues.Count ||
+                !allValues.All(sortedValues.Contains);
+
+            if (!valuesChanged)
+            {
+                UpdateCounts(stats);
+                return;
             }
 
             updateInProgress = true;
 
-            // Preserve checkbox states across updates
-            HashSet<string> previousCheckedItems = [.. checkedItems];
-
-            // Sort values alphabetically
-            sortedValues = [.. logMetadataPropertyAndValuesNew.LogMetadataValues.Keys.OrderBy(lmv => lmv.Value)];
-
-            // Restore checkbox states for items that still exist
+            // Preserve checked states for values that still exist.
+            Dictionary<LogMetadataValue, FilterMode> previousChecked = new(checkedItems);
             checkedItems.Clear();
+
+            sortedValues = [.. allValues.OrderBy(v => v.Value)];
+
             foreach (LogMetadataValue value in sortedValues)
             {
-                // If item was previously checked, keep it checked
-                if (previousCheckedItems.Contains(value.Value))
-                {
-                    checkedItems.Add(value.Value);
-                    value.IsFilterEnabled = true;
-                }
-                // Otherwise use the value from the new data
-                else if (value.IsFilterEnabled)
-                {
-                    checkedItems.Add(value.Value);
-                }
+                if (previousChecked.TryGetValue(value, out FilterMode mode))
+                    checkedItems[value] = mode;
             }
 
-            LogMetadataPropertyAndValues = logMetadataPropertyAndValuesNew;
+            BuildValueCounts(stats);
 
-            // Update ListView
             ListViewItems.VirtualListSize = sortedValues.Count;
             AdjustCountColumnWidth();
             ResizeVertically();
@@ -215,40 +219,41 @@ namespace LogScraper
         }
 
         /// <summary>
-        /// Lightweight update that only refreshes item counts without rebuilding the list.
+        /// Lightweight update that only refreshes counts without rebuilding the value list.
         /// </summary>
-        public void UpdateCountInListView(LogMetadataPropertyAndValues logMetadataPropertyAndValues)
+        /// <param name="stats">Updated counts per value. Pass null when no filters are active.</param>
+        public void UpdateCounts(LogMetadataFilterStats stats)
         {
-            // Save scroll position to restore after update
             int topItemIndex = ListViewItems.TopItem?.Index ?? 0;
 
             ListViewItems.SuspendDrawing();
             ListViewItems.BeginUpdate();
 
-            // Update counts for existing items
-            for (int i = 0; i < sortedValues.Count; i++)
-            {
-                LogMetadataValue existing = sortedValues[i];
-                foreach (var kvp in logMetadataPropertyAndValues.LogMetadataValues)
-                {
-                    if (kvp.Key == existing)
-                    {
-                        existing.Count = kvp.Key.Count;
-                        break;
-                    }
-                }
-            }
-
+            BuildValueCounts(stats);
             AdjustCountColumnWidth();
 
             ListViewItems.EndUpdate();
             ListViewItems.ResumeDrawing();
 
-            // Restore scroll position
             if (topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)
-            {
                 ListViewItems.EnsureVisible(topItemIndex);
+        }
+
+        /// <summary>
+        /// Rebuilds the valueCounts lookup from the given stats, or zeros out if stats is null.
+        /// </summary>
+        private void BuildValueCounts(LogMetadataFilterStats stats)
+        {
+            valueCounts.Clear();
+            if (stats == null)
+            {
+                foreach (LogMetadataValue value in sortedValues)
+                    valueCounts[value] = 0;
+                return;
             }
+
+            foreach (LogMetadataValueCount valueCount in stats.ValueCounts)
+                valueCounts[valueCount.Value] = valueCount.Count;
         }
 
         #endregion
@@ -256,22 +261,22 @@ namespace LogScraper
         #region Virtual ListView Implementation
 
         /// <summary>
-        /// Virtual mode handler: creates ListViewItems on-demand as they become visible.
-        /// This is key to handling thousands of items without creating thousands of controls.
+        /// Virtual mode handler: creates ListViewItems on-demand as they scroll into view.
         /// </summary>
         private void ListView_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             if (e.ItemIndex >= sortedValues.Count) return;
 
             LogMetadataValue value = sortedValues[e.ItemIndex];
+            int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
 
             ListViewItem item = new(value.Value)
             {
-                ForeColor = value.Count == 0 ? Color.Gray : Color.Black,
+                ForeColor = count == 0 ? Color.Gray : Color.Black,
                 Tag = value
             };
 
-            item.SubItems.Add(value.Count.ToString("N0"));
+            item.SubItems.Add(count.ToString("N0"));
             e.Item = item;
         }
 
@@ -289,11 +294,12 @@ namespace LogScraper
         /// </summary>
         private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
-            if (e.Item.Tag == null) return;
+            if (e.Item.Tag is not LogMetadataValue value) return;
 
-            LogMetadataValue value = e.Item.Tag as LogMetadataValue;
-            bool isChecked = checkedItems.Contains(value.Value);
-            bool isSelectedLine = selectedLogEntry != null && SelectedLogEntryValue == value.Value;
+            checkedItems.TryGetValue(value, out FilterMode filterMode);
+            bool isChecked = checkedItems.ContainsKey(value);
+            bool isSelectedLine = selectedEntryValue != null && selectedEntryValue == value;
+            int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
             Rectangle bounds = e.Bounds;
 
             if (e.ColumnIndex == 0)
@@ -304,7 +310,7 @@ namespace LogScraper
                 CheckBoxState state = isChecked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal;
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
-                // Draw ▶ indicator if this row matches the selected log entry
+                // Draw ▶ indicator if this row matches the selected log entry.
                 if (isSelectedLine)
                 {
                     int size = ScaleByDpi(4);
@@ -321,13 +327,18 @@ namespace LogScraper
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, checkBoxLocation, state);
 
+                // Tint background for exclude mode.
+                Color textColor = e.Item.ForeColor;
+                if (isChecked && filterMode == FilterMode.Exclude)
+                    textColor = Color.OrangeRed;
+
                 Rectangle textBounds = new(
                     checkBoxLocation.X + checkBoxSize.Width + checkBoxPadding,
                     bounds.Top,
                     bounds.Width - checkBoxLocation.X - checkBoxSize.Width - checkBoxPadding,
                     bounds.Height);
 
-                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, e.Item.ForeColor,
+                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
             }
             else if (e.ColumnIndex == 1)
@@ -335,19 +346,18 @@ namespace LogScraper
                 e.DrawBackground();
 
                 Rectangle textBounds = new(bounds.Left, bounds.Top, bounds.Width - ScaleByDpi(5), bounds.Height);
-                TextRenderer.DrawText(e.Graphics, value.Count.ToString("N0"), e.Item.Font, textBounds, e.Item.ForeColor,
+                TextRenderer.DrawText(e.Graphics, count.ToString("N0"), e.Item.Font, textBounds, e.Item.ForeColor,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             }
         }
 
         /// <summary>
-        /// Returns the value of the selected log entry for the property this control represents.
+        /// Returns the interned LogMetadataValue for the selected log entry's value for this property.
         /// </summary>
-        private string GetSelectedEntryValueForProperty()
+        private LogMetadataValue GetSelectedEntryValueForProperty()
         {
-            if (selectedLogEntry == null || LogMetadataPropertyAndValues == null) return null;
-
-            return selectedLogEntry.LogMetadataPropertiesWithStringValue.TryGetValue(LogMetadataPropertyAndValues.LogMetadataProperty, out string value) ? value : null;
+            if (selectedLogEntry == null || metadataProperty == null) return null;
+            return selectedLogEntry.Metadata.TryGetValue(metadataProperty, out LogMetadataValue value) ? value : null;
         }
 
         #endregion
@@ -356,20 +366,16 @@ namespace LogScraper
 
         /// <summary>
         /// Captures parent scroll position before click to prevent unwanted scrolling.
-        /// The act of clicking can cause focus changes that trigger auto-scroll.
         /// </summary>
         private void ListView_MouseDown(object sender, MouseEventArgs e)
         {
             ScrollableControl parentScroll = FindScrollableParent();
             if (parentScroll != null)
-            {
                 savedScrollPosition = parentScroll.AutoScrollPosition;
-            }
         }
 
         /// <summary>
-        /// Handles checkbox toggling when user clicks on the description column.
-        /// Restores parent scroll position to prevent jumping.
+        /// Handles checkbox toggling on left click, include/exclude toggle on right click.
         /// </summary>
         private void ListView_MouseClick(object sender, MouseEventArgs e)
         {
@@ -380,59 +386,61 @@ namespace LogScraper
             ListViewItem.ListViewSubItem subItem = item.GetSubItemAt(e.X, e.Y);
             if (subItem == null) return;
 
-            int subItemIndex = item.SubItems.IndexOf(subItem);
-
-            // Only toggle checkbox if clicking on description column (entire column is clickable)
-            if (subItemIndex == 0)
+            if (item.SubItems.IndexOf(subItem) == 0)
             {
-                ToggleCheckbox(item, listView);
+                if (e.Button == MouseButtons.Left)
+                    ToggleCheckbox(item, listView);
+                else if (e.Button == MouseButtons.Right)
+                    ToggleFilterMode(item, listView);
             }
 
-            // Restore parent scroll position to prevent jumping
+            // Restore parent scroll position to prevent jumping.
             ScrollableControl parentScroll = FindScrollableParent();
             if (parentScroll != null && savedScrollPosition != Point.Empty)
             {
                 parentScroll.AutoScrollPosition = new Point(
                     Math.Abs(savedScrollPosition.X),
-                    Math.Abs(savedScrollPosition.Y)
-                );
+                    Math.Abs(savedScrollPosition.Y));
                 savedScrollPosition = Point.Empty;
             }
         }
 
         /// <summary>
-        /// Toggles the checkbox state for a metadata value.
+        /// Toggles the checked state of a metadata value (include mode by default).
         /// </summary>
         private void ToggleCheckbox(ListViewItem item, ListView listView)
         {
             if (item.Tag is not LogMetadataValue value) return;
 
-            bool wasChecked = checkedItems.Contains(value.Value);
-
-            if (wasChecked)
-            {
-                checkedItems.Remove(value.Value);
-            }
-            else
-            {
-                checkedItems.Add(value.Value);
-            }
+            if (!checkedItems.Remove(value))
+                checkedItems[value] = FilterMode.Include;
 
             listView.Invalidate(item.Bounds);
+            OnFilterChanged(EventArgs.Empty);
+        }
 
+        /// <summary>
+        /// Toggles a checked value between Include and Exclude filter modes.
+        /// Only applies when the value is already checked.
+        /// </summary>
+        private void ToggleFilterMode(ListViewItem item, ListView listView)
+        {
+            if (item.Tag is not LogMetadataValue value) return;
+            if (!checkedItems.TryGetValue(value, out FilterMode current)) return;
+
+            checkedItems[value] = current == FilterMode.Include ? FilterMode.Exclude : FilterMode.Include;
+
+            listView.Invalidate(item.Bounds);
             OnFilterChanged(EventArgs.Empty);
         }
 
         /// <summary>
         /// Forwards mouse wheel events to the parent scrollable container.
-        /// Prevents the ListView from scrolling internally when it's short enough to fit.
         /// </summary>
         private void ListView_MouseWheel(object sender, MouseEventArgs e)
         {
             if (e is HandledMouseEventArgs handledArgs)
-            {
                 handledArgs.Handled = true;
-            }
 
             Control parent = Parent;
             while (parent != null)
@@ -442,8 +450,7 @@ namespace LogScraper
                     int scrollAmount = SystemInformation.MouseWheelScrollLines * e.Delta / 120 * -20;
                     scrollable.AutoScrollPosition = new Point(
                         -scrollable.AutoScrollPosition.X,
-                        -scrollable.AutoScrollPosition.Y + scrollAmount
-                    );
+                        -scrollable.AutoScrollPosition.Y + scrollAmount);
                     break;
                 }
                 parent = parent.Parent;
@@ -454,14 +461,7 @@ namespace LogScraper
 
         #region Scroll Management
 
-        /// <summary>
-        /// Prevents auto-scrolling when child controls gain focus.
-        /// Without this, clicking items can cause the parent container to jump.
-        /// </summary>
-        protected override Point ScrollToControl(Control activeControl)
-        {
-            return AutoScrollPosition;
-        }
+        protected override Point ScrollToControl(Control activeControl) => AutoScrollPosition;
 
         private ScrollableControl FindScrollableParent()
         {
@@ -479,28 +479,26 @@ namespace LogScraper
         #region Public API
 
         /// <summary>
-        /// Returns the current metadata property with updated filter states.
+        /// Returns a MetadataFilter representing the current checked state of this control.
         /// </summary>
-        public LogMetadataPropertyAndValues GetCurrentLogMetadataPropertyAndValues()
+        public LogMetadataFilter GetCurrentFilter()
         {
-            foreach (LogMetadataValue value in sortedValues)
-            {
-                value.IsFilterEnabled = checkedItems.Contains(value.Value);
-            }
-
-            return LogMetadataPropertyAndValues;
+            LogMetadataFilter filter = new(metadataProperty);
+            foreach (var kvp in checkedItems)
+                filter.ActiveValues[kvp.Key] = kvp.Value;
+            return filter;
         }
 
         /// <summary>
         /// Enables or disables filtering on a specific metadata value.
-        /// When enabling, clears all other selections (exclusive mode).
+        /// When enabling, clears all other selections (exclusive include mode).
         /// </summary>
-        internal void EnableDisableFilterOnSpecificMetdataValue(string value, bool isEnabled)
+        internal void EnableDisableFilterOnSpecificMetadataValue(LogMetadataValue value, bool isEnabled)
         {
             if (isEnabled)
             {
                 checkedItems.Clear();
-                checkedItems.Add(value);
+                checkedItems[value] = FilterMode.Include;
             }
             else
             {

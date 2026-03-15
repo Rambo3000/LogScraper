@@ -29,6 +29,7 @@ namespace LogScraper.Log
         {
             LogEntries.Clear();
             ErrorCount = 0;
+            _valuePool = [];
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace LogScraper.Log
         /// A dictionary that serves as a pool of shared LogMetadataValue objects. 
         /// This pool allows for efficient reuse of LogMetadataValue instances.
         /// </summary>
-        private readonly Dictionary<(LogMetadataProperty, string), LogMetadataValue> _valuePool = [];
+        private Dictionary<(LogMetadataProperty, string), LogMetadataValue> _valuePool = [];
 
         /// <summary>
         /// Gets a shared instance of a LogMetadataValue for the specified metadata property and value.

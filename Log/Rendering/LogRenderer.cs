@@ -145,7 +145,7 @@ namespace LogScraper.Log.Rendering
                     text = RemoveTextByCriteria(text, logEntry.StartIndexMetadata, logEntry.StartIndexContent);
                 }
 
-                text = InsertMetadataIntoLogEntry(text, logEntry.StartIndexMetadata, logEntry.LogMetadataPropertiesWithStringValue, logRenderSettings);
+                text = InsertMetadataIntoLogEntry(text, logEntry.StartIndexMetadata, logEntry.Metadata, logRenderSettings);
             }
 
             string treePrefix = string.Empty;
@@ -214,15 +214,15 @@ namespace LogScraper.Log.Rendering
         /// </summary>
         /// <param name="logEntry">The original log entry.</param>
         /// <param name="startIndex">The position to insert the metadata.</param>
-        /// <param name="logMetadataPropertiesWithStringValue">The metadata properties and their string values.</param>
+        /// <param name="metadataValues">The metadata values to insert, organized in an index dictionary for efficient access.</param>
         /// <returns>The log entry with added metadata.</returns>
-        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, string> logMetadataPropertiesWithStringValue, LogRenderSettings logRenderSettings)
+        private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, LogMetadataValue> metadataValues, LogRenderSettings logRenderSettings)
         {
             if (startIndex <= 0 ||
                 logRenderSettings.SelectedMetadataProperties == null ||
                 logRenderSettings.SelectedMetadataProperties.Count == 0 ||
-                logMetadataPropertiesWithStringValue == null ||
-                logMetadataPropertiesWithStringValue.Count == 0)
+                metadataValues == null ||
+                metadataValues.Count == 0)
             {
                 return logEntry;
             }
@@ -230,8 +230,10 @@ namespace LogScraper.Log.Rendering
             List<string> values = [];
             foreach (LogMetadataProperty logMetadataProperty in logRenderSettings.SelectedMetadataProperties)
             {
-                logMetadataPropertiesWithStringValue.TryGetValue(logMetadataProperty, out string value);
-                if (value != null) { values.Add(value); }
+                if (metadataValues.TryGetValue(logMetadataProperty, out LogMetadataValue value)) 
+                {
+                    values.Add(value.Value); 
+                }
             }
 
             // Insert the metadata values into the log entry at the specified position.
