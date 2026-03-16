@@ -56,6 +56,7 @@ namespace LogScraper
             ListViewItems.DrawItem += ListView_DrawItem;
             ListViewItems.DrawSubItem += ListView_DrawSubItem;
             ListViewItems.RetrieveVirtualItem += ListView_RetrieveVirtualItem;
+            ListViewItems.DoubleClick += ListViewItems_DoubleClick;
             ListViewItems.MouseClick += ListView_MouseClick;
             ListViewItems.MouseDown += ListView_MouseDown;
             ListViewItems.MouseWheel += ListView_MouseWheel;

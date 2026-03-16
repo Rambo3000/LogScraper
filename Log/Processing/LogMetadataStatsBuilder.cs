@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log.Processors
+namespace LogScraper.Log.Processing
 {
     /// <summary>
     /// Computes metadata value counts per property across a set of log entries.

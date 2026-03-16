@@ -291,6 +291,7 @@ namespace LogScraper
         /// <summary>
         /// Custom drawing for list items. Renders checkbox, optional selection indicator, and text.
         /// The ▶ indicator marks the value matching the currently selected log entry.
+        /// Checkbox states: unchecked = neutral, checked = include, mixed = exclude (with strikethrough on text only).
         /// </summary>
         private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
@@ -307,7 +308,13 @@ namespace LogScraper
                 e.DrawBackground();
 
                 int checkBoxPadding = ScaleByDpi(3);
-                CheckBoxState state = isChecked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal;
+
+                CheckBoxState state;
+                if (!isChecked) state = CheckBoxState.UncheckedNormal;
+                else if (filterMode == FilterMode.Include) state = CheckBoxState.CheckedNormal;
+                else if (filterMode == FilterMode.Exclude) state = CheckBoxState.MixedNormal;
+                else state = CheckBoxState.UncheckedNormal;
+
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
                 // Draw ▶ indicator if this row matches the selected log entry.
@@ -327,10 +334,7 @@ namespace LogScraper
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, checkBoxLocation, state);
 
-                // Tint background for exclude mode.
                 Color textColor = e.Item.ForeColor;
-                if (isChecked && filterMode == FilterMode.Exclude)
-                    textColor = Color.OrangeRed;
 
                 Rectangle textBounds = new(
                     checkBoxLocation.X + checkBoxSize.Width + checkBoxPadding,
@@ -338,8 +342,20 @@ namespace LogScraper
                     bounds.Width - checkBoxLocation.X - checkBoxSize.Width - checkBoxPadding,
                     bounds.Height);
 
-                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor,
-                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+                TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter
+                    | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
+
+                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor, flags);
+
+                // Draw strikethrough over the text only for excluded values.
+                if (filterMode == FilterMode.Exclude)
+                {
+                    Size textSize = TextRenderer.MeasureText(e.Graphics, value.Value, e.Item.Font, textBounds.Size, flags);
+                    int strikeY = textBounds.Top + textBounds.Height / 2;
+                    int strikeWidth = Math.Min(textSize.Width, textBounds.Width);
+                    using Pen pen = new(textColor);
+                    e.Graphics.DrawLine(pen, textBounds.Left, strikeY, textBounds.Left + strikeWidth, strikeY);
+                }
             }
             else if (e.ColumnIndex == 1)
             {
@@ -375,7 +391,7 @@ namespace LogScraper
         }
 
         /// <summary>
-        /// Handles checkbox toggling on left click, include/exclude toggle on right click.
+        /// Cycles the filter state on left click: Neutral → Include → Exclude → Neutral.
         /// </summary>
         private void ListView_MouseClick(object sender, MouseEventArgs e)
         {
@@ -386,13 +402,8 @@ namespace LogScraper
             ListViewItem.ListViewSubItem subItem = item.GetSubItemAt(e.X, e.Y);
             if (subItem == null) return;
 
-            if (item.SubItems.IndexOf(subItem) == 0)
-            {
-                if (e.Button == MouseButtons.Left)
-                    ToggleCheckbox(item, listView);
-                else if (e.Button == MouseButtons.Right)
-                    ToggleFilterMode(item, listView);
-            }
+            if (e.Button == MouseButtons.Left && item.SubItems.IndexOf(subItem) == 0)
+                ToggleCheckbox(item, listView);
 
             // Restore parent scroll position to prevent jumping.
             ScrollableControl parentScroll = FindScrollableParent();
@@ -406,32 +417,37 @@ namespace LogScraper
         }
 
         /// <summary>
-        /// Toggles the checked state of a metadata value (include mode by default).
+        /// Cycles the filter state: Neutral → Include → Exclude → Neutral.
         /// </summary>
         private void ToggleCheckbox(ListViewItem item, ListView listView)
         {
             if (item.Tag is not LogMetadataValue value) return;
 
-            if (!checkedItems.Remove(value))
+            if (!checkedItems.TryGetValue(value, out FilterMode current))
                 checkedItems[value] = FilterMode.Include;
+            else if (current == FilterMode.Include)
+                checkedItems[value] = FilterMode.Exclude;
+            else
+                checkedItems.Remove(value);
 
             listView.Invalidate(item.Bounds);
             OnFilterChanged(EventArgs.Empty);
         }
 
         /// <summary>
-        /// Toggles a checked value between Include and Exclude filter modes.
-        /// Only applies when the value is already checked.
+        /// Treats double-click as a second single click so fast clicking cycles state correctly.
         /// </summary>
-        private void ToggleFilterMode(ListViewItem item, ListView listView)
+        private void ListViewItems_DoubleClick(object sender, EventArgs e)
         {
-            if (item.Tag is not LogMetadataValue value) return;
-            if (!checkedItems.TryGetValue(value, out FilterMode current)) return;
+            Point cursorPosition = ListViewItems.PointToClient(Cursor.Position);
+            ListViewItem item = ListViewItems.GetItemAt(cursorPosition.X, cursorPosition.Y);
+            if (item == null) return;
 
-            checkedItems[value] = current == FilterMode.Include ? FilterMode.Exclude : FilterMode.Include;
+            ListViewItem.ListViewSubItem subItem = item.GetSubItemAt(cursorPosition.X, cursorPosition.Y);
+            if (subItem == null) return;
 
-            listView.Invalidate(item.Bounds);
-            OnFilterChanged(EventArgs.Empty);
+            if (item.SubItems.IndexOf(subItem) == 0)
+                ToggleCheckbox(item, ListViewItems);
         }
 
         /// <summary>

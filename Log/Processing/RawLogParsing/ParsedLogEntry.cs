@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogScraper.Log.RawLogParsing
+namespace LogScraper.Log.Processing.RawLogParsing
 {
     /// <summary>
     /// Represents a parsed log line, including its raw content and optional timestamp information.

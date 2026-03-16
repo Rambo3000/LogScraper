@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using LogScraper.Log.Layout;
 using LogScraper.LogTransformers;
 
-namespace LogScraper.Log.RawLogParsing
+namespace LogScraper.Log.Processing.RawLogParsing
 {
     /// <summary>
     /// Handles the reading and parsing of raw log entries into a structured format.

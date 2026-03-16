@@ -7,7 +7,7 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Processing
 {
     /// <summary>
     /// Classifies log entries by extracting and assigning metadata and content properties

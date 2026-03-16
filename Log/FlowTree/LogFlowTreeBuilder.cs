@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
 using LogScraper.Log.Content;
+using LogScraper.Log.Layout;
 using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.FlowTree
@@ -11,13 +12,36 @@ namespace LogScraper.Log.FlowTree
     internal class LogFlowTreeBuilder
     {
         /// <summary>
+        /// Constructs a dictionary of log flow trees based on the specified log layout and log entries.
+        /// </summary>
+        /// <param name="logLayout">The layout configuration that defines the log content properties and their relationships.</param>
+        /// <param name="logEntries">A list of log entries to be processed for building the log flow trees.</param>
+        /// <returns>An IndexDictionary mapping each flow tree begin content property to its corresponding LogFlowTree.</returns>
+        public static IndexDictionary<LogContentProperty, LogFlowTree> Build(LogLayout logLayout, List<LogEntry> logEntries)
+        {
+            IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees = new(logLayout.LogContentProperties.Count);
+
+            if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return logFlowTrees;
+
+            foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
+            {
+                if (logContentProperty.IsBeginFlowTreeFilter && logContentProperty.EndFlowTreeContentProperty != null)
+                {
+                    logFlowTrees[logContentProperty] = BuildLogFlowTree(logEntries, logContentProperty, logContentProperty.EndFlowTreeContentProperty);
+                }
+            }
+
+            return logFlowTrees;
+        }
+
+        /// <summary>
         /// Builds a nested tree structure from a flat list of log entries using specified begin and end properties. The nested tree structure represents the hyrarchical flow of log entries.
         /// </summary>
         /// <param name="entries">The log entries to process, in chronological order.</param>
         /// <param name="beginProperty">The property indicating the start of a flow (e.g., method entry).</param>
         /// <param name="endProperty">The property indicating the end of a flow (e.g., method exit).</param>
         /// <returns>A <see cref="LogFlowTree"/> representing the hierarchical structure of log entries based on the specified begin and end properties.</returns>
-        public static LogFlowTree BuildLogFlowTree(List<LogEntry> entries, LogContentProperty beginProperty, LogContentProperty endProperty)
+        private static LogFlowTree BuildLogFlowTree(List<LogEntry> entries, LogContentProperty beginProperty, LogContentProperty endProperty)
         {
             if (entries == null || entries.Count == 0) return null;
 

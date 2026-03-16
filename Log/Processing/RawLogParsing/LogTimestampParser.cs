@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Threading.Tasks;
 
-namespace LogScraper.Log.RawLogParsing
+namespace LogScraper.Log.Processing.RawLogParsing
 {
     /// <summary>
     /// A class responsible for parsing timestamps from raw log entries. 
