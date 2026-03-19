@@ -14,6 +14,7 @@ namespace LogScraper
     /// <summary>
     /// A user control that displays a filterable list of metadata values with checkboxes.
     /// Uses virtual ListView to handle thousands of items efficiently without creating excessive window handles.
+    /// All checked values share a single filter mode (Include or Exclude), toggled via the header.
     /// </summary>
     public partial class UserControlLogMetadataFilter : UserControl
     {
@@ -78,9 +79,15 @@ namespace LogScraper
         private List<LogMetadataValue> sortedValues = [];
 
         /// <summary>
-        /// Per-value filter mode for checked items. Absence means unchecked (no filter).
+        /// Checked values. All share the single filterModeForAllCheckedItems.
         /// </summary>
-        private readonly Dictionary<LogMetadataValue, FilterMode> checkedItems = [];
+        private readonly HashSet<LogMetadataValue> checkedItems = [];
+
+        /// <summary>
+        /// The filter mode applied to all checked values. Toggled via the header toggle.
+        /// Only relevant when at least one item is checked.
+        /// </summary>
+        private FilterMode filterModeForAllCheckedItems = FilterMode.Include;
 
         /// <summary>
         /// Lookup from value string to count, updated after each filter pass.
@@ -91,6 +98,12 @@ namespace LogScraper
         private Point savedScrollPosition = Point.Empty;
         private LogEntry selectedLogEntry = null;
         private LogMetadataValue selectedEntryValue = null;
+
+        /// <summary>
+        /// Cached bounds of the IN|EX toggle, updated during label paint.
+        /// Used for hit-testing on mouse click.
+        /// </summary>
+        private Rectangle toggleBounds = Rectangle.Empty;
 
         #endregion
 
@@ -173,6 +186,72 @@ namespace LogScraper
 
         #endregion
 
+        #region Header Toggle
+
+        /// <summary>
+        /// Draws the IN | EX toggle right-aligned.
+        /// Only visible when at least one value is checked.
+        /// The active segment is drawn in normal text color; the inactive one is grayed.
+        /// </summary>
+        private void LblIncludeExclude_Paint(object sender, PaintEventArgs e)
+        {
+            if (checkedItems.Count == 0)
+            {
+                toggleBounds = Rectangle.Empty;
+                return;
+            }
+
+            Font font = LblIncludeExclude.Font;
+            Graphics graphics = e.Graphics;
+
+            string textIn = "in";
+            string textSeparator = "|";
+            string textEx = "ex";
+
+            Size sizeIn = TextRenderer.MeasureText(graphics, textIn, font, Size.Empty, TextFormatFlags.NoPadding);
+            Size sizeSeparator = TextRenderer.MeasureText(graphics, textSeparator, font, Size.Empty, TextFormatFlags.NoPadding);
+            Size sizeEx = TextRenderer.MeasureText(graphics, textEx, font, Size.Empty, TextFormatFlags.NoPadding);
+
+            int totalWidth = sizeIn.Width + sizeSeparator.Width + sizeEx.Width;
+            int labelHeight = LblIncludeExclude.ClientSize.Height;
+            int x = LblIncludeExclude.ClientSize.Width - totalWidth - ScaleByDpi(2);
+            int y = (labelHeight - sizeIn.Height) / 2;
+
+            toggleBounds = new Rectangle(x, 0, totalWidth, labelHeight);
+
+            Color activeColor = LblIncludeExclude.ForeColor;
+            Color inactiveColor = Color.Silver;
+
+            Color colorIn = filterModeForAllCheckedItems == FilterMode.Include ? activeColor : inactiveColor;
+            Color colorSeparator = inactiveColor;
+            Color colorEx = filterModeForAllCheckedItems == FilterMode.Exclude ? activeColor : inactiveColor;
+
+            TextRenderer.DrawText(graphics, textIn, font, new Point(x, y), colorIn, TextFormatFlags.NoPadding);
+            x += sizeIn.Width;
+            TextRenderer.DrawText(graphics, textSeparator, font, new Point(x, y), colorSeparator, TextFormatFlags.NoPadding);
+            x += sizeSeparator.Width;
+            TextRenderer.DrawText(graphics, textEx, font, new Point(x, y), colorEx, TextFormatFlags.NoPadding);
+        }
+
+        /// <summary>
+        /// Handles clicks on the description label. Toggles the filter mode when the IN|EX toggle is hit.
+        /// </summary>
+        private void LblIncludeExclude_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (checkedItems.Count == 0) return;
+            if (!toggleBounds.Contains(e.Location)) return;
+
+            filterModeForAllCheckedItems = filterModeForAllCheckedItems == FilterMode.Include
+                ? FilterMode.Exclude
+                : FilterMode.Include;
+
+            LblIncludeExclude.Invalidate();
+            ListViewItems.Invalidate();
+            OnFilterChanged(EventArgs.Empty);
+        }
+
+        #endregion
+
         #region Data Updates
 
         /// <summary>
@@ -198,15 +277,15 @@ namespace LogScraper
             updateInProgress = true;
 
             // Preserve checked states for values that still exist.
-            Dictionary<LogMetadataValue, FilterMode> previousChecked = new(checkedItems);
+            HashSet<LogMetadataValue> previousChecked = new(checkedItems);
             checkedItems.Clear();
 
             sortedValues = [.. allValues.OrderBy(v => v.Value)];
 
             foreach (LogMetadataValue value in sortedValues)
             {
-                if (previousChecked.TryGetValue(value, out FilterMode mode))
-                    checkedItems[value] = mode;
+                if (previousChecked.Contains(value))
+                    checkedItems.Add(value);
             }
 
             BuildValueCounts(stats);
@@ -291,14 +370,14 @@ namespace LogScraper
         /// <summary>
         /// Custom drawing for list items. Renders checkbox, optional selection indicator, and text.
         /// The ▶ indicator marks the value matching the currently selected log entry.
-        /// Checkbox states: unchecked = neutral, checked = include, mixed = exclude (with strikethrough on text only).
+        /// Checked items use CheckedNormal; excluded items additionally show a strikethrough.
         /// </summary>
         private void ListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
             if (e.Item.Tag is not LogMetadataValue value) return;
 
-            checkedItems.TryGetValue(value, out FilterMode filterMode);
-            bool isChecked = checkedItems.ContainsKey(value);
+            bool isChecked = checkedItems.Contains(value);
+            bool isExclude = isChecked && filterModeForAllCheckedItems == FilterMode.Exclude;
             bool isSelectedLine = selectedEntryValue != null && selectedEntryValue == value;
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
             Rectangle bounds = e.Bounds;
@@ -308,13 +387,7 @@ namespace LogScraper
                 e.DrawBackground();
 
                 int checkBoxPadding = ScaleByDpi(3);
-
-                CheckBoxState state;
-                if (!isChecked) state = CheckBoxState.UncheckedNormal;
-                else if (filterMode == FilterMode.Include) state = CheckBoxState.CheckedNormal;
-                else if (filterMode == FilterMode.Exclude) state = CheckBoxState.MixedNormal;
-                else state = CheckBoxState.UncheckedNormal;
-
+                CheckBoxState state = isChecked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal;
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
                 // Draw ▶ indicator if this row matches the selected log entry.
@@ -347,8 +420,8 @@ namespace LogScraper
 
                 TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor, flags);
 
-                // Draw strikethrough over the text only for excluded values.
-                if (filterMode == FilterMode.Exclude)
+                // Draw strikethrough over the text only when in exclude mode.
+                if (isExclude)
                 {
                     Size textSize = TextRenderer.MeasureText(e.Graphics, value.Value, e.Item.Font, textBounds.Size, flags);
                     int strikeY = textBounds.Top + textBounds.Height / 2;
@@ -391,7 +464,7 @@ namespace LogScraper
         }
 
         /// <summary>
-        /// Cycles the filter state on left click: Neutral → Include → Exclude → Neutral.
+        /// Toggles the checked state of a value on left click.
         /// </summary>
         private void ListView_MouseClick(object sender, MouseEventArgs e)
         {
@@ -417,18 +490,22 @@ namespace LogScraper
         }
 
         /// <summary>
-        /// Cycles the filter state: Neutral → Include → Exclude → Neutral.
+        /// Toggles the checked state of a value: unchecked → checked → unchecked.
+        /// Updates the header toggle visibility when the first item is checked or last is unchecked.
         /// </summary>
         private void ToggleCheckbox(ListViewItem item, ListView listView)
         {
             if (item.Tag is not LogMetadataValue value) return;
 
-            if (!checkedItems.TryGetValue(value, out FilterMode current))
-                checkedItems[value] = FilterMode.Include;
-            else if (current == FilterMode.Include)
-                checkedItems[value] = FilterMode.Exclude;
-            else
-                checkedItems.Remove(value);
+            bool wasEmpty = checkedItems.Count == 0;
+
+            if (!checkedItems.Remove(value))
+                checkedItems.Add(value);
+
+            bool isNowEmpty = checkedItems.Count == 0;
+
+            // Refresh the include/exclude label when toggle visibility changes.
+            if (wasEmpty != isNowEmpty) LblIncludeExclude.Invalidate();
 
             listView.Invalidate(item.Bounds);
             OnFilterChanged(EventArgs.Empty);
@@ -496,12 +573,13 @@ namespace LogScraper
 
         /// <summary>
         /// Returns a MetadataFilter representing the current checked state of this control.
+        /// All checked values share filterModeForAllCheckedItems.
         /// </summary>
         public LogMetadataFilter GetCurrentFilter()
         {
             LogMetadataFilter filter = new(metadataProperty);
-            foreach (var kvp in checkedItems)
-                filter.ActiveValues[kvp.Key] = kvp.Value;
+            foreach (LogMetadataValue value in checkedItems)
+                filter.ActiveValues[value] = filterModeForAllCheckedItems;
             return filter;
         }
 
@@ -514,13 +592,15 @@ namespace LogScraper
             if (isEnabled)
             {
                 checkedItems.Clear();
-                checkedItems[value] = FilterMode.Include;
+                checkedItems.Add(value);
+                filterModeForAllCheckedItems = FilterMode.Include;
             }
             else
             {
                 checkedItems.Remove(value);
             }
 
+            LblIncludeExclude.Invalidate();
             ListViewItems.Invalidate();
             OnFilterChanged(EventArgs.Empty);
         }
@@ -528,6 +608,8 @@ namespace LogScraper
         internal void ResetFilters()
         {
             checkedItems.Clear();
+            filterModeForAllCheckedItems = FilterMode.Include;
+            LblIncludeExclude.Invalidate();
             ListViewItems.Invalidate();
             OnFilterChanged(EventArgs.Empty);
         }

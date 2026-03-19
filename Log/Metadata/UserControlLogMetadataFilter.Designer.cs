@@ -23,6 +23,7 @@ namespace LogScraper
         {
             LblLogFilterDescription = new Label();
             ListViewItems = new ListView();
+            LblIncludeExclude = new Label();
             SuspendLayout();
             // 
             // LblLogFilterDescription
@@ -62,9 +63,20 @@ namespace LogScraper
             ListViewItems.MouseWheel += ListView_MouseWheel;
             ListViewItems.Resize += ListView_Resize;
             // 
+            // LblIncludeExclude
+            // 
+            LblIncludeExclude.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            LblIncludeExclude.Location = new System.Drawing.Point(239, 1);
+            LblIncludeExclude.Name = "LblIncludeExclude";
+            LblIncludeExclude.Size = new System.Drawing.Size(38, 15);
+            LblIncludeExclude.TabIndex = 4;
+            LblIncludeExclude.Paint += LblIncludeExclude_Paint;
+            LblIncludeExclude.MouseClick += LblIncludeExclude_MouseClick;
+            // 
             // UserControlLogMetadataFilter
             // 
             BackColor = System.Drawing.Color.White;
+            Controls.Add(LblIncludeExclude);
             Controls.Add(LblLogFilterDescription);
             Controls.Add(ListViewItems);
             Name = "UserControlLogMetadataFilter";
@@ -72,5 +84,7 @@ namespace LogScraper
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private Label LblIncludeExclude;
     }
 }
