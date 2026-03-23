@@ -15,6 +15,18 @@ namespace LogScraper.Log.Rendering
     internal static class LogRenderer
     {
         /// <summary>
+        /// Pre-computed tab prefix strings indexed by tree depth, avoiding per-entry allocation.
+        /// Supports depths 0–15; deeper nodes fall back to a runtime allocation.
+        /// </summary>
+        private static readonly string[] CachedTabPrefixes = new string[16];
+
+        static LogRenderer()
+        {
+            for (int i = 0; i < CachedTabPrefixes.Length; i++)
+                CachedTabPrefixes[i] = new string('\t', i * 2);
+        }
+
+        /// <summary>
         /// Retrieves the log entries to be rendered based on the provided metadata filter result and render settings.
         /// </summary>
         /// <remarks> This method filters the original list of log entries, typically after applying a metadata filter, to determine which entries should be included in the final rendered output.
@@ -31,7 +43,7 @@ namespace LogScraper.Log.Rendering
                 return originalLogEntriesList;
             }
 
-            // Calculate the start and end indices based on the begin and end filters and extra nog entries to include.
+            // Calculate the start and end indices based on the begin and end filters and extra log entries to include.
             (int startIndex, int endIndex) = CalculateLogRenderRange(originalLogEntriesList, logRenderSettings);
 
             // If the calculated indices are invalid, return an empty list.
@@ -44,7 +56,7 @@ namespace LogScraper.Log.Rendering
         /// Determines the start and end indices for the log entries to be rendered based on the render settings.
         /// </summary>
         /// <param name="logEntries">The list of log entries to filter and render. Cannot be null.</param>
-        /// <param name="logRenderSettings">Settings for rendinge the log data.</param>
+        /// <param name="logRenderSettings">Settings for rendering the log data.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
         private static (int startIndex, int endIndex) CalculateLogRenderRange(List<LogEntry> logEntries, LogRenderSettings logRenderSettings)
         {
@@ -97,8 +109,9 @@ namespace LogScraper.Log.Rendering
         public static string RenderLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, LogFlowTree logFlowTree, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             bool showTree = logFlowTree != null && logFlowTree.LogEntryDictionary != null && logContentPropertyForFlowTree != null;
-            StringBuilder stringBuilder = new();
 
+            // Pre-size the builder with a rough estimate to avoid internal reallocs on large logs.
+            StringBuilder stringBuilder = new(logEntries.Count * 120);
 
             // Set the log post processor kinds to null if the list is empty to avoid unnecessary processing
             if (logPostProcessorKinds != null && logPostProcessorKinds.Count == 0) logPostProcessorKinds = null;
@@ -131,9 +144,9 @@ namespace LogScraper.Log.Rendering
         /// <param name="logRenderSettings">The settings that control how the log entry is rendered.</param>
         /// <param name="treeNode">A reference to the current node in the log flow tree, used to determine hierarchical relationships between
         /// log entries. This parameter is updated if the log entry marks the end of a tree node.</param>
-        /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If <see
+        /// <param name="showTree">A value indicating whether to include tree structure prefixes in the log entry output. If
+        /// <see langword="true"/>, tree-related prefixes are added to the log entry.</param>
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
-        /// langword="true"/>, tree-related prefixes are added to the log entry.</param>
         private static void AppendLogEntryToStringBuilder(StringBuilder stringBuilder, LogEntry logEntry, LogRenderSettings logRenderSettings, ref LogFlowTreeNode treeNode, bool showTree, List<LogPostProcessorKind> logPostProcessorKinds)
         {
             string text = logEntry.Entry;
@@ -181,7 +194,7 @@ namespace LogScraper.Log.Rendering
             if (logEntry.LogPostProcessResults == null || logPostProcessorKinds == null) return;
 
             foreach (LogPostProcessorKind kind in logPostProcessorKinds)
-            { 
+            {
                 LogPostProcessResult result = logEntry.LogPostProcessResults.Results[(int)kind];
                 if (result == null) continue;
                 stringBuilder.AppendLine($"--- LogScraper pretty {result.ProcessorKind.ToPrettyName()} ---");
@@ -192,30 +205,35 @@ namespace LogScraper.Log.Rendering
 
         /// <summary>
         /// Generates a string prefix representing the depth of a node in a tree structure.
+        /// Returns a cached string for depths within the pre-computed range (0–15).
         /// </summary>
         /// <param name="node">The tree node for which the prefix is generated. Must not be <see langword="null"/>.</param>
-        /// <param name="isBeginOrEndNode">A value indicating whether the node represents a "begin" or "end" entry.  If <see langword="true"/>, the
+        /// <param name="isBeginOrEndNode">A value indicating whether the node represents a "begin" or "end" entry. If <see langword="true"/>, the
         /// prefix is calculated for the previous depth level.</param>
-        /// <returns>A string consisting of tab characters (<c>'\t'</c>) representing the depth of the node in the tree.  Returns
-        /// an empty string if the node is the root node or if the calculated depth is zero.</returns>
+        /// <returns>A string consisting of tab characters (<c>'\t'</c>) representing the depth of the node in the tree.
+        /// Returns an empty string if the node is the root node or if the calculated depth is zero.</returns>
         private static string GetTreePrefix(LogFlowTreeNode node, bool isBeginOrEndNode)
         {
             if (node == null || (node.IsRootNode && isBeginOrEndNode))
                 return string.Empty;
 
-            // Calculate the actual depth, because the begin and end entry we want to show on the previous depth
+            // Calculate the actual depth; begin/end entries render at the parent depth level.
             int depth = node.Depth + (isBeginOrEndNode ? 0 : 1);
-            if (depth == 0) return "";
-            return new string('\t', depth * 2);
+            if (depth <= 0) return string.Empty;
+
+            return depth < CachedTabPrefixes.Length
+                ? CachedTabPrefixes[depth]
+                : new string('\t', depth * 2);
         }
 
         /// <summary>
-        /// Inserts metadata to a log entry at the specified position.
+        /// Inserts metadata into a log entry at the specified position.
         /// </summary>
         /// <param name="logEntry">The original log entry.</param>
-        /// <param name="startIndex">The position to insert the metadata.</param>
+        /// <param name="startIndex">The position at which to insert the metadata.</param>
         /// <param name="metadataValues">The metadata values to insert, organized in an index dictionary for efficient access.</param>
-        /// <returns>The log entry with added metadata.</returns>
+        /// <param name="logRenderSettings">The render settings that control which metadata properties are included.</param>
+        /// <returns>The log entry with inserted metadata, or the original string if no metadata was resolved.</returns>
         private static string InsertMetadataIntoLogEntry(string logEntry, int startIndex, IndexDictionary<LogMetadataProperty, LogMetadataValue> metadataValues, LogRenderSettings logRenderSettings)
         {
             if (startIndex <= 0 ||
@@ -227,36 +245,40 @@ namespace LogScraper.Log.Rendering
                 return logEntry;
             }
 
-            List<string> values = [];
-            foreach (LogMetadataProperty logMetadataProperty in logRenderSettings.SelectedMetadataProperties)
+            StringBuilder insertBuilder = new(" ");
+            bool first = true;
+            foreach (LogMetadataProperty property in logRenderSettings.SelectedMetadataProperties)
             {
-                if (metadataValues.TryGetValue(logMetadataProperty, out LogMetadataValue value)) 
+                if (metadataValues.TryGetValue(property, out LogMetadataValue value))
                 {
-                    values.Add(value.Value); 
+                    if (!first) insertBuilder.Append(" | ");
+                    insertBuilder.Append(value.Value);
+                    first = false;
                 }
             }
 
-            // Insert the metadata values into the log entry at the specified position.
-            return logEntry.Insert(startIndex, " " + string.Join(" | ", values));
+            // Nothing was appended beyond the leading space — return original.
+            if (insertBuilder.Length <= 1) return logEntry;
+
+            return string.Concat(
+                logEntry.AsSpan(0, startIndex),
+                insertBuilder.ToString().AsSpan(),
+                logEntry.AsSpan(startIndex));
         }
 
         /// <summary>
-        /// Removes text from the input string based on the specified criteria.
+        /// Removes text from the input string based on the specified index range.
         /// </summary>
         /// <param name="inputText">The input string.</param>
-        /// <param name="beforeIndex">The index before which text should be removed.</param>
-        /// <param name="afterIndex">The index after which text should be removed.</param>  
-        /// <returns>The modified string with the specified text removed.</returns>
+        /// <param name="beforeIndex">The index at which removal begins.</param>
+        /// <param name="afterIndex">The index at which removal ends (exclusive).</param>
+        /// <returns>The modified string with the specified range removed.</returns>
         public static string RemoveTextByCriteria(string inputText, int beforeIndex, int afterIndex)
         {
-            if (string.IsNullOrEmpty(inputText) || beforeIndex == -1 || afterIndex == -1 || beforeIndex > afterIndex)
-            {
+            if (string.IsNullOrEmpty(inputText) || beforeIndex < 0 || afterIndex < 0 || beforeIndex > afterIndex)
                 return inputText;
-            }
-            // Remove the portion of text from StartPosition to AfterPhrase.
-            inputText = inputText.Remove(beforeIndex, afterIndex - beforeIndex);
 
-            return inputText;
+            return string.Concat(inputText.AsSpan(0, beforeIndex), inputText.AsSpan(afterIndex));
         }
     }
 }
