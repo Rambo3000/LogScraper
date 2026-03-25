@@ -10,8 +10,8 @@ using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.IndexDictionary;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LogScraper.Configuration
 {
@@ -27,6 +27,14 @@ namespace LogScraper.Configuration
         private GenericConfig genericConfig;
         private LogLayoutsConfig logLayoutsConfig;
         private readonly LogProvidersConfig logProvidersConfig;
+
+        private static readonly JsonSerializerOptions jsonSerializerOptions = new()
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            Converters = { new ColorJsonConverter() }
+        };
 
         /// <summary>
         /// Private constructor to enforce the singleton pattern.
@@ -200,18 +208,11 @@ namespace LogScraper.Configuration
         /// <param name="data">The data to serialize and save.</param>
         public static void SaveToFile<T>(string filePath, T data)
         {
-            string jsonContent = JsonConvert.SerializeObject(
-                data,
-                Formatting.Indented,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                }
-            );
+
+            string jsonContent = JsonSerializer.Serialize(data, jsonSerializerOptions);
 
             if (File.Exists(filePath))
             {
-                // Back up the existing file
                 string backupPath = filePath + ".bak";
                 File.Copy(filePath, backupPath, overwrite: true);
             }
@@ -265,14 +266,7 @@ namespace LogScraper.Configuration
         {
             string jsonContent = File.ReadAllText(filePath, Encoding.UTF8);
 
-            // Deserialize JSON content using the custom contract resolver
-            return JsonConvert.DeserializeObject<T>(
-                jsonContent,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                }
-            );
+            return JsonSerializer.Deserialize<T>(jsonContent, jsonSerializerOptions);
         }
 
         // Properties for accessing and modifying configurations
@@ -336,22 +330,6 @@ namespace LogScraper.Configuration
             {
                 CreateInstanceIfNeeded();
                 return instance?.logProvidersConfig;
-            }
-        }
-
-        /// <summary>
-        /// Custom contract resolver to convert PascalCase property names to camelCase for JSON serialization.
-        /// </summary>
-        internal class CamelCasePropertyNamesContractResolver : DefaultContractResolver
-        {
-            /// <summary>
-            /// Resolves a property name by converting it from PascalCase to camelCase.
-            /// </summary>
-            /// <param name="propertyName">The property name to resolve.</param>
-            /// <returns>The resolved property name in camelCase.</returns>
-            protected override string ResolvePropertyName(string propertyName)
-            {
-                return char.ToLowerInvariant(propertyName[0]) + propertyName[1..];
             }
         }
 

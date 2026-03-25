@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using LogScraper.Log.Layout;
+﻿using LogScraper.Log.Layout;
+using System.Text.Json.Serialization;
 
 namespace LogScraper.LogProviders.File
 {

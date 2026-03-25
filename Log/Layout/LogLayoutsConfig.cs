@@ -11,6 +11,6 @@ namespace LogScraper.Log.Layout
         /// A list of log layouts available in the configuration.
         /// Each layout defines the structure, metadata, and content filters for a specific type of log.
         /// </summary>
-        public List<LogLayout> layouts = [];
+        public List<LogLayout> layouts { get; set; } = [];
     }
 }

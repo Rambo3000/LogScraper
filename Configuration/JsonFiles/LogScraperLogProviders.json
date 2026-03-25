@@ -1,4 +1,4 @@
-{
+﻿{
   "fileConfig": {
     "defaultLogLayoutDescription": "Blueriq vanuit splunk in JSON"
   },
@@ -7,12 +7,16 @@
     "instances": [
       {
         "description": "Example",
-        "urlRuntimeLog": "http://localhost/log.txt"
+        "urlRuntimeLog": "http://localhost/log.txt",
+        "httpAuthenticationSettings": null,
+        "isUrlLinkToHtmlFolderList": false,
+        "isUrlLinkToHtmlFileList": false
       }
     ]
   },
   "kubernetesConfig": {
     "defaultLogLayoutDescription": "Blueriq",
+    "defaultKubernetesTimespan": 0,
     "clusters": [
       {
         "description": "Ontwikkel",
@@ -21,11 +25,17 @@
         "namespaces": [
           {
             "description": "ABC",
-            "name": "ns-abc-o-001"
+            "name": "ns-abc-o-001",
+            "shortenPodNames": false,
+            "shortenPodNamesValues": [],
+            "defaultSelectedPodNameParts": []
           },
           {
             "description": "DEF",
-            "name": "ns-def-o-001"
+            "name": "ns-def-o-001",
+            "shortenPodNames": false,
+            "shortenPodNamesValues": [],
+            "defaultSelectedPodNameParts": []
           }
         ]
       },
@@ -36,11 +46,17 @@
         "namespaces": [
           {
             "description": "GHI",
-            "name": "ns-abc-t-001"
+            "name": "ns-abc-t-001",
+            "shortenPodNames": false,
+            "shortenPodNamesValues": [],
+            "defaultSelectedPodNameParts": []
           },
           {
             "description": "JKL",
-            "name": "ns-def-t-001"
+            "name": "ns-def-t-001",
+            "shortenPodNames": false,
+            "shortenPodNamesValues": [],
+            "defaultSelectedPodNameParts": []
           }
         ]
       }

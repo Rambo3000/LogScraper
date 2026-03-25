@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text.Json.Serialization;
 using LogScraper.Utilities.IndexDictionary;
-using Newtonsoft.Json;
 
 namespace LogScraper.Log.Content
 {

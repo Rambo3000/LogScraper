@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
 using System.Windows.Forms;
 using LogScraper.Configuration.Generic;
 using LogScraper.Log.Layout;
@@ -9,7 +10,6 @@ using LogScraper.LogProviders.File;
 using LogScraper.LogProviders.Kubernetes;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.Utilities.Extensions;
-using Newtonsoft.Json;
 
 namespace LogScraper.Configuration
 {

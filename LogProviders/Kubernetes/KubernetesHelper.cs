@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
 using LogScraper.Utilities.Extensions;
-using Newtonsoft.Json.Linq;
 
 namespace LogScraper.LogProviders.Kubernetes
 {
@@ -12,6 +11,16 @@ namespace LogScraper.LogProviders.Kubernetes
     /// </summary>
     internal class KubernetesHelper
     {
+        /// <summary>
+        /// Gets the JSON serializer options used for serializing and deserializing JSON data.
+        /// </summary>
+        /// <remarks>The options are configured to be case-insensitive when matching property names,
+        /// allowing for more flexible JSON handling.</remarks>
+        private static readonly JsonSerializerOptions jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
         /// <summary>
         /// Generates the URL for retrieving the configuration of pods in a specific namespace within a Kubernetes cluster.
         /// </summary>
@@ -43,61 +52,65 @@ namespace LogScraper.LogProviders.Kubernetes
         /// <returns>A list of <see cref="KubernetesPod"/> objects containing extracted pod details.</returns>
         internal static List<KubernetesPod> ExtractPodsInfo(string jsonFromPodsResponse, List<string> shortenPodNamesValues)
         {
-            // Initialize an empty list to store pod information.
             List<KubernetesPod> podsInfo = [];
-
             try
             {
-                // Parse the JSON response into a JObject.
-                JObject jsonObject = JObject.Parse(jsonFromPodsResponse);
-
-                // Extract the array of pod items from the JSON.
-                JArray podItems = (JArray)jsonObject["items"];
-
-                // Iterate through each pod item in the array.
-                foreach (JObject podItem in podItems.Cast<JObject>())
+                KubernetesPodsResponse response = JsonSerializer.Deserialize<KubernetesPodsResponse>(jsonFromPodsResponse, jsonOptions);
+                foreach (KubernetesPodItem podItem in response.Items)
                 {
-                    // Extract the pod name from the metadata.
-                    string podName = podItem["metadata"]["name"].ToString();
-
-                    // Initialize the shortened pod name.
+                    string podName = podItem.Metadata.Name;
                     string podNameShortened = podName;
                     if (shortenPodNamesValues != null && shortenPodNamesValues.Count > 0)
                     {
-                        // Shorten the pod name for description if applicable.
                         foreach (string shortenValue in shortenPodNamesValues)
-                        {
                             podNameShortened = podNameShortened.Replace(shortenValue, "");
-                        }
                     }
 
-                    // Extract the container image and split it to retrieve the image name.
-                    string containerImage = podItem["spec"]["containers"][0]["image"].ToString();
+                    string containerImage = podItem.Spec.Containers[0].Image;
                     string[] imageParts = containerImage.Split('/');
                     string imageName = imageParts[^1].Split(':')[0];
 
-                    // Create a new KubernetesPod object with the extracted details.
-                    KubernetesPod podInfo = new()
+                    podsInfo.Add(new KubernetesPod()
                     {
                         Description = podName,
                         DescriptionShortened = podNameShortened,
                         Name = podName,
                         ImageName = imageName
-                    };
-
-                    // Add the pod information to the list.
-                    podsInfo.Add(podInfo);
+                    });
                 }
             }
             catch (Exception ex)
             {
-                // Log an error message if JSON parsing fails.
                 Console.WriteLine("Error parsing JSON: " + ex.Message);
                 ex.LogStackTraceToFile("Error during JSON parsing in ExtractPodsInfo method.");
             }
-
-            // Return the list of extracted pod information.
             return podsInfo;
+        }
+
+        private class KubernetesPodsResponse
+        {
+            public List<KubernetesPodItem> Items { get; set; }
+        }
+
+        private class KubernetesPodItem
+        {
+            public KubernetesPodMetadata Metadata { get; set; }
+            public KubernetesPodSpec Spec { get; set; }
+        }
+
+        private class KubernetesPodMetadata
+        {
+            public string Name { get; set; }
+        }
+
+        private class KubernetesPodSpec
+        {
+            public List<KubernetesPodContainer> Containers { get; set; }
+        }
+
+        private class KubernetesPodContainer
+        {
+            public string Image { get; set; }
         }
     }
 }

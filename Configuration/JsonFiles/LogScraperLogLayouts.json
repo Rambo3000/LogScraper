@@ -2,7 +2,8 @@
   "layouts": [
     {
       "description": "Blueriq",
-      "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
+      "isAutomaticTimeStampRecognitionEnabled": true,
+      "dateTimeFormat": "",
       "logMetadataProperties": [
         {
           "description": "Log level",
@@ -17,8 +18,8 @@
         {
           "description": "Project",
           "criteria": {
-            "beforePhrase": "projectName=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "projectName=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": false,
@@ -27,8 +28,8 @@
         {
           "description": "Gebruiker",
           "criteria": {
-            "beforePhrase": "userId=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "userId=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": false,
@@ -37,8 +38,8 @@
         {
           "description": "Branch",
           "criteria": {
-            "beforePhrase": "projectVersion=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "projectVersion=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": false,
@@ -47,8 +48,8 @@
         {
           "description": "Pagina",
           "criteria": {
-            "beforePhrase": "currentPageName=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "currentPageName=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": false,
@@ -57,8 +58,8 @@
         {
           "description": "Sessie",
           "criteria": {
-            "beforePhrase": "runtimeSessionId=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "runtimeSessionId=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": true,
@@ -86,6 +87,8 @@
           "isCustomStyleEnabled": true,
           "customTextColor": "0, 97, 0",
           "customBackColor": "198, 239, 206",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
@@ -98,13 +101,13 @@
               "isRegex": false
             },
             {
-              "beforePhrase": "Reached the end of flow '",
-              "afterPhrase": "'",
+              "beforePhrase": "Reached the end of flow \u0027",
+              "afterPhrase": "\u0027",
               "isRegex": false
             },
             {
-              "beforePhrase": "flow '",
-              "afterPhrase": "' failed",
+              "beforePhrase": "flow \u0027",
+              "afterPhrase": "\u0027 failed",
               "isRegex": false
             }
           ],
@@ -113,6 +116,8 @@
           "isCustomStyleEnabled": true,
           "customTextColor": "0, 179, 0",
           "customBackColor": "198, 239, 206",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -120,8 +125,8 @@
           "criteria": null,
           "criterias": [
             {
-              "beforePhrase": "Webservicecall '",
-              "afterPhrase": "' - Sending",
+              "beforePhrase": "Webservicecall \u0027",
+              "afterPhrase": "\u0027 - Sending",
               "isRegex": false
             }
           ],
@@ -130,7 +135,9 @@
           "isCustomStyleEnabled": true,
           "customTextColor": "112, 48, 160",
           "customBackColor": "234, 209, 220",
-          "endFlowTreeContentPropertyDescription": null
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
+          "endFlowTreeContentPropertyDescription": ""
         },
         {
           "description": "Errors",
@@ -147,6 +154,8 @@
           "isCustomStyleEnabled": true,
           "customTextColor": "156, 0, 6",
           "customBackColor": "244, 204, 204",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
@@ -159,6 +168,7 @@
     },
     {
       "description": "Blueriq vanuit splunk in JSON",
+      "isAutomaticTimeStampRecognitionEnabled": true,
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
       "logMetadataProperties": [
         {
@@ -174,8 +184,8 @@
         {
           "description": "Project",
           "criteria": {
-            "beforePhrase": "projectName=\"",
-            "afterPhrase": "\"",
+            "beforePhrase": "projectName=\u0022",
+            "afterPhrase": "\u0022",
             "isRegex": false
           },
           "isSessionData": false,
@@ -198,6 +208,8 @@
           "isCustomStyleEnabled": false,
           "customTextColor": "",
           "customBackColor": "",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": "Einde flow"
         },
         {
@@ -215,6 +227,8 @@
           "isCustomStyleEnabled": false,
           "customTextColor": "",
           "customBackColor": "",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""
         },
         {
@@ -232,6 +246,8 @@
           "isCustomStyleEnabled": false,
           "customTextColor": "",
           "customBackColor": "",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],
@@ -242,10 +258,6 @@
       },
       "transformers": [
         {
-          "type": "ReverseOrder",
-          "jsonPath": null
-        },
-        {
           "type": "ExtractJsonPathFromEachLine",
           "jsonPath": "$.log"
         }
@@ -253,6 +265,7 @@
     },
     {
       "description": "Blueriq ORM",
+      "isAutomaticTimeStampRecognitionEnabled": true,
       "dateTimeFormat": "yyyy-MM-dd HH:mm:ss.fff",
       "logMetadataProperties": [
         {
@@ -282,6 +295,8 @@
           "isCustomStyleEnabled": false,
           "customTextColor": "",
           "customBackColor": "",
+          "isCustomBackColorFillLine": false,
+          "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""
         }
       ],

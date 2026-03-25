@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
-using Newtonsoft.Json;
 
 namespace LogScraper.Log.Layout
 {
@@ -40,7 +40,7 @@ namespace LogScraper.Log.Layout
         /// A list of content filters that define specific events within the log.
         /// These filters are used to identify specific sections of the log.
         /// </summary>
-        [JsonProperty("LogContentBeginEndFilters")]
+        [JsonPropertyName("logContentBeginEndFilters")]
         public List<LogContentProperty> LogContentProperties { get; set; }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace LogScraper.Log.Layout
         /// </summary>
         public List<ILogTransformer> LogTransformers { get; set; }
 
-        [JsonProperty("transformers")]
+        [JsonPropertyName("transformers")]
         /// <summary>
         /// Configuration for log transformers, used for JSON serialization and deserialization.
         /// </summary>

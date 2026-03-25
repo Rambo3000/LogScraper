@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using LogScraper.Utilities.IndexDictionary;
-using Newtonsoft.Json;
 
 namespace LogScraper.Log.Metadata
 {

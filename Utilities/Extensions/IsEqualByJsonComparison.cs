@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LogScraper.Utilities.Extensions
 {
@@ -7,6 +8,12 @@ namespace LogScraper.Utilities.Extensions
     /// </summary>
     public static class ObjectExtensions
     {
+        private static readonly JsonSerializerOptions jsonComparisonOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // Ignore null values during serialization.
+            ReferenceHandler = ReferenceHandler.IgnoreCycles // Prevent infinite loops in case of circular references.
+        };
+
         /// <summary>
         /// Compares two objects for equality by serializing them to JSON and comparing the resulting strings.
         /// </summary>
@@ -17,19 +24,8 @@ namespace LogScraper.Utilities.Extensions
         /// </returns>
         public static bool IsEqualByJsonComparison(this object obj1, object obj2)
         {
-            // Configure JSON serialization settings to ignore null values and reference loops.
-            JsonSerializerSettings settings = new()
-            {
-                Formatting = Formatting.None, // Minimize JSON formatting for comparison.
-                NullValueHandling = NullValueHandling.Ignore, // Ignore null values during serialization.
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore // Prevent infinite loops in case of circular references.
-            };
-
-            // Serialize both objects to JSON strings using the specified settings.
-            string json1 = JsonConvert.SerializeObject(obj1, settings);
-            string json2 = JsonConvert.SerializeObject(obj2, settings);
-
-            // Compare the JSON strings for equality.
+            string json1 = JsonSerializer.Serialize(obj1, jsonComparisonOptions);
+            string json2 = JsonSerializer.Serialize(obj2, jsonComparisonOptions);
             return json1 == json2;
         }
     }
