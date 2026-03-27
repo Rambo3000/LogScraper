@@ -151,18 +151,6 @@ namespace LogScraper.Log.Metadata
         }
 
         /// <summary>
-        /// Enables filtering on a specific metadata value for a given property, in the specified mode.
-        /// </summary>
-        /// <param name="property">The metadata property to target.</param>
-        /// <param name="value">The specific value to enable or disable filtering on.</param>
-        /// <param name="isEnabled">Whether to enable or disable the filter.</param>
-        public void EnableFilterOnSpecificMetadataValue(LogMetadataProperty property, LogMetadataValue value, bool isEnabled)
-        {
-            if (filterControls.TryGetValue(property, out UserControlLogMetadataFilter control))
-                control.EnableDisableFilterOnSpecificMetadataValue(value, isEnabled);
-        }
-
-        /// <summary>
         /// Resets the filter controls by clearing all child controls and their event handlers.
         /// </summary>
         public void Reset()

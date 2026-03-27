@@ -277,7 +277,7 @@ namespace LogScraper
             updateInProgress = true;
 
             // Preserve checked states for values that still exist.
-            HashSet<LogMetadataValue> previousChecked = new(checkedItems);
+            HashSet<LogMetadataValue> previousChecked = [.. checkedItems];
             checkedItems.Clear();
 
             sortedValues = [.. allValues.OrderBy(v => v.Value)];
@@ -581,28 +581,6 @@ namespace LogScraper
             foreach (LogMetadataValue value in checkedItems)
                 filter.ActiveValues[value] = filterModeForAllCheckedItems;
             return filter;
-        }
-
-        /// <summary>
-        /// Enables or disables filtering on a specific metadata value.
-        /// When enabling, clears all other selections (exclusive include mode).
-        /// </summary>
-        internal void EnableDisableFilterOnSpecificMetadataValue(LogMetadataValue value, bool isEnabled)
-        {
-            if (isEnabled)
-            {
-                checkedItems.Clear();
-                checkedItems.Add(value);
-                filterModeForAllCheckedItems = FilterMode.Include;
-            }
-            else
-            {
-                checkedItems.Remove(value);
-            }
-
-            LblIncludeExclude.Invalidate();
-            ListViewItems.Invalidate();
-            OnFilterChanged(EventArgs.Empty);
         }
 
         internal void ResetFilters()

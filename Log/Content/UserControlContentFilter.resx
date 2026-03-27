@@ -132,29 +132,6 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="BtnFilterOnSameMetadata.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAASFJREFUOE9t
-        k7FRBDEMRd+fYa4OkgsYmriQuYSEvQYgoAECckISyiCmDWiCBhhILiA4xrJky2s8u5YsfUlf8i74knyr
-        Tzn467rk7m4Pb4eFL4AlqCEa3HQ7xWaBcAmc7JVc1rPCTrULLlKSlnkj6QPxjdgDO8EOuYS9+dB7wc6E
-        Ku1z4AfxOqXHbF8SBZM7iqk1y7W3cps6v7N2xFXAW0gMrtWq4gVxRNoCW9PhOZcd12zflMFJ3ACLD/Rs
-        KD23MC6bvFiQDqr0R++g/5tAJ6FFcKhscourgJ5jcPwCDyos7P7nqv2OkkywpzJ5SW9+K+u67QvsrhCN
-        kh6tev0yO9MBnoLWhHzdA5/Z2gv7qWbue1DIuDn58NsOhpzKtRWnFPUHp9YsBS9EOJYAAAAASUVORK5C
-        YII=
-</value>
-  </data>
-  <data name="BtnResetMetadataFilter.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAV5JREFUOE9t
-        ks8qRVEUxn+/0r3Kv+4AKWIoT3GHlKmUJ/ACFGMjeRsmohQm/syUgUR4AJmiaO9z9j77XHats/dZ+/vW
-        +tZaG9KytsIRf6O/PmdAG9gB9sXp7PkDSbtFsMY3DJ4AL8I8sC5+Cz9kM5rBDDuLZYywQpBT5RGZAZfE
-        vtoH+kLYV4UP5BboxBKT1KgMusAZ+ABMRnVFBvFIfAcWIjHdt0DaBc+Qe2Uio3QX+UGWE7XhDXSrUuKp
-        cCOMgj3gUzkYkJS4/3kNPQkNuwZ6yAoyVAArXKql6UYRz9B53oA7YCrRKsggvolUokKADeRc4nTm2zmK
-        KWRnwQe/hC1gTQmzfwbmWoi05bFkJXHthYcDHNYTOAarIHHsOX1ZUVlCPO/UpQQbBi4qJc7WbycDG179
-        LUraRF7r6xHhEn2qlCRuktBIyeqqbyvJGHIFbBdT/CO9IhejbnUcxhPpFzwrNBTAV/2cAAAAAElFTkSu
-        QmCC
-</value>
-  </data>
   <data name="ChkShowFlowTree.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAARFJREFUOE9t

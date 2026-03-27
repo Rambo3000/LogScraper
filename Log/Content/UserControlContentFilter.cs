@@ -22,10 +22,6 @@ namespace LogScraper
         private string DefaulSearchtText = "Filter...";
 
         private List<LogContentProperty> LogContentPropertiesError = [];
-        private List<LogMetadataProperty> LogMetadataPropertiesUserSession = [];
-
-        private bool LogEntriesAreSingleSession = false;
-        private bool IsSessionMetadataFilteringActive = false;
 
         private LogMetadataFilterResult LogMetadataFilterResult;
 
@@ -56,17 +52,8 @@ namespace LogScraper
                     break;
                 }
             }
-            LogMetadataPropertiesUserSession = [];
-            foreach (LogMetadataProperty logMetadataProperty in logLayout.LogMetadataProperties)
-            {
-                if (logMetadataProperty.IsSessionData)
-                {
-                    LogMetadataPropertiesUserSession.Add(logMetadataProperty);
-                }
-            }
+
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
-            BtnResetMetadataFilter_Click(null, null);
-            UpdateFilterOnMetadataControls();
             UpdateTopBottomControls();
         }
         #endregion
@@ -87,20 +74,6 @@ namespace LogScraper
 
         public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
         {
-            // Determine if session metadata filtering is active to control the session filtering button.
-            IsSessionMetadataFilteringActive = false;
-            foreach (LogMetadataProperty sessionProperty in LogMetadataPropertiesUserSession)
-            {
-                if (logMetadataFilterResult.FilterStats.TryGetValue(sessionProperty, out LogMetadataFilterStats stats))
-                {
-                    if (stats.ValueCounts.Any(vc => vc.Count > 0))
-                    {
-                        IsSessionMetadataFilteringActive = true;
-                        break;
-                    }
-                }
-            }
-
             LogMetadataFilterResult = logMetadataFilterResult;
             UpdateDisplayedLogEntries();
         }
@@ -110,7 +83,6 @@ namespace LogScraper
             if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
             {
                 LstLogContent.Items.Clear();
-                BtnResetMetadataFilter_Click(null, null);
                 return;
             }
 
@@ -245,9 +217,6 @@ namespace LogScraper
             // Case 1: Exactly same items — skip update
             if (startMatches && currentCount == newCount) return;
 
-            LogEntriesAreSingleSession = HasOnlyOneSession(LogMetadataFilterResult.LogEntries);
-            UpdateFilterOnMetadataControls();
-
             // Case 2: New list extends existing — add only new items
             if (startMatches && newCount > currentCount)
             {
@@ -272,26 +241,6 @@ namespace LogScraper
 
             // In all other cases: Mismatch — full redraw
             FullyRedrawList(newLogEntries);
-        }
-
-        /// <summary>
-        /// Determines whether all session metadata properties have at most one distinct value across the given log entries.
-        /// </summary>
-        private bool HasOnlyOneSession(List<LogEntry> logEntries)
-        {
-            foreach (LogMetadataProperty metadataProperty in LogMetadataPropertiesUserSession)
-            {
-                HashSet<LogMetadataValue> values = [];
-                foreach (LogEntry logEntry in logEntries)
-                {
-                    if (logEntry.Metadata.TryGetValue(metadataProperty, out LogMetadataValue value))
-                    {
-                        values.Add(value);
-                        if (values.Count > 1) return false;
-                    }
-                }
-            }
-            return true;
         }
 
         private void FullyRedrawList(List<LogEntryDisplayObject> newLogEntries)
@@ -440,9 +389,6 @@ namespace LogScraper
             selectedEndEntryDisplayObject = null;
             selectedBeginEntryDisplayObject = null;
             LogContentPropertiesError = [];
-            LogMetadataPropertiesUserSession = [];
-            LogEntriesAreSingleSession = false;
-            IsSessionMetadataFilteringActive = false;
             LogMetadataFilterResult = null;
             UpdateTopBottomControls();
         }
@@ -625,12 +571,6 @@ namespace LogScraper
 
         #region Events
 
-        /// <summary>
-        /// Event to request filtering on a specific metadata property and value.
-        /// Carries the property, the interned value to filter on, and whether to enable or disable the filter.
-        /// </summary>
-        public event Action<LogMetadataProperty, LogMetadataValue, bool> FilterOnMetadata;
-
         public event EventHandler EndEntryChanged;
         protected virtual void OnEndEntryChanged(EventArgs e)
         {
@@ -715,7 +655,6 @@ namespace LogScraper
             if (!ignoreSelectedItemChanged)
             {
                 OnSelectedItemChanged(EventArgs.Empty);
-                UpdateFilterOnMetadataControls();
                 UpdateTopBottomControls();
             }
         }
@@ -723,45 +662,6 @@ namespace LogScraper
         private void LstLogContent_DoubleClick(object sender, EventArgs e)
         {
             if (SelectedContentValue == null) return;
-            if (!LogEntriesAreSingleSession) BtnFilterOnSameMetadata_Click(null, null);
-        }
-
-        /// <summary>
-        /// Fires FilterOnMetadata for each session metadata property found on the selected log entry.
-        /// </summary>
-        private void BtnFilterOnSameMetadata_Click(object sender, EventArgs e)
-        {
-            if (LstLogContent.SelectedIndex == -1) return;
-
-            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy)
-                ChkShowFlowTree.Checked = SelectedLogContentProperty.IsBeginFlowTreeFilter;
-
-            foreach (LogMetadataProperty logMetadataProperty in LogMetadataPropertiesUserSession)
-            {
-                if (SelectedLogEntry.Metadata.TryGetValue(logMetadataProperty, out LogMetadataValue value))
-                {
-                    FilterOnMetadata?.Invoke(logMetadataProperty, value, true);
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Fires FilterOnMetadata to disable session filtering, using the first log entry's session value as reference.
-        /// </summary>
-        private void BtnResetMetadataFilter_Click(object sender, EventArgs e)
-        {
-            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
-
-            if (LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0) return;
-
-            foreach (LogMetadataProperty logMetadataProperty in LogMetadataPropertiesUserSession)
-            {
-                if (LogMetadataFilterResult.LogEntries[0].Metadata.TryGetValue(logMetadataProperty, out LogMetadataValue value))
-                {
-                    FilterOnMetadata?.Invoke(logMetadataProperty, value, false);
-                }
-            }
         }
         private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
         {
@@ -835,21 +735,6 @@ namespace LogScraper
             BtnSelectTop.Enabled = LstLogContent.SelectedIndex != -1;
             BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1;
             BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
-        }
-
-        private void UpdateFilterOnMetadataControls()
-        {
-            // In case there is no session filtering or no log entries, disable the filter button
-            if (LogMetadataPropertiesUserSession.Count == 0 || LogMetadataFilterResult?.LogEntries == null || LogMetadataFilterResult.LogEntries.Count == 0)
-            {
-                BtnFilterOnSameMetadata.Enabled = false;
-                BtnFilterOnSameMetadata.Visible = true;
-                BtnResetMetadataFilter.Visible = false;
-                return;
-            }
-            BtnFilterOnSameMetadata.Enabled = SelectedContentValue != null && !LogEntriesAreSingleSession;
-            BtnFilterOnSameMetadata.Visible = !LogEntriesAreSingleSession || !IsSessionMetadataFilteringActive;
-            BtnResetMetadataFilter.Visible = !BtnFilterOnSameMetadata.Visible;
         }
 
         public void ResetFilters()

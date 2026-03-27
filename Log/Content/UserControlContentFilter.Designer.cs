@@ -36,8 +36,6 @@ namespace LogScraper
             CboLogContentType = new System.Windows.Forms.ComboBox();
             BtnReset = new System.Windows.Forms.Button();
             txtSearch = new System.Windows.Forms.TextBox();
-            BtnFilterOnSameMetadata = new System.Windows.Forms.Button();
-            BtnResetMetadataFilter = new System.Windows.Forms.Button();
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             ChkShowNoTree = new System.Windows.Forms.CheckBox();
             BtnSelectTop = new System.Windows.Forms.Button();
@@ -56,7 +54,7 @@ namespace LogScraper
             LstLogContent.IntegralHeight = false;
             LstLogContent.Location = new System.Drawing.Point(0, 80);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(243, 159);
+            LstLogContent.Size = new System.Drawing.Size(243, 192);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -96,36 +94,6 @@ namespace LogScraper
             txtSearch.Enter += TxtSearch_Enter;
             txtSearch.KeyDown += TxtSearch_KeyDown;
             txtSearch.Leave += TxtSearch_Leave;
-            // 
-            // BtnFilterOnSameMetadata
-            // 
-            BtnFilterOnSameMetadata.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            BtnFilterOnSameMetadata.Enabled = false;
-            BtnFilterOnSameMetadata.Image = (System.Drawing.Image)resources.GetObject("BtnFilterOnSameMetadata.Image");
-            BtnFilterOnSameMetadata.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnFilterOnSameMetadata.Location = new System.Drawing.Point(3, 243);
-            BtnFilterOnSameMetadata.Name = "BtnFilterOnSameMetadata";
-            BtnFilterOnSameMetadata.Size = new System.Drawing.Size(237, 25);
-            BtnFilterOnSameMetadata.TabIndex = 8;
-            BtnFilterOnSameMetadata.Text = "Filter dezelfde sessie";
-            BtnFilterOnSameMetadata.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            BtnFilterOnSameMetadata.UseVisualStyleBackColor = true;
-            BtnFilterOnSameMetadata.Click += BtnFilterOnSameMetadata_Click;
-            // 
-            // BtnResetMetadataFilter
-            // 
-            BtnResetMetadataFilter.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            BtnResetMetadataFilter.Image = (System.Drawing.Image)resources.GetObject("BtnResetMetadataFilter.Image");
-            BtnResetMetadataFilter.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnResetMetadataFilter.Location = new System.Drawing.Point(4, 243);
-            BtnResetMetadataFilter.Name = "BtnResetMetadataFilter";
-            BtnResetMetadataFilter.Size = new System.Drawing.Size(237, 25);
-            BtnResetMetadataFilter.TabIndex = 9;
-            BtnResetMetadataFilter.Text = "Reset de filter op sessie";
-            BtnResetMetadataFilter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            BtnResetMetadataFilter.UseVisualStyleBackColor = true;
-            BtnResetMetadataFilter.Visible = false;
-            BtnResetMetadataFilter.Click += BtnResetMetadataFilter_Click;
             // 
             // ChkShowFlowTree
             // 
@@ -179,7 +147,6 @@ namespace LogScraper
             // 
             // PnlUsedForCorrectScaling
             // 
-            PnlUsedForCorrectScaling.Controls.Add(BtnResetMetadataFilter);
             PnlUsedForCorrectScaling.Controls.Add(BtnSelectEnd);
             PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
             PnlUsedForCorrectScaling.Controls.Add(BtnSelectTop);
@@ -188,7 +155,6 @@ namespace LogScraper
             PnlUsedForCorrectScaling.Controls.Add(BtnReset);
             PnlUsedForCorrectScaling.Controls.Add(ChkShowFlowTree);
             PnlUsedForCorrectScaling.Controls.Add(txtSearch);
-            PnlUsedForCorrectScaling.Controls.Add(BtnFilterOnSameMetadata);
             PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
             PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
@@ -215,8 +181,6 @@ namespace LogScraper
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Button BtnReset;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.Button BtnFilterOnSameMetadata;
-        private System.Windows.Forms.Button BtnResetMetadataFilter;
         private System.Windows.Forms.CheckBox ChkShowFlowTree;
         private System.Windows.Forms.CheckBox ChkShowNoTree;
         private System.Windows.Forms.Button BtnSelectTop;

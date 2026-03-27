@@ -59,7 +59,6 @@ namespace LogScraper
 
             UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdate;
-            UserControlContentFilter.FilterOnMetadata += UsrLogContentBegin_FilterOnMetadata;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
@@ -109,16 +108,6 @@ namespace LogScraper
         {
             if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.Text)) return;
             LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.Text);
-        }
-
-        /// <summary>
-        /// Handles filter-on-metadata requests from the content filter control.
-        /// Bridges the selected log entry's metadata values into the metadata filter panel.
-        /// </summary>
-        private void UsrLogContentBegin_FilterOnMetadata(LogMetadataProperty property, LogMetadataValue value, bool isEnabled)
-        {
-            UsrMetadataFilterOverview.EnableFilterOnSpecificMetadataValue(property, value, isEnabled);
-            UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
         }
 
         private void FormLogScraper_Load(object sender, EventArgs e)

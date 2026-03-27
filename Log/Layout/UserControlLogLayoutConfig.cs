@@ -210,7 +210,6 @@ namespace LogScraper.Log
             TxtMetadataDescription.Enabled = LstMetadata.Items.Count > 0;
             TxtMetadataBeforePhrase.Enabled = LstMetadata.Items.Count > 0;
             TxtMetadataAfterPhrase.Enabled = LstMetadata.Items.Count > 0;
-            ChkMetadataIsSessionData.Enabled = LstMetadata.Items.Count > 0;
 
             BtnContentRemove.Enabled = LstContent.Items.Count > 0;
             BtnContentUp.Enabled = LstContent.SelectedIndex > 0;
@@ -355,7 +354,6 @@ namespace LogScraper.Log
                 TxtMetadataDescription.Text = selected.Description;
                 TxtMetadataBeforePhrase.Text = selected.Criteria.BeforePhrase;
                 TxtMetadataAfterPhrase.Text = selected.Criteria.AfterPhrase;
-                ChkMetadataIsSessionData.Checked = selected.IsSessionData;
                 ChkShowMetadataByDefault.Checked = selected.IsDefaultVisibleInLog;
             }
             UpdateButtons();
@@ -594,12 +592,6 @@ namespace LogScraper.Log
                     lines.Add(string.IsNullOrEmpty(after) ? before : $"{before}=>{after}");
             }
             return string.Join(Environment.NewLine, lines);
-        }
-
-        private void ChkMetadataIsSessionData_CheckedChanged(object sender, EventArgs e)
-        {
-            if (UpdatingInformation) return;
-            if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsSessionData = ChkMetadataIsSessionData.Checked;
         }
 
         private void ChkContentFilterMarksBegin_CheckedChanged(object sender, EventArgs e)
