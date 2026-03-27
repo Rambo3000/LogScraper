@@ -293,8 +293,8 @@
           "isBeginFlowTreeFilter": false,
           "isErrorProperty": true,
           "isCustomStyleEnabled": false,
-          "customTextColor": "",
-          "customBackColor": "",
+          "customTextColor": "Silver",
+          "customBackColor": "Silver",
           "isCustomBackColorFillLine": false,
           "isNavigationEnabled": true,
           "endFlowTreeContentPropertyDescription": ""

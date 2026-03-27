@@ -24,14 +24,21 @@ namespace LogScraper.Configuration
             string value = reader.GetString();
             if (string.IsNullOrWhiteSpace(value)) return Color.Empty;
 
+            // Try R, G, B format first: "0, 97, 0"
             string[] parts = value.Split(',');
-            if (parts.Length != 3) return Color.Empty;
+            if (parts.Length == 3 &&
+                int.TryParse(parts[0].Trim(), out int red) &&
+                int.TryParse(parts[1].Trim(), out int green) &&
+                int.TryParse(parts[2].Trim(), out int blue))
+            {
+                return Color.FromArgb(red, green, blue);
+            }
 
-            return Color.FromArgb(
-                int.Parse(parts[0].Trim()),
-                int.Parse(parts[1].Trim()),
-                int.Parse(parts[2].Trim())
-            );
+            // Fall back to named color for newtonsoft backwards compatibility: "Silver", "Red", etc.
+            Color namedColor = Color.FromName(value.Trim());
+            if (namedColor.IsKnownColor) return namedColor;
+
+            return Color.Empty;
         }
 
         /// <summary>
