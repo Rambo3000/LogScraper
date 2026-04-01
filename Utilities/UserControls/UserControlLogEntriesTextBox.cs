@@ -38,7 +38,11 @@ namespace LogScraper.Utilities.UserControls
             TxtLogEntries.UseDefaultFont(this);
             TxtLogEntries.HideUnusedMargins();
             UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
-            ChkTimelineVisible.Checked = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+        }
+
+        private void UserControlLogEntriesTextBox_Load(object sender, EventArgs e)
+        {
+            if (!DesignMode) ChkTimelineVisible.Checked = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
         private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, EventArgs e)
@@ -90,7 +94,7 @@ namespace LogScraper.Utilities.UserControls
             if (TxtLogEntries.SelectionStart > 0)
             {
                 if (LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.CurrentLine, logEntriesRenderMapCache, out LogEntryRenderPosition logEntryRenderPosition))
-                { 
+                {
                     logEntryAtCarot = logEntryRenderPosition.LogEntry;
                 }
             }

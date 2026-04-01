@@ -147,6 +147,7 @@
             Controls.Add(TxtLogEntries);
             Name = "UserControlLogEntriesTextBox";
             Size = new System.Drawing.Size(712, 403);
+            Load += UserControlLogEntriesTextBox_Load;
             PnlViewMode.ResumeLayout(false);
             ResumeLayout(false);
         }

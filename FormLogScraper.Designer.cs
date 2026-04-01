@@ -39,8 +39,8 @@
             BtnClearFilters = new System.Windows.Forms.Button();
             BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
-            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
             ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
             imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnConfig = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
@@ -58,6 +58,7 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
+            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox5 = new System.Windows.Forms.GroupBox();
             UserControlSearch = new UserControlSearch();
@@ -75,7 +76,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
+            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -84,6 +85,7 @@
             splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer4).BeginInit();
             splitContainer4.Panel1.SuspendLayout();
+            splitContainer4.Panel2.SuspendLayout();
             splitContainer4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
             splitContainer3.Panel1.SuspendLayout();
@@ -203,13 +205,11 @@
             BtnErase.TabIndex = 10;
             BtnErase.ButtonClick += BtnErase_Click;
             // 
-            // ToolStripMenuItemReset
+            // ContextMenuReset
             // 
-            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
-            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
-            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
-            ToolStripMenuItemReset.Text = "Reset log en filters";
-            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
+            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
+            ContextMenuReset.Name = "ContextMenuReset";
+            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
             // 
             // ToolStripMenuItemClear
             // 
@@ -218,6 +218,14 @@
             ToolStripMenuItemClear.Size = new System.Drawing.Size(210, 22);
             ToolStripMenuItemClear.Text = "Wis log (filters behouden)";
             ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
+            // 
+            // ToolStripMenuItemReset
+            // 
+            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
+            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
+            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
+            ToolStripMenuItemReset.Text = "Reset log en filters";
+            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
             // 
             // imageListBtnErase
             // 
@@ -393,6 +401,10 @@
             // 
             splitContainer4.Panel1.Controls.Add(TxtErrorMessage);
             splitContainer4.Panel1.Controls.Add(UserControlLogEntriesTextBox);
+            // 
+            // splitContainer4.Panel2
+            // 
+            splitContainer4.Panel2.Controls.Add(LogTimeLineControl);
             splitContainer4.Size = new System.Drawing.Size(685, 447);
             splitContainer4.SplitterDistance = 394;
             splitContainer4.TabIndex = 5;
@@ -608,27 +620,15 @@
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
-            // ContextMenuReset
+            // LogTimeLineControl
             // 
-            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
-            ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
-            // 
-            // ToolStripMenuItemReset
-            // 
-            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
-            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
-            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
-            ToolStripMenuItemReset.Text = "Reset log en filters";
-            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
-            // 
-            // ToolStripMenuItemClear
-            // 
-            ToolStripMenuItemClear.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemClear.Image");
-            ToolStripMenuItemClear.Name = "ToolStripMenuItemClear";
-            ToolStripMenuItemClear.Size = new System.Drawing.Size(210, 22);
-            ToolStripMenuItemClear.Text = "Wis log (filters behouden)";
-            ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
+            LogTimeLineControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            LogTimeLineControl.BackColor = System.Drawing.Color.White;
+            LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
+            LogTimeLineControl.Name = "LogTimeLineControl";
+            LogTimeLineControl.Size = new System.Drawing.Size(685, 49);
+            LogTimeLineControl.TabIndex = 0;
             // 
             // FormLogScraper
             // 
@@ -653,6 +653,7 @@
             splitContainer2.ResumeLayout(false);
             splitContainer4.Panel1.ResumeLayout(false);
             splitContainer4.Panel1.PerformLayout();
+            splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer4).EndInit();
             splitContainer4.ResumeLayout(false);
             splitContainer3.Panel1.ResumeLayout(false);
@@ -726,5 +727,6 @@
         private System.Windows.Forms.ImageList imageListBtnErase;
         private System.Windows.Forms.Button BtnClearFilters;
         private System.Windows.Forms.SplitContainer splitContainer4;
+        private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
     }
 }
