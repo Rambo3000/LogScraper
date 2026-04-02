@@ -592,5 +592,47 @@ namespace LogScraper
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            if (currentLogMetadataFilterResult == null || currentLogMetadataFilterResult.LogEntries == null || currentLogMetadataFilterResult.LogEntries.Count == 0) return;
+            LogRenderSettings logRenderSettings = new()
+            {
+                LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
+                LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
+                LogLayout = (LogLayout)cboLogLayout.SelectedItem,
+                ShowOriginalMetadata = true
+            };
+
+            List<LogEntry> logEntriesToRender = LogRenderer.GetLogEntriesListToRender(currentLogMetadataFilterResult.LogEntries, logRenderSettings);
+            string renderedLog = LogRenderer.RenderLogEntriesAsString(logEntriesToRender, logRenderSettings, null, null, null);
+
+            if (renderedLog != null)
+            {
+                using SaveFileDialog saveFileDialog = new()
+                {
+                    Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = "log",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    FileName = $"Log from {logEntriesToRender[0].TimeStamp:yyyyMMdd_HHmmss} to {logEntriesToRender[^1].TimeStamp:yyyyMMdd_HHmmss}.log",
+                    AddExtension = true
+                };
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        System.IO.File.WriteAllText(saveFileDialog.FileName, renderedLog);
+                        MessageBox.Show("Log succesvol opgeslagen.", "Opslaan gelukt", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Fout bij opslaan van log: " + ex.Message, "Opslaan mislukt", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ex.LogStackTraceToFile("Fout bij opslaan van log.");
+                    }
+                }
+
+            }
+        }
     }
 }

@@ -36,6 +36,7 @@
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
+            BtnSave = new System.Windows.Forms.Button();
             BtnClearFilters = new System.Windows.Forms.Button();
             BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
@@ -59,6 +60,7 @@
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
+            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox5 = new System.Windows.Forms.GroupBox();
             UserControlSearch = new UserControlSearch();
@@ -76,7 +78,6 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -155,6 +156,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(BtnSave);
             groupBox3.Controls.Add(BtnClearFilters);
             groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(BtnConfig);
@@ -172,16 +174,28 @@
             groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(308, 147);
+            groupBox3.Size = new System.Drawing.Size(351, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
             // 
+            // BtnSave
+            // 
+            BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
+            BtnSave.Location = new System.Drawing.Point(120, 22);
+            BtnSave.Name = "BtnSave";
+            BtnSave.Size = new System.Drawing.Size(40, 40);
+            BtnSave.TabIndex = 26;
+            BtnSave.TabStop = false;
+            ToolTip.SetToolTip(BtnSave, "Opslaan als...");
+            BtnSave.UseVisualStyleBackColor = true;
+            BtnSave.Click += BtnSave_Click;
+            // 
             // BtnClearFilters
             // 
             BtnClearFilters.Image = (System.Drawing.Image)resources.GetObject("BtnClearFilters.Image");
-            BtnClearFilters.Location = new System.Drawing.Point(212, 22);
+            BtnClearFilters.Location = new System.Drawing.Point(260, 22);
             BtnClearFilters.Name = "BtnClearFilters";
             BtnClearFilters.Size = new System.Drawing.Size(40, 40);
             BtnClearFilters.TabIndex = 25;
@@ -199,7 +213,7 @@
             BtnErase.Icon = (System.Drawing.Image)resources.GetObject("BtnErase.Icon");
             BtnErase.ImageIndex = 0;
             BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(257, 22);
+            BtnErase.Location = new System.Drawing.Point(299, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(45, 40);
             BtnErase.TabIndex = 10;
@@ -239,7 +253,7 @@
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(277, 117);
+            BtnConfig.Location = new System.Drawing.Point(320, 117);
             BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
@@ -252,7 +266,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(166, 22);
+            btnOpenWithEditor.Location = new System.Drawing.Point(212, 22);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
             btnOpenWithEditor.TabIndex = 11;
@@ -264,7 +278,7 @@
             // BtnFormRecord
             // 
             BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
-            BtnFormRecord.Location = new System.Drawing.Point(120, 22);
+            BtnFormRecord.Location = new System.Drawing.Point(166, 22);
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
@@ -319,7 +333,7 @@
             // 
             userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(239, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(282, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
             userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
             userControlMemoryUsage1.TabIndex = 24;
@@ -430,6 +444,16 @@
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
             UserControlLogEntriesTextBox.Size = new System.Drawing.Size(685, 394);
             UserControlLogEntriesTextBox.TabIndex = 38;
+            // 
+            // LogTimeLineControl
+            // 
+            LogTimeLineControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            LogTimeLineControl.BackColor = System.Drawing.Color.White;
+            LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
+            LogTimeLineControl.Name = "LogTimeLineControl";
+            LogTimeLineControl.Size = new System.Drawing.Size(685, 49);
+            LogTimeLineControl.TabIndex = 0;
             // 
             // splitContainer3
             // 
@@ -576,7 +600,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(517, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(560, 5);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -598,7 +622,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(319, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(362, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
@@ -619,16 +643,6 @@
             ToolTip.AutoPopDelay = 9999999;
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
-            // 
-            // LogTimeLineControl
-            // 
-            LogTimeLineControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            LogTimeLineControl.BackColor = System.Drawing.Color.White;
-            LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
-            LogTimeLineControl.Name = "LogTimeLineControl";
-            LogTimeLineControl.Size = new System.Drawing.Size(685, 49);
-            LogTimeLineControl.TabIndex = 0;
             // 
             // FormLogScraper
             // 
@@ -728,5 +742,6 @@
         private System.Windows.Forms.Button BtnClearFilters;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
+        public System.Windows.Forms.Button BtnSave;
     }
 }
