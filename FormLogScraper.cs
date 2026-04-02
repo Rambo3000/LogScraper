@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -467,8 +469,17 @@ namespace LogScraper
                 {
                     try
                     {
-                        System.IO.File.WriteAllText(saveFileDialog.FileName, renderedLog);
-                        MessageBox.Show("Log succesvol opgeslagen.", "Opslaan gelukt", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        File.WriteAllText(saveFileDialog.FileName, renderedLog);
+
+                        ProcessStartInfo processStartInfo = new()
+                        {
+                            FileName = "explorer.exe",
+                            Arguments = $"/select,\"{saveFileDialog.FileName}\"",
+                            UseShellExecute = true
+                        };
+
+                        Process.Start(processStartInfo);
+
                     }
                     catch (Exception ex)
                     {
