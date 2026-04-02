@@ -52,6 +52,26 @@ namespace LogScraper.Utilities.UserControls
         #endregion
 
         #region Selected log entry
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public LogEntry SelectedLogEntry
+        {             
+            get 
+            {
+                return selectedLogEntry;
+            }
+            set
+            {
+                if (selectedLogEntry != value)
+                {
+                    if (value == null) return;
+
+                    if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, value, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
+                    {
+                        TxtLogEntries.ScrollToLine(selectedIndex);
+                    }
+                }
+            }
+        }
         private LogContentProperty SelectedLogContentProperty
         {
             get
@@ -243,17 +263,6 @@ namespace LogScraper.Utilities.UserControls
                 TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, contentLinesToStyle);
             }
         }
-
-        public void SelectLogEntry(LogEntry entry)
-        {
-            selectedLogEntry = entry;
-            if (selectedLogEntry == null) return;
-
-            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, selectedLogEntry, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
-            {
-                TxtLogEntries.ScrollToLine(selectedIndex);
-            }
-        }
         #endregion
 
         #region Search
@@ -390,6 +399,7 @@ namespace LogScraper.Utilities.UserControls
             {
                 logEntryAtCursor = null;
                 lastKnownLine = null;
+                selectedLogEntry = logEntryAtCursor;
                 LogEntryAtCursorChanged?.Invoke(this, logEntryAtCursor);
                 return;
             }
@@ -402,6 +412,7 @@ namespace LogScraper.Utilities.UserControls
                     if (logEntryAtCursorNew != logEntryAtCursor)
                     {
                         logEntryAtCursor = logEntryAtCursorNew;
+                        selectedLogEntry = logEntryAtCursor;
                         LogEntryAtCursorChanged?.Invoke(this, logEntryAtCursor);
                     }
                 }

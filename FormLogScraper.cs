@@ -93,7 +93,7 @@ namespace LogScraper
         {
             UserControlContentFilter.ClearSelectedLogEntry();
             UserControlSearch.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectLogEntry(e);
+            UserControlLogEntriesTextBox.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
@@ -309,13 +309,13 @@ namespace LogScraper
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
             UserControlSearch.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectLogEntry(UserControlContentFilter.SelectedLogEntry);
+            UserControlLogEntriesTextBox.SelectedLogEntry = UserControlContentFilter.SelectedLogEntry;
         }
 
         private void UserControlSearch_SelectedItemChanged(object sender, EventArgs e)
         {
             UserControlContentFilter.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectLogEntry(UserControlSearch.SelectedLogEntry);
+            UserControlLogEntriesTextBox.SelectedLogEntry = UserControlSearch.SelectedLogEntry;
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
