@@ -51,8 +51,8 @@ namespace LogScraper
 
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
 
-            UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdate;
-            UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdate;
+            //UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdate;
+            //UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
@@ -65,6 +65,8 @@ namespace LogScraper
 
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
+
+            LogViewport.RangeChanged += HandleLogContentFilterUpdate;
 
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
@@ -90,6 +92,7 @@ namespace LogScraper
         {
             UsrMetadataFilterOverview.SelectedLogEntry = e;
             BookMarksControl.SelectedLogEntry = e;
+            LogViewport.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
@@ -253,14 +256,9 @@ namespace LogScraper
 
         private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
         {
-            LogRange logRange = new()
-            {
-                Begin = UserControlContentFilter.SelectedBeginLogEntry,
-                End = UserControlContentFilter.SelectedEndLogEntry
-            };
             LogRenderSettings logRenderSettings = new()
             {
-                LogRange = logRange,
+                LogRange = LogViewport.Range,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties

@@ -54,7 +54,7 @@
             imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
             imageList1.Images.SetKeyName(0, "bookmark-outline 16x16.png");
-            imageList1.Images.SetKeyName(1, "bookmark-off-outline 16x16.png");
+            imageList1.Images.SetKeyName(1, "bookmark-outline-blue-16x16.png");
             // 
             // BtnReset
             // 
