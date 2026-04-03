@@ -40,6 +40,13 @@ namespace LogScraper.Utilities.UserControls
 
         public void Clear()
         {
+            UpdateCheckboxes = true;
+
+            ChkBegin.Checked = false;
+            ChkEnd.Checked = false;
+
+            UpdateCheckboxes = false;
+
             range = new LogRange();
             UpdateButtons();
             RangeChanged?.Invoke(this, EventArgs.Empty);
@@ -47,28 +54,52 @@ namespace LogScraper.Utilities.UserControls
 
         public void UpdateButtons()
         {
-            BtnBegin.Enabled = SelectedLogEntry != null;
-            BtnEnd.Enabled = SelectedLogEntry != null;
+            ChkBegin.Enabled = SelectedLogEntry != null;
+            ChkEnd.Enabled = SelectedLogEntry != null;
             BtnReset.Enabled = range.IsConstrained;
         }
-
-        private void BtnBegin_Click(object sender, EventArgs e)
+        private void BtnReset_Click(object sender, EventArgs e)
         {
+            Clear();
+        }
+
+        private bool UpdateCheckboxes = false;
+        private void ChkBegin_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdateCheckboxes) return;
+
+            if (SelectedLogEntry == null) return;
+
+            UpdateCheckboxes = true;
+
+            //Make sure the checkbox remains checked, we only uncheck it when the range is cleared,
+            //and we want to prevent the user from unchecking it manually while setting the end log entry.
+            ChkBegin.Checked = true;
+
+            UpdateCheckboxes = false;
+
             range.Begin = SelectedLogEntry;
             UpdateButtons();
             RangeChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void BtnEnd_Click(object sender, EventArgs e)
+        private void ChkEnd_CheckedChanged(object sender, EventArgs e)
         {
+            if (UpdateCheckboxes) return;
+
+            if (SelectedLogEntry == null) return;
+
+            UpdateCheckboxes = true;
+
+            //Make sure the checkbox remains checked, we only uncheck it when the range is cleared,
+            //and we want to prevent the user from unchecking it manually while setting the end log entry.
+            ChkEnd.Checked = true;
+
+            UpdateCheckboxes = false;
+
             range.End = SelectedLogEntry;
             UpdateButtons();
             RangeChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void BtnReset_Click(object sender, EventArgs e)
-        {
-            Clear();
         }
     }
 }

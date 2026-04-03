@@ -31,57 +31,59 @@ namespace LogScraper.Utilities.UserControls
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogViewportControl));
-            BtnBegin = new Button();
-            BtnEnd = new Button();
             BtnReset = new Button();
+            ChkBegin = new CheckBox();
+            ChkEnd = new CheckBox();
             SuspendLayout();
-            // 
-            // BtnBegin
-            // 
-            BtnBegin.Image = (System.Drawing.Image)resources.GetObject("BtnBegin.Image");
-            BtnBegin.Location = new System.Drawing.Point(-1, -1);
-            BtnBegin.Name = "BtnBegin";
-            BtnBegin.Size = new System.Drawing.Size(25, 25);
-            BtnBegin.TabIndex = 1;
-            BtnBegin.UseVisualStyleBackColor = true;
-            BtnBegin.Click += BtnBegin_Click;
-            // 
-            // BtnEnd
-            // 
-            BtnEnd.Image = (System.Drawing.Image)resources.GetObject("BtnEnd.Image");
-            BtnEnd.Location = new System.Drawing.Point(23, -1);
-            BtnEnd.Name = "BtnEnd";
-            BtnEnd.Size = new System.Drawing.Size(25, 25);
-            BtnEnd.TabIndex = 2;
-            BtnEnd.UseVisualStyleBackColor = true;
-            BtnEnd.Click += BtnEnd_Click;
             // 
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(47, -1);
+            BtnReset.Location = new System.Drawing.Point(49, 0);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 3;
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
+            // ChkBegin
+            // 
+            ChkBegin.Appearance = Appearance.Button;
+            ChkBegin.Image = (System.Drawing.Image)resources.GetObject("ChkBegin.Image");
+            ChkBegin.Location = new System.Drawing.Point(0, 0);
+            ChkBegin.Name = "ChkBegin";
+            ChkBegin.Size = new System.Drawing.Size(25, 25);
+            ChkBegin.TabIndex = 4;
+            ChkBegin.UseVisualStyleBackColor = true;
+            ChkBegin.CheckedChanged += ChkBegin_CheckedChanged;
+            // 
+            // ChkEnd
+            // 
+            ChkEnd.Appearance = Appearance.Button;
+            ChkEnd.Image = (System.Drawing.Image)resources.GetObject("ChkEnd.Image");
+            ChkEnd.Location = new System.Drawing.Point(25, 0);
+            ChkEnd.Name = "ChkEnd";
+            ChkEnd.Size = new System.Drawing.Size(25, 25);
+            ChkEnd.TabIndex = 5;
+            ChkEnd.UseVisualStyleBackColor = true;
+            ChkEnd.CheckedChanged += ChkEnd_CheckedChanged;
+            // 
             // LogViewportControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(ChkEnd);
+            Controls.Add(ChkBegin);
             Controls.Add(BtnReset);
-            Controls.Add(BtnEnd);
-            Controls.Add(BtnBegin);
             Name = "LogViewportControl";
-            Size = new System.Drawing.Size(76, 27);
+            Size = new System.Drawing.Size(74, 28);
             ResumeLayout(false);
         }
 
         #endregion
 
         private System.Windows.Forms.Button BtnReset;
-        private Button BtnBegin;
-        private Button BtnEnd;
+        private CheckBox ChkBegin;
+        private CheckBox ChkEnd;
     }
 }
