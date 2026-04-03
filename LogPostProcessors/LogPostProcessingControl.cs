@@ -6,13 +6,13 @@ using LogScraper.Log;
 
 namespace LogScraper.LogPostProcessors
 {
-    public partial class UserControlPostProcessing : UserControl
+    public partial class LogPostProcessingControl : UserControl
     {
         #region Initialization
         private bool JsonProcessingIsApplicable = false;
         private bool XmlProcessingIsApplicable = false;
 
-        public UserControlPostProcessing()
+        public LogPostProcessingControl()
         {
             InitializeComponent();
             UpdateControls();

@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.LogPostProcessors
 {
-    partial class UserControlPostProcessing
+    partial class LogPostProcessingControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlPostProcessing));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogPostProcessingControl));
             imageList1 = new System.Windows.Forms.ImageList(components);
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             BtnJson = new System.Windows.Forms.Button();

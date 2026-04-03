@@ -35,7 +35,7 @@
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             PnlViewMode = new System.Windows.Forms.Panel();
-            UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
+            UserControlPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlViewMode.SuspendLayout();
             SuspendLayout();
@@ -141,7 +141,7 @@
         private System.Windows.Forms.CheckBox ChkShowFlowTree;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Panel PnlViewMode;
-        private LogPostProcessors.UserControlPostProcessing UserControlPostProcessing;
+        private LogPostProcessors.LogPostProcessingControl UserControlPostProcessing;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }
