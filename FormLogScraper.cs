@@ -316,7 +316,7 @@ namespace LogScraper
 
         private void UpdateTimeLineVisibility()
         {
-            splitContainer4.Panel2Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+            splitContainer4.Panel1Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
         private void HandleErrorMessages(string message, bool isSucces)

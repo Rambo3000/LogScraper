@@ -58,12 +58,13 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
-            LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
+            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
+            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
+            LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
             panel1 = new System.Windows.Forms.Panel();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
-            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             groupBox5 = new System.Windows.Forms.GroupBox();
             UserControlSearch = new UserControlSearch();
@@ -81,7 +82,6 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -410,7 +410,7 @@
             // splitContainer4
             // 
             splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             splitContainer4.Location = new System.Drawing.Point(0, 0);
             splitContainer4.Margin = new System.Windows.Forms.Padding(0);
             splitContainer4.Name = "splitContainer4";
@@ -418,52 +418,69 @@
             // 
             // splitContainer4.Panel1
             // 
-            splitContainer4.Panel1.Controls.Add(LogPostProcessing);
-            splitContainer4.Panel1.Controls.Add(LogViewport);
-            splitContainer4.Panel1.Controls.Add(BookMarksControl);
-            splitContainer4.Panel1.Controls.Add(panel1);
+            splitContainer4.Panel1.Controls.Add(LogTimeLineControl);
             // 
             // splitContainer4.Panel2
             // 
-            splitContainer4.Panel2.Controls.Add(LogTimeLineControl);
+            splitContainer4.Panel2.Controls.Add(LogPostProcessing);
+            splitContainer4.Panel2.Controls.Add(BookMarksControl);
+            splitContainer4.Panel2.Controls.Add(LogViewport);
+            splitContainer4.Panel2.Controls.Add(panel1);
             splitContainer4.Size = new System.Drawing.Size(685, 447);
-            splitContainer4.SplitterDistance = 394;
+            splitContainer4.SplitterDistance = 48;
             splitContainer4.TabIndex = 5;
             // 
-            // LogViewport
+            // LogTimeLineControl
             // 
-            LogViewport.Location = new System.Drawing.Point(112, 0);
-            LogViewport.Name = "LogViewport";
-            LogViewport.Size = new System.Drawing.Size(76, 27);
-            LogViewport.TabIndex = 40;
+            LogTimeLineControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            LogTimeLineControl.BackColor = System.Drawing.Color.White;
+            LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
+            LogTimeLineControl.Name = "LogTimeLineControl";
+            LogTimeLineControl.Size = new System.Drawing.Size(685, 48);
+            LogTimeLineControl.TabIndex = 0;
+            // 
+            // LogPostProcessing
+            // 
+            LogPostProcessing.Location = new System.Drawing.Point(190, -1);
+            LogPostProcessing.Name = "LogPostProcessing";
+            LogPostProcessing.Size = new System.Drawing.Size(53, 28);
+            LogPostProcessing.TabIndex = 41;
             // 
             // BookMarksControl
             // 
-            BookMarksControl.Location = new System.Drawing.Point(5, 0);
+            BookMarksControl.Location = new System.Drawing.Point(1, -1);
             BookMarksControl.Name = "BookMarksControl";
             BookMarksControl.Size = new System.Drawing.Size(101, 25);
             BookMarksControl.TabIndex = 11;
+            // 
+            // LogViewport
+            // 
+            LogViewport.Location = new System.Drawing.Point(108, -1);
+            LogViewport.Name = "LogViewport";
+            LogViewport.Size = new System.Drawing.Size(76, 27);
+            LogViewport.TabIndex = 40;
             // 
             // panel1
             // 
             panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             panel1.Controls.Add(TxtErrorMessage);
             panel1.Controls.Add(UserControlLogEntriesTextBox);
-            panel1.Location = new System.Drawing.Point(1, 27);
+            panel1.Location = new System.Drawing.Point(2, 27);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(684, 367);
-            panel1.TabIndex = 39;
+            panel1.Size = new System.Drawing.Size(681, 366);
+            panel1.TabIndex = 42;
             // 
             // TxtErrorMessage
             // 
             TxtErrorMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtErrorMessage.BackColor = System.Drawing.SystemColors.Window;
             TxtErrorMessage.ForeColor = System.Drawing.Color.DarkRed;
-            TxtErrorMessage.Location = new System.Drawing.Point(95, 19);
+            TxtErrorMessage.Location = new System.Drawing.Point(102, 34);
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(497, 75);
+            TxtErrorMessage.Size = new System.Drawing.Size(499, 75);
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
@@ -473,18 +490,8 @@
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(684, 367);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(681, 366);
             UserControlLogEntriesTextBox.TabIndex = 38;
-            // 
-            // LogTimeLineControl
-            // 
-            LogTimeLineControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            LogTimeLineControl.BackColor = System.Drawing.Color.White;
-            LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
-            LogTimeLineControl.Name = "LogTimeLineControl";
-            LogTimeLineControl.Size = new System.Drawing.Size(685, 49);
-            LogTimeLineControl.TabIndex = 0;
             // 
             // splitContainer3
             // 
@@ -675,13 +682,6 @@
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
-            // LogPostProcessing
-            // 
-            LogPostProcessing.Location = new System.Drawing.Point(194, 0);
-            LogPostProcessing.Name = "LogPostProcessing";
-            LogPostProcessing.Size = new System.Drawing.Size(53, 28);
-            LogPostProcessing.TabIndex = 41;
-            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -783,8 +783,8 @@
         private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
         private Utilities.UserControls.BookMarksControl BookMarksControl;
-        private System.Windows.Forms.Panel panel1;
         private Utilities.UserControls.LogViewportControl LogViewport;
         private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
+        private System.Windows.Forms.Panel panel1;
     }
 }
