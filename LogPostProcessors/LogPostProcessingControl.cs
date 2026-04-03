@@ -20,6 +20,9 @@ namespace LogScraper.LogPostProcessors
         #endregion
 
         #region Public properties and methods
+
+        public event EventHandler PostProcessingResultsChanged;
+
         /// <summary>
         /// Gets the list of log post-processor kinds that are available and currently visible to the user.
         /// </summary>
@@ -105,9 +108,19 @@ namespace LogScraper.LogPostProcessors
 
         #endregion
 
-        public event EventHandler PostProcessingResultsChanged;
-
         #region Control event handlers and enabled state
+
+        private void BtnJson_Click(object sender, EventArgs e)
+        {
+            JsonProcessingIsApplicable = true;
+            StartPostProcessing();
+        }
+
+        private void BtnXml_Click(object sender, EventArgs e)
+        {
+            XmlProcessingIsApplicable = true;
+            StartPostProcessing();
+        }
 
         private void CancelPostProcessing()
         {
@@ -126,26 +139,6 @@ namespace LogScraper.LogPostProcessors
             BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
         }
 
-        private static bool AnyValueTrue(bool[] array)
-        {
-            foreach (var item in array)
-            {
-                if (item) return true;
-            }
-            return false;
-        }
         #endregion
-
-        private void BtnJson_Click(object sender, EventArgs e)
-        {
-            JsonProcessingIsApplicable = true;
-            StartPostProcessing();
-        }
-
-        private void BtnXml_Click(object sender, EventArgs e)
-        {
-            XmlProcessingIsApplicable = true;
-            StartPostProcessing();
-        }
     }
 }
