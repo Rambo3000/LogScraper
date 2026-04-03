@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LogScraper.Log.Content;
+using LogScraper.Log.Metadata;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.IndexDictionary;
 
@@ -29,15 +30,11 @@ namespace LogScraper.Log.Rendering
         /// <returns>A dictionary mapping each specified log content property to a list of visual line indices representing the
         /// lines that should be styled for that property. If no entries are visible or no properties require styling,
         /// the dictionary will be empty.</returns>
-        public static IndexDictionary<LogContentProperty, List<int>> GetVisualLineIndexesPerContentProperty(List<LogEntry> visibleLogEntries, List<LogContentProperty> contentPropertiesWithCustomColoring, List<LogPostProcessorKind> kinds, out int[] visualLineIndexPerVisibleEntry)
+        public static IndexDictionary<LogContentProperty, List<int>> GetVisualLineIndexesPerContentProperty(List<LogEntry> visibleLogEntries, List<LogContentProperty> contentPropertiesWithCustomColoring, LogEntriesRenderMap logEntriesRenderMap)
         {
-            visualLineIndexPerVisibleEntry = null;
-         
             if (visibleLogEntries == null || contentPropertiesWithCustomColoring == null || contentPropertiesWithCustomColoring.Count == 0) return null;
             
             IndexDictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring[^1].Index + 1);
-
-            visualLineIndexPerVisibleEntry = BuildCache(visibleLogEntries, kinds);
 
             foreach (LogContentProperty logContentProperty in contentPropertiesWithCustomColoring)
             {
@@ -52,7 +49,7 @@ namespace LogScraper.Log.Rendering
 
                     if (!logEntry.LogContentProperties.ContainsKey(logContentProperty)) continue;
 
-                    logEntriesIndexes.Add(visualLineIndexPerVisibleEntry[i]);
+                    logEntriesIndexes.Add(logEntriesRenderMap.VisualLineIndexPerEntry[i]);
                 }
             }
 
@@ -87,23 +84,30 @@ namespace LogScraper.Log.Rendering
         /// visible log entries.</remarks>
         /// <param name="visibleLogEntries">The list of log entries to be processed. The order of entries determines the mapping in the resulting cache.</param>
         /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
-        /// <returns>An array where each element at index i represents the visual line index of the log entry at index i in the input list.</returns>
-        private static int[] BuildCache(List<LogEntry> visibleLogEntries, List<LogPostProcessorKind> logPostProcessorKinds)
+        /// param name="logCollectionEntryCount">The total number of log entries in the entire collection, used to size the cache for direct index access.</param>
+        public static LogEntriesRenderMap BuildRenderMap(List<LogEntry> visibleLogEntries, List<LogPostProcessorKind> logPostProcessorKinds, int logCollectionEntryCount)
         {
             int count = visibleLogEntries.Count;
             int[] visualLineIndexes = new int[count];
+            int[] visualLineIndexPerEntryEntireCollection = new int[logCollectionEntryCount];
 
-            int currentVisualLineIndex = 0;
+            int nextVisualLineIndex = 0;
 
+            for (int i = 0; i < logCollectionEntryCount; i++)
+            {
+                visualLineIndexPerEntryEntireCollection[i] = -1;
+            }
             for (int i = 0; i < count; i++)
             {
-                visualLineIndexes[i] = currentVisualLineIndex;
-
                 LogEntry logEntry = visibleLogEntries[i];
-                currentVisualLineIndex += GetVisualLineSpan(logEntry, logPostProcessorKinds);
+
+                visualLineIndexes[i] = nextVisualLineIndex;
+                visualLineIndexPerEntryEntireCollection[logEntry.Index] = nextVisualLineIndex;
+
+                nextVisualLineIndex += GetVisualLineSpan(logEntry, logPostProcessorKinds);
             }
 
-            return visualLineIndexes;
+            return new(visibleLogEntries, visualLineIndexes, visualLineIndexPerEntryEntireCollection);
         }
 
         /// <summary>

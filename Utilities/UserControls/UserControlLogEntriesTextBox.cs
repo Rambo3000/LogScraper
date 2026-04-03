@@ -13,8 +13,6 @@ using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
-using LogScraper.Utilities.IndexDictionary;
-using Newtonsoft.Json.Linq;
 using ScintillaNET;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -28,7 +26,6 @@ namespace LogScraper.Utilities.UserControls
         private LogMetadataFilterResult LogMetadataFilterResult;
         private LogRenderSettings LogRenderSettings;
         private List<LogContentProperty> contentPropertiesWithCustomColoring;
-        private IndexDictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private LogEntry selectedLogEntry = null;
         private LogEntry logEntryAtCursor = null;
         private IEnumerable<LogEntry> bookmarks = null;
@@ -166,14 +163,11 @@ namespace LogScraper.Utilities.UserControls
             // Render all visible log entries into a single text representation
             Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
 
-            // Recalculate visual line start indexes per visible log entry
-            // This also returns an array mapping each visible log entry to the visual line index
-            contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds, out int[] visualLineIndexPerVisibleEntry);
+            // Build a render map that calculates the visual line index for each log entry based on the rendered text and active post-processors
+            LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(VisibleLogEntries, logPostProcessorKinds, LogMetadataFilterResult.SourceLogCollection.LogEntries.Count);
 
-            LogEntriesRenderMap postRenderLogEntriesRenderMap = new(VisibleLogEntries, visualLineIndexPerVisibleEntry, LogMetadataFilterResult.SourceLogCollection.LogEntries.Count);
-
-            // Apply custom per-line styling after visual indices are known
-            StyleLines();
+            // Apply syntax highlighting based on the content properties with custom coloring, using the visual line indexes from the render map
+            TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, postRenderLogEntriesRenderMap));
 
             if (preRenderTopLogEntryRenderPosition != null)
             {
@@ -240,23 +234,6 @@ namespace LogScraper.Utilities.UserControls
             remove
             {
                 TxtLogEntries.TextChanged -= value;
-            }
-        }
-        #endregion
-
-        #region Highlighting
-
-        /// <summary>
-        /// Applies custom styling to the currently visible log entries in the log display
-        /// control.
-        /// </summary>
-        /// <remarks>This method updates the visual appearance of log lines based on their content and any
-        /// custom coloring rules. It has no effect if there are no visible log entries.</remarks>
-        private void StyleLines()
-        {
-            if (VisibleLogEntries != null && VisibleLogEntries.Count > 0)
-            {
-                TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, contentLinesToStyle);
             }
         }
         #endregion
