@@ -20,6 +20,7 @@ namespace LogScraper.Utilities.UserControls
         private List<LogEntry> allLogEntries = [];
         private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
         private List<LogEntry> errorLogEntries = [];
+        private List<LogEntry> bookmarkLogEntries = [];
 
         // Bucketing and scaling
         private TimeSpan currentBucketSize;
@@ -30,6 +31,7 @@ namespace LogScraper.Utilities.UserControls
         // Hover tracking
         private int hoveredBucketIndex = -1;
         private int hoveredErrorIndex = -1;
+        private int hoveredBookmarkIndex = -1;
 
         // Visible range tracking (timestamp-based to match timeline bars)
         private DateTime? visibleRangeStart = null;
@@ -49,6 +51,8 @@ namespace LogScraper.Utilities.UserControls
         private static readonly Color VISIBLE_RANGE_BORDER_COLOR = Color.FromArgb(150, 100, 160, 210);
         private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
+        private static readonly Color BOOKMARK_MARKER_COLOR = Color.SteelBlue;
+        private static readonly Color BOOKMARK_MARKER_HOVER_COLOR = Color.FromArgb(255, 120, 180, 230);
 
         #endregion
 
@@ -63,6 +67,11 @@ namespace LogScraper.Utilities.UserControls
         /// Raised when an error marker is clicked.
         /// </summary>
         public event EventHandler<LogEntry> ErrorMarkerClicked;
+
+        /// <summary>
+        /// Raised when a bookmark marker is clicked.
+        /// </summary>
+        public event EventHandler<LogEntry> BookmarkMarkerClicked;
 
         #endregion
 
@@ -136,6 +145,15 @@ namespace LogScraper.Utilities.UserControls
             // Update error entries list
             errorLogEntries = [.. allLogEntries.Where(entry => entry.IsErrorLogEntry)];
 
+            this.Invalidate();
+        }
+
+        /// <summary>
+        /// Updates the bookmark entries displayed in the timeline.
+        /// </summary>
+        public void SetBookmarks(List<LogEntry> bookmarks)
+        {
+            bookmarkLogEntries = bookmarks ?? [];
             this.Invalidate();
         }
 
@@ -350,9 +368,8 @@ namespace LogScraper.Utilities.UserControls
             }
 
             DrawTimeTickMarks(graphics);
-
-            // Draw error markers at the top of bars
             DrawErrorMarkers(graphics, drawableHeight);
+            DrawBookmarkMarkers(graphics, drawableHeight);
 
             // Draw visible range indicator
             if (visibleRangeStart.HasValue && visibleRangeEnd.HasValue)
@@ -387,7 +404,6 @@ namespace LogScraper.Utilities.UserControls
             {
                 LogEntry errorEntry = errorLogEntries[i];
 
-                // Find which bucket this error belongs to
                 int bucketIndex = FindBucketIndexContainingTimestamp(errorEntry.TimeStamp, sortedBucketKeys);
 
                 if (bucketIndex < 0)
@@ -395,7 +411,6 @@ namespace LogScraper.Utilities.UserControls
 
                 DateTime bucketKey = sortedBucketKeys[bucketIndex];
 
-                // Calculate exact x position within the bucket
                 float bucketStartX = bucketIndex * totalBarWidth;
                 double fractionWithinBucket = (errorEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
                 float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
@@ -404,6 +419,43 @@ namespace LogScraper.Utilities.UserControls
 
                 float markerX = exactX - (ERROR_MARKER_SIZE / 2);
                 float markerY = drawableHeight - (ERROR_MARKER_SIZE + 2);
+
+                using SolidBrush brush = new(markerColor);
+                graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
+            }
+        }
+
+        /// <summary>
+        /// Draws bookmark markers one band above error markers at their exact timestamp positions.
+        /// </summary>
+        private void DrawBookmarkMarkers(Graphics graphics, int drawableHeight)
+        {
+            if (buckets.Count == 0)
+                return;
+
+            List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
+            int bucketCount = sortedBucketKeys.Count;
+            float totalBarWidth = (float)this.Width / bucketCount;
+
+            for (int i = 0; i < bookmarkLogEntries.Count; i++)
+            {
+                LogEntry bookmarkEntry = bookmarkLogEntries[i];
+
+                int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
+
+                if (bucketIndex < 0)
+                    continue;
+
+                DateTime bucketKey = sortedBucketKeys[bucketIndex];
+
+                float bucketStartX = bucketIndex * totalBarWidth;
+                double fractionWithinBucket = (bookmarkEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
+                float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
+
+                Color markerColor = (i == hoveredBookmarkIndex) ? BOOKMARK_MARKER_HOVER_COLOR : BOOKMARK_MARKER_COLOR;
+
+                float markerX = exactX - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4); // One band above error markers
 
                 using SolidBrush brush = new(markerColor);
                 graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
@@ -424,7 +476,6 @@ namespace LogScraper.Utilities.UserControls
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
 
-            // Find which buckets contain the visible range timestamps
             int startBucketIndex = FindBucketIndexContainingTimestamp(visibleRangeStart.Value, sortedBucketKeys);
             int endBucketIndex = FindBucketIndexContainingTimestamp(visibleRangeEnd.Value, sortedBucketKeys);
 
@@ -441,7 +492,6 @@ namespace LogScraper.Utilities.UserControls
             }
             else
             {
-                // Calculate position within the bucket
                 DateTime startBucket = sortedBucketKeys[startBucketIndex];
                 float startBucketX = startBucketIndex * totalBarWidth;
                 double startFraction = (visibleRangeStart.Value - startBucket).TotalSeconds / currentBucketSize.TotalSeconds;
@@ -455,7 +505,6 @@ namespace LogScraper.Utilities.UserControls
             }
             else
             {
-                // Calculate position within the bucket
                 DateTime endBucket = sortedBucketKeys[endBucketIndex];
                 float endBucketX = endBucketIndex * totalBarWidth;
                 double endFraction = (visibleRangeEnd.Value - endBucket).TotalSeconds / currentBucketSize.TotalSeconds;
@@ -475,13 +524,11 @@ namespace LogScraper.Utilities.UserControls
 
             if (width <= 0) return;
 
-            // Draw semi-transparent fill
             using (SolidBrush fillBrush = new(VISIBLE_RANGE_COLOR))
             {
                 graphics.FillRectangle(fillBrush, startX, 0, width, drawableHeight);
             }
 
-            // Draw thicker border lines on left and right edges
             using Pen borderPen = new(VISIBLE_RANGE_BORDER_COLOR, 2);
             graphics.DrawLine(borderPen, startX, 0, startX, drawableHeight);
             graphics.DrawLine(borderPen, endX, 0, endX, drawableHeight);
@@ -497,12 +544,10 @@ namespace LogScraper.Utilities.UserControls
                 DateTime bucketStart = sortedBucketKeys[i];
                 DateTime bucketEnd = bucketStart.Add(currentBucketSize);
 
-                // Check if timestamp falls within this bucket
                 if (timestamp >= bucketStart && timestamp < bucketEnd)
                     return i;
             }
 
-            // If not found in any bucket, find the closest one
             if (timestamp < sortedBucketKeys[0])
                 return 0;
             if (timestamp >= sortedBucketKeys[^1].Add(currentBucketSize))
@@ -510,6 +555,7 @@ namespace LogScraper.Utilities.UserControls
 
             return -1;
         }
+
         /// <summary>
         /// Draws time tick marks along the x-axis of the timeline, with labels formatted based on the total time span of the data.
         /// </summary>
@@ -541,6 +587,7 @@ namespace LogScraper.Utilities.UserControls
                 graphics.DrawString(label, font, brush, labelX, 0);
             }
         }
+
         /// <summary>
         /// Formats tick labels based on the total time span of the data, using more granular formats for shorter spans and more general formats for longer spans.
         /// </summary>
@@ -589,9 +636,8 @@ namespace LogScraper.Utilities.UserControls
             float tooltipHeight = textSize.Height;
 
             float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
-            float tooltipY = 2; // Position below error markers
+            float tooltipY = 2;
 
-            // Keep tooltip within bounds
             if (tooltipX < 5)
                 tooltipX = 5;
             if (tooltipX + tooltipWidth > this.Width - 5)
@@ -623,9 +669,8 @@ namespace LogScraper.Utilities.UserControls
 
             float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
             float tooltipX = xPosition - (tooltipWidth / 2);
-            float tooltipY = 20; // Position below error markers
+            float tooltipY = 20;
 
-            // Keep tooltip within bounds
             if (tooltipX < 5)
                 tooltipX = 5;
             if (tooltipX + tooltipWidth > this.Width - 5)
@@ -660,14 +705,15 @@ namespace LogScraper.Utilities.UserControls
 
             bool cursorChanged = false;
 
-            // Check for error marker hover
-            int newHoveredErrorIndex = GetErrorMarkerIndexAtPosition(e.X, e.Y);
+            // Check for bookmark marker hover first
+            int newHoveredBookmarkIndex = GetBookmarkMarkerIndexAtPosition(e.X, e.Y);
 
-            if (newHoveredErrorIndex != -1)
+            if (newHoveredBookmarkIndex != -1)
             {
-                if (newHoveredErrorIndex != hoveredErrorIndex)
+                if (newHoveredBookmarkIndex != hoveredBookmarkIndex)
                 {
-                    hoveredErrorIndex = newHoveredErrorIndex;
+                    hoveredBookmarkIndex = newHoveredBookmarkIndex;
+                    hoveredErrorIndex = -1;
                     hoveredBucketIndex = -1;
                     this.Invalidate();
                 }
@@ -679,39 +725,65 @@ namespace LogScraper.Utilities.UserControls
             }
             else
             {
-                if (hoveredErrorIndex != -1)
+                if (hoveredBookmarkIndex != -1)
                 {
-                    hoveredErrorIndex = -1;
+                    hoveredBookmarkIndex = -1;
                     this.Invalidate();
                 }
 
-                // Check for bucket hover
-                int drawableWidth = this.Width;
-                List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
-                int bucketCount = sortedBucketKeys.Count;
-                float barWidth = (float)drawableWidth / bucketCount;
+                // Check for error marker hover
+                int newHoveredErrorIndex = GetErrorMarkerIndexAtPosition(e.X, e.Y);
 
-                int newHoveredIndex = (int)(e.X / barWidth);
-
-                if (newHoveredIndex >= 0 && newHoveredIndex < bucketCount)
+                if (newHoveredErrorIndex != -1)
                 {
-                    DateTime bucketKey = sortedBucketKeys[newHoveredIndex];
-                    int entryCount = buckets[bucketKey].Count;
-
-                    bool hasEntries = entryCount > 0;
-
-                    if (newHoveredIndex != hoveredBucketIndex)
+                    if (newHoveredErrorIndex != hoveredErrorIndex)
                     {
-                        hoveredBucketIndex = newHoveredIndex;
+                        hoveredErrorIndex = newHoveredErrorIndex;
+                        hoveredBucketIndex = -1;
                         this.Invalidate();
                     }
 
-                    if (hasEntries && this.Cursor != Cursors.Hand)
+                    if (this.Cursor != Cursors.Hand)
                         this.Cursor = Cursors.Hand;
-                    else if (!hasEntries && this.Cursor != Cursors.Default)
-                        this.Cursor = Cursors.Default;
 
                     cursorChanged = true;
+                }
+                else
+                {
+                    if (hoveredErrorIndex != -1)
+                    {
+                        hoveredErrorIndex = -1;
+                        this.Invalidate();
+                    }
+
+                    // Check for bucket hover
+                    int drawableWidth = this.Width;
+                    List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
+                    int bucketCount = sortedBucketKeys.Count;
+                    float barWidth = (float)drawableWidth / bucketCount;
+
+                    int newHoveredIndex = (int)(e.X / barWidth);
+
+                    if (newHoveredIndex >= 0 && newHoveredIndex < bucketCount)
+                    {
+                        DateTime bucketKey = sortedBucketKeys[newHoveredIndex];
+                        int entryCount = buckets[bucketKey].Count;
+
+                        bool hasEntries = entryCount > 0;
+
+                        if (newHoveredIndex != hoveredBucketIndex)
+                        {
+                            hoveredBucketIndex = newHoveredIndex;
+                            this.Invalidate();
+                        }
+
+                        if (hasEntries && this.Cursor != Cursors.Hand)
+                            this.Cursor = Cursors.Hand;
+                        else if (!hasEntries && this.Cursor != Cursors.Default)
+                            this.Cursor = Cursors.Default;
+
+                        cursorChanged = true;
+                    }
                 }
             }
 
@@ -725,6 +797,48 @@ namespace LogScraper.Utilities.UserControls
                 if (this.Cursor != Cursors.Default)
                     this.Cursor = Cursors.Default;
             }
+        }
+
+        /// <summary>
+        /// Determines if the mouse is over a bookmark marker.
+        /// </summary>
+        /// <returns>Index of bookmark marker, or -1 if none</returns>
+        private int GetBookmarkMarkerIndexAtPosition(int mouseX, int mouseY)
+        {
+            if (buckets.Count == 0)
+                return -1;
+
+            List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
+            int bucketCount = sortedBucketKeys.Count;
+            float totalBarWidth = (float)this.Width / bucketCount;
+            int drawableHeight = this.Height;
+
+            for (int i = 0; i < bookmarkLogEntries.Count; i++)
+            {
+                LogEntry bookmarkEntry = bookmarkLogEntries[i];
+
+                int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
+
+                if (bucketIndex < 0)
+                    continue;
+
+                DateTime bucketKey = sortedBucketKeys[bucketIndex];
+
+                float bucketStartX = bucketIndex * totalBarWidth;
+                double fractionWithinBucket = (bookmarkEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
+                float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
+
+                float markerX = exactX - (ERROR_MARKER_SIZE / 2);
+                float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4);
+
+                if (mouseX >= markerX && mouseX <= markerX + ERROR_MARKER_SIZE &&
+                    mouseY >= markerY && mouseY <= markerY + ERROR_MARKER_SIZE)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
@@ -745,7 +859,6 @@ namespace LogScraper.Utilities.UserControls
             {
                 LogEntry errorEntry = errorLogEntries[i];
 
-                // Find which bucket this error belongs to
                 int bucketIndex = FindBucketIndexContainingTimestamp(errorEntry.TimeStamp, sortedBucketKeys);
 
                 if (bucketIndex < 0)
@@ -753,7 +866,6 @@ namespace LogScraper.Utilities.UserControls
 
                 DateTime bucketKey = sortedBucketKeys[bucketIndex];
 
-                // Calculate exact x position within the bucket (same as DrawErrorMarkers)
                 float bucketStartX = bucketIndex * totalBarWidth;
                 double fractionWithinBucket = (errorEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
                 float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
@@ -786,25 +898,38 @@ namespace LogScraper.Utilities.UserControls
                 hoveredErrorIndex = -1;
                 this.Invalidate();
             }
+            if (hoveredBookmarkIndex != -1)
+            {
+                hoveredBookmarkIndex = -1;
+                this.Invalidate();
+            }
             if (this.Cursor != Cursors.Default)
                 this.Cursor = Cursors.Default;
         }
 
         /// <summary>
-        /// Handles mouse clicks on buckets and error markers.
+        /// Handles mouse clicks on buckets, error markers, and bookmark markers.
         /// </summary>
         private void OnMouseClick(object sender, MouseEventArgs e)
         {
             if (buckets.Count == 0 || e.Button != MouseButtons.Left)
                 return;
 
+            // Check for bookmark marker click
+            int clickedBookmarkIndex = GetBookmarkMarkerIndexAtPosition(e.X, e.Y);
+
+            if (clickedBookmarkIndex != -1)
+            {
+                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntries[clickedBookmarkIndex]);
+                return;
+            }
+
             // Check for error marker click
             int clickedErrorIndex = GetErrorMarkerIndexAtPosition(e.X, e.Y);
 
             if (clickedErrorIndex != -1)
             {
-                LogEntry errorEntry = errorLogEntries[clickedErrorIndex];
-                ErrorMarkerClicked?.Invoke(this, errorEntry);
+                ErrorMarkerClicked?.Invoke(this, errorLogEntries[clickedErrorIndex]);
                 return;
             }
 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -62,6 +63,7 @@ namespace LogScraper
 
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
+            LogTimeLineControl.BookmarkMarkerClicked += LogTimelineControl_CellClicked;
 
             LogViewport.RangeChanged += LogViewport_RangeChanged;
 
@@ -84,6 +86,7 @@ namespace LogScraper
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
         {
             UserControlLogEntriesTextBox.UpdateBookMarks(BookMarksControl.Bookmarks);
+            LogTimeLineControl.SetBookmarks([.. BookMarksControl.Bookmarks]);
         }
 
         private void BookMarksControl_NavigateToEntryRequested(object sender, LogEntry logEntry)
