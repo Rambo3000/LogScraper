@@ -39,7 +39,7 @@ namespace LogScraper.Utilities.UserControls
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(49, 0);
+            BtnReset.Location = new System.Drawing.Point(50, 0);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 3;

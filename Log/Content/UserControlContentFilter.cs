@@ -88,8 +88,8 @@ namespace LogScraper
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries);
+            (int begin,int end) = LogRenderer.CalculateLogRenderRange(LogMetadataFilterResult.LogEntries, logRange);
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries[begin..end]);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
@@ -280,6 +280,7 @@ namespace LogScraper
             set
             {
                 logRange = value;
+                UpdateDisplayedLogEntries();
             }
         }
 
@@ -322,7 +323,9 @@ namespace LogScraper
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
-            bool isOutOfScope = IslogEntryDisplayObjectOutOfScope(item);
+            //Disable being out of scope for now
+            //bool isOutOfScope = IslogEntryDisplayObjectOutOfScope(item);
+            bool isOutOfScope = false;
 
             if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
             else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);

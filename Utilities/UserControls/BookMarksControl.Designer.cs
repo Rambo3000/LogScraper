@@ -41,7 +41,7 @@
             // 
             BtnBookMark.ImageIndex = 0;
             BtnBookMark.ImageList = imageList1;
-            BtnBookMark.Location = new System.Drawing.Point(-1, -1);
+            BtnBookMark.Location = new System.Drawing.Point(0, 0);
             BtnBookMark.Name = "BtnBookMark";
             BtnBookMark.Size = new System.Drawing.Size(25, 25);
             BtnBookMark.TabIndex = 0;
@@ -59,7 +59,7 @@
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(71, -1);
+            BtnReset.Location = new System.Drawing.Point(75, 0);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 1;
@@ -69,7 +69,7 @@
             // BtnPrevious
             // 
             BtnPrevious.Image = (System.Drawing.Image)resources.GetObject("BtnPrevious.Image");
-            BtnPrevious.Location = new System.Drawing.Point(23, -1);
+            BtnPrevious.Location = new System.Drawing.Point(25, 0);
             BtnPrevious.Name = "BtnPrevious";
             BtnPrevious.Size = new System.Drawing.Size(25, 25);
             BtnPrevious.TabIndex = 2;
@@ -79,7 +79,7 @@
             // BtnNext
             // 
             BtnNext.Image = (System.Drawing.Image)resources.GetObject("BtnNext.Image");
-            BtnNext.Location = new System.Drawing.Point(47, -1);
+            BtnNext.Location = new System.Drawing.Point(50, 0);
             BtnNext.Name = "BtnNext";
             BtnNext.Size = new System.Drawing.Size(25, 25);
             BtnNext.TabIndex = 3;

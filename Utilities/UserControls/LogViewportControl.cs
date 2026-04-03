@@ -72,13 +72,12 @@ namespace LogScraper.Utilities.UserControls
 
             UpdateCheckboxes = true;
 
-            //Make sure the checkbox remains checked, we only uncheck it when the range is cleared,
-            //and we want to prevent the user from unchecking it manually while setting the end log entry.
-            ChkBegin.Checked = true;
+            bool checkState = SelectedLogEntry != range.Begin;
+            ChkBegin.Checked = checkState;
 
             UpdateCheckboxes = false;
 
-            range.Begin = SelectedLogEntry;
+            range.Begin = checkState ? SelectedLogEntry : null;
             UpdateButtons();
             RangeChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -91,13 +90,12 @@ namespace LogScraper.Utilities.UserControls
 
             UpdateCheckboxes = true;
 
-            //Make sure the checkbox remains checked, we only uncheck it when the range is cleared,
-            //and we want to prevent the user from unchecking it manually while setting the end log entry.
-            ChkEnd.Checked = true;
+            bool checkState = SelectedLogEntry != range.End;
+            ChkEnd.Checked = checkState;
 
             UpdateCheckboxes = false;
 
-            range.End = SelectedLogEntry;
+            range.End = checkState ? SelectedLogEntry : null;
             UpdateButtons();
             RangeChanged?.Invoke(this, EventArgs.Empty);
         }

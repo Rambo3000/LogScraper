@@ -41,7 +41,7 @@ namespace LogScraper.Log.Rendering
             if (!logRenderSettings.LogRange.IsConstrained) return originalLogEntriesList;
 
             // Calculate the start and end indices based on the begin and end filters and extra log entries to include.
-            (int startIndex, int endIndex) = CalculateLogRenderRange(originalLogEntriesList, logRenderSettings);
+            (int startIndex, int endIndex) = CalculateLogRenderRange(originalLogEntriesList, logRenderSettings.LogRange);
 
             // If the calculated indices are invalid, return an empty list.
             if (startIndex <= -1 || endIndex <= 0 || startIndex > endIndex) return [];
@@ -52,10 +52,10 @@ namespace LogScraper.Log.Rendering
         /// <summary>
         /// Determines the start and end indices for the log entries to be rendered based on the render settings.
         /// </summary>
-        /// <param name="logEntries">The list of log entries to filter and render. Cannot be null.</param>
-        /// <param name="logRenderSettings">Settings for rendering the log data.</param>
+        /// <param name="logEntries">The complete list of log entries from which to calculate the render range. Cannot be null.</param>
+        /// <param name="logRange">The log range settings that specify the begin and end log entries for rendering. Cannot be null.</param>
         /// <returns>A tuple containing the start and end indices.</returns>
-        private static (int startIndex, int endIndex) CalculateLogRenderRange(List<LogEntry> logEntries, LogRenderSettings logRenderSettings)
+        public static (int startIndex, int endIndex) CalculateLogRenderRange(List<LogEntry> logEntries, LogRange logRange)
         {
             int numberOfLogEntriesTotal = logEntries.Count;
 
@@ -63,11 +63,11 @@ namespace LogScraper.Log.Rendering
             int endindex = numberOfLogEntriesTotal;
 
             // Adjust the start index based on the LogEntryBegin setting
-            if (logRenderSettings.LogRange.Begin != null)
+            if (logRange.Begin != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (logEntries[i] == logRenderSettings.LogRange.Begin)
+                    if (logEntries[i] == logRange.Begin)
                     {
                         startindex = i;
                         break;
@@ -77,11 +77,11 @@ namespace LogScraper.Log.Rendering
             }
 
             // Adjust the end index based on the LogEntryEnd setting
-            if (logRenderSettings.LogRange.End != null)
+            if (logRange.End != null)
             {
                 for (int i = 0; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (logEntries[i] == logRenderSettings.LogRange.End)
+                    if (logEntries[i] == logRange.End)
                     {
                         endindex = i + 1;
                         break;

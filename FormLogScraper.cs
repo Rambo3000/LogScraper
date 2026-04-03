@@ -284,6 +284,7 @@ namespace LogScraper
             UserControlLogEntriesTextBox.Clear();
             LogTimeLineControl.ClearVisibleRange();
             BookMarksControl.Clear();
+            LogViewport.Clear();
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
@@ -420,6 +421,7 @@ namespace LogScraper
         {
             UsrMetadataFilterOverview.ResetFilters();
             UserControlContentFilter.ResetFilters();
+            LogViewport.Clear();
         }
 
         private bool isResetUiEnabled = false;

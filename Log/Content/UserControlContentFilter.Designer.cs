@@ -49,9 +49,9 @@ namespace LogScraper
             LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             LstLogContent.FormattingEnabled = true;
             LstLogContent.IntegralHeight = false;
-            LstLogContent.Location = new System.Drawing.Point(0, 80);
+            LstLogContent.Location = new System.Drawing.Point(0, 53);
             LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(243, 192);
+            LstLogContent.Size = new System.Drawing.Size(243, 219);
             LstLogContent.TabIndex = 0;
             LstLogContent.DrawItem += LstLogContent_DrawItem;
             LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
@@ -73,7 +73,7 @@ namespace LogScraper
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtSearch.Location = new System.Drawing.Point(0, 26);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(243, 23);
+            txtSearch.Size = new System.Drawing.Size(191, 23);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
@@ -82,9 +82,10 @@ namespace LogScraper
             // 
             // ChkShowFlowTree
             // 
+            ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(27, 51);
+            ChkShowFlowTree.Location = new System.Drawing.Point(218, 25);
             ChkShowFlowTree.Name = "ChkShowFlowTree";
             ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
             ChkShowFlowTree.TabIndex = 17;
@@ -95,9 +96,10 @@ namespace LogScraper
             // 
             // ChkShowNoTree
             // 
+            ChkShowNoTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
             ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(2, 51);
+            ChkShowNoTree.Location = new System.Drawing.Point(193, 25);
             ChkShowNoTree.Name = "ChkShowNoTree";
             ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
             ChkShowNoTree.TabIndex = 18;
