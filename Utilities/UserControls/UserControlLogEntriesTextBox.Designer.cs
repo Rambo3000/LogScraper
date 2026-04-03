@@ -35,7 +35,6 @@
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             PnlViewMode = new System.Windows.Forms.Panel();
-            UserControlPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlViewMode.SuspendLayout();
             SuspendLayout();
@@ -101,7 +100,6 @@
             // 
             PnlViewMode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             PnlViewMode.BackColor = System.Drawing.Color.White;
-            PnlViewMode.Controls.Add(UserControlPostProcessing);
             PnlViewMode.Controls.Add(CboLogContentType);
             PnlViewMode.Controls.Add(ChkShowFlowTree);
             PnlViewMode.Controls.Add(ChkShowNoTree);
@@ -109,15 +107,6 @@
             PnlViewMode.Name = "PnlViewMode";
             PnlViewMode.Size = new System.Drawing.Size(245, 31);
             PnlViewMode.TabIndex = 46;
-            // 
-            // UserControlPostProcessing
-            // 
-            UserControlPostProcessing.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            UserControlPostProcessing.Location = new System.Drawing.Point(202, 3);
-            UserControlPostProcessing.Name = "UserControlPostProcessing";
-            UserControlPostProcessing.Size = new System.Drawing.Size(40, 25);
-            UserControlPostProcessing.TabIndex = 47;
-            toolTip1.SetToolTip(UserControlPostProcessing, "Pretty print JSON en/of XML");
             // 
             // toolTip1
             // 
@@ -141,7 +130,6 @@
         private System.Windows.Forms.CheckBox ChkShowFlowTree;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Panel PnlViewMode;
-        private LogPostProcessors.LogPostProcessingControl UserControlPostProcessing;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

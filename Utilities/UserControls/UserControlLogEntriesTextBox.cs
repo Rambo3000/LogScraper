@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LogScraper.Configuration;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
@@ -29,19 +28,20 @@ namespace LogScraper.Utilities.UserControls
         private LogEntry selectedLogEntry = null;
         private LogEntry logEntryAtCursor = null;
         private IEnumerable<LogEntry> bookmarks = null;
+        List<LogPostProcessorKind> logPostProcessorKinds;
 
         public UserControlLogEntriesTextBox()
         {
             InitializeComponent();
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
-            UserControlPostProcessing.PostProcessingResultsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
         }
-
-        private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, EventArgs e)
+        public void UpdatePostProcessorsResults(List<LogPostProcessorKind> kinds)
         {
+            logPostProcessorKinds = kinds;
             RenderLogEntries();
         }
+
         #endregion
 
         #region Selected log entry
@@ -152,9 +152,6 @@ namespace LogScraper.Utilities.UserControls
                 logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
             }
 
-            // Active post-processors influence visual line spans (pretty print, etc.)
-            List<LogPostProcessorKind> logPostProcessorKinds = UserControlPostProcessing.VisibleProcessorKinds;
-
             // Render all visible log entries into a single text representation
             Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
 
@@ -214,7 +211,6 @@ namespace LogScraper.Utilities.UserControls
         {
             TxtLogEntries.Clear();
             LogEntryAtCursorChanged?.Invoke(this, null);
-            UserControlPostProcessing.Clear();
         }
         /// <summary>
         /// Event that is triggered when the text in the log entries text box changes.
@@ -312,7 +308,7 @@ namespace LogScraper.Utilities.UserControls
             PnlViewMode.SuspendDrawing();
             PnlViewMode.Visible = CboLogContentType.Items.Count > 0;
             // Hide the dropdownbox if there's only one item
-            PnlViewMode.Size = new Size((ChkShowFlowTree.Checked && CboLogContentType.Items.Count > 1 ? CboLogContentType.Width + 4 : 0) + UserControlPostProcessing.Right - ChkShowNoTree.Left + 4, PnlViewMode.Height);
+            PnlViewMode.Size = new Size((ChkShowFlowTree.Checked && CboLogContentType.Items.Count > 1 ? CboLogContentType.Width + 4 : 0) - ChkShowNoTree.Left + 4, PnlViewMode.Height);
             UpdatePnlViewModePosition();
             PnlViewMode.ResumeDrawing();
         }

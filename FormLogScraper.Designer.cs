@@ -81,6 +81,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -417,6 +418,7 @@
             // 
             // splitContainer4.Panel1
             // 
+            splitContainer4.Panel1.Controls.Add(LogPostProcessing);
             splitContainer4.Panel1.Controls.Add(LogViewport);
             splitContainer4.Panel1.Controls.Add(BookMarksControl);
             splitContainer4.Panel1.Controls.Add(panel1);
@@ -673,6 +675,13 @@
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
+            // LogPostProcessing
+            // 
+            LogPostProcessing.Location = new System.Drawing.Point(194, 0);
+            LogPostProcessing.Name = "LogPostProcessing";
+            LogPostProcessing.Size = new System.Drawing.Size(53, 28);
+            LogPostProcessing.TabIndex = 41;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -776,5 +785,6 @@
         private Utilities.UserControls.BookMarksControl BookMarksControl;
         private System.Windows.Forms.Panel panel1;
         private Utilities.UserControls.LogViewportControl LogViewport;
+        private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
     }
 }

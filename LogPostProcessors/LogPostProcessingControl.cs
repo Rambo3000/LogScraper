@@ -120,10 +120,10 @@ namespace LogScraper.LogPostProcessors
         private void UpdateControls()
         {
             BtnJson.Enabled = !IsProcessing;
-            BtnJson.ImageIndex = IsProcessing ? 2 : 0;
+            BtnJson.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 2 : 0;
 
             BtnXml.Enabled = !IsProcessing;
-            BtnXml.ImageIndex = IsProcessing ? 2 : 1;
+            BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
         }
 
         private static bool AnyValueTrue(bool[] array)

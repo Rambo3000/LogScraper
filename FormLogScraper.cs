@@ -65,6 +65,8 @@ namespace LogScraper
 
             LogViewport.RangeChanged += LogViewport_RangeChanged;
 
+            LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
+
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
@@ -79,6 +81,11 @@ namespace LogScraper
         {
             UserControlContentFilter.LogRange = LogViewport.Range;
             HandleLogContentFilterUpdate(sender, e);
+        }
+
+        private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
+        {
+            UserControlLogEntriesTextBox.UpdatePostProcessorsResults(LogPostProcessing.VisibleProcessorKinds);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -279,6 +286,7 @@ namespace LogScraper
             LogTimeLineControl.ClearVisibleRange();
             BookMarksControl.Clear();
             LogViewport.Clear();
+            LogPostProcessing.Clear();
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
@@ -656,5 +664,6 @@ namespace LogScraper
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
+
     }
 }
