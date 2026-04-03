@@ -34,12 +34,9 @@ namespace LogScraper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogContentFilter));
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
-            BtnReset = new System.Windows.Forms.Button();
             txtSearch = new System.Windows.Forms.TextBox();
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             ChkShowNoTree = new System.Windows.Forms.CheckBox();
-            BtnSelectTop = new System.Windows.Forms.Button();
-            BtnSelectEnd = new System.Windows.Forms.Button();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling.SuspendLayout();
@@ -70,18 +67,6 @@ namespace LogScraper
             CboLogContentType.Size = new System.Drawing.Size(243, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
-            // 
-            // BtnReset
-            // 
-            BtnReset.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(215, 51);
-            BtnReset.Name = "BtnReset";
-            BtnReset.Size = new System.Drawing.Size(26, 25);
-            BtnReset.TabIndex = 2;
-            toolTip.SetToolTip(BtnReset, "Reset selecties");
-            BtnReset.UseVisualStyleBackColor = true;
-            BtnReset.Click += BtnReset_Click;
             // 
             // txtSearch
             // 
@@ -121,38 +106,11 @@ namespace LogScraper
             ChkShowNoTree.UseVisualStyleBackColor = true;
             ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
             // 
-            // BtnSelectTop
-            // 
-            BtnSelectTop.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnSelectTop.Image = (System.Drawing.Image)resources.GetObject("BtnSelectTop.Image");
-            BtnSelectTop.Location = new System.Drawing.Point(162, 51);
-            BtnSelectTop.Name = "BtnSelectTop";
-            BtnSelectTop.Size = new System.Drawing.Size(26, 25);
-            BtnSelectTop.TabIndex = 21;
-            toolTip.SetToolTip(BtnSelectTop, "Selecteer begin [CTRL-B]");
-            BtnSelectTop.UseVisualStyleBackColor = true;
-            BtnSelectTop.Click += BtnSelectBegin_Click;
-            // 
-            // BtnSelectEnd
-            // 
-            BtnSelectEnd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnSelectEnd.Image = (System.Drawing.Image)resources.GetObject("BtnSelectEnd.Image");
-            BtnSelectEnd.Location = new System.Drawing.Point(187, 51);
-            BtnSelectEnd.Name = "BtnSelectEnd";
-            BtnSelectEnd.Size = new System.Drawing.Size(26, 25);
-            BtnSelectEnd.TabIndex = 22;
-            toolTip.SetToolTip(BtnSelectEnd, "Selecteer eind [CTRL-E]");
-            BtnSelectEnd.UseVisualStyleBackColor = true;
-            BtnSelectEnd.Click += BtnSelectEnd_Click;
-            // 
             // PnlUsedForCorrectScaling
             // 
-            PnlUsedForCorrectScaling.Controls.Add(BtnSelectEnd);
             PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
-            PnlUsedForCorrectScaling.Controls.Add(BtnSelectTop);
             PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
             PnlUsedForCorrectScaling.Controls.Add(ChkShowNoTree);
-            PnlUsedForCorrectScaling.Controls.Add(BtnReset);
             PnlUsedForCorrectScaling.Controls.Add(ChkShowFlowTree);
             PnlUsedForCorrectScaling.Controls.Add(txtSearch);
             PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -179,12 +137,9 @@ namespace LogScraper
 
         private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
-        private System.Windows.Forms.Button BtnReset;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.CheckBox ChkShowFlowTree;
         private System.Windows.Forms.CheckBox ChkShowNoTree;
-        private System.Windows.Forms.Button BtnSelectTop;
-        private System.Windows.Forms.Button BtnSelectEnd;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
     }

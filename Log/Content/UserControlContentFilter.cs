@@ -10,8 +10,10 @@ using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Rendering;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
+using System.ComponentModel;
 
 namespace LogScraper
 {
@@ -25,8 +27,7 @@ namespace LogScraper
 
         private LogMetadataFilterResult LogMetadataFilterResult;
 
-        private LogEntryDisplayObject selectedBeginEntryDisplayObject = null;
-        private LogEntryDisplayObject selectedEndEntryDisplayObject = null;
+        private LogRange logRange = new();
 
         public UserControlLogContentFilter()
         {
@@ -54,7 +55,6 @@ namespace LogScraper
             }
 
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
-            UpdateTopBottomControls();
         }
         #endregion
 
@@ -91,54 +91,7 @@ namespace LogScraper
 
             List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries);
 
-            ValidateBeginEndContentFiltersOnNewLogEnties(LogMetadataFilterResult.LogEntries);
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
-            UpdateBeginEndFilterDisplayObjectsIndex();
-        }
-
-        /// <summary>
-        /// Validates the currently selected begin and end content filters against a list of new log entries.
-        /// </summary>
-        /// <remarks>This method ensures that the selected begin and end content filters remain valid by
-        /// checking if their corresponding log entries exist in the provided list. If a filter's associated log entry
-        /// is not found, the filter is reset to null.</remarks>
-        /// <param name="logEntries">A list of <see cref="LogEntry"/> objects representing the new log entries to check against.</param>
-        private void ValidateBeginEndContentFiltersOnNewLogEnties(List<LogEntry> logEntries)
-        {
-            if (selectedBeginEntryDisplayObject != null)
-            {
-                bool beginFilterFound = false;
-                foreach (LogEntry logEntry in logEntries)
-                {
-                    if (logEntry == selectedBeginEntryDisplayObject.OriginalLogEntry)
-                    {
-                        beginFilterFound = true;
-                        break;
-                    }
-                }
-                if (!beginFilterFound)
-                {
-                    // If the begin filter is not found, reset the begin filter
-                    selectedBeginEntryDisplayObject = null;
-                }
-            }
-
-            if (selectedEndEntryDisplayObject == null) return;
-
-            bool endFilterFound = false;
-            foreach (LogEntry logEntry in logEntries)
-            {
-                if (logEntry == selectedEndEntryDisplayObject.OriginalLogEntry)
-                {
-                    endFilterFound = true;
-                    break;
-                }
-            }
-            if (!endFilterFound)
-            {
-                // If the begin filter is not found, reset the begin filter
-                selectedBeginEntryDisplayObject = null;
-            }
         }
 
         private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
@@ -290,38 +243,6 @@ namespace LogScraper
             // If the selected item cannot be reselected raise the event that the selection changed
             if (!selectedEntryFound) SelectedItemChanged(this, EventArgs.Empty);
         }
-
-        private void UpdateBeginEndFilterDisplayObjectsIndex()
-        {
-            if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
-            {
-                selectedBeginEntryDisplayObject = null;
-                selectedEndEntryDisplayObject = null;
-                return;
-            }
-            if (selectedBeginEntryDisplayObject != null)
-            {
-                foreach (LogEntryDisplayObject logEntryDisplayObject in LstLogContent.Items)
-                {
-                    if (logEntryDisplayObject.OriginalLogEntry == selectedBeginEntryDisplayObject.OriginalLogEntry)
-                    {
-                        selectedBeginEntryDisplayObject.Index = logEntryDisplayObject.Index;
-                        break;
-                    }
-                }
-            }
-            if (selectedEndEntryDisplayObject != null)
-            {
-                foreach (LogEntryDisplayObject logEntryDisplayObject in LstLogContent.Items)
-                {
-                    if (logEntryDisplayObject.OriginalLogEntry == selectedEndEntryDisplayObject.OriginalLogEntry)
-                    {
-                        selectedEndEntryDisplayObject.Index = logEntryDisplayObject.Index;
-                        break;
-                    }
-                }
-            }
-        }
         #endregion
 
         #region Public methods and properties
@@ -349,19 +270,16 @@ namespace LogScraper
             }
         }
 
-        public LogEntry SelectedBeginLogEntry
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public LogRange LogRange
         {
             get
             {
-                return selectedBeginEntryDisplayObject?.OriginalLogEntry;
+                return logRange;
             }
-        }
-
-        public LogEntry SelectedEndLogEntry
-        {
-            get
+            set
             {
-                return selectedEndEntryDisplayObject?.OriginalLogEntry;
+                logRange = value;
             }
         }
 
@@ -386,11 +304,8 @@ namespace LogScraper
         public void Reset()
         {
             ClearSelectedLogEntry();
-            selectedEndEntryDisplayObject = null;
-            selectedBeginEntryDisplayObject = null;
             LogContentPropertiesError = [];
             LogMetadataFilterResult = null;
-            UpdateTopBottomControls();
         }
         #endregion
 
@@ -409,23 +324,9 @@ namespace LogScraper
 
             bool isOutOfScope = IslogEntryDisplayObjectOutOfScope(item);
 
-            // Draw background
-            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.OriginalLogEntry == item.OriginalLogEntry)
-            {
-                if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-                else g.FillRectangle(LogScraperBrushes.GraySelectedBeginOrEnd, e.Bounds);
-            }
-            else if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.OriginalLogEntry == item.OriginalLogEntry)
-            {
-                if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-                else g.FillRectangle(LogScraperBrushes.GraySelectedBeginOrEnd, e.Bounds);
-            }
-            else
-            {
-                if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
-                else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-                else g.FillRectangle(SystemBrushes.Window, e.Bounds);
-            }
+            if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
+            else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+            else g.FillRectangle(SystemBrushes.Window, e.Bounds);
 
             if (item.OriginalLogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
             {
@@ -549,8 +450,8 @@ namespace LogScraper
         {
             if (logEntryDisplayObject == null) return true;
 
-            return (selectedBeginEntryDisplayObject != null && logEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index) ||
-                   (selectedEndEntryDisplayObject != null && logEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index);
+            return (LogRange.Begin != null && logEntryDisplayObject.Index < LogRange.Begin.Index) ||
+                   (LogRange.End != null && logEntryDisplayObject.Index > LogRange.End.Index);
         }
         #endregion
 
@@ -643,7 +544,6 @@ namespace LogScraper
         {
             this.SuspendDrawing();
             if (LstLogContent.Items.Count > 0) LstLogContent.SelectedIndex = -1;
-            ResetBeginEndFilters();
             LstLogContent.Invalidate();
             this.ResumeDrawing();
         }
@@ -655,7 +555,6 @@ namespace LogScraper
             if (!ignoreSelectedItemChanged)
             {
                 OnSelectedItemChanged(EventArgs.Empty);
-                UpdateTopBottomControls();
             }
         }
 
@@ -699,59 +598,11 @@ namespace LogScraper
             updateShowTreeInProgress = false;
         }
 
-        private void BtnSelectBegin_Click(object sender, EventArgs e)
-        {
-            SelectLogEntryBegin();
-        }
-        
-        public void SelectLogEntryBegin()
-        {
-            if (SelectedLogEntryDisplayObject == null) return;
-            selectedBeginEntryDisplayObject = SelectedLogEntryDisplayObject;
-            if (selectedEndEntryDisplayObject != null && selectedEndEntryDisplayObject.Index < selectedBeginEntryDisplayObject.Index)
-                selectedEndEntryDisplayObject = null;
-            OnBeginEntryChanged(null);
-            LstLogContent.Invalidate();
-            UpdateTopBottomControls();
-        }
-
-        private void BtnSelectEnd_Click(object sender, EventArgs e)
-        {
-            SelectLogEntryEnd();
-        }
-        public void SelectLogEntryEnd()
-        {
-            if (SelectedLogEntryDisplayObject == null) return;
-            selectedEndEntryDisplayObject = SelectedLogEntryDisplayObject;
-            if (selectedBeginEntryDisplayObject != null && selectedBeginEntryDisplayObject.Index > selectedEndEntryDisplayObject.Index)
-                selectedBeginEntryDisplayObject = null;
-            OnEndEntryChanged(null);
-            LstLogContent.Invalidate();
-            UpdateTopBottomControls();
-        }
-
-        private void UpdateTopBottomControls()
-        {
-            BtnSelectTop.Enabled = LstLogContent.SelectedIndex != -1;
-            BtnSelectEnd.Enabled = LstLogContent.SelectedIndex != -1;
-            BtnReset.Enabled = LstLogContent.SelectedIndex != -1 || selectedBeginEntryDisplayObject != null || selectedEndEntryDisplayObject != null;
-        }
-
         public void ResetFilters()
         {
-            ResetBeginEndFilters();
             txtSearch.Text = string.Empty;
             TxtSearch_Leave(this, EventArgs.Empty);
             if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
-        }
-
-        public void ResetBeginEndFilters()
-        {
-            selectedBeginEntryDisplayObject = null;
-            selectedEndEntryDisplayObject = null;
-            OnBeginEntryChanged(null);
-            OnEndEntryChanged(null);
-            UpdateTopBottomControls();
         }
         #endregion
     }

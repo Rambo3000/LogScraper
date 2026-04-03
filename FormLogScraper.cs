@@ -50,9 +50,6 @@ namespace LogScraper
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
             UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
-
-            //UserControlContentFilter.BeginEntryChanged += HandleLogContentFilterUpdate;
-            //UserControlContentFilter.EndEntryChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
@@ -66,7 +63,7 @@ namespace LogScraper
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
 
-            LogViewport.RangeChanged += HandleLogContentFilterUpdate;
+            LogViewport.RangeChanged += LogViewport_RangeChanged;
 
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
@@ -76,6 +73,12 @@ namespace LogScraper
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void LogViewport_RangeChanged(object sender, EventArgs e)
+        {
+            UserControlContentFilter.LogRange = LogViewport.Range;
+            HandleLogContentFilterUpdate(sender, e);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -461,14 +464,9 @@ namespace LogScraper
         {
             if (currentLogMetadataFilterResult == null || currentLogMetadataFilterResult.LogEntries == null || currentLogMetadataFilterResult.LogEntries.Count == 0) return;
 
-            LogRange logRange = new()
-            {
-                Begin = UserControlContentFilter.SelectedBeginLogEntry,
-                End = UserControlContentFilter.SelectedEndLogEntry
-            };
             LogRenderSettings logRenderSettings = new()
             {
-                LogRange = logRange,
+                LogRange = LogViewport.Range,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = true
             };
@@ -644,16 +642,6 @@ namespace LogScraper
             if (keyData == (Keys.Control | Keys.F))
             {
                 UserControlSearch.Focus();
-                return true;
-            }
-            if (keyData == (Keys.Control | Keys.B))
-            {
-                UserControlContentFilter.SelectLogEntryBegin();
-                return true;
-            }
-            if (keyData == (Keys.Control | Keys.E))
-            {
-                UserControlContentFilter.SelectLogEntryEnd();
                 return true;
             }
             if (keyData == (Keys.Control | Keys.S))
