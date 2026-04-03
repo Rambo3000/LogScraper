@@ -35,7 +35,6 @@
             ChkShowFlowTree = new System.Windows.Forms.CheckBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             PnlViewMode = new System.Windows.Forms.Panel();
-            ChkTimelineVisible = new System.Windows.Forms.CheckBox();
             UserControlPostProcessing = new LogScraper.LogPostProcessors.UserControlPostProcessing();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             PnlViewMode.SuspendLayout();
@@ -102,7 +101,6 @@
             // 
             PnlViewMode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             PnlViewMode.BackColor = System.Drawing.Color.White;
-            PnlViewMode.Controls.Add(ChkTimelineVisible);
             PnlViewMode.Controls.Add(UserControlPostProcessing);
             PnlViewMode.Controls.Add(CboLogContentType);
             PnlViewMode.Controls.Add(ChkShowFlowTree);
@@ -111,20 +109,6 @@
             PnlViewMode.Name = "PnlViewMode";
             PnlViewMode.Size = new System.Drawing.Size(245, 31);
             PnlViewMode.TabIndex = 46;
-            // 
-            // ChkTimelineVisible
-            // 
-            ChkTimelineVisible.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ChkTimelineVisible.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkTimelineVisible.Image = (System.Drawing.Image)resources.GetObject("ChkTimelineVisible.Image");
-            ChkTimelineVisible.Location = new System.Drawing.Point(173, 3);
-            ChkTimelineVisible.Name = "ChkTimelineVisible";
-            ChkTimelineVisible.Size = new System.Drawing.Size(25, 25);
-            ChkTimelineVisible.TabIndex = 48;
-            ChkTimelineVisible.Tag = "asd";
-            toolTip1.SetToolTip(ChkTimelineVisible, "Tijdlijn histogram tonen/verbergen");
-            ChkTimelineVisible.UseVisualStyleBackColor = true;
-            ChkTimelineVisible.CheckedChanged += ChkTimelineVisible_CheckedChanged;
             // 
             // UserControlPostProcessing
             // 
@@ -147,7 +131,6 @@
             Controls.Add(TxtLogEntries);
             Name = "UserControlLogEntriesTextBox";
             Size = new System.Drawing.Size(712, 403);
-            Load += UserControlLogEntriesTextBox_Load;
             PnlViewMode.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -159,7 +142,6 @@
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.Panel PnlViewMode;
         private LogPostProcessors.UserControlPostProcessing UserControlPostProcessing;
-        private System.Windows.Forms.CheckBox ChkTimelineVisible;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

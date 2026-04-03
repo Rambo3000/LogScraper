@@ -54,12 +54,10 @@ namespace LogScraper
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
-            UserControlLogEntriesTextBox.TimeLineVisibilityChanged += ChkTimelineVisible_CheckedChanged;
             UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
             UserControlLogEntriesTextBox.LogEntryAtCursorChanged += UserControlLogEntriesTextBox_LogEntryAtCursorChanged;
 
-            UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
-            ChkTimelineVisible_CheckedChanged(this, EventArgs.Empty);
+            UpdateTimeLineVisibility();
 
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
@@ -103,15 +101,8 @@ namespace LogScraper
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
         {
-            if (UserControlLogEntriesTextBox.IsTimelineVisible)
+            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
                 LogTimeLineControl.SetVisibleRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
-        }
-
-        private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            splitContainer4.Panel2Collapsed = !UserControlLogEntriesTextBox.IsTimelineVisible;
-            if (UserControlLogEntriesTextBox.IsTimelineVisible && visibleLogEntries != null)
-                LogTimeLineControl.UpdateLogEntries(visibleLogEntries);
         }
 
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)
@@ -274,7 +265,7 @@ namespace LogScraper
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
-            if (UserControlLogEntriesTextBox.IsTimelineVisible) LogTimeLineControl.UpdateLogEntries(visibleLogEntries);
+            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault) LogTimeLineControl.UpdateLogEntries(visibleLogEntries);
             lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
         }
         #endregion
@@ -314,6 +305,11 @@ namespace LogScraper
         #endregion
 
         #region User controls event handling
+
+        private void UpdateTimeLineVisibility()
+        {
+            splitContainer4.Panel2Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+        }
 
         private void HandleErrorMessages(string message, bool isSucces)
         {
@@ -537,7 +533,7 @@ namespace LogScraper
                 {
                     SetDynamicToolTips();
                     btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                    UserControlLogEntriesTextBox.IsTimelineVisible = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+                    UpdateTimeLineVisibility();
                 }
 
                 if (logLayoutsChanged) PopulateLogLayouts();

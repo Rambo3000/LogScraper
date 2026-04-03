@@ -52,7 +52,6 @@ namespace LogScraper.Configuration
             ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
             ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
-            pictureBox2 = new System.Windows.Forms.PictureBox();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             pictureBox16 = new System.Windows.Forms.PictureBox();
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
@@ -61,7 +60,6 @@ namespace LogScraper.Configuration
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
             PnlUsedForScalingCompatiblity.SuspendLayout();
@@ -220,7 +218,6 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
             GrpGeneralSettings.Controls.Add(pictureBox3);
             GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
-            GrpGeneralSettings.Controls.Add(pictureBox2);
             GrpGeneralSettings.Controls.Add(pictureBox1);
             GrpGeneralSettings.Controls.Add(pictureBox16);
             GrpGeneralSettings.Controls.Add(ChkShowErrorsInBeginAndEndFilters);
@@ -254,9 +251,9 @@ namespace LogScraper.Configuration
             ChkShowTimeLine.AutoSize = true;
             ChkShowTimeLine.Location = new System.Drawing.Point(6, 150);
             ChkShowTimeLine.Name = "ChkShowTimeLine";
-            ChkShowTimeLine.Size = new System.Drawing.Size(223, 19);
+            ChkShowTimeLine.Size = new System.Drawing.Size(168, 19);
             ChkShowTimeLine.TabIndex = 42;
-            ChkShowTimeLine.Text = "Toon standaard het tijdlijn-histogram";
+            ChkShowTimeLine.Text = "Toon het tijdlijn-histogram";
             ChkShowTimeLine.UseVisualStyleBackColor = true;
             // 
             // ChkIncludePrereleaseUpdates
@@ -289,17 +286,6 @@ namespace LogScraper.Configuration
             ChkAutoToggleHierarchy.TabIndex = 39;
             ChkAutoToggleHierarchy.Text = "Schakel hierarchisch tonen automatisch in zodra er op sessie wordt gefilterd";
             ChkAutoToggleHierarchy.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            pictureBox2.Image = Properties.Resources.help;
-            pictureBox2.Location = new System.Drawing.Point(826, 153);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new System.Drawing.Size(16, 16);
-            pictureBox2.TabIndex = 38;
-            pictureBox2.TabStop = false;
-            toolTip.SetToolTip(pictureBox2, "Indien aangevinkt wordt er bij elke wijziging van het log deze ook naar het geselecteerde bestand weggeschreven.");
             // 
             // pictureBox1
             // 
@@ -360,7 +346,6 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.ResumeLayout(false);
             GrpGeneralSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
             PnlUsedForScalingCompatiblity.ResumeLayout(false);
@@ -383,7 +368,6 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.Label LblAutomaticReadTimea;
         private System.Windows.Forms.GroupBox GrpGeneralSettings;
         private System.Windows.Forms.CheckBox ChkShowErrorsInBeginAndEndFilters;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.PictureBox pictureBox16;

@@ -38,11 +38,6 @@ namespace LogScraper.Utilities.UserControls
             UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
         }
 
-        private void UserControlLogEntriesTextBox_Load(object sender, EventArgs e)
-        {
-            if (!DesignMode) ChkTimelineVisible.Checked = ConfigurationManager.GenericConfig.ShowTimelineByDefault;
-        }
-
         private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, EventArgs e)
         {
             RenderLogEntries();
@@ -268,24 +263,6 @@ namespace LogScraper.Utilities.UserControls
         {
             UpdatePnlViewModePosition();
         }
-
-        public event EventHandler TimeLineVisibilityChanged
-        {
-            add
-            {
-                ChkTimelineVisible.CheckedChanged += value;
-            }
-            remove
-            {
-                ChkTimelineVisible.CheckedChanged -= value;
-            }
-        }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool IsTimelineVisible
-        {
-            get => ChkTimelineVisible.Checked;
-            set => ChkTimelineVisible.Checked = value;
-        }
         #endregion
 
         #region Update controls
@@ -412,11 +389,6 @@ namespace LogScraper.Utilities.UserControls
             VisibleRangeChanged?.Invoke(this, new VisibleRangeChangedEventArgs(topPosition, bottomPosition));
         }
         #endregion
-
-        private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ChkTimelineVisible.Checked) RaiseVisibleRangeChanged(true);
-        }
 
         public void UpdateBookMarks(IEnumerable<LogEntry> logEntries)
         {
