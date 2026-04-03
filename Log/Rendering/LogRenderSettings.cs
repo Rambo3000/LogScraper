@@ -9,15 +9,7 @@ namespace LogScraper.Log.Rendering
     /// </summary>
     public class LogRenderSettings
     {
-        /// <summary>
-        /// The log entry that marks the beginning of the log entries to be rendered.
-        /// </summary>
-        public LogEntry LogEntryBegin { get; set; }
-
-        /// <summary>
-        /// The log entry that marks the end of the log entries to be rendered.
-        /// </summary>
-        public LogEntry LogEntryEnd { get; set; }
+        public LogRange LogRange{ get; set; }
 
         /// <summary>
         /// The layout of the log file, including metadata and content properties.

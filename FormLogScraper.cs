@@ -89,7 +89,7 @@ namespace LogScraper
         private void UserControlLogEntriesTextBox_LogEntryAtCursorChanged(object sender, LogEntry e)
         {
             UsrMetadataFilterOverview.SelectedLogEntry = e;
-            BookMarksControl.SelectedLogEntry= e;
+            BookMarksControl.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
@@ -253,10 +253,14 @@ namespace LogScraper
 
         private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
         {
+            LogRange logRange = new()
+            {
+                Begin = UserControlContentFilter.SelectedBeginLogEntry,
+                End = UserControlContentFilter.SelectedEndLogEntry
+            };
             LogRenderSettings logRenderSettings = new()
             {
-                LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
-                LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
+                LogRange = logRange,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
                 SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
@@ -278,6 +282,7 @@ namespace LogScraper
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
             LogTimeLineControl.ClearVisibleRange();
+            BookMarksControl.Clear();
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
@@ -457,10 +462,15 @@ namespace LogScraper
         private void BtnSave_Click(object sender, EventArgs e)
         {
             if (currentLogMetadataFilterResult == null || currentLogMetadataFilterResult.LogEntries == null || currentLogMetadataFilterResult.LogEntries.Count == 0) return;
+
+            LogRange logRange = new()
+            {
+                Begin = UserControlContentFilter.SelectedBeginLogEntry,
+                End = UserControlContentFilter.SelectedEndLogEntry
+            };
             LogRenderSettings logRenderSettings = new()
             {
-                LogEntryBegin = UserControlContentFilter.SelectedBeginLogEntry,
-                LogEntryEnd = UserControlContentFilter.SelectedEndLogEntry,
+                LogRange = logRange,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = true
             };
