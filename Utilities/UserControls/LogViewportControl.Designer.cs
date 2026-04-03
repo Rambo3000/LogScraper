@@ -30,10 +30,12 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogViewportControl));
             BtnReset = new Button();
             ChkBegin = new CheckBox();
             ChkEnd = new CheckBox();
+            toolTip1 = new ToolTip(components);
             SuspendLayout();
             // 
             // BtnReset
@@ -43,6 +45,7 @@ namespace LogScraper.Utilities.UserControls
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 3;
+            toolTip1.SetToolTip(BtnReset, "Toon alle logregels");
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
@@ -54,6 +57,7 @@ namespace LogScraper.Utilities.UserControls
             ChkBegin.Name = "ChkBegin";
             ChkBegin.Size = new System.Drawing.Size(25, 25);
             ChkBegin.TabIndex = 4;
+            toolTip1.SetToolTip(ChkBegin, "Toon alleen logregels vanaf de geselecteerde regel");
             ChkBegin.UseVisualStyleBackColor = true;
             ChkBegin.CheckedChanged += ChkBegin_CheckedChanged;
             // 
@@ -65,8 +69,15 @@ namespace LogScraper.Utilities.UserControls
             ChkEnd.Name = "ChkEnd";
             ChkEnd.Size = new System.Drawing.Size(25, 25);
             ChkEnd.TabIndex = 5;
+            toolTip1.SetToolTip(ChkEnd, "Toon alleen logregels tot en met de geselecteerde regel");
             ChkEnd.UseVisualStyleBackColor = true;
             ChkEnd.CheckedChanged += ChkEnd_CheckedChanged;
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 99999999;
+            toolTip1.InitialDelay = 500;
+            toolTip1.ReshowDelay = 100;
             // 
             // LogViewportControl
             // 
@@ -85,5 +96,6 @@ namespace LogScraper.Utilities.UserControls
         private System.Windows.Forms.Button BtnReset;
         private CheckBox ChkBegin;
         private CheckBox ChkEnd;
+        private ToolTip toolTip1;
     }
 }

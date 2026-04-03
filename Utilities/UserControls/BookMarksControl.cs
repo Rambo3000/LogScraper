@@ -49,7 +49,9 @@ namespace LogScraper.Utilities.UserControls
             BtnBookMark.ImageIndex = selectedLogEntry == null ? 0 : Convert.ToInt32(bookmarks.ContainsKey(anchor));
 
             BtnPrevious.Enabled = hasBookmarks && anchor > bookmarks.Keys[0];
+            BtnPrevious.ImageIndex = BtnPrevious.Enabled ? 1 : 0;
             BtnNext.Enabled = hasBookmarks && anchor < bookmarks.Keys[bookmarks.Count - 1];
+            BtnNext.ImageIndex = BtnNext.Enabled ? 1 : 0;
             BtnReset.Enabled = hasBookmarks;
         }
 

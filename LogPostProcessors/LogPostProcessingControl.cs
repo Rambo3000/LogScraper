@@ -94,6 +94,8 @@ namespace LogScraper.LogPostProcessors
 
             IsProcessing = false;
             UpdateControls();
+            BtnJson.ImageIndex = 0;
+            BtnXml.ImageIndex = 1;
 
             bool hasChanges = false;
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
@@ -113,12 +115,14 @@ namespace LogScraper.LogPostProcessors
         private void BtnJson_Click(object sender, EventArgs e)
         {
             JsonProcessingIsApplicable = true;
+            BtnJson.ImageIndex = 2;
             StartPostProcessing();
         }
 
         private void BtnXml_Click(object sender, EventArgs e)
         {
             XmlProcessingIsApplicable = true;
+            BtnXml.ImageIndex = 2;
             StartPostProcessing();
         }
 
@@ -133,10 +137,7 @@ namespace LogScraper.LogPostProcessors
         private void UpdateControls()
         {
             BtnJson.Enabled = !IsProcessing;
-            BtnJson.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 2 : 0;
-
             BtnXml.Enabled = !IsProcessing;
-            BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
         }
 
         #endregion
