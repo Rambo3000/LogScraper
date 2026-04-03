@@ -58,6 +58,7 @@
             cboLogLayout = new System.Windows.Forms.ComboBox();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
+            BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
@@ -67,7 +68,6 @@
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
@@ -79,6 +79,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            panel1 = new System.Windows.Forms.Panel();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -105,6 +106,7 @@
             splitContainer1.SuspendLayout();
             GrpLogProvidersSettings.SuspendLayout();
             GrpSourceAndLayout.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // BtnRecord
@@ -414,8 +416,8 @@
             // 
             // splitContainer4.Panel1
             // 
-            splitContainer4.Panel1.Controls.Add(TxtErrorMessage);
-            splitContainer4.Panel1.Controls.Add(UserControlLogEntriesTextBox);
+            splitContainer4.Panel1.Controls.Add(BookMarksControl);
+            splitContainer4.Panel1.Controls.Add(panel1);
             // 
             // splitContainer4.Panel2
             // 
@@ -424,12 +426,19 @@
             splitContainer4.SplitterDistance = 394;
             splitContainer4.TabIndex = 5;
             // 
+            // BookMarksControl
+            // 
+            BookMarksControl.Location = new System.Drawing.Point(5, 0);
+            BookMarksControl.Name = "BookMarksControl";
+            BookMarksControl.Size = new System.Drawing.Size(101, 25);
+            BookMarksControl.TabIndex = 11;
+            // 
             // TxtErrorMessage
             // 
             TxtErrorMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtErrorMessage.BackColor = System.Drawing.SystemColors.Window;
             TxtErrorMessage.ForeColor = System.Drawing.Color.DarkRed;
-            TxtErrorMessage.Location = new System.Drawing.Point(94, 19);
+            TxtErrorMessage.Location = new System.Drawing.Point(95, 19);
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
@@ -443,7 +452,7 @@
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(685, 394);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(684, 367);
             UserControlLogEntriesTextBox.TabIndex = 38;
             // 
             // LogTimeLineControl
@@ -516,7 +525,6 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(BookMarksControl);
             groupBox1.Controls.Add(tabControl2);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
@@ -525,13 +533,6 @@
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Metadata";
-            // 
-            // BookMarksControl
-            // 
-            BookMarksControl.Location = new System.Drawing.Point(92, 0);
-            BookMarksControl.Name = "BookMarksControl";
-            BookMarksControl.Size = new System.Drawing.Size(117, 31);
-            BookMarksControl.TabIndex = 11;
             // 
             // tabControl2
             // 
@@ -653,6 +654,16 @@
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
+            // panel1
+            // 
+            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            panel1.Controls.Add(TxtErrorMessage);
+            panel1.Controls.Add(UserControlLogEntriesTextBox);
+            panel1.Location = new System.Drawing.Point(1, 27);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(684, 367);
+            panel1.TabIndex = 39;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -675,7 +686,6 @@
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
             splitContainer4.Panel1.ResumeLayout(false);
-            splitContainer4.Panel1.PerformLayout();
             splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer4).EndInit();
             splitContainer4.ResumeLayout(false);
@@ -696,6 +706,8 @@
             GrpLogProvidersSettings.ResumeLayout(false);
             GrpSourceAndLayout.ResumeLayout(false);
             GrpSourceAndLayout.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -753,5 +765,6 @@
         private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
         private Utilities.UserControls.BookMarksControl BookMarksControl;
+        private System.Windows.Forms.Panel panel1;
     }
 }
