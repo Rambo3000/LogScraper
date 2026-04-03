@@ -67,6 +67,7 @@
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
             tabControl2 = new System.Windows.Forms.TabControl();
             tabPage3 = new System.Windows.Forms.TabPage();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
@@ -515,6 +516,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(BookMarksControl);
             groupBox1.Controls.Add(tabControl2);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
@@ -523,6 +525,13 @@
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Metadata";
+            // 
+            // BookMarksControl
+            // 
+            BookMarksControl.Location = new System.Drawing.Point(92, 0);
+            BookMarksControl.Name = "BookMarksControl";
+            BookMarksControl.Size = new System.Drawing.Size(117, 31);
+            BookMarksControl.TabIndex = 11;
             // 
             // tabControl2
             // 
@@ -743,5 +752,6 @@
         private System.Windows.Forms.SplitContainer splitContainer4;
         private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
+        private Utilities.UserControls.BookMarksControl BookMarksControl;
     }
 }

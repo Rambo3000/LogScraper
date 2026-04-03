@@ -66,6 +66,9 @@ namespace LogScraper
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
 
+            BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
+            BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
+
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
@@ -73,9 +76,20 @@ namespace LogScraper
             UpdateBtnErase();
         }
 
+        private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
+        {
+            UserControlLogEntriesTextBox.UpdateBookMarks(BookMarksControl.Bookmarks);
+        }
+
+        private void BookMarksControl_NavigateToEntryRequested(object sender, LogEntry logEntry)
+        {
+            UserControlLogEntriesTextBox.SelectedLogEntry = logEntry;
+        }
+
         private void UserControlLogEntriesTextBox_LogEntryAtCursorChanged(object sender, LogEntry e)
         {
             UsrMetadataFilterOverview.SelectedLogEntry = e;
+            BookMarksControl.SelectedLogEntry= e;
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)

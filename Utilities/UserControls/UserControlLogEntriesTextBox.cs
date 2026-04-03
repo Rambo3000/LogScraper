@@ -36,7 +36,6 @@ namespace LogScraper.Utilities.UserControls
             InitializeComponent();
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
-            TxtLogEntries.HideUnusedMargins();
             UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
         }
 
@@ -54,8 +53,8 @@ namespace LogScraper.Utilities.UserControls
         #region Selected log entry
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LogEntry SelectedLogEntry
-        {             
-            get 
+        {
+            get
             {
                 return selectedLogEntry;
             }
@@ -443,6 +442,11 @@ namespace LogScraper.Utilities.UserControls
         private void ChkTimelineVisible_CheckedChanged(object sender, EventArgs e)
         {
             if (ChkTimelineVisible.Checked) RaiseVisibleRangeChanged(true);
+        }
+
+        internal void UpdateBookMarks(IEnumerable<LogEntry> logEntries)
+        {
+            TxtLogEntries.ApplyLineIndicators(INDICATOR_BOOKMARK, MARKER_BOOKMARK, logEntries.Select(entry => logEntriesRenderMapCache.VisualLineIndexPerEntry[entry.Index]));
         }
     }
 }

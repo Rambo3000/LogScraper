@@ -13,26 +13,64 @@ namespace LogScraper.Utilities.Extensions
     {
         public const int INDICATOR_CAROT_LINE = 10;
         public const int INDICATOR_SEARCH = 20;
+        public const int INDICATOR_BOOKMARK = 30;
+        public const int MARGIN_BOOKMARK = 1;
+        public const int MARKER_BOOKMARK = 1;
 
         /// <summary>
         /// Initializes custom indicators for highlighting and search in the Scintilla control.
         /// Sets up visual styles for indicators used for line highlighting and search results.
         /// </summary>
-        /// <param name="scintillacontrol">The Scintilla control to initialize.</param>
-        public static void Initialize(this Scintilla scintillacontrol)
+        /// <param name="scintillaControl">The Scintilla control to initialize.</param>
+        public static void Initialize(this Scintilla scintillaControl)
         {
             // Carot position indicator
-            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Style = IndicatorStyle.Plain;
-            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].ForeColor = Color.FromArgb(0, 0, 0);
-            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Alpha = 255;
-            scintillacontrol.Indicators[INDICATOR_CAROT_LINE].Under = true;
+            scintillaControl.Indicators[INDICATOR_CAROT_LINE].Style = IndicatorStyle.Plain;
+            scintillaControl.Indicators[INDICATOR_CAROT_LINE].ForeColor = Color.FromArgb(0, 0, 0);
+            scintillaControl.Indicators[INDICATOR_CAROT_LINE].Alpha = 255;
+            scintillaControl.Indicators[INDICATOR_CAROT_LINE].Under = true;
 
-            Indicator indicator = scintillacontrol.Indicators[INDICATOR_SEARCH];
-            indicator.Style = IndicatorStyle.StraightBox;
-            indicator.Under = true;
-            indicator.ForeColor = Color.Gold;
-            indicator.Alpha = 100;
-            indicator.OutlineAlpha = 200;
+            // Search indicator
+            scintillaControl.Indicators[INDICATOR_SEARCH].Style = IndicatorStyle.StraightBox;
+            scintillaControl.Indicators[INDICATOR_SEARCH].Under = true;
+            scintillaControl.Indicators[INDICATOR_SEARCH].ForeColor = Color.Gold;
+            scintillaControl.Indicators[INDICATOR_SEARCH].Alpha = 100;
+            scintillaControl.Indicators[INDICATOR_SEARCH].OutlineAlpha = 200;
+
+            // Bookmark indicator
+            scintillaControl.Indicators[INDICATOR_BOOKMARK].Style = IndicatorStyle.RoundBox;
+            scintillaControl.Indicators[INDICATOR_BOOKMARK].ForeColor = Color.SteelBlue;
+            scintillaControl.Indicators[INDICATOR_BOOKMARK].Alpha = 30;
+            scintillaControl.Indicators[INDICATOR_BOOKMARK].OutlineAlpha = 120;
+            scintillaControl.Indicators[INDICATOR_BOOKMARK].Under = true;
+
+            // Bookmark margin marker - narrow filled stripe
+            scintillaControl.Margins[MARGIN_BOOKMARK].Type = MarginType.Symbol;
+            scintillaControl.Margins[MARGIN_BOOKMARK].Width = 5;
+            scintillaControl.Margins[MARGIN_BOOKMARK].Mask = 1 << MARKER_BOOKMARK;
+            scintillaControl.Margins[MARGIN_BOOKMARK].Sensitive = false;
+            scintillaControl.Markers[MARKER_BOOKMARK].Symbol = MarkerSymbol.FullRect;
+            scintillaControl.Markers[MARKER_BOOKMARK].SetForeColor(Color.SteelBlue);
+            scintillaControl.Markers[MARKER_BOOKMARK].SetBackColor(Color.SteelBlue);
+
+            scintillaControl.Margins[0].Width = 0;
+            scintillaControl.Margins[2].Width = 0;
+
+        }
+
+        public static void ApplyLineIndicators(this Scintilla scintilla, int indicatorIndex, int markerIndex, IEnumerable<int> lineNumbers)
+        {
+            scintilla.IndicatorCurrent = indicatorIndex;
+            scintilla.IndicatorClearRange(0, scintilla.TextLength);
+            scintilla.MarkerDeleteAll(markerIndex);
+
+            foreach (int lineNumber in lineNumbers)
+            {
+                if (lineNumber < 0 || lineNumber >= scintilla.Lines.Count) continue;
+                Line line = scintilla.Lines[lineNumber];
+                scintilla.IndicatorFillRange(line.Position, line.Length);
+                line.MarkerAdd(markerIndex);
+            }
         }
 
         /// <summary>
