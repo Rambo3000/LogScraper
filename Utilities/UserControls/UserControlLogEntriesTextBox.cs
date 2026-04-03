@@ -35,7 +35,7 @@ namespace LogScraper.Utilities.UserControls
             InitializeComponent();
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
-            UserControlPostProcessing.VisibleProcessorsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
+            UserControlPostProcessing.PostProcessingResultsChanged += UserControlPostProcessing_VisibleProcessorsChanged;
         }
 
         private void UserControlPostProcessing_VisibleProcessorsChanged(object sender, EventArgs e)

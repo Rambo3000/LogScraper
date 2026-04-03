@@ -9,11 +9,13 @@ namespace LogScraper.LogPostProcessors
     public partial class UserControlPostProcessing : UserControl
     {
         #region Initialization
+        private bool JsonProcessingIsApplicable = false;
+        private bool XmlProcessingIsApplicable = false;
+
         public UserControlPostProcessing()
         {
             InitializeComponent();
-            UpdateControlsEnabledState();
-            UpdatePreferredVisibilityFromUi();
+            UpdateControls();
         }
         #endregion
 
@@ -23,7 +25,13 @@ namespace LogScraper.LogPostProcessors
         /// </summary>
         public List<LogPostProcessorKind> VisibleProcessorKinds
         {
-            get { return effectiveVisibleKinds; }
+            get
+            {
+                List<LogPostProcessorKind> kinds = [];
+                if (JsonProcessingIsApplicable) kinds.Add(LogPostProcessorKind.JsonPrettyPrint);
+                if (XmlProcessingIsApplicable) kinds.Add(LogPostProcessorKind.XmlPrettyPrint);
+                return kinds;
+            }
         }
 
         /// <summary>
@@ -37,9 +45,9 @@ namespace LogScraper.LogPostProcessors
         public void Clear()
         {
             CancelPostProcessing();
-            isVirtuallyReset = true;
-            hasPostProcessingData = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
-            RecalculateEffectiveVisibility();
+            JsonProcessingIsApplicable = false;
+            XmlProcessingIsApplicable = false;
+            UpdateControls();
         }
         #endregion
 
@@ -50,7 +58,7 @@ namespace LogScraper.LogPostProcessors
         private void StartPostProcessing()
         {
             IsProcessing = true;
-            UpdateControlsEnabledState();
+            UpdateControls();
 
             CancelPostProcessing();
 
@@ -58,22 +66,14 @@ namespace LogScraper.LogPostProcessors
             postProcessCancellationSource = new CancellationTokenSource();
             postProcessManager.ProcessingFinished += Manager_ProcessingFinished;
 
-            List<LogPostProcessorKind> kinds = [];
-            if (prettyPrintJSONToolStripMenuItem.Checked)
-            {
-                kinds.Add(LogPostProcessorKind.JsonPrettyPrint);
-            }
-            if (prettyPrintXMLToolStripMenuItem.Checked)
-            {
-                kinds.Add(LogPostProcessorKind.XmlPrettyPrint);
-            }
-
-            bool started = postProcessManager.TryRun(kinds, postProcessCancellationSource.Token);
+            bool started = postProcessManager.TryRun(VisibleProcessorKinds, postProcessCancellationSource.Token);
 
             if (!started)
             {
                 postProcessCancellationSource?.Dispose();
                 postProcessCancellationSource = null;
+                IsProcessing = false;
+                UpdateControls();
             }
         }
 
@@ -85,136 +85,29 @@ namespace LogScraper.LogPostProcessors
                 return;
             }
 
+
             postProcessManager.ProcessingFinished -= Manager_ProcessingFinished;
             CancelPostProcessing();
 
-            LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
+            IsProcessing = false;
+            UpdateControls();
 
+            bool hasChanges = false;
+            LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
             foreach (var kind in Enum.GetValues<LogPostProcessorKind>())
             {
-                if (hasPostProcessingData[(int)kind] || !eventArgs.HasChanges[(int)kind]) continue;
-                hasPostProcessingData[(int)kind] = true;
+                hasChanges = !eventArgs.HasChanges[(int)kind];
+                if (hasChanges) break;
             }
 
-            isVirtuallyReset = false;
-            IsProcessing = false;
-            UpdateControlsEnabledState();
-
-            List<LogPostProcessorKind> previousKinds = effectiveVisibleKinds;
-            RecalculateEffectiveVisibility(); // updates effectiveVisibleKinds, fires event if changed
-
-            // Force fire if RecalculateEffectiveVisibility didnt change and thus didnt fire the event
-            if (ReferenceEquals(effectiveVisibleKinds, previousKinds))
-                VisibleProcessorsChanged?.Invoke(this, EventArgs.Empty);
+            if (hasChanges) PostProcessingResultsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
 
-        #region Preffered and effective visibility management
-        /// <summary>
-        /// What the user prefers to be shown
-        /// </summary>
-        private List<LogPostProcessorKind> preferredVisibleKinds = [];
-
-        /// <summary>
-        /// What is effectively shown
-        /// </summary>
-        private List<LogPostProcessorKind> effectiveVisibleKinds = [];
-
-        /// <summary>
-        /// Indicates whether there is any post-processing data available per processorkind.
-        /// </summary>
-        private bool[] hasPostProcessingData = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
-
-        /// <summary>
-        /// Indicates whether the post-processing state has been virtually reset (i.e., no post-processing data is considered to exist).
-        /// </summary>
-        private bool isVirtuallyReset = true;
-
-        public event EventHandler VisibleProcessorsChanged;
-        private void RecalculateEffectiveVisibility()
-        {
-            List<LogPostProcessorKind> newEffective;
-
-            // If we are virtually reset or there is no post-processing data at all, nothing is visible
-            if (isVirtuallyReset || !AnyValueTrue(hasPostProcessingData))
-            {
-                newEffective = [];
-            }
-            else
-            {
-                // Determine per processor if the user wants to see it and if there is data for it
-                newEffective = new(preferredVisibleKinds.Count);
-                foreach (LogPostProcessorKind kind in preferredVisibleKinds)
-                {
-                    if (hasPostProcessingData[(int)kind]) newEffective.Add(kind);
-                }
-            }
-
-            if (AreSameKinds(effectiveVisibleKinds, newEffective)) return;
-
-            effectiveVisibleKinds = newEffective;
-            VisibleProcessorsChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void UpdatePreferredVisibilityFromUi()
-        {
-            List<LogPostProcessorKind> preferred = new(2);
-
-            if (prettyPrintJSONToolStripMenuItem.Checked)
-                preferred.Add(LogPostProcessorKind.JsonPrettyPrint);
-
-            if (prettyPrintXMLToolStripMenuItem.Checked)
-                preferred.Add(LogPostProcessorKind.XmlPrettyPrint);
-
-            if (AreSameKinds(preferredVisibleKinds, preferred))
-                return;
-
-            preferredVisibleKinds = preferred;
-            RecalculateEffectiveVisibility();
-        }
-        private static bool AreSameKinds(List<LogPostProcessorKind> first, List<LogPostProcessorKind> second)
-        {
-            if (ReferenceEquals(first, second)) return true;
-
-            if (first == null || second == null) return false;
-
-            if (first.Count != second.Count) return false;
-
-            for (int i = 0; i < first.Count; i++)
-            {
-                if (first[i] != second[i])
-                    return false;
-            }
-
-            return true;
-        }
-        #endregion
+        public event EventHandler PostProcessingResultsChanged;
 
         #region Control event handlers and enabled state
-        private void BtnPostProcess_Click(object sender, EventArgs e)
-        {
-            StartPostProcessing();
-
-            //Remove the focus from the post process button
-            ActiveControl = null;
-        }
-        private void BtnPostProcess_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right)
-            {
-                return;
-            }
-
-            ContextMenuPostProcessing.Show(BtnPostProcess, e.Location);
-
-            //Remove the focus from the post process button
-            ActiveControl = null;
-        }
-
-        private void ApplyToVisibleLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StartPostProcessing();
-        }
 
         private void CancelPostProcessing()
         {
@@ -224,40 +117,13 @@ namespace LogScraper.LogPostProcessors
             postProcessCancellationSource = null;
         }
 
-        private void DeleteAllePostprocessingToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UpdateControls()
         {
-            isVirtuallyReset = true;
-            UpdateControlsEnabledState();
-            RecalculateEffectiveVisibility();
-        }
+            BtnJson.Enabled = !IsProcessing;
+            BtnJson.ImageIndex = IsProcessing ? 2 : 0;
 
-        private void StopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            postProcessCancellationSource?.Cancel();
-        }
-
-        private void PrettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateControlsEnabledState();
-            UpdatePreferredVisibilityFromUi();
-        }
-        private void PrettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            UpdateControlsEnabledState();
-            UpdatePreferredVisibilityFromUi();
-        }
-
-        private void UpdateControlsEnabledState()
-        {
-            bool processorSelected = prettyPrintJSONToolStripMenuItem.Checked || prettyPrintXMLToolStripMenuItem.Checked;
-
-            BtnPostProcess.ImageIndex = IsProcessing ? 1 : 0;
-            ApplyToVisibleLogToolStripMenuItem.Enabled = !IsProcessing && processorSelected;
-            StopToolStripMenuItem.Enabled = IsProcessing;
-            DeleteAllePostprocessingToolStripMenuItem.Enabled = !IsProcessing && AnyValueTrue(hasPostProcessingData) && !isVirtuallyReset;
-
-            prettyPrintJSONToolStripMenuItem.Enabled = !IsProcessing;
-            prettyPrintXMLToolStripMenuItem.Enabled = !IsProcessing;
+            BtnXml.Enabled = !IsProcessing;
+            BtnXml.ImageIndex = IsProcessing ? 2 : 1;
         }
 
         private static bool AnyValueTrue(bool[] array)
@@ -269,5 +135,17 @@ namespace LogScraper.LogPostProcessors
             return false;
         }
         #endregion
+
+        private void BtnJson_Click(object sender, EventArgs e)
+        {
+            JsonProcessingIsApplicable = true;
+            StartPostProcessing();
+        }
+
+        private void BtnXml_Click(object sender, EventArgs e)
+        {
+            XmlProcessingIsApplicable = true;
+            StartPostProcessing();
+        }
     }
 }

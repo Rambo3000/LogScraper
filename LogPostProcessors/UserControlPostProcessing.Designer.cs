@@ -30,109 +30,20 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlPostProcessing));
-            PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
-            BtnPostProcess = new LogScraper.Utilities.UserControls.SplitButton();
-            ContextMenuPostProcessing = new System.Windows.Forms.ContextMenuStrip(components);
-            ApplyToVisibleLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            StopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            DeleteAllePostprocessingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            prettyPrintJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            prettyPrintXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             imageList1 = new System.Windows.Forms.ImageList(components);
             toolTip1 = new System.Windows.Forms.ToolTip(components);
-            PnlUsedForScalingCompatibility.SuspendLayout();
-            ContextMenuPostProcessing.SuspendLayout();
+            BtnJson = new System.Windows.Forms.Button();
+            BtnXml = new System.Windows.Forms.Button();
             SuspendLayout();
-            // 
-            // PnlUsedForScalingCompatibility
-            // 
-            PnlUsedForScalingCompatibility.Controls.Add(BtnPostProcess);
-            PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
-            PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
-            PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
-            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(50, 35);
-            PnlUsedForScalingCompatibility.TabIndex = 1;
-            // 
-            // BtnPostProcess
-            // 
-            BtnPostProcess.Dock = System.Windows.Forms.DockStyle.Fill;
-            BtnPostProcess.DropDownMenu = ContextMenuPostProcessing;
-            BtnPostProcess.DropDownWidth = 15;
-            BtnPostProcess.Icon = null;
-            BtnPostProcess.ImageIndex = 0;
-            BtnPostProcess.ImageList = imageList1;
-            BtnPostProcess.Location = new System.Drawing.Point(0, 0);
-            BtnPostProcess.Name = "BtnPostProcess";
-            BtnPostProcess.Size = new System.Drawing.Size(50, 35);
-            BtnPostProcess.TabIndex = 0;
-            BtnPostProcess.ButtonClick += BtnPostProcess_Click;
-            // 
-            // ContextMenuPostProcessing
-            // 
-            ContextMenuPostProcessing.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ApplyToVisibleLogToolStripMenuItem, StopToolStripMenuItem, DeleteAllePostprocessingToolStripMenuItem, toolStripSeparator1, prettyPrintJSONToolStripMenuItem, prettyPrintXMLToolStripMenuItem });
-            ContextMenuPostProcessing.Name = "ContextMenu";
-            ContextMenuPostProcessing.ShowCheckMargin = true;
-            ContextMenuPostProcessing.Size = new System.Drawing.Size(212, 120);
-            // 
-            // ApplyToVisibleLogToolStripMenuItem
-            // 
-            ApplyToVisibleLogToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("ApplyToVisibleLogToolStripMenuItem.Image");
-            ApplyToVisibleLogToolStripMenuItem.Name = "ApplyToVisibleLogToolStripMenuItem";
-            ApplyToVisibleLogToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            ApplyToVisibleLogToolStripMenuItem.Text = "Pretty print toepassen";
-            ApplyToVisibleLogToolStripMenuItem.Click += ApplyToVisibleLogToolStripMenuItem_Click;
-            // 
-            // StopToolStripMenuItem
-            // 
-            StopToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("StopToolStripMenuItem.Image");
-            StopToolStripMenuItem.Name = "StopToolStripMenuItem";
-            StopToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            StopToolStripMenuItem.Text = "Stop";
-            StopToolStripMenuItem.Click += StopToolStripMenuItem_Click;
-            // 
-            // DeleteAllePostprocessingToolStripMenuItem
-            // 
-            DeleteAllePostprocessingToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("DeleteAllePostprocessingToolStripMenuItem.Image");
-            DeleteAllePostprocessingToolStripMenuItem.Name = "DeleteAllePostprocessingToolStripMenuItem";
-            DeleteAllePostprocessingToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            DeleteAllePostprocessingToolStripMenuItem.Text = "Wissen";
-            DeleteAllePostprocessingToolStripMenuItem.Click += DeleteAllePostprocessingToolStripMenuItem_Click;
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(208, 6);
-            // 
-            // prettyPrintJSONToolStripMenuItem
-            // 
-            prettyPrintJSONToolStripMenuItem.Checked = true;
-            prettyPrintJSONToolStripMenuItem.CheckOnClick = true;
-            prettyPrintJSONToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            prettyPrintJSONToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("prettyPrintJSONToolStripMenuItem.Image");
-            prettyPrintJSONToolStripMenuItem.Name = "prettyPrintJSONToolStripMenuItem";
-            prettyPrintJSONToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            prettyPrintJSONToolStripMenuItem.Text = "Pretty print JSON";
-            prettyPrintJSONToolStripMenuItem.Click += PrettyPrintJSONToolStripMenuItem_Click;
-            // 
-            // prettyPrintXMLToolStripMenuItem
-            // 
-            prettyPrintXMLToolStripMenuItem.Checked = true;
-            prettyPrintXMLToolStripMenuItem.CheckOnClick = true;
-            prettyPrintXMLToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            prettyPrintXMLToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("prettyPrintXMLToolStripMenuItem.Image");
-            prettyPrintXMLToolStripMenuItem.Name = "prettyPrintXMLToolStripMenuItem";
-            prettyPrintXMLToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            prettyPrintXMLToolStripMenuItem.Text = "Pretty print XML";
-            prettyPrintXMLToolStripMenuItem.Click += PrettyPrintXMLToolStripMenuItem_Click;
             // 
             // imageList1
             // 
             imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
             imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "auto-fix-custom 16x16.png");
-            imageList1.Images.SetKeyName(1, "cogs-custom 16x16.png");
+            imageList1.Images.SetKeyName(0, "code-json-custom 16x16.png");
+            imageList1.Images.SetKeyName(1, "xml-custom 16x16.png");
+            imageList1.Images.SetKeyName(2, "cogs-custom 16x16.png");
             // 
             // toolTip1
             // 
@@ -140,29 +51,45 @@
             toolTip1.InitialDelay = 250;
             toolTip1.ReshowDelay = 100;
             // 
+            // BtnJson
+            // 
+            BtnJson.ImageIndex = 0;
+            BtnJson.ImageList = imageList1;
+            BtnJson.Location = new System.Drawing.Point(0, 0);
+            BtnJson.Name = "BtnJson";
+            BtnJson.Size = new System.Drawing.Size(25, 25);
+            BtnJson.TabIndex = 1;
+            toolTip1.SetToolTip(BtnJson, "Pretty print JSON");
+            BtnJson.UseVisualStyleBackColor = true;
+            BtnJson.Click += BtnJson_Click;
+            // 
+            // BtnXml
+            // 
+            BtnXml.ImageIndex = 1;
+            BtnXml.ImageList = imageList1;
+            BtnXml.Location = new System.Drawing.Point(25, 0);
+            BtnXml.Name = "BtnXml";
+            BtnXml.Size = new System.Drawing.Size(25, 25);
+            BtnXml.TabIndex = 2;
+            toolTip1.SetToolTip(BtnXml, "Pretty print XML");
+            BtnXml.UseVisualStyleBackColor = true;
+            BtnXml.Click += BtnXml_Click;
+            // 
             // UserControlPostProcessing
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(PnlUsedForScalingCompatibility);
+            Controls.Add(BtnXml);
+            Controls.Add(BtnJson);
             Name = "UserControlPostProcessing";
-            Size = new System.Drawing.Size(50, 35);
-            PnlUsedForScalingCompatibility.ResumeLayout(false);
-            ContextMenuPostProcessing.ResumeLayout(false);
+            Size = new System.Drawing.Size(53, 28);
             ResumeLayout(false);
         }
 
         #endregion
-        private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
-        private System.Windows.Forms.ContextMenuStrip ContextMenuPostProcessing;
-        private System.Windows.Forms.ToolStripMenuItem prettyPrintJSONToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem prettyPrintXMLToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem ApplyToVisibleLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem DeleteAllePostprocessingToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.ToolStripMenuItem StopToolStripMenuItem;
-        private Utilities.UserControls.SplitButton BtnPostProcess;
+        private System.Windows.Forms.Button BtnJson;
+        private System.Windows.Forms.Button BtnXml;
     }
 }
