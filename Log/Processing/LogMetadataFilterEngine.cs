@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Processing
 {
@@ -14,21 +16,17 @@ namespace LogScraper.Log.Processing
         /// <summary>
         /// Filters the log entries based on the provided metadata filters, and computes value counts for the filtered result.
         /// </summary>
-        /// <param name="allLogEntries">The list of all log entries.</param>
+        /// <param name="collection">The log collection containing the log entries to filter.</param>
         /// <param name="filters">The list of metadata filters to apply.</param>
         /// <param name="logLayout">The log layout used to build flow trees.</param>
         /// <returns>A result containing the filtered log entries, per-property value counts, and log flow trees.</returns>
-        public static LogMetadataFilterResult Apply(List<LogEntry> allLogEntries, List<LogMetadataFilter> filters, LogLayout logLayout)
+        public static LogMetadataFilterResult Apply(LogCollection collection, List<LogMetadataFilter> filters, LogLayout logLayout)
         {
-            LogMetadataFilterResult result = new()
-            {
-                LogEntries = FilterLogEntries(allLogEntries, filters),
-            };
+            List<LogEntry> logEntries = FilterLogEntries(collection.LogEntries, filters);
+            IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> filterStats = LogMetadataStatsBuilder.Build(logEntries, logLayout.LogMetadataProperties);
+            IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees = LogFlowTreeBuilder.Build(logLayout, logEntries);
 
-            result.FilterStats = LogMetadataStatsBuilder.Build(result.LogEntries, logLayout.LogMetadataProperties);
-            result.LogFlowTrees = LogFlowTreeBuilder.Build(logLayout, result.LogEntries);
-
-            return result;
+            return new(logEntries, filters, filterStats, logFlowTrees, collection);
         }
 
         /// <summary>

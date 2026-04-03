@@ -239,7 +239,7 @@ namespace LogScraper
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
             currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
-                LogCollection.Instance.LogEntries,
+                LogCollection.Instance,
                 activeFilters,
                 (LogLayout)cboLogLayout.SelectedItem);
 

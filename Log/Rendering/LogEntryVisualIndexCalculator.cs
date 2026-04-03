@@ -58,38 +58,24 @@ namespace LogScraper.Log.Rendering
 
             return logEntriesToStylePerContentProperty;
         }
-
         /// <summary>
-        /// Attempts to find the visual line index of a specified log entry within a collection of visible log entries.
+        /// Attempts to retrieve the visual line index associated with the specified log entry from the provided render
+        /// map cache.
         /// </summary>
-        /// <remarks>The visual line index reflects the position of the log entry as it appears after
-        /// applying any post-processing defined in the provided collection. If the target entry is not present in the
-        /// visible log entries, the method returns false and the index is set to -1.</remarks>
-        /// <param name="visibleLogEntries">The list of log entries that are currently visible. Cannot be null.</param>
-        /// <param name="targetEntry">The log entry for which to find the visual line index. Cannot be null.</param>
-        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
-        /// <param name="index">When this method returns, contains the zero-based visual line index of the specified log entry if found;
-        /// otherwise, -1. This parameter is passed uninitialized.</param>
-        /// <returns>true if the visual line index of the specified log entry is found; otherwise, false.</returns>
-        public static bool TryGetVisualLineIndex(IList<LogEntry> visibleLogEntries, LogEntry targetEntry, List<LogPostProcessorKind> logPostProcessorKinds, out int index)
+        /// <param name="logEntry">The log entry for which to obtain the visual line index. Cannot be null.</param>
+        /// <param name="logEntriesRenderMapCache">The render map cache containing the mapping of log entries to visual line indices. Cannot be null.</param>
+        /// <param name="selectedIndex">When this method returns <see langword="true"/>, contains the visual line index corresponding to the
+        /// specified log entry; otherwise, set to -1.</param>
+        /// <returns><see langword="true"/> if the visual line index was successfully retrieved; otherwise, <see
+        /// langword="false"/>.</returns>
+        internal static bool TryGetVisualLineIndex(LogEntry logEntry, LogEntriesRenderMap logEntriesRenderMapCache, out int selectedIndex)
         {
-            index = -1;
-            int currentVisualLineIndex = 0;
+            selectedIndex = -1;
+            if (logEntry == null || logEntriesRenderMapCache == null || logEntriesRenderMapCache.VisualLineIndexPerEntryEntireCollection == null || logEntry.Index > logEntriesRenderMapCache.VisualLineIndexPerEntryEntireCollection.Length) return false;
 
-            for (int i = 0; i < visibleLogEntries.Count; i++)
-            {
-                LogEntry logEntry = visibleLogEntries[i];
+            selectedIndex = logEntriesRenderMapCache.VisualLineIndexPerEntryEntireCollection[logEntry.Index];
 
-                if (logEntry == targetEntry)
-                {
-                    index = currentVisualLineIndex;
-                    return true;
-                }
-
-                currentVisualLineIndex += GetVisualLineSpan(logEntry, logPostProcessorKinds);
-            }
-
-            return false;
+            return selectedIndex != -1;
         }
 
         /// <summary>

@@ -14,6 +14,7 @@ using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.IndexDictionary;
+using Newtonsoft.Json.Linq;
 using ScintillaNET;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
@@ -30,6 +31,7 @@ namespace LogScraper.Utilities.UserControls
         private IndexDictionary<LogContentProperty, List<int>> contentLinesToStyle = null;
         private LogEntry selectedLogEntry = null;
         private LogEntry logEntryAtCursor = null;
+        private IEnumerable<LogEntry> bookmarks = null;
 
         public UserControlLogEntriesTextBox()
         {
@@ -64,7 +66,7 @@ namespace LogScraper.Utilities.UserControls
                 {
                     if (value == null) return;
 
-                    if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, value, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
+                    if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(value, logEntriesRenderMapCache, out int selectedIndex))
                     {
                         TxtLogEntries.ScrollToLine(selectedIndex);
                     }
@@ -124,14 +126,10 @@ namespace LogScraper.Utilities.UserControls
             RenderLogEntries();
 
             // Try to restore the log entry at the carot after the render, if it is still visible
-            if (logEntryAtCarot != null)
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, logEntriesRenderMapCache, out int selectedIndex))
             {
-
-                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(VisibleLogEntries, logEntryAtCarot, UserControlPostProcessing.VisibleProcessorKinds, out int selectedIndex))
-                {
-                    TxtLogEntries.ScrollToLine(selectedIndex);
-                    TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
-                }
+                TxtLogEntries.ScrollToLine(selectedIndex);
+                TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
             }
         }
         /// <summary>
@@ -172,14 +170,10 @@ namespace LogScraper.Utilities.UserControls
             // This also returns an array mapping each visible log entry to the visual line index
             contentLinesToStyle = LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, logPostProcessorKinds, out int[] visualLineIndexPerVisibleEntry);
 
+            LogEntriesRenderMap postRenderLogEntriesRenderMap = new(VisibleLogEntries, visualLineIndexPerVisibleEntry, LogMetadataFilterResult.SourceLogCollection.LogEntries.Count);
+
             // Apply custom per-line styling after visual indices are known
             StyleLines();
-
-            LogEntriesRenderMap postRenderLogEntriesRenderMap = new()
-            {
-                VisibleLogEntries = VisibleLogEntries,
-                VisualLineIndexPerEntry = visualLineIndexPerVisibleEntry
-            };
 
             if (preRenderTopLogEntryRenderPosition != null)
             {
@@ -193,6 +187,9 @@ namespace LogScraper.Utilities.UserControls
 
             // Update caches for the next render cycle
             logEntriesRenderMapCache = postRenderLogEntriesRenderMap;
+
+            // Show bookmarks if used, after the logEntriesRenderMapCache is set
+            ApplyBookmarks();
 
             //Raise the event that the visible range changed
             RaiseVisibleRangeChanged(true);
@@ -444,9 +441,22 @@ namespace LogScraper.Utilities.UserControls
             if (ChkTimelineVisible.Checked) RaiseVisibleRangeChanged(true);
         }
 
-        internal void UpdateBookMarks(IEnumerable<LogEntry> logEntries)
+        public void UpdateBookMarks(IEnumerable<LogEntry> logEntries)
         {
-            TxtLogEntries.ApplyLineIndicators(INDICATOR_BOOKMARK, MARKER_BOOKMARK, logEntries.Select(entry => logEntriesRenderMapCache.VisualLineIndexPerEntry[entry.Index]));
+            bookmarks = logEntries;
+            ApplyBookmarks();
+        }
+
+        private void ApplyBookmarks()
+        {
+            TxtLogEntries.ApplyLineIndicators(
+                INDICATOR_BOOKMARK,
+                MARKER_BOOKMARK,
+                bookmarks == null ? [] : bookmarks
+                    .Select(logEntry => LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntry, logEntriesRenderMapCache, out int visualIndex) ? (int?)visualIndex : null)
+                    .Where(index => index.HasValue)
+                    .Select(index => index.Value)
+            );
         }
     }
 }
