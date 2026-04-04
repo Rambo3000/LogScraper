@@ -19,11 +19,19 @@ namespace LogScraper.Utilities.UserControls
 
         // Log entry collections
         private List<LogEntry> allLogEntries = [];
+        private List<LogEntry> displayedLogEntries = [];
         private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
         private List<LogEntry> errorLogEntries = [];
         private List<LogEntry> allBookmarkLogEntries = [];
         private List<LogEntry> bookmarkLogEntries = [];
+
+        // Full collection span (for minimap)
+        private DateTime fullSpanMinimum;
+        private DateTime fullSpanMaximum;
+
+        // Log range
         private LogRange _logRange;
+        private bool _showFullTimeline = true;
 
         // Bucketing and scaling
         private TimeSpan currentBucketSize;
@@ -35,6 +43,7 @@ namespace LogScraper.Utilities.UserControls
         private int hoveredBucketIndex = -1;
         private int hoveredErrorIndex = -1;
         private int hoveredBookmarkIndex = -1;
+        private bool hoveredMinimap = false;
 
         // Visible range tracking (timestamp-based to match timeline bars)
         private DateTime? visibleRangeStart = null;
@@ -44,7 +53,9 @@ namespace LogScraper.Utilities.UserControls
         private const double SCALE_POWER = 0.4;
         private const int MINIMUM_BUCKET_COUNT = 256;
         private const int ERROR_MARKER_SIZE = 8;
-        private const int MINIMUM_VISIBLE_RANGE_WIDTH = 1; // Minimum width in pixels for visibility
+        private const int MINIMUM_VISIBLE_RANGE_WIDTH = 1;
+        private const int MINIMAP_HEIGHT = 5;
+        private const int MINIMAP_ACCENT_WIDTH = 2;
 
         // Colors
         private static readonly Color BAR_COLOR = Color.LightGray;
@@ -56,6 +67,12 @@ namespace LogScraper.Utilities.UserControls
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
         private static readonly Color BOOKMARK_MARKER_COLOR = Color.SteelBlue;
         private static readonly Color BOOKMARK_MARKER_HOVER_COLOR = Color.FromArgb(255, 120, 180, 230);
+        private static readonly Color MINIMAP_BACKGROUND_COLOR = Color.FromArgb(230, 230, 230);
+        private static readonly Color MINIMAP_RANGE_COLOR = Color.FromArgb(153, 70, 130, 180); // SteelBlue ~60% opacity
+        private static readonly Color MINIMAP_ACCENT_COLOR = Color.SteelBlue;
+
+        // Tooltip
+        private readonly ToolTip toolTip = new();
 
         #endregion
 
@@ -102,12 +119,21 @@ namespace LogScraper.Utilities.UserControls
         /// <summary>
         /// Updates the log entries displayed in the timeline.
         /// Supports incremental updates if new entries are appended to existing data.
+        /// The full collection is used to determine the minimap time span.
         /// </summary>
-        public void UpdateLogEntries(List<LogEntry> entries)
+        public void UpdateLogEntries(List<LogEntry> entries, LogCollection fullCollection)
         {
+            // Store full span from collection for minimap
+            if (fullCollection?.LogEntries?.Count > 0)
+            {
+                fullSpanMinimum = fullCollection.LogEntries[0].TimeStamp;
+                fullSpanMaximum = fullCollection.LogEntries[^1].TimeStamp;
+            }
+
             if (entries == null || entries.Count == 0)
             {
                 allLogEntries.Clear();
+                displayedLogEntries.Clear();
                 buckets.Clear();
                 errorLogEntries.Clear();
                 this.Invalidate();
@@ -126,27 +152,21 @@ namespace LogScraper.Utilities.UserControls
                 LogEntry newLast = entries[allLogEntries.Count - 1];
 
                 if (currentFirst.TimeStamp == newFirst.TimeStamp && currentLast.TimeStamp == newLast.TimeStamp)
-                {
                     isAppend = true;
-                }
             }
 
             if (isAppend)
             {
-                // Only add new entries
                 List<LogEntry> newEntries = [.. entries.Skip(allLogEntries.Count)];
                 allLogEntries.AddRange(newEntries);
-                RecalculateBuckets();
             }
             else
             {
-                // Full replacement
                 allLogEntries = [.. entries];
-                RecalculateBuckets();
             }
 
-            // Update error entries list
-            errorLogEntries = [.. allLogEntries.Where(entry => entry.IsErrorLogEntry)];
+            RebuildDisplayedEntries();
+            errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
 
             this.Invalidate();
         }
@@ -162,29 +182,20 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>
-        /// Updates the log range used to filter visible bookmark markers.
+        /// Updates the log range used to filter the histogram and bookmark markers.
         /// </summary>
         public void SetLogRange(LogRange logRange)
         {
             _logRange = logRange;
+            RebuildDisplayedEntries();
             RebuildFilteredBookmarkMarkers();
+            errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
             this.Invalidate();
-        }
-
-        private void RebuildFilteredBookmarkMarkers()
-        {
-            int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
-            int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
-
-            bookmarkLogEntries = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
         }
 
         /// <summary>
         /// Sets the visible range of log entries currently shown in the log viewer.
-        /// Uses timestamps to accurately match the time-based timeline visualization.
         /// </summary>
-        /// <param name="startTimestamp">Timestamp of first visible log entry</param>
-        /// <param name="endTimestamp">Timestamp of last visible log entry</param>
         public void SetVisibleRange(DateTime startTimestamp, DateTime endTimestamp)
         {
             visibleRangeStart = startTimestamp;
@@ -204,31 +215,63 @@ namespace LogScraper.Utilities.UserControls
 
         #endregion
 
+        #region Display Entry Management
+
+        /// <summary>
+        /// Rebuilds the displayed entry set based on the current range and show-full-timeline state.
+        /// When no range is active or show full timeline is on, all entries are displayed.
+        /// </summary>
+        private void RebuildDisplayedEntries()
+        {
+            bool rangeIsConstrained = _logRange?.IsConstrained == true;
+
+            if (!rangeIsConstrained || _showFullTimeline)
+            {
+                displayedLogEntries = allLogEntries;
+            }
+            else
+            {
+                int rangeBegin = _logRange.Begin?.Index ?? int.MinValue;
+                int rangeEnd = _logRange.End?.Index ?? int.MaxValue;
+                displayedLogEntries = [.. allLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+            }
+
+            RecalculateBuckets();
+        }
+
+        private void RebuildFilteredBookmarkMarkers()
+        {
+            int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
+            int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
+
+            bookmarkLogEntries = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+        }
+
+        #endregion
+
         #region Bucketing Logic
 
         /// <summary>
-        /// Recalculates time buckets for the histogram based on current log entries.
+        /// Recalculates time buckets for the histogram based on displayed log entries.
         /// </summary>
         private void RecalculateBuckets()
         {
             buckets.Clear();
 
-            if (allLogEntries.Count == 0)
+            if (displayedLogEntries.Count == 0)
                 return;
 
-            minimumTimestamp = allLogEntries[0].TimeStamp;
-            maximumTimestamp = allLogEntries[^1].TimeStamp;
+            minimumTimestamp = displayedLogEntries[0].TimeStamp;
+            maximumTimestamp = displayedLogEntries[^1].TimeStamp;
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
             if (totalSpan.TotalSeconds < 1)
                 totalSpan = TimeSpan.FromSeconds(1);
 
-            // Calculate bucket size based on available width
             int availableWidth = this.Width;
             int desiredBucketCount = Math.Max(MINIMUM_BUCKET_COUNT, availableWidth / 10);
             currentBucketSize = CalculateOptimalBucketSize(totalSpan, desiredBucketCount);
 
-            // Create bucket structure
             DateTime bucketStart = RoundDownToNearestBucket(minimumTimestamp, currentBucketSize);
             DateTime bucketEnd = RoundDownToNearestBucket(maximumTimestamp, currentBucketSize).Add(currentBucketSize);
 
@@ -239,8 +282,7 @@ namespace LogScraper.Utilities.UserControls
                 currentBucket = currentBucket.Add(currentBucketSize);
             }
 
-            // Distribute log entries into buckets
-            foreach (LogEntry entry in allLogEntries)
+            foreach (LogEntry entry in displayedLogEntries)
             {
                 DateTime bucketKey = GetBucketKeyForTimestamp(entry.TimeStamp, bucketStart, currentBucketSize);
 
@@ -248,7 +290,6 @@ namespace LogScraper.Utilities.UserControls
                     value.Add(entry);
             }
 
-            // Calculate maximum scaled value for normalization
             if (buckets.Count > 0)
             {
                 int maximumCount = buckets.Values.Max(list => list.Count);
@@ -257,9 +298,6 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        /// <summary>
-        /// Calculates an optimal bucket size from a set of nice intervals.
-        /// </summary>
         private static TimeSpan CalculateOptimalBucketSize(TimeSpan totalSpan, int desiredBuckets)
         {
             double secondsPerBucket = totalSpan.TotalSeconds / desiredBuckets;
@@ -297,9 +335,6 @@ namespace LogScraper.Utilities.UserControls
             return TimeSpan.FromDays(30);
         }
 
-        /// <summary>
-        /// Rounds a timestamp down to the nearest bucket boundary.
-        /// </summary>
         private static DateTime RoundDownToNearestBucket(DateTime timestamp, TimeSpan bucketSize)
         {
             long ticks = timestamp.Ticks;
@@ -308,9 +343,6 @@ namespace LogScraper.Utilities.UserControls
             return new DateTime(roundedTicks);
         }
 
-        /// <summary>
-        /// Gets the bucket key for a given timestamp.
-        /// </summary>
         private static DateTime GetBucketKeyForTimestamp(DateTime timestamp, DateTime bucketStart, TimeSpan bucketSize)
         {
             TimeSpan offset = timestamp - bucketStart;
@@ -328,7 +360,7 @@ namespace LogScraper.Utilities.UserControls
         /// <returns>X position, or -1 if timestamp is out of range</returns>
         private float GetXPositionForTimestamp(DateTime timestamp)
         {
-            if (allLogEntries.Count == 0)
+            if (displayedLogEntries.Count == 0)
                 return 0;
 
             if (timestamp < minimumTimestamp || timestamp > maximumTimestamp)
@@ -339,6 +371,24 @@ namespace LogScraper.Utilities.UserControls
 
             double percentage = offset.TotalSeconds / totalSpan.TotalSeconds;
             return (float)(percentage * this.Width);
+        }
+
+        /// <summary>
+        /// Returns the height available for the histogram area, excluding the minimap strip when visible.
+        /// </summary>
+        private int GetHistogramHeight()
+        {
+            return _logRange?.IsConstrained == true
+                ? this.Height - MINIMAP_HEIGHT
+                : this.Height;
+        }
+
+        /// <summary>
+        /// Returns true if the given y coordinate falls within the minimap strip.
+        /// </summary>
+        private bool IsInMinimapStrip(int y)
+        {
+            return _logRange?.IsConstrained == true && y >= this.Height - MINIMAP_HEIGHT;
         }
 
         #endregion
@@ -358,10 +408,28 @@ namespace LogScraper.Utilities.UserControls
                 return;
 
             int drawableWidth = this.Width;
-            int drawableHeight = this.Height;
+            int drawableHeight = GetHistogramHeight();
 
             if (drawableWidth <= 0 || drawableHeight <= 0)
                 return;
+
+            // When range is defined but full timeline is shown, dim everything outside the log range
+            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            {
+                float rangeStartX = _logRange.Begin != null ? GetXPositionForTimestamp(_logRange.Begin.TimeStamp) : 0;
+                float rangeEndX = _logRange.End != null ? GetXPositionForTimestamp(_logRange.End.TimeStamp) : drawableWidth;
+
+                if (rangeStartX < 0) rangeStartX = 0;
+                if (rangeEndX < 0) rangeEndX = drawableWidth;
+
+                using SolidBrush dimBrush = new(Color.FromArgb(60, 0, 0, 0));
+
+                if (rangeStartX > 0)
+                    graphics.FillRectangle(dimBrush, 0, 0, rangeStartX, drawableHeight);
+
+                if (rangeEndX < drawableWidth)
+                    graphics.FillRectangle(dimBrush, rangeEndX, 0, drawableWidth - rangeEndX, drawableHeight);
+            }
 
             // Draw histogram bars
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
@@ -389,25 +457,56 @@ namespace LogScraper.Utilities.UserControls
                 }
             }
 
-            DrawTimeTickMarks(graphics);
+            DrawTimeTickMarks(graphics, drawableHeight);
             DrawErrorMarkers(graphics, drawableHeight);
             DrawBookmarkMarkers(graphics, drawableHeight);
 
-            // Draw visible range indicator
             if (visibleRangeStart.HasValue && visibleRangeEnd.HasValue)
-            {
                 DrawVisibleRangeIndicator(graphics, drawableHeight);
-            }
 
-            // Draw tooltips
             if (hoveredBucketIndex >= 0 && hoveredBucketIndex < bucketCount)
-            {
                 DrawTooltip(graphics, sortedBucketKeys[hoveredBucketIndex], totalBarWidth);
-            }
             else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
-            {
                 DrawErrorTooltip(graphics, errorLogEntries[hoveredErrorIndex]);
-            }
+
+            if (_logRange?.IsConstrained == true)
+                DrawMinimapStrip(graphics);
+        }
+
+        /// <summary>
+        /// Draws the minimap strip at the bottom of the control showing the active range
+        /// relative to the full log collection span. Click anywhere on the strip to toggle
+        /// between zoomed range view and full timeline view.
+        /// </summary>
+        private void DrawMinimapStrip(Graphics graphics)
+        {
+            if (fullSpanMaximum == fullSpanMinimum)
+                return;
+
+            int stripY = this.Height - MINIMAP_HEIGHT;
+            int stripWidth = this.Width;
+
+            // Background
+            using (SolidBrush backgroundBrush = new(MINIMAP_BACKGROUND_COLOR))
+                graphics.FillRectangle(backgroundBrush, 0, stripY, stripWidth, MINIMAP_HEIGHT);
+
+            TimeSpan fullSpan = fullSpanMaximum - fullSpanMinimum;
+
+            DateTime rangeBeginTimestamp = _logRange.Begin?.TimeStamp ?? fullSpanMinimum;
+            DateTime rangeEndTimestamp = _logRange.End?.TimeStamp ?? fullSpanMaximum;
+
+            float beginX = (float)((rangeBeginTimestamp - fullSpanMinimum).TotalSeconds / fullSpan.TotalSeconds * stripWidth);
+            float endX = (float)((rangeEndTimestamp - fullSpanMinimum).TotalSeconds / fullSpan.TotalSeconds * stripWidth);
+            float rangeWidth = Math.Max(endX - beginX, 2f);
+
+            // Range fill
+            using (SolidBrush rangeBrush = new(MINIMAP_RANGE_COLOR))
+                graphics.FillRectangle(rangeBrush, beginX, stripY, rangeWidth, MINIMAP_HEIGHT);
+
+            // Accent lines at range boundaries
+            using Pen accentPen = new(MINIMAP_ACCENT_COLOR, MINIMAP_ACCENT_WIDTH);
+            graphics.DrawLine(accentPen, beginX, stripY, beginX, this.Height);
+            graphics.DrawLine(accentPen, endX, stripY, endX, this.Height);
         }
 
         /// <summary>
@@ -458,10 +557,10 @@ namespace LogScraper.Utilities.UserControls
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
-
-            for (int i = 0; i < bookmarkLogEntries.Count; i++)
+            List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
+            for (int i = 0; i < bookmarksLogEntriesToUse.Count; i++)
             {
-                LogEntry bookmarkEntry = bookmarkLogEntries[i];
+                LogEntry bookmarkEntry = bookmarksLogEntriesToUse[i];
 
                 int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
 
@@ -477,7 +576,7 @@ namespace LogScraper.Utilities.UserControls
                 Color markerColor = (i == hoveredBookmarkIndex) ? BOOKMARK_MARKER_HOVER_COLOR : BOOKMARK_MARKER_COLOR;
 
                 float markerX = exactX - (ERROR_MARKER_SIZE / 2);
-                float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4); // One band above error markers
+                float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4);
 
                 using SolidBrush brush = new(markerColor);
                 graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
@@ -486,12 +585,10 @@ namespace LogScraper.Utilities.UserControls
 
         /// <summary>
         /// Draws a semi-transparent overlay indicating the currently visible range in the log viewer.
-        /// Uses bucket-based calculation to match the histogram layout, with special handling for edge buckets.
-        /// Includes a minimum width for visibility and thicker border lines.
         /// </summary>
         private void DrawVisibleRangeIndicator(Graphics graphics, int drawableHeight)
         {
-            if (allLogEntries.Count == 0 || buckets.Count == 0)
+            if (displayedLogEntries.Count == 0 || buckets.Count == 0)
                 return;
 
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
@@ -507,8 +604,7 @@ namespace LogScraper.Utilities.UserControls
             float startX;
             float endX;
 
-            // For the first bucket, use x = 0
-            if (startBucketIndex == 0 && visibleRangeStart == allLogEntries[0].TimeStamp)
+            if (startBucketIndex == 0 && visibleRangeStart == minimumTimestamp)
             {
                 startX = 0;
             }
@@ -520,8 +616,7 @@ namespace LogScraper.Utilities.UserControls
                 startX = startBucketX + (float)(startFraction * totalBarWidth);
             }
 
-            // For the last bucket, use x = control.Width
-            if (endBucketIndex == bucketCount - 1 && visibleRangeEnd == allLogEntries[^1].TimeStamp)
+            if (endBucketIndex == bucketCount - 1 && visibleRangeEnd == maximumTimestamp)
             {
                 endX = this.Width;
             }
@@ -535,7 +630,6 @@ namespace LogScraper.Utilities.UserControls
 
             float width = endX - startX;
 
-            // Ensure minimum width for visibility
             if (width < MINIMUM_VISIBLE_RANGE_WIDTH)
             {
                 float center = (startX + endX) / 2;
@@ -547,18 +641,13 @@ namespace LogScraper.Utilities.UserControls
             if (width <= 0) return;
 
             using (SolidBrush fillBrush = new(VISIBLE_RANGE_COLOR))
-            {
                 graphics.FillRectangle(fillBrush, startX, 0, width, drawableHeight);
-            }
 
             using Pen borderPen = new(VISIBLE_RANGE_BORDER_COLOR, 2);
             graphics.DrawLine(borderPen, startX, 0, startX, drawableHeight);
             graphics.DrawLine(borderPen, endX, 0, endX, drawableHeight);
         }
 
-        /// <summary>
-        /// Finds the bucket index that contains the given timestamp.
-        /// </summary>
         private int FindBucketIndexContainingTimestamp(DateTime timestamp, List<DateTime> sortedBucketKeys)
         {
             for (int i = 0; i < sortedBucketKeys.Count; i++)
@@ -579,9 +668,9 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>
-        /// Draws time tick marks along the x-axis of the timeline, with labels formatted based on the total time span of the data.
+        /// Draws time tick marks along the x-axis of the histogram area.
         /// </summary>
-        private void DrawTimeTickMarks(Graphics graphics)
+        private void DrawTimeTickMarks(Graphics graphics, int drawableHeight)
         {
             using Pen tickPen = new(Color.FromArgb(150, 180, 180, 180), 1);
             using Font font = new("Segoe UI", 7);
@@ -610,9 +699,6 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        /// <summary>
-        /// Formats tick labels based on the total time span of the data, using more granular formats for shorter spans and more general formats for longer spans.
-        /// </summary>
         private static string FormatTickLabelBySpan(DateTime timestamp, TimeSpan totalSpan)
         {
             if (totalSpan.TotalDays >= 2)
@@ -631,9 +717,6 @@ namespace LogScraper.Utilities.UserControls
                 return timestamp.ToString("s.fff") + " s";
         }
 
-        /// <summary>
-        /// Draws a tooltip for a histogram bucket.
-        /// </summary>
         private void DrawTooltip(Graphics graphics, DateTime bucketKey, float barWidth)
         {
             List<LogEntry> bucketEntries = buckets[bucketKey];
@@ -660,8 +743,7 @@ namespace LogScraper.Utilities.UserControls
             float tooltipX = (hoveredBucketIndex * barWidth) + (barWidth / 2) - (tooltipWidth / 2);
             float tooltipY = 2;
 
-            if (tooltipX < 5)
-                tooltipX = 5;
+            if (tooltipX < 5) tooltipX = 5;
             if (tooltipX + tooltipWidth > this.Width - 5)
                 tooltipX = this.Width - tooltipWidth - 5;
 
@@ -676,9 +758,6 @@ namespace LogScraper.Utilities.UserControls
             graphics.DrawString(tooltipText, font, textBrush, tooltipX, tooltipY);
         }
 
-        /// <summary>
-        /// Draws a tooltip for an error marker.
-        /// </summary>
         private void DrawErrorTooltip(Graphics graphics, LogEntry errorEntry)
         {
             string tooltipText = $"Error at {errorEntry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
@@ -693,8 +772,7 @@ namespace LogScraper.Utilities.UserControls
             float tooltipX = xPosition - (tooltipWidth / 2);
             float tooltipY = 20;
 
-            if (tooltipX < 5)
-                tooltipX = 5;
+            if (tooltipX < 5) tooltipX = 5;
             if (tooltipX + tooltipWidth > this.Width - 5)
                 tooltipX = this.Width - tooltipWidth - 5;
 
@@ -714,10 +792,39 @@ namespace LogScraper.Utilities.UserControls
         #region Mouse Interaction
 
         /// <summary>
-        /// Handles mouse movement for hover effects.
+        /// Handles mouse movement for hover effects, including minimap strip hover.
         /// </summary>
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            // Minimap strip hover — handle before anything else
+            if (IsInMinimapStrip(e.Y))
+            {
+                if (!hoveredMinimap)
+                {
+                    hoveredMinimap = true;
+                    this.Invalidate();
+                }
+
+                string tooltipText = _showFullTimeline
+                    ? "Klik om in te zoomen op het bereik"
+                    : "Klik om het volledige tijdlijn te tonen";
+
+                toolTip.SetToolTip(this, tooltipText);
+
+                if (this.Cursor != Cursors.Hand)
+                    this.Cursor = Cursors.Hand;
+
+                return;
+            }
+
+            if (hoveredMinimap)
+            {
+                hoveredMinimap = false;
+                toolTip.SetToolTip(this, string.Empty);
+                this.Cursor = Cursors.Default;
+                this.Invalidate();
+            }
+
             if (buckets.Count == 0)
             {
                 if (this.Cursor != Cursors.Default)
@@ -727,7 +834,7 @@ namespace LogScraper.Utilities.UserControls
 
             bool cursorChanged = false;
 
-            // Check for bookmark marker hover first
+            // Check for bookmark marker hover
             int newHoveredBookmarkIndex = GetBookmarkMarkerIndexAtPosition(e.X, e.Y);
 
             if (newHoveredBookmarkIndex != -1)
@@ -790,7 +897,6 @@ namespace LogScraper.Utilities.UserControls
                     {
                         DateTime bucketKey = sortedBucketKeys[newHoveredIndex];
                         int entryCount = buckets[bucketKey].Count;
-
                         bool hasEntries = entryCount > 0;
 
                         if (newHoveredIndex != hoveredBucketIndex)
@@ -821,10 +927,6 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        /// <summary>
-        /// Determines if the mouse is over a bookmark marker.
-        /// </summary>
-        /// <returns>Index of bookmark marker, or -1 if none</returns>
         private int GetBookmarkMarkerIndexAtPosition(int mouseX, int mouseY)
         {
             if (buckets.Count == 0)
@@ -833,11 +935,12 @@ namespace LogScraper.Utilities.UserControls
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
-            int drawableHeight = this.Height;
+            int drawableHeight = GetHistogramHeight();
 
-            for (int i = 0; i < bookmarkLogEntries.Count; i++)
+            List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
+            for (int i = 0; i < bookmarksLogEntriesToUse.Count; i++)
             {
-                LogEntry bookmarkEntry = bookmarkLogEntries[i];
+                LogEntry bookmarkEntry = bookmarksLogEntriesToUse[i];
 
                 int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
 
@@ -863,10 +966,6 @@ namespace LogScraper.Utilities.UserControls
             return -1;
         }
 
-        /// <summary>
-        /// Determines if the mouse is over an error marker.
-        /// </summary>
-        /// <returns>Index of error marker, or -1 if none</returns>
         private int GetErrorMarkerIndexAtPosition(int mouseX, int mouseY)
         {
             if (buckets.Count == 0)
@@ -875,7 +974,7 @@ namespace LogScraper.Utilities.UserControls
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
-            int drawableHeight = this.Height;
+            int drawableHeight = GetHistogramHeight();
 
             for (int i = 0; i < errorLogEntries.Count; i++)
             {
@@ -905,9 +1004,6 @@ namespace LogScraper.Utilities.UserControls
             return -1;
         }
 
-        /// <summary>
-        /// Handles mouse leave events to clear hover states.
-        /// </summary>
         private void OnMouseLeave(object sender, EventArgs e)
         {
             if (hoveredBucketIndex != -1)
@@ -925,16 +1021,35 @@ namespace LogScraper.Utilities.UserControls
                 hoveredBookmarkIndex = -1;
                 this.Invalidate();
             }
+            if (hoveredMinimap)
+            {
+                hoveredMinimap = false;
+                toolTip.SetToolTip(this, string.Empty);
+                this.Invalidate();
+            }
             if (this.Cursor != Cursors.Default)
                 this.Cursor = Cursors.Default;
         }
 
         /// <summary>
-        /// Handles mouse clicks on buckets, error markers, and bookmark markers.
+        /// Handles mouse clicks on the minimap strip, histogram bars, error markers, and bookmark markers.
         /// </summary>
         private void OnMouseClick(object sender, MouseEventArgs e)
         {
-            if (buckets.Count == 0 || e.Button != MouseButtons.Left)
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            // Minimap strip click — toggle between zoomed range and full timeline
+            if (IsInMinimapStrip(e.Y))
+            {
+                _showFullTimeline = !_showFullTimeline;
+                RebuildDisplayedEntries();
+                errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
+                this.Invalidate();
+                return;
+            }
+
+            if (buckets.Count == 0)
                 return;
 
             // Check for bookmark marker click
@@ -942,7 +1057,8 @@ namespace LogScraper.Utilities.UserControls
 
             if (clickedBookmarkIndex != -1)
             {
-                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntries[clickedBookmarkIndex]);
+                List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
+                BookmarkMarkerClicked?.Invoke(this, bookmarksLogEntriesToUse[clickedBookmarkIndex]);
                 return;
             }
 
