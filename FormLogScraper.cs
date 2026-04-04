@@ -32,6 +32,7 @@ namespace LogScraper
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: Move save and notepad icon to iconbar above log entries
+    //TODO: Add treeview option to icon bar
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -87,6 +88,8 @@ namespace LogScraper
         private void LogViewport_RangeChanged(object sender, EventArgs e)
         {
             UserControlContentFilter.LogRange = LogViewport.Range;
+            BookMarksControl.SetLogRange(LogViewport.Range);
+            LogTimeLineControl.SetLogRange(LogViewport.Range);
             HandleLogContentFilterUpdate(sender, e);
         }
 
@@ -109,7 +112,7 @@ namespace LogScraper
         private void UserControlLogEntriesTextBox_LogEntryAtCursorChanged(object sender, LogEntry e)
         {
             UsrMetadataFilterOverview.SelectedLogEntry = e;
-            BookMarksControl.SelectedLogEntry = e;
+            BookMarksControl.UpdateSelectedLogEntry(e);
             LogViewport.SelectedLogEntry = e;
         }
 

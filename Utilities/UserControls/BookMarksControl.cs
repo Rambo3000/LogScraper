@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
-using System.ComponentModel;
+using LogScraper.Log.Rendering;
 
 namespace LogScraper.Utilities.UserControls
 {
@@ -13,6 +15,16 @@ namespace LogScraper.Utilities.UserControls
 
         private readonly SortedList<int, LogEntry> bookmarks = [];
         private LogEntry selectedLogEntry;
+        private LogRange _logRange;
+        private List<LogEntry> _filteredBookmarks = [];
+
+        private void RebuildFilteredBookmarks()
+        {
+            int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
+            int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
+
+            _filteredBookmarks = [.. bookmarks.Values.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+        }
 
         public BookMarksControl()
         {
@@ -21,38 +33,39 @@ namespace LogScraper.Utilities.UserControls
 
         public IEnumerable<LogEntry> Bookmarks => bookmarks.Values;
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
+        public void UpdateSelectedLogEntry(LogEntry logEntry)
         {
-            get => selectedLogEntry;
-            set
-            {
-                selectedLogEntry = value;
-                UpdateButtons();
-            }
+            selectedLogEntry = logEntry;
+            UpdateButtons();
+        }
+        public void SetLogRange(LogRange logRange)
+        {
+            _logRange = logRange;
+            RebuildFilteredBookmarks();
+            UpdateButtons();
         }
 
         public void Clear()
         {
             if (bookmarks.Count == 0) return;
             bookmarks.Clear();
+            RebuildFilteredBookmarks();
             OnBookmarksChanged();
             UpdateButtons();
         }
 
         private void UpdateButtons()
         {
-            bool hasBookmarks = bookmarks.Count > 0;
+            bool hasFiltered = _filteredBookmarks.Count > 0;
             int anchor = selectedLogEntry?.Index ?? -1;
 
             BtnBookMark.Enabled = selectedLogEntry != null;
             BtnBookMark.ImageIndex = selectedLogEntry == null ? 0 : Convert.ToInt32(bookmarks.ContainsKey(anchor));
-
-            BtnPrevious.Enabled = hasBookmarks && anchor > bookmarks.Keys[0];
+            BtnPrevious.Enabled = hasFiltered && anchor > _filteredBookmarks[0].Index;
             BtnPrevious.ImageIndex = BtnPrevious.Enabled ? 1 : 0;
-            BtnNext.Enabled = hasBookmarks && anchor < bookmarks.Keys[bookmarks.Count - 1];
+            BtnNext.Enabled = hasFiltered && anchor < _filteredBookmarks[^1].Index;
             BtnNext.ImageIndex = BtnNext.Enabled ? 1 : 0;
-            BtnReset.Enabled = hasBookmarks;
+            BtnReset.Enabled = bookmarks.Count > 0;
         }
 
         private void BtnBookMark_Click(object sender, EventArgs e)
@@ -60,19 +73,21 @@ namespace LogScraper.Utilities.UserControls
             if (selectedLogEntry == null) return;
             if (!bookmarks.Remove(selectedLogEntry.Index))
                 bookmarks.Add(selectedLogEntry.Index, selectedLogEntry);
+            RebuildFilteredBookmarks();
             OnBookmarksChanged();
             UpdateButtons();
         }
 
         private void BtnPrevious_Click(object sender, EventArgs e)
         {
-            if (bookmarks.Count == 0) return;
+            if (_filteredBookmarks.Count == 0) return;
             int anchor = selectedLogEntry?.Index ?? int.MaxValue;
-            for (int i = bookmarks.Count - 1; i >= 0; i--)
+
+            for (int i = _filteredBookmarks.Count - 1; i >= 0; i--)
             {
-                if (bookmarks.Keys[i] < anchor)
+                if (_filteredBookmarks[i].Index < anchor)
                 {
-                    NavigateToEntry(bookmarks.Values[i]);
+                    NavigateToEntry(_filteredBookmarks[i]);
                     return;
                 }
             }
@@ -80,13 +95,14 @@ namespace LogScraper.Utilities.UserControls
 
         private void BtnNext_Click(object sender, EventArgs e)
         {
-            if (bookmarks.Count == 0) return;
+            if (_filteredBookmarks.Count == 0) return;
             int anchor = selectedLogEntry?.Index ?? int.MinValue;
-            for (int i = 0; i < bookmarks.Count; i++)
+
+            for (int i = 0; i < _filteredBookmarks.Count; i++)
             {
-                if (bookmarks.Keys[i] > anchor)
+                if (_filteredBookmarks[i].Index > anchor)
                 {
-                    NavigateToEntry(bookmarks.Values[i]);
+                    NavigateToEntry(_filteredBookmarks[i]);
                     return;
                 }
             }

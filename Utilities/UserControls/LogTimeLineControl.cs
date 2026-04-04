@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.Rendering;
 
 namespace LogScraper.Utilities.UserControls
 {
@@ -20,7 +21,9 @@ namespace LogScraper.Utilities.UserControls
         private List<LogEntry> allLogEntries = [];
         private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
         private List<LogEntry> errorLogEntries = [];
+        private List<LogEntry> allBookmarkLogEntries = [];
         private List<LogEntry> bookmarkLogEntries = [];
+        private LogRange _logRange;
 
         // Bucketing and scaling
         private TimeSpan currentBucketSize;
@@ -153,8 +156,27 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         public void SetBookmarks(List<LogEntry> bookmarks)
         {
-            bookmarkLogEntries = bookmarks ?? [];
+            allBookmarkLogEntries = bookmarks ?? [];
+            RebuildFilteredBookmarkMarkers();
             this.Invalidate();
+        }
+
+        /// <summary>
+        /// Updates the log range used to filter visible bookmark markers.
+        /// </summary>
+        public void SetLogRange(LogRange logRange)
+        {
+            _logRange = logRange;
+            RebuildFilteredBookmarkMarkers();
+            this.Invalidate();
+        }
+
+        private void RebuildFilteredBookmarkMarkers()
+        {
+            int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
+            int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
+
+            bookmarkLogEntries = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
         }
 
         /// <summary>
