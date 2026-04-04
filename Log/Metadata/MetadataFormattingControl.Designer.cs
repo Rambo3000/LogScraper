@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Log.Metadata
 {
-    partial class UserControlMetadataFormatting
+    partial class MetadataFormattingControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlMetadataFormatting));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MetadataFormattingControl));
             splitButton1 = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             ItemShowOriginalMetadata = new System.Windows.Forms.ToolStripMenuItem();

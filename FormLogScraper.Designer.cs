@@ -59,7 +59,7 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
-            MetadataFormatingControl = new LogScraper.Log.Metadata.UserControlMetadataFormatting();
+            MetadataFormatingControl = new LogScraper.Log.Metadata.MetadataFormattingControl();
             LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
             LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
@@ -741,6 +741,6 @@
         private Utilities.UserControls.LogViewportControl LogViewport;
         private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
         private System.Windows.Forms.Panel panel1;
-        private Log.Metadata.UserControlMetadataFormatting MetadataFormatingControl;
+        private Log.Metadata.MetadataFormattingControl MetadataFormatingControl;
     }
 }

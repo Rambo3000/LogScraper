@@ -27,7 +27,6 @@ using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper
 {
-    //TODO: LogRange enabled, then add a begin/end additional text to the main log view
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: Add treeview option to icon bar

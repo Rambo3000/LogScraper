@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace LogScraper.Log.Metadata
 {
-    public partial class UserControlMetadataFormatting : UserControl
+    public partial class MetadataFormattingControl : UserControl
     {
         public event EventHandler SelectionChanged;
 
-        public UserControlMetadataFormatting()
+        public MetadataFormattingControl()
         {
             InitializeComponent();
             ItemShowOriginalMetadata.CheckedChanged += ItemShowOriginalMetadata_CheckedChanged;
