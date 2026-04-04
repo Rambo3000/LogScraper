@@ -87,7 +87,7 @@ namespace LogScraper.Utilities.UserControls
             Controls.Add(ChkBegin);
             Controls.Add(BtnReset);
             Name = "LogViewportControl";
-            Size = new System.Drawing.Size(74, 28);
+            Size = new System.Drawing.Size(75, 25);
             ResumeLayout(false);
         }
 

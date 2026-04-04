@@ -75,14 +75,14 @@
             BtnXml.UseVisualStyleBackColor = true;
             BtnXml.Click += BtnXml_Click;
             // 
-            // UserControlPostProcessing
+            // LogPostProcessingControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(BtnXml);
             Controls.Add(BtnJson);
-            Name = "UserControlPostProcessing";
-            Size = new System.Drawing.Size(53, 28);
+            Name = "LogPostProcessingControl";
+            Size = new System.Drawing.Size(50, 25);
             ResumeLayout(false);
         }
 

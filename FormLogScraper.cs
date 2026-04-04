@@ -29,11 +29,9 @@ namespace LogScraper
 {
     //TODO: Bookmarks next/previous should consider LogRange
     //TODO: LogRange enabled, then add a begin/end additional text to the main log view
-    //TODO: Improve bookmark previous/next icons
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: Move save and notepad icon to iconbar above log entries
-    //TODO: Improve icon of disabling log range
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form

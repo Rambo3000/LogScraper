@@ -36,7 +36,6 @@
             lblLogEntriesFiltered = new System.Windows.Forms.Label();
             LbllogEntriesTotal = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
-            BtnSave = new System.Windows.Forms.Button();
             BtnClearFilters = new System.Windows.Forms.Button();
             BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
@@ -44,13 +43,14 @@
             ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
             imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnConfig = new System.Windows.Forms.Button();
-            btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
             BtnStop = new System.Windows.Forms.Button();
             lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             userControlMemoryUsage1 = new UserControlMemoryUsage();
+            btnOpenWithEditor = new System.Windows.Forms.Button();
+            BtnSave = new System.Windows.Forms.Button();
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
             usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
@@ -161,11 +161,9 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(BtnSave);
             groupBox3.Controls.Add(BtnClearFilters);
             groupBox3.Controls.Add(BtnErase);
             groupBox3.Controls.Add(BtnConfig);
-            groupBox3.Controls.Add(btnOpenWithEditor);
             groupBox3.Controls.Add(BtnFormRecord);
             groupBox3.Controls.Add(BtnRecord);
             groupBox3.Controls.Add(LbllogEntriesTotal);
@@ -179,28 +177,16 @@
             groupBox3.Controls.Add(userControlMemoryUsage1);
             groupBox3.Location = new System.Drawing.Point(5, 5);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(351, 147);
+            groupBox3.Size = new System.Drawing.Size(253, 147);
             groupBox3.TabIndex = 19;
             groupBox3.TabStop = false;
             groupBox3.Tag = "test";
             groupBox3.Text = "Uitlezen log";
             // 
-            // BtnSave
-            // 
-            BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(120, 22);
-            BtnSave.Name = "BtnSave";
-            BtnSave.Size = new System.Drawing.Size(40, 40);
-            BtnSave.TabIndex = 26;
-            BtnSave.TabStop = false;
-            ToolTip.SetToolTip(BtnSave, "Opslaan als...");
-            BtnSave.UseVisualStyleBackColor = true;
-            BtnSave.Click += BtnSave_Click;
-            // 
             // BtnClearFilters
             // 
             BtnClearFilters.Image = (System.Drawing.Image)resources.GetObject("BtnClearFilters.Image");
-            BtnClearFilters.Location = new System.Drawing.Point(260, 22);
+            BtnClearFilters.Location = new System.Drawing.Point(164, 22);
             BtnClearFilters.Name = "BtnClearFilters";
             BtnClearFilters.Size = new System.Drawing.Size(40, 40);
             BtnClearFilters.TabIndex = 25;
@@ -218,7 +204,7 @@
             BtnErase.Icon = (System.Drawing.Image)resources.GetObject("BtnErase.Icon");
             BtnErase.ImageIndex = 0;
             BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(299, 22);
+            BtnErase.Location = new System.Drawing.Point(203, 22);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(45, 40);
             BtnErase.TabIndex = 10;
@@ -258,7 +244,7 @@
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(320, 117);
+            BtnConfig.Location = new System.Drawing.Point(222, 117);
             BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
@@ -268,22 +254,10 @@
             BtnConfig.UseVisualStyleBackColor = true;
             BtnConfig.Click += BtnConfig_Click;
             // 
-            // btnOpenWithEditor
-            // 
-            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(212, 22);
-            btnOpenWithEditor.Name = "btnOpenWithEditor";
-            btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
-            btnOpenWithEditor.TabIndex = 11;
-            btnOpenWithEditor.TabStop = false;
-            ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
-            btnOpenWithEditor.UseVisualStyleBackColor = true;
-            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
-            // 
             // BtnFormRecord
             // 
             BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
-            BtnFormRecord.Location = new System.Drawing.Point(166, 22);
+            BtnFormRecord.Location = new System.Drawing.Point(119, 22);
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
@@ -338,10 +312,34 @@
             // 
             userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(282, 100);
+            userControlMemoryUsage1.Location = new System.Drawing.Point(184, 100);
             userControlMemoryUsage1.Name = "userControlMemoryUsage1";
             userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
             userControlMemoryUsage1.TabIndex = 24;
+            // 
+            // btnOpenWithEditor
+            // 
+            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
+            btnOpenWithEditor.Location = new System.Drawing.Point(275, -1);
+            btnOpenWithEditor.Name = "btnOpenWithEditor";
+            btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
+            btnOpenWithEditor.TabIndex = 11;
+            btnOpenWithEditor.TabStop = false;
+            ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
+            btnOpenWithEditor.UseVisualStyleBackColor = true;
+            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
+            // 
+            // BtnSave
+            // 
+            BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
+            BtnSave.Location = new System.Drawing.Point(244, -1);
+            BtnSave.Name = "BtnSave";
+            BtnSave.Size = new System.Drawing.Size(25, 25);
+            BtnSave.TabIndex = 26;
+            BtnSave.TabStop = false;
+            ToolTip.SetToolTip(BtnSave, "Opslaan als...");
+            BtnSave.UseVisualStyleBackColor = true;
+            BtnSave.Click += BtnSave_Click;
             // 
             // lblLogProvider
             // 
@@ -403,8 +401,8 @@
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(splitContainer3);
-            splitContainer2.Size = new System.Drawing.Size(935, 447);
-            splitContainer2.SplitterDistance = 685;
+            splitContainer2.Size = new System.Drawing.Size(896, 447);
+            splitContainer2.SplitterDistance = 655;
             splitContainer2.TabIndex = 8;
             // 
             // splitContainer4
@@ -422,11 +420,13 @@
             // 
             // splitContainer4.Panel2
             // 
+            splitContainer4.Panel2.Controls.Add(BtnSave);
             splitContainer4.Panel2.Controls.Add(LogPostProcessing);
             splitContainer4.Panel2.Controls.Add(BookMarksControl);
+            splitContainer4.Panel2.Controls.Add(btnOpenWithEditor);
             splitContainer4.Panel2.Controls.Add(LogViewport);
             splitContainer4.Panel2.Controls.Add(panel1);
-            splitContainer4.Size = new System.Drawing.Size(685, 447);
+            splitContainer4.Size = new System.Drawing.Size(655, 447);
             splitContainer4.SplitterDistance = 48;
             splitContainer4.TabIndex = 5;
             // 
@@ -437,28 +437,28 @@
             LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
             LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
             LogTimeLineControl.Name = "LogTimeLineControl";
-            LogTimeLineControl.Size = new System.Drawing.Size(685, 48);
+            LogTimeLineControl.Size = new System.Drawing.Size(655, 48);
             LogTimeLineControl.TabIndex = 0;
             // 
             // LogPostProcessing
             // 
-            LogPostProcessing.Location = new System.Drawing.Point(190, -1);
+            LogPostProcessing.Location = new System.Drawing.Point(188, -1);
             LogPostProcessing.Name = "LogPostProcessing";
-            LogPostProcessing.Size = new System.Drawing.Size(53, 28);
+            LogPostProcessing.Size = new System.Drawing.Size(50, 25);
             LogPostProcessing.TabIndex = 41;
             // 
             // BookMarksControl
             // 
             BookMarksControl.Location = new System.Drawing.Point(1, -1);
             BookMarksControl.Name = "BookMarksControl";
-            BookMarksControl.Size = new System.Drawing.Size(101, 25);
+            BookMarksControl.Size = new System.Drawing.Size(100, 25);
             BookMarksControl.TabIndex = 11;
             // 
             // LogViewport
             // 
-            LogViewport.Location = new System.Drawing.Point(108, -1);
+            LogViewport.Location = new System.Drawing.Point(107, -1);
             LogViewport.Name = "LogViewport";
-            LogViewport.Size = new System.Drawing.Size(76, 27);
+            LogViewport.Size = new System.Drawing.Size(75, 25);
             LogViewport.TabIndex = 40;
             // 
             // panel1
@@ -468,7 +468,7 @@
             panel1.Controls.Add(UserControlLogEntriesTextBox);
             panel1.Location = new System.Drawing.Point(2, 27);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(681, 366);
+            panel1.Size = new System.Drawing.Size(651, 366);
             panel1.TabIndex = 42;
             // 
             // TxtErrorMessage
@@ -480,7 +480,7 @@
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(499, 75);
+            TxtErrorMessage.Size = new System.Drawing.Size(469, 75);
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
@@ -490,7 +490,7 @@
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(681, 366);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(651, 366);
             UserControlLogEntriesTextBox.TabIndex = 38;
             // 
             // splitContainer3
@@ -507,7 +507,7 @@
             // splitContainer3.Panel2
             // 
             splitContainer3.Panel2.Controls.Add(groupBox6);
-            splitContainer3.Size = new System.Drawing.Size(246, 447);
+            splitContainer3.Size = new System.Drawing.Size(237, 447);
             splitContainer3.SplitterDistance = 112;
             splitContainer3.TabIndex = 0;
             // 
@@ -517,7 +517,7 @@
             groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox5.Location = new System.Drawing.Point(0, 0);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new System.Drawing.Size(246, 112);
+            groupBox5.Size = new System.Drawing.Size(237, 112);
             groupBox5.TabIndex = 2;
             groupBox5.TabStop = false;
             groupBox5.Text = "Zoeken";
@@ -527,7 +527,7 @@
             UserControlSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlSearch.Location = new System.Drawing.Point(3, 19);
             UserControlSearch.Name = "UserControlSearch";
-            UserControlSearch.Size = new System.Drawing.Size(240, 90);
+            UserControlSearch.Size = new System.Drawing.Size(231, 90);
             UserControlSearch.TabIndex = 33;
             // 
             // groupBox6
@@ -536,7 +536,7 @@
             groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox6.Location = new System.Drawing.Point(0, 0);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(246, 331);
+            groupBox6.Size = new System.Drawing.Size(237, 331);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
             groupBox6.Text = "Inhoudsfilters";
@@ -548,7 +548,7 @@
             UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
             UserControlContentFilter.Name = "UserControlContentFilter";
-            UserControlContentFilter.Size = new System.Drawing.Size(240, 309);
+            UserControlContentFilter.Size = new System.Drawing.Size(231, 309);
             UserControlContentFilter.TabIndex = 0;
             // 
             // groupBox1
@@ -557,7 +557,7 @@
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(211, 447);
+            groupBox1.Size = new System.Drawing.Size(250, 447);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Metadata";
@@ -570,7 +570,7 @@
             tabControl2.Location = new System.Drawing.Point(3, 19);
             tabControl2.Name = "tabControl2";
             tabControl2.SelectedIndex = 0;
-            tabControl2.Size = new System.Drawing.Size(205, 425);
+            tabControl2.Size = new System.Drawing.Size(244, 425);
             tabControl2.TabIndex = 10;
             // 
             // tabPage3
@@ -579,7 +579,7 @@
             tabPage3.Location = new System.Drawing.Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(197, 397);
+            tabPage3.Size = new System.Drawing.Size(236, 397);
             tabPage3.TabIndex = 0;
             tabPage3.Text = "Filteren";
             tabPage3.UseVisualStyleBackColor = true;
@@ -592,7 +592,7 @@
             UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 3);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
-            UsrMetadataFilterOverview.Size = new System.Drawing.Size(191, 391);
+            UsrMetadataFilterOverview.Size = new System.Drawing.Size(230, 391);
             UsrMetadataFilterOverview.TabIndex = 0;
             UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
             // 
@@ -602,7 +602,7 @@
             tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(197, 397);
+            tabPage4.Size = new System.Drawing.Size(237, 397);
             tabPage4.TabIndex = 1;
             tabPage4.Text = "Tonen";
             tabPage4.UseVisualStyleBackColor = true;
@@ -613,7 +613,7 @@
             UsrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
             UsrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
             UsrControlMetadataFormating.Name = "UsrControlMetadataFormating";
-            UsrControlMetadataFormating.Size = new System.Drawing.Size(191, 391);
+            UsrControlMetadataFormating.Size = new System.Drawing.Size(231, 391);
             UsrControlMetadataFormating.TabIndex = 0;
             // 
             // splitContainer1
@@ -630,7 +630,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
             splitContainer1.Size = new System.Drawing.Size(1150, 447);
-            splitContainer1.SplitterDistance = 211;
+            splitContainer1.SplitterDistance = 250;
             splitContainer1.TabIndex = 13;
             // 
             // GrpLogProvidersSettings
