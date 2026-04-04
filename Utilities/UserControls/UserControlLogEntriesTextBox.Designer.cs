@@ -29,14 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogEntriesTextBox));
             TxtLogEntries = new ScintillaNET.Scintilla();
-            ChkShowNoTree = new System.Windows.Forms.CheckBox();
-            ChkShowFlowTree = new System.Windows.Forms.CheckBox();
-            CboLogContentType = new System.Windows.Forms.ComboBox();
-            PnlViewMode = new System.Windows.Forms.Panel();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
-            PnlViewMode.SuspendLayout();
             SuspendLayout();
             // 
             // TxtLogEntries
@@ -51,62 +45,6 @@
             TxtLogEntries.TabIndents = true;
             TxtLogEntries.TabIndex = 42;
             TxtLogEntries.UpdateUI += TrackedScintilla_UpdateUI;
-            TxtLogEntries.SizeChanged += TxtLogEntries_SizeChanged;
-            // 
-            // ChkShowNoTree
-            // 
-            ChkShowNoTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkShowNoTree.Checked = true;
-            ChkShowNoTree.CheckState = System.Windows.Forms.CheckState.Checked;
-            ChkShowNoTree.Enabled = false;
-            ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(119, 3);
-            ChkShowNoTree.Name = "ChkShowNoTree";
-            ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
-            ChkShowNoTree.TabIndex = 44;
-            ChkShowNoTree.Tag = "asd";
-            toolTip1.SetToolTip(ChkShowNoTree, "Niet inspringen");
-            ChkShowNoTree.UseVisualStyleBackColor = true;
-            ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
-            // 
-            // ChkShowFlowTree
-            // 
-            ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(144, 3);
-            ChkShowFlowTree.Name = "ChkShowFlowTree";
-            ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
-            ChkShowFlowTree.TabIndex = 43;
-            ChkShowFlowTree.Tag = "asd";
-            toolTip1.SetToolTip(ChkShowFlowTree, "Inspringen");
-            ChkShowFlowTree.UseVisualStyleBackColor = true;
-            ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
-            // 
-            // CboLogContentType
-            // 
-            CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(12, 4);
-            CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(105, 23);
-            CboLogContentType.TabIndex = 45;
-            toolTip1.SetToolTip(CboLogContentType, "Selecteer op welke inhoudsfilter ingesprongen moet worden");
-            CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
-            // 
-            // PnlViewMode
-            // 
-            PnlViewMode.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            PnlViewMode.BackColor = System.Drawing.Color.White;
-            PnlViewMode.Controls.Add(CboLogContentType);
-            PnlViewMode.Controls.Add(ChkShowFlowTree);
-            PnlViewMode.Controls.Add(ChkShowNoTree);
-            PnlViewMode.Location = new System.Drawing.Point(464, 3);
-            PnlViewMode.Name = "PnlViewMode";
-            PnlViewMode.Size = new System.Drawing.Size(245, 31);
-            PnlViewMode.TabIndex = 46;
             // 
             // toolTip1
             // 
@@ -116,20 +54,14 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(PnlViewMode);
             Controls.Add(TxtLogEntries);
             Name = "UserControlLogEntriesTextBox";
             Size = new System.Drawing.Size(712, 403);
-            PnlViewMode.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
         private ScintillaNET.Scintilla TxtLogEntries;
-        private System.Windows.Forms.CheckBox ChkShowNoTree;
-        private System.Windows.Forms.CheckBox ChkShowFlowTree;
-        private System.Windows.Forms.ComboBox CboLogContentType;
-        private System.Windows.Forms.Panel PnlViewMode;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

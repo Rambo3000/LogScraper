@@ -85,6 +85,9 @@
     <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Log\FlowTree\FlowTreeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Log\Layout\UserControlLogLayoutConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>

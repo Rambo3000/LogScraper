@@ -46,6 +46,7 @@ namespace LogScraper.Log.Metadata
         private void ChkPanelControls_CheckedChanged(object sender, EventArgs e)
         {
             OnSelectionChanged(e);
+            UpdateButtons();
         }
 
         public void UpdateLogMetadataProperties(List<LogMetadataProperty> logMetadataProperties)
@@ -121,8 +122,8 @@ namespace LogScraper.Log.Metadata
             {
                 if (ContextMenuStrip1.Items[index] is ToolStripMenuItem menuItem)
                 {
-                    menuItem.Enabled = !ItemShowOriginalMetadata.Checked;
                     if (menuItem.Checked) metadataItemIsChecked = true;
+                    menuItem.Enabled = !ItemShowOriginalMetadata.Checked;
                 }
             }
 

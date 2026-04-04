@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
@@ -10,7 +9,6 @@ using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
-using LogScraper.LogPostProcessors;
 using LogScraper.Utilities.Extensions;
 using ScintillaNET;
 using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
@@ -28,18 +26,12 @@ namespace LogScraper.Utilities.UserControls
         private LogEntry selectedLogEntry = null;
         private LogEntry logEntryAtCursor = null;
         private IEnumerable<LogEntry> bookmarks = null;
-        List<LogPostProcessorKind> logPostProcessorKinds;
 
         public UserControlLogEntriesTextBox()
         {
             InitializeComponent();
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
-        }
-        public void UpdatePostProcessorsResults(List<LogPostProcessorKind> kinds)
-        {
-            logPostProcessorKinds = kinds;
-            RenderLogEntries();
         }
 
         #endregion
@@ -65,14 +57,6 @@ namespace LogScraper.Utilities.UserControls
                 }
             }
         }
-        private LogContentProperty SelectedLogContentProperty
-        {
-            get
-            {
-                if (CboLogContentType.SelectedItem == null) return null;
-                return ((LogContentProperty)CboLogContentType.SelectedItem);
-            }
-        }
         #endregion 
 
         #region Update log layout and render log entries
@@ -83,22 +67,6 @@ namespace LogScraper.Utilities.UserControls
             contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
             // Update the styles in the text box based on the new layout
             TxtLogEntries.UpdateStyles(contentPropertiesWithCustomColoring);
-
-            CboLogContentType.Items.Clear();
-
-            if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
-            {
-                UpdatePnlViewModeSizeAndVisibility();
-                return;
-            }
-
-            List<LogContentProperty> logContentProperties = [.. logLayout.LogContentProperties.Where(item => item.IsBeginFlowTreeFilter)];
-            if (logContentProperties.Count > 0)
-            {
-                CboLogContentType.Items.AddRange([.. logContentProperties]);
-                CboLogContentType.SelectedIndex = 0;
-            }
-            UpdatePnlViewModeSizeAndVisibility();
         }
 
         public void UpdateLogMetadataFilterResult(LogMetadataFilterResult logMetadataFilterResultNew, List<LogEntry> visibleLogEntries, LogRenderSettings logRenderSettings)
@@ -147,16 +115,16 @@ namespace LogScraper.Utilities.UserControls
 
             // Optional flow tree visualization based on the selected content property
             LogFlowTree logFlowTree = null;
-            if (ChkShowFlowTree.Checked && SelectedLogContentProperty != null)
+            if (LogRenderSettings.LogFlowTreeRenderSettings != null && LogRenderSettings.LogFlowTreeRenderSettings.ShowTree && LogRenderSettings.LogFlowTreeRenderSettings.LogContentProperty != null)
             {
-                logFlowTree = LogMetadataFilterResult.LogFlowTrees[SelectedLogContentProperty];
+                logFlowTree = LogMetadataFilterResult.LogFlowTrees[LogRenderSettings.LogFlowTreeRenderSettings.LogContentProperty];
             }
 
             // Render all visible log entries into a single text representation
-            Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, SelectedLogContentProperty, logFlowTree, logPostProcessorKinds);
+            Text = LogRenderer.RenderLogEntriesAsString(VisibleLogEntries, LogRenderSettings, LogRenderSettings.LogFlowTreeRenderSettings.LogContentProperty, logFlowTree, LogRenderSettings.LogPostProcessorKinds);
 
             // Build a render map that calculates the visual line index for each log entry based on the rendered text and active post-processors
-            LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(VisibleLogEntries, logPostProcessorKinds, LogMetadataFilterResult.SourceLogCollection.LogEntries.Count);
+            LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(VisibleLogEntries, LogRenderSettings.LogPostProcessorKinds, LogMetadataFilterResult.SourceLogCollection.LogEntries.Count);
 
             // Apply syntax highlighting based on the content properties with custom coloring, using the visual line indexes from the render map
             TxtLogEntries.StyleLines(contentPropertiesWithCustomColoring, LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(VisibleLogEntries, contentPropertiesWithCustomColoring, postRenderLogEntriesRenderMap));
@@ -203,8 +171,6 @@ namespace LogScraper.Utilities.UserControls
                 {
                     logEntriesRenderMapCache = null;
                 }
-
-                UpdatePnlViewModePosition();
             }
         }
         public void Clear()
@@ -233,84 +199,6 @@ namespace LogScraper.Utilities.UserControls
         internal bool TrySearch(string searchQuery, bool wholeWord, bool caseSensitive, bool wrapAround, SearchDirection searchDirection)
         {
             return TxtLogEntries.Find(searchQuery.Trim(), searchDirection, wholeWord, caseSensitive, wrapAround);
-        }
-        #endregion
-
-        #region User control events
-        private void ChkShowNoTree_CheckedChanged(object sender, System.EventArgs e)
-        {
-            UpdateShowTreeControls(false);
-            UpdatePnlViewModeSizeAndVisibility();
-            ActiveControl = null;
-        }
-
-        private void ChkShowFlowTree_CheckedChanged(object sender, System.EventArgs e)
-        {
-            UpdateShowTreeControls(true);
-            UpdatePnlViewModeSizeAndVisibility();
-            ActiveControl = null;
-        }
-
-        private void CboLogContentType_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            RenderLogEntries();
-        }
-        private void TxtLogEntries_SizeChanged(object sender, System.EventArgs e)
-        {
-            UpdatePnlViewModePosition();
-        }
-        #endregion
-
-        #region Update controls
-        private bool updateShowTreeInProgress = false;
-        private void UpdateShowTreeControls(bool showTree)
-        {
-            if (updateShowTreeInProgress) return;
-
-            updateShowTreeInProgress = true;
-            if (SelectedLogContentProperty == null)
-            {
-                ChkShowNoTree.Checked = false;
-                ChkShowFlowTree.Checked = false;
-                ChkShowNoTree.Enabled = false;
-                ChkShowFlowTree.Enabled = false;
-                CboLogContentType.Enabled = false;
-                updateShowTreeInProgress = false;
-                return;
-            }
-
-            //Also show no tree if previously no tree was available
-            ChkShowFlowTree.Checked = showTree;
-            ChkShowFlowTree.Enabled = !showTree;
-            ChkShowNoTree.Checked = !showTree;
-            ChkShowNoTree.Enabled = showTree;
-            CboLogContentType.Enabled = showTree;
-
-            RenderLogEntries();
-            updateShowTreeInProgress = false;
-        }
-        private void UpdatePnlViewModePosition()
-        {
-            int scrollbarWidth = SystemInformation.VerticalScrollBarWidth;
-
-            // Adjust this offset based on your button size/margin
-            int offsetX = 4;
-
-            // If the vertical scrollbar is visible, adjust for its width
-            bool verticalScrollbarVisible = TxtLogEntries.ClientSize.Width < TxtLogEntries.Width;
-
-            int right = TxtLogEntries.Right - (verticalScrollbarVisible ? scrollbarWidth : 0) - PnlViewMode.Width - offsetX;
-
-            PnlViewMode.Location = new Point(right, TxtLogEntries.Top + offsetX);
-        }
-        private void UpdatePnlViewModeSizeAndVisibility()
-        {
-            PnlViewMode.SuspendDrawing();
-            PnlViewMode.Visible = CboLogContentType.Items.Count > 0;
-            // Hide the dropdownbox if there's only one item
-            PnlViewMode.Size = new Size((ChkShowFlowTree.Checked && CboLogContentType.Items.Count > 1 ? CboLogContentType.Width + 4 : 0) - ChkShowNoTree.Left + 4, PnlViewMode.Height);
-            UpdatePnlViewModePosition();
-            PnlViewMode.ResumeDrawing();
         }
         #endregion
 

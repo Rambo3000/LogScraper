@@ -76,11 +76,18 @@ namespace LogScraper
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
+            flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
+
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void FlowTreeControl_ShowTreeStateChanged(object sender, EventArgs e)
+        {
+            RenderLog(currentLogMetadataFilterResult);
         }
 
         private void LogViewport_RangeChanged(object sender, EventArgs e)
@@ -93,7 +100,7 @@ namespace LogScraper
 
         private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
         {
-            UserControlLogEntriesTextBox.UpdatePostProcessorsResults(LogPostProcessing.VisibleProcessorKinds);
+           RenderLog(currentLogMetadataFilterResult);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -268,12 +275,15 @@ namespace LogScraper
 
         private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
         {
+            if (logMetadataFilterResult == null) return;
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogViewport.Range,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
                 ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
-                SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties
+                SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
+                LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
+                LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings( flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
             };
 
             visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
@@ -616,6 +626,7 @@ namespace LogScraper
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
             MetadataFormatingControl.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
+            flowTreeControl1.UpdateLogLayout(logLayout);
             Reset();
         }
 

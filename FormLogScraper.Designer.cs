@@ -79,6 +79,7 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -208,7 +209,7 @@
             // 
             ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
             ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.Size = new System.Drawing.Size(211, 70);
+            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
             // 
             // ToolStripMenuItemClear
             // 
@@ -414,6 +415,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            splitContainer4.Panel2.Controls.Add(flowTreeControl1);
             splitContainer4.Panel2.Controls.Add(MetadataFormatingControl);
             splitContainer4.Panel2.Controls.Add(BtnSave);
             splitContainer4.Panel2.Controls.Add(LogPostProcessing);
@@ -644,6 +646,15 @@
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
+            // flowTreeControl1
+            // 
+            flowTreeControl1.Location = new System.Drawing.Point(346, -1);
+            flowTreeControl1.MaximumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.MinimumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.Name = "flowTreeControl1";
+            flowTreeControl1.Size = new System.Drawing.Size(40, 25);
+            flowTreeControl1.TabIndex = 43;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -742,5 +753,6 @@
         private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
         private System.Windows.Forms.Panel panel1;
         private Log.Metadata.MetadataFormattingControl MetadataFormatingControl;
+        private Log.FlowTree.FlowTreeControl flowTreeControl1;
     }
 }
