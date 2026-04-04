@@ -67,7 +67,7 @@
             // 
             BtnXml.ImageIndex = 1;
             BtnXml.ImageList = imageList1;
-            BtnXml.Location = new System.Drawing.Point(25, 0);
+            BtnXml.Location = new System.Drawing.Point(23, 0);
             BtnXml.Name = "BtnXml";
             BtnXml.Size = new System.Drawing.Size(25, 25);
             BtnXml.TabIndex = 2;
@@ -82,7 +82,7 @@
             Controls.Add(BtnXml);
             Controls.Add(BtnJson);
             Name = "LogPostProcessingControl";
-            Size = new System.Drawing.Size(50, 25);
+            Size = new System.Drawing.Size(49, 25);
             ResumeLayout(false);
         }
 

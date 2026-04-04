@@ -320,7 +320,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(275, -1);
+            btnOpenWithEditor.Location = new System.Drawing.Point(269, -1);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 11;
@@ -332,7 +332,7 @@
             // BtnSave
             // 
             BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(244, -1);
+            BtnSave.Location = new System.Drawing.Point(238, -1);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 26;
@@ -442,23 +442,23 @@
             // 
             // LogPostProcessing
             // 
-            LogPostProcessing.Location = new System.Drawing.Point(188, -1);
+            LogPostProcessing.Location = new System.Drawing.Point(183, -1);
             LogPostProcessing.Name = "LogPostProcessing";
-            LogPostProcessing.Size = new System.Drawing.Size(50, 25);
+            LogPostProcessing.Size = new System.Drawing.Size(49, 25);
             LogPostProcessing.TabIndex = 41;
             // 
             // BookMarksControl
             // 
             BookMarksControl.Location = new System.Drawing.Point(1, -1);
             BookMarksControl.Name = "BookMarksControl";
-            BookMarksControl.Size = new System.Drawing.Size(100, 25);
+            BookMarksControl.Size = new System.Drawing.Size(97, 25);
             BookMarksControl.TabIndex = 11;
             // 
             // LogViewport
             // 
-            LogViewport.Location = new System.Drawing.Point(107, -1);
+            LogViewport.Location = new System.Drawing.Point(104, -1);
             LogViewport.Name = "LogViewport";
-            LogViewport.Size = new System.Drawing.Size(75, 25);
+            LogViewport.Size = new System.Drawing.Size(73, 25);
             LogViewport.TabIndex = 40;
             // 
             // panel1
@@ -602,7 +602,7 @@
             tabPage4.Location = new System.Drawing.Point(4, 24);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(237, 397);
+            tabPage4.Size = new System.Drawing.Size(236, 397);
             tabPage4.TabIndex = 1;
             tabPage4.Text = "Tonen";
             tabPage4.UseVisualStyleBackColor = true;
@@ -613,7 +613,7 @@
             UsrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
             UsrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
             UsrControlMetadataFormating.Name = "UsrControlMetadataFormating";
-            UsrControlMetadataFormating.Size = new System.Drawing.Size(231, 391);
+            UsrControlMetadataFormating.Size = new System.Drawing.Size(230, 391);
             UsrControlMetadataFormating.TabIndex = 0;
             // 
             // splitContainer1
@@ -660,7 +660,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(362, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(420, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;

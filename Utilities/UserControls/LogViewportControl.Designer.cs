@@ -41,7 +41,7 @@ namespace LogScraper.Utilities.UserControls
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(50, 0);
+            BtnReset.Location = new System.Drawing.Point(48, 0);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 3;
@@ -65,7 +65,7 @@ namespace LogScraper.Utilities.UserControls
             // 
             ChkEnd.Appearance = Appearance.Button;
             ChkEnd.Image = (System.Drawing.Image)resources.GetObject("ChkEnd.Image");
-            ChkEnd.Location = new System.Drawing.Point(25, 0);
+            ChkEnd.Location = new System.Drawing.Point(24, 0);
             ChkEnd.Name = "ChkEnd";
             ChkEnd.Size = new System.Drawing.Size(25, 25);
             ChkEnd.TabIndex = 5;
@@ -87,7 +87,7 @@ namespace LogScraper.Utilities.UserControls
             Controls.Add(ChkBegin);
             Controls.Add(BtnReset);
             Name = "LogViewportControl";
-            Size = new System.Drawing.Size(75, 25);
+            Size = new System.Drawing.Size(73, 25);
             ResumeLayout(false);
         }
 

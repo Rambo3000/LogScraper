@@ -63,7 +63,7 @@
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
-            BtnReset.Location = new System.Drawing.Point(75, 0);
+            BtnReset.Location = new System.Drawing.Point(72, 0);
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 1;
@@ -75,7 +75,7 @@
             // 
             BtnPrevious.ImageIndex = 0;
             BtnPrevious.ImageList = imageListPrevious;
-            BtnPrevious.Location = new System.Drawing.Point(25, 0);
+            BtnPrevious.Location = new System.Drawing.Point(24, 0);
             BtnPrevious.Name = "BtnPrevious";
             BtnPrevious.Size = new System.Drawing.Size(25, 25);
             BtnPrevious.TabIndex = 2;
@@ -95,7 +95,7 @@
             // 
             BtnNext.ImageIndex = 0;
             BtnNext.ImageList = imageListNext;
-            BtnNext.Location = new System.Drawing.Point(50, 0);
+            BtnNext.Location = new System.Drawing.Point(48, 0);
             BtnNext.Name = "BtnNext";
             BtnNext.Size = new System.Drawing.Size(25, 25);
             BtnNext.TabIndex = 3;
@@ -126,7 +126,7 @@
             Controls.Add(BtnReset);
             Controls.Add(BtnBookMark);
             Name = "BookMarksControl";
-            Size = new System.Drawing.Size(100, 25);
+            Size = new System.Drawing.Size(97, 25);
             ResumeLayout(false);
         }
 
