@@ -31,6 +31,7 @@ namespace LogScraper
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: Add treeview option to icon bar
+    //TODO: Add option to show/hide metadata properties
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -56,7 +57,7 @@ namespace LogScraper
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
 
-            UsrControlMetadataFormating.SelectionChanged += HandleLogContentFilterUpdate;
+            MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
@@ -272,8 +273,8 @@ namespace LogScraper
             {
                 LogRange = LogViewport.Range,
                 LogLayout = (LogLayout)cboLogLayout.SelectedItem,
-                ShowOriginalMetadata = UsrControlMetadataFormating.ShowOriginalMetadata,
-                SelectedMetadataProperties = UsrControlMetadataFormating.SelectedMetadataProperties
+                ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
+                SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties
             };
 
             visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
@@ -340,7 +341,7 @@ namespace LogScraper
 
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
-            UserControlSearch.IsMetadataSearchEnabled = UsrControlMetadataFormating.IsOriginalMetadataShown;
+            UserControlSearch.IsMetadataSearchEnabled = MetadataFormatingControl.IsOriginalMetadataShown;
             if (currentLogMetadataFilterResult != null) RenderLog(currentLogMetadataFilterResult);
         }
 
@@ -614,7 +615,7 @@ namespace LogScraper
         {
             if (cboLogLayout.SelectedItem == null) return;
             LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
-            UsrControlMetadataFormating.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
+            MetadataFormatingControl.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
             Reset();
         }

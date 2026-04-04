@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema 
+    Microsoft ResX Schema
 
     Version 2.0
 
@@ -48,7 +48,7 @@
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -117,4 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="ContextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="imageList1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>173, 17</value>
+  </metadata>
+  <data name="imageList1.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAEZTeXN0ZW0uV2luZG93cy5Gb3JtcywgQ3VsdHVyZT1uZXV0cmFs
+        LCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5BQEAAAAmU3lzdGVtLldpbmRvd3MuRm9ybXMu
+        SW1hZ2VMaXN0U3RyZWFtZXIBAAAABERhdGEHAgIAAAAJAwAAAA8DAAAAjAMAAAJNU0Z0AUkBTAMBAQAB
+        WAEAAVgBAAEQAQABEAEABP8BIQEACP8BQgFNATYHAAE2AwABKAMAAUADAAEQAwABAQEAASAGAAEQGgAD
+        HwEsA1cBuQNAAfMDAAH/AwAB/wMAAf8DAAH/AwAB/wMAAf8DQAHzA1cBuQMeASvMAAMUARsDSgHvA1kB
+        wAM6AWEDNQFVAzUBVQM1AVUDNQFVAzUBVQM1AVUDOgFhA1kBwQNNAe4DEwEayAADRgF/A1sB4AMGAQcD
+        BgEIAyMBMgMlATcDWwHYAwYBCAQAAyQBNQMGAQgDBgEIA10B4QNGAX7IAANTAacDVQGtAwgBCgNXAbwD
+        WwHeAxMBGQMWAf0DMgFPBAADXQHhA1cBvAMIAQoDVQGtA1MBp8gAA1MBqgNTAaoDSgGKAwsB/gMmATkE
+        AANZAcMDUQGkBAADJgE5AwsB/gNKAYoDUwGqA1MBqsgAA1MBqgNTAaoDIAEuA1EB7ANWAbUEAAM/AW4D
+        RQHyAwcBCQNWAbUDUQHsAyABLgNTAaoDUwGqyAADUwGqA1MBqgQAAyABLgNHAYMEAAMTARkDFgH8AysB
+        QQNIAYQDIAEuBAADUwGqA1MBqsgAA1MBqgNTAaoUAAMjATIDBAEFDAADUwGqA1MBqsgAA1MBqgNTAaoQ
+        AAMpAT0DKAE7EAADUwGqA1MBqsgAA1IBowNYAboMAANMAZADAAH/AwAB/wNLAY8MAANYAboDUQGiyAAD
+        PgFqAzEB9gMhATAIAAM0AfcDQwF2A0QBewNAAfMIAAMhATADMQH2Az0BaMgAAwUBBgNZAcEDRwHxAzkB
+        XgQAA1wByANaAd8DWgHfA1kBwQQAAzkBXgNHAfEDWQHAAwUBBswAAwYBBwNMAY4DCwH+A1MBpwMdASgD
+        TQGSA0wBjgMbASYDUwGnAwsB/gNMAY4DBgEH2AADLQFGA1kB5gNWAesDVQGvA1UBrwNWAesDWQHmAy0B
+        RuQAAw0BEQNDAXcDWgHfA1oB3wNDAXYDDQER8AADSgGLA0oBi9wAAUIBTQE+BwABPgMAASgDAAFAAwAB
+        EAMAAQEBAAEBBQABgBcAA/8BAAHAAQMGAAGAAQEGAAGAAUEGAAGAAUEGAAGCAUEGAAGCAQEGAAGSAQkG
+        AAGfATkGAAGeAXkGAAGcATkGAAGMATEGAAGEASEGAAHAAQMGAAHwAQ8GAAH4AR8GAAH+AX8GAAs=
+</value>
+  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>284, 17</value>
+  </metadata>
 </root>

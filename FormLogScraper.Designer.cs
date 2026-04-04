@@ -59,6 +59,7 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
+            MetadataFormatingControl = new LogScraper.Log.Metadata.UserControlMetadataFormatting();
             LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
             LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
@@ -71,11 +72,7 @@
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            tabControl2 = new System.Windows.Forms.TabControl();
-            tabPage3 = new System.Windows.Forms.TabPage();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
-            tabPage4 = new System.Windows.Forms.TabPage();
-            UsrControlMetadataFormating = new LogScraper.Log.Metadata.UserControlMetadataFormatting();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             GrpLogProvidersSettings = new System.Windows.Forms.GroupBox();
             usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
@@ -100,9 +97,6 @@
             groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
             groupBox1.SuspendLayout();
-            tabControl2.SuspendLayout();
-            tabPage3.SuspendLayout();
-            tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -214,7 +208,7 @@
             // 
             ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
             ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
+            ContextMenuReset.Size = new System.Drawing.Size(211, 70);
             // 
             // ToolStripMenuItemClear
             // 
@@ -320,7 +314,7 @@
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(269, -1);
+            btnOpenWithEditor.Location = new System.Drawing.Point(315, -1);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 11;
@@ -332,7 +326,7 @@
             // BtnSave
             // 
             BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(238, -1);
+            BtnSave.Location = new System.Drawing.Point(284, -1);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 26;
@@ -420,6 +414,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            splitContainer4.Panel2.Controls.Add(MetadataFormatingControl);
             splitContainer4.Panel2.Controls.Add(BtnSave);
             splitContainer4.Panel2.Controls.Add(LogPostProcessing);
             splitContainer4.Panel2.Controls.Add(BookMarksControl);
@@ -440,9 +435,18 @@
             LogTimeLineControl.Size = new System.Drawing.Size(655, 48);
             LogTimeLineControl.TabIndex = 0;
             // 
+            // MetadataFormatingControl
+            // 
+            MetadataFormatingControl.Location = new System.Drawing.Point(183, -1);
+            MetadataFormatingControl.MaximumSize = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.MinimumSize = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.Name = "MetadataFormatingControl";
+            MetadataFormatingControl.Size = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.TabIndex = 26;
+            // 
             // LogPostProcessing
             // 
-            LogPostProcessing.Location = new System.Drawing.Point(183, -1);
+            LogPostProcessing.Location = new System.Drawing.Point(229, -1);
             LogPostProcessing.Name = "LogPostProcessing";
             LogPostProcessing.Size = new System.Drawing.Size(49, 25);
             LogPostProcessing.TabIndex = 41;
@@ -553,7 +557,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(tabControl2);
+            groupBox1.Controls.Add(UsrMetadataFilterOverview);
             groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
             groupBox1.Name = "groupBox1";
@@ -562,59 +566,17 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Metadata";
             // 
-            // tabControl2
-            // 
-            tabControl2.Controls.Add(tabPage3);
-            tabControl2.Controls.Add(tabPage4);
-            tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            tabControl2.Location = new System.Drawing.Point(3, 19);
-            tabControl2.Name = "tabControl2";
-            tabControl2.SelectedIndex = 0;
-            tabControl2.Size = new System.Drawing.Size(244, 425);
-            tabControl2.TabIndex = 10;
-            // 
-            // tabPage3
-            // 
-            tabPage3.Controls.Add(UsrMetadataFilterOverview);
-            tabPage3.Location = new System.Drawing.Point(4, 24);
-            tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            tabPage3.Size = new System.Drawing.Size(236, 397);
-            tabPage3.TabIndex = 0;
-            tabPage3.Text = "Filteren";
-            tabPage3.UseVisualStyleBackColor = true;
-            // 
             // UsrMetadataFilterOverview
             // 
             UsrMetadataFilterOverview.AutoScroll = true;
             UsrMetadataFilterOverview.BackColor = System.Drawing.Color.White;
             UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 3);
+            UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 19);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
-            UsrMetadataFilterOverview.Size = new System.Drawing.Size(230, 391);
+            UsrMetadataFilterOverview.Size = new System.Drawing.Size(244, 425);
             UsrMetadataFilterOverview.TabIndex = 0;
             UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
-            // 
-            // tabPage4
-            // 
-            tabPage4.Controls.Add(UsrControlMetadataFormating);
-            tabPage4.Location = new System.Drawing.Point(4, 24);
-            tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            tabPage4.Size = new System.Drawing.Size(236, 397);
-            tabPage4.TabIndex = 1;
-            tabPage4.Text = "Tonen";
-            tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // UsrControlMetadataFormating
-            // 
-            UsrControlMetadataFormating.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrControlMetadataFormating.Location = new System.Drawing.Point(3, 3);
-            UsrControlMetadataFormating.MinimumSize = new System.Drawing.Size(190, 0);
-            UsrControlMetadataFormating.Name = "UsrControlMetadataFormating";
-            UsrControlMetadataFormating.Size = new System.Drawing.Size(230, 391);
-            UsrControlMetadataFormating.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -716,9 +678,6 @@
             groupBox5.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
-            tabControl2.ResumeLayout(false);
-            tabPage3.ResumeLayout(false);
-            tabPage4.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -753,16 +712,12 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private UserControlLogContentFilter UserControlContentFilter;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.TabControl tabControl2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.Label lblLogProvider;
         private LogProviders.Kubernetes.UserControlKubernetesLogProvider usrKubernetes;
         private LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
         private System.Windows.Forms.TextBox TxtErrorMessage;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
-        private Log.Metadata.UserControlMetadataFormatting UsrControlMetadataFormating;
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
         private UserControlSearch UserControlSearch;
@@ -786,5 +741,6 @@
         private Utilities.UserControls.LogViewportControl LogViewport;
         private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
         private System.Windows.Forms.Panel panel1;
+        private Log.Metadata.UserControlMetadataFormatting MetadataFormatingControl;
     }
 }
