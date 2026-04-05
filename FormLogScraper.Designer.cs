@@ -59,6 +59,7 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
+            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
             MetadataFormatingControl = new LogScraper.Log.Metadata.MetadataFormattingControl();
             LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
             BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
@@ -79,7 +80,6 @@
             GrpSourceAndLayout = new System.Windows.Forms.GroupBox();
             label2 = new System.Windows.Forms.Label();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
             groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -314,8 +314,9 @@
             // 
             // btnOpenWithEditor
             // 
+            btnOpenWithEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(315, -1);
+            btnOpenWithEditor.Location = new System.Drawing.Point(630, -1);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 11;
@@ -326,8 +327,9 @@
             // 
             // BtnSave
             // 
+            BtnSave.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(284, -1);
+            BtnSave.Location = new System.Drawing.Point(607, -1);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 26;
@@ -436,6 +438,15 @@
             LogTimeLineControl.Name = "LogTimeLineControl";
             LogTimeLineControl.Size = new System.Drawing.Size(655, 48);
             LogTimeLineControl.TabIndex = 0;
+            // 
+            // flowTreeControl1
+            // 
+            flowTreeControl1.Location = new System.Drawing.Point(284, -1);
+            flowTreeControl1.MaximumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.MinimumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.Name = "flowTreeControl1";
+            flowTreeControl1.Size = new System.Drawing.Size(40, 25);
+            flowTreeControl1.TabIndex = 43;
             // 
             // MetadataFormatingControl
             // 
@@ -645,15 +656,6 @@
             ToolTip.AutoPopDelay = 9999999;
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
-            // 
-            // flowTreeControl1
-            // 
-            flowTreeControl1.Location = new System.Drawing.Point(346, -1);
-            flowTreeControl1.MaximumSize = new System.Drawing.Size(40, 25);
-            flowTreeControl1.MinimumSize = new System.Drawing.Size(40, 25);
-            flowTreeControl1.Name = "flowTreeControl1";
-            flowTreeControl1.Size = new System.Drawing.Size(40, 25);
-            flowTreeControl1.TabIndex = 43;
             // 
             // FormLogScraper
             // 

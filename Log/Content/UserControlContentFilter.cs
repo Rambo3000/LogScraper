@@ -29,6 +29,8 @@ namespace LogScraper
 
         private LogRange logRange = new();
 
+        private bool showTree = false;
+
         public UserControlLogContentFilter()
         {
             InitializeComponent();
@@ -88,7 +90,7 @@ namespace LogScraper
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-            (int begin,int end) = LogRenderer.CalculateLogRenderRange(LogMetadataFilterResult.LogEntries, logRange);
+            (int begin, int end) = LogRenderer.CalculateLogRenderRange(LogMetadataFilterResult.LogEntries, logRange);
             List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries[begin..end]);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
@@ -185,7 +187,7 @@ namespace LogScraper
                     logEntryDisplayObject.Index = index;
                     index++;
                 }
-                if (ChkShowFlowTree.Checked) LstLogContent.Invalidate();
+                if (showTree) LstLogContent.Invalidate();
 
                 LstLogContent.Items.AddRange([.. newLogEntries.Skip(currentCount)]);
                 LstLogContent.ResumeDrawing();
@@ -338,7 +340,7 @@ namespace LogScraper
                 return;
             }
 
-            if (item.FlowTreeNode != null && ChkShowFlowTree.Checked)
+            if (item.FlowTreeNode != null && showTree)
                 DrawFlowTreeNode(e, item, g, isSelected, isOutOfScope);
             else
             {
@@ -533,7 +535,7 @@ namespace LogScraper
         {
             LstLogContent.Items.Clear();
             UpdateDisplayedLogEntries();
-            UpdateShowTreeControls(false);
+            UpdateButtons();
 
             if (SelectedLogContentProperty != null)
             {
@@ -565,36 +567,23 @@ namespace LogScraper
         {
             if (SelectedContentValue == null) return;
         }
-        private void ChkShowFlowTree_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateShowTreeControls(true);
-        }
-        private void ChkShowNoTree_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateShowTreeControls(false);
-        }
 
         private bool updateShowTreeInProgress = false;
 
-        private void UpdateShowTreeControls(bool showTree)
+        private void UpdateButtons()
         {
             if (updateShowTreeInProgress) return;
             updateShowTreeInProgress = true;
 
             if (SelectedLogContentProperty == null || !SelectedLogContentProperty.IsBeginFlowTreeFilter)
             {
-                ChkShowNoTree.Checked = false;
-                ChkShowFlowTree.Checked = false;
-                ChkShowNoTree.Enabled = false;
-                ChkShowFlowTree.Enabled = false;
+                BtnShowTree.Enabled = false;
                 updateShowTreeInProgress = false;
                 return;
             }
 
-            ChkShowFlowTree.Checked = showTree;
-            ChkShowFlowTree.Enabled = !showTree;
-            ChkShowNoTree.Checked = !showTree;
-            ChkShowNoTree.Enabled = showTree;
+            BtnShowTree.ImageIndex = showTree ? 1 : 0;
+            BtnShowTree.Enabled = true;
             LstLogContent.SuspendDrawing();
             LstLogContent.Invalidate();
             LstLogContent.ResumeDrawing();
@@ -605,8 +594,14 @@ namespace LogScraper
         {
             txtSearch.Text = string.Empty;
             TxtSearch_Leave(this, EventArgs.Empty);
-            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) ChkShowNoTree.Checked = true;
+            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) showTree = true;
         }
         #endregion
+
+        private void BtnShowTree_Click(object sender, EventArgs e)
+        {
+            showTree = !showTree;
+            UpdateButtons();
+        }
     }
 }

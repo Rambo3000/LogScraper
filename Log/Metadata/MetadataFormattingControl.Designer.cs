@@ -33,10 +33,10 @@
             splitButton1 = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             ItemShowOriginalMetadata = new System.Windows.Forms.ToolStripMenuItem();
+            ItemHideAllMetadata = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             imageList1 = new System.Windows.Forms.ImageList(components);
             toolTip1 = new System.Windows.Forms.ToolTip(components);
-            ItemHideAllMetadata = new System.Windows.Forms.ToolStripMenuItem();
             ContextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -61,7 +61,7 @@
             ContextMenuStrip1.Name = "ContextMenuStrip";
             ContextMenuStrip1.ShowCheckMargin = true;
             ContextMenuStrip1.ShowImageMargin = false;
-            ContextMenuStrip1.Size = new System.Drawing.Size(236, 76);
+            ContextMenuStrip1.Size = new System.Drawing.Size(236, 54);
             // 
             // ItemShowOriginalMetadata
             // 
@@ -69,6 +69,12 @@
             ItemShowOriginalMetadata.Name = "ItemShowOriginalMetadata";
             ItemShowOriginalMetadata.Size = new System.Drawing.Size(235, 22);
             ItemShowOriginalMetadata.Text = "Originele metadata weergeven";
+            // 
+            // ItemHideAllMetadata
+            // 
+            ItemHideAllMetadata.Name = "ItemHideAllMetadata";
+            ItemHideAllMetadata.Size = new System.Drawing.Size(235, 22);
+            ItemHideAllMetadata.Text = "Metadata verbergen";
             // 
             // toolStripSeparator1
             // 
@@ -81,21 +87,16 @@
             imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
             imageList1.Images.SetKeyName(0, "metadata.png");
+            imageList1.Images.SetKeyName(1, "metadata hide 16x16.png");
             // 
-            // ItemHideAllMetadata
-            // 
-            ItemHideAllMetadata.Name = "ItemHideAllMetadata";
-            ItemHideAllMetadata.Size = new System.Drawing.Size(235, 22);
-            ItemHideAllMetadata.Text = "Metadata verbergen";
-            // 
-            // UserControlMetadataFormatting
+            // MetadataFormattingControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(splitButton1);
             MaximumSize = new System.Drawing.Size(40, 25);
             MinimumSize = new System.Drawing.Size(40, 25);
-            Name = "UserControlMetadataFormatting";
+            Name = "MetadataFormattingControl";
             Size = new System.Drawing.Size(40, 25);
             ContextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);

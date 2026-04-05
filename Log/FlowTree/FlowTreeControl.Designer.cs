@@ -76,10 +76,10 @@
             ItemHideTree.Size = new System.Drawing.Size(193, 22);
             ItemHideTree.Text = "Normale weergave";
             // 
-            // CboContentProperty
+            // CboContentProperties
             // 
             CboContentProperties.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            CboContentProperties.Name = "CboContentProperty";
+            CboContentProperties.Name = "CboContentProperties";
             CboContentProperties.Size = new System.Drawing.Size(121, 23);
             // 
             // imageList1
@@ -87,8 +87,8 @@
             imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
             imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "format-list-bulleted tree 5x-16x16.png");
-            imageList1.Images.SetKeyName(1, "format-list-bulleted 5x-16x16.png");
+            imageList1.Images.SetKeyName(0, "log entries tree custommade 16x16.png");
+            imageList1.Images.SetKeyName(1, "log entries tree hide custommade 16x16.png");
             // 
             // FlowTreeControl
             // 

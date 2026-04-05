@@ -35,10 +35,10 @@ namespace LogScraper
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             txtSearch = new System.Windows.Forms.TextBox();
-            ChkShowFlowTree = new System.Windows.Forms.CheckBox();
-            ChkShowNoTree = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
+            BtnShowTree = new System.Windows.Forms.Button();
+            imageList1 = new System.Windows.Forms.ImageList(components);
             PnlUsedForCorrectScaling.SuspendLayout();
             SuspendLayout();
             // 
@@ -71,55 +71,46 @@ namespace LogScraper
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(0, 26);
+            txtSearch.Location = new System.Drawing.Point(2, 26);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(191, 23);
+            txtSearch.Size = new System.Drawing.Size(209, 23);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
             txtSearch.KeyDown += TxtSearch_KeyDown;
             txtSearch.Leave += TxtSearch_Leave;
             // 
-            // ChkShowFlowTree
-            // 
-            ChkShowFlowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ChkShowFlowTree.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkShowFlowTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowFlowTree.Image");
-            ChkShowFlowTree.Location = new System.Drawing.Point(218, 25);
-            ChkShowFlowTree.Name = "ChkShowFlowTree";
-            ChkShowFlowTree.Size = new System.Drawing.Size(25, 25);
-            ChkShowFlowTree.TabIndex = 17;
-            ChkShowFlowTree.Tag = "asd";
-            toolTip.SetToolTip(ChkShowFlowTree, "Toon hiërarchie");
-            ChkShowFlowTree.UseVisualStyleBackColor = true;
-            ChkShowFlowTree.CheckedChanged += ChkShowFlowTree_CheckedChanged;
-            // 
-            // ChkShowNoTree
-            // 
-            ChkShowNoTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ChkShowNoTree.Appearance = System.Windows.Forms.Appearance.Button;
-            ChkShowNoTree.Image = (System.Drawing.Image)resources.GetObject("ChkShowNoTree.Image");
-            ChkShowNoTree.Location = new System.Drawing.Point(193, 25);
-            ChkShowNoTree.Name = "ChkShowNoTree";
-            ChkShowNoTree.Size = new System.Drawing.Size(25, 25);
-            ChkShowNoTree.TabIndex = 18;
-            ChkShowNoTree.Tag = "asd";
-            toolTip.SetToolTip(ChkShowNoTree, "Toon als een lijst");
-            ChkShowNoTree.UseVisualStyleBackColor = true;
-            ChkShowNoTree.CheckedChanged += ChkShowNoTree_CheckedChanged;
-            // 
             // PnlUsedForCorrectScaling
             // 
+            PnlUsedForCorrectScaling.Controls.Add(BtnShowTree);
             PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
             PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
-            PnlUsedForCorrectScaling.Controls.Add(ChkShowNoTree);
-            PnlUsedForCorrectScaling.Controls.Add(ChkShowFlowTree);
             PnlUsedForCorrectScaling.Controls.Add(txtSearch);
             PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
             PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
             PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
             PnlUsedForCorrectScaling.TabIndex = 23;
+            // 
+            // BtnShowTree
+            // 
+            BtnShowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnShowTree.ImageIndex = 0;
+            BtnShowTree.ImageList = imageList1;
+            BtnShowTree.Location = new System.Drawing.Point(215, 25);
+            BtnShowTree.Name = "BtnShowTree";
+            BtnShowTree.Size = new System.Drawing.Size(25, 25);
+            BtnShowTree.TabIndex = 8;
+            BtnShowTree.UseVisualStyleBackColor = true;
+            BtnShowTree.Click += BtnShowTree_Click;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            imageList1.Images.SetKeyName(0, "log entries tree custommade 16x16.png");
+            imageList1.Images.SetKeyName(1, "log entries tree hide custommade 16x16.png");
             // 
             // UserControlLogContentFilter
             // 
@@ -140,9 +131,9 @@ namespace LogScraper
         private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.CheckBox ChkShowFlowTree;
-        private System.Windows.Forms.CheckBox ChkShowNoTree;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
+        private System.Windows.Forms.Button BtnShowTree;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

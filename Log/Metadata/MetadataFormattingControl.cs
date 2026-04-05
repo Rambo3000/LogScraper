@@ -128,6 +128,7 @@ namespace LogScraper.Log.Metadata
             }
 
             ItemHideAllMetadata.Enabled = ItemShowOriginalMetadata.Checked || metadataItemIsChecked;
+            splitButton1.ImageIndex = ItemShowOriginalMetadata.Checked ? 1 : 0;
         }
     }
 }
