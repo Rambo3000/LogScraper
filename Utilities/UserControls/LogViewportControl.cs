@@ -49,7 +49,6 @@ namespace LogScraper.Utilities.UserControls
 
             range = new LogRange();
             UpdateButtons();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void UpdateButtons()

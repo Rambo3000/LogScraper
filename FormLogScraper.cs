@@ -29,8 +29,9 @@ namespace LogScraper
 {
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
-    //TODO: Add treeview option to icon bar
-    //TODO: Add option to show/hide metadata properties
+    //TODO: timeline show error marks darker when out of range
+    //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
+    //TODO: Fix bug wher after changing log layout name we get null reference exceptions
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -654,6 +655,9 @@ namespace LogScraper
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
                     break;
             }
+
+            if (cboLogLayout.SelectedIndex == -1 && cboLogLayout.Items.Count > 0) cboLogLayout.SelectedIndex = 0;
+
             Reset();
         }
         #endregion
