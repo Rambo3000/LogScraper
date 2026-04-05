@@ -67,6 +67,7 @@ namespace LogScraper.Utilities.UserControls
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
         private static readonly Color BOOKMARK_MARKER_COLOR = Color.SteelBlue;
         private static readonly Color BOOKMARK_MARKER_HOVER_COLOR = Color.FromArgb(255, 120, 180, 230);
+        private static readonly Color BOOKMARK_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 70, 130, 180);
         private static readonly Color MINIMAP_BACKGROUND_COLOR = Color.FromArgb(230, 230, 230);
         private static readonly Color MINIMAP_RANGE_COLOR = Color.FromArgb(153, 70, 130, 180); // SteelBlue ~60% opacity
         private static readonly Color MINIMAP_ACCENT_COLOR = Color.SteelBlue;
@@ -258,11 +259,22 @@ namespace LogScraper.Utilities.UserControls
         {
             buckets.Clear();
 
-            if (displayedLogEntries.Count == 0)
+            // Determine the time span to use regardless of entry count
+            if (_showFullTimeline && fullSpanMinimum != default)
+            {
+                minimumTimestamp = fullSpanMinimum;
+                maximumTimestamp = fullSpanMaximum;
+            }
+            else if (displayedLogEntries.Count > 0)
+            {
+                minimumTimestamp = displayedLogEntries[0].TimeStamp;
+                maximumTimestamp = displayedLogEntries[^1].TimeStamp;
+            }
+            else
+            {
+                // Nothing to work with at all
                 return;
-
-            minimumTimestamp = _showFullTimeline && fullSpanMinimum != default ? fullSpanMinimum : displayedLogEntries[0].TimeStamp;
-            maximumTimestamp = _showFullTimeline && fullSpanMaximum != default ? fullSpanMaximum : displayedLogEntries[^1].TimeStamp;
+            }
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
             if (totalSpan.TotalSeconds < 1)
@@ -388,6 +400,7 @@ namespace LogScraper.Utilities.UserControls
             double percentage = offset.TotalSeconds / fullSpan.TotalSeconds;
             return (float)(Math.Clamp(percentage, 0.0, 1.0) * this.Width);
         }
+
         private int GetHistogramHeight()
         {
             return _logRange?.IsConstrained == true
@@ -416,13 +429,14 @@ namespace LogScraper.Utilities.UserControls
             graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             graphics.Clear(this.BackColor);
 
-            if (buckets.Count == 0)
-                return;
-
             int drawableWidth = this.Width;
             int drawableHeight = GetHistogramHeight();
 
             if (drawableWidth <= 0 || drawableHeight <= 0)
+                return;
+
+            // Need at least a time span to draw anything meaningful
+            if (minimumTimestamp == default && maximumTimestamp == default)
                 return;
 
             // When range is defined but full timeline is shown, dim everything outside the log range
@@ -443,43 +457,47 @@ namespace LogScraper.Utilities.UserControls
                     graphics.FillRectangle(dimBrush, rangeEndX, 0, drawableWidth - rangeEndX, drawableHeight);
             }
 
-            // Draw histogram bars
-            List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
-            int bucketCount = sortedBucketKeys.Count;
-            float totalBarWidth = (float)drawableWidth / bucketCount;
-            float barWidth = totalBarWidth - 1;
-
-            for (int i = 0; i < bucketCount; i++)
+            // Draw histogram bars, tick marks, and markers only when buckets are populated
+            if (buckets.Count > 0)
             {
-                DateTime bucketKey = sortedBucketKeys[i];
-                int entryCount = buckets[bucketKey].Count;
+                List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
+                int bucketCount = sortedBucketKeys.Count;
+                float totalBarWidth = (float)drawableWidth / bucketCount;
+                float barWidth = totalBarWidth - 1;
 
-                if (entryCount > 0)
+                for (int i = 0; i < bucketCount; i++)
                 {
-                    double scaledValue = Math.Pow(entryCount, SCALE_POWER);
-                    float barHeight = (float)((scaledValue / maximumRawValue) * drawableHeight);
+                    DateTime bucketKey = sortedBucketKeys[i];
+                    int entryCount = buckets[bucketKey].Count;
 
-                    float x = i * totalBarWidth;
-                    float y = drawableHeight - barHeight;
+                    if (entryCount > 0)
+                    {
+                        double scaledValue = Math.Pow(entryCount, SCALE_POWER);
+                        float barHeight = (float)((scaledValue / maximumRawValue) * drawableHeight);
 
-                    Color barColor = (i == hoveredBucketIndex) ? BAR_HOVER_COLOR : BAR_COLOR;
+                        float x = i * totalBarWidth;
+                        float y = drawableHeight - barHeight;
 
-                    using SolidBrush brush = new(barColor);
-                    graphics.FillRectangle(brush, x, y, barWidth, barHeight);
+                        Color barColor = (i == hoveredBucketIndex) ? BAR_HOVER_COLOR : BAR_COLOR;
+
+                        using SolidBrush brush = new(barColor);
+                        graphics.FillRectangle(brush, x, y, barWidth, barHeight);
+                    }
                 }
+
+                DrawErrorMarkers(graphics, drawableHeight);
+                DrawBookmarkMarkers(graphics, drawableHeight);
+
+                if (visibleRangeStart.HasValue && visibleRangeEnd.HasValue)
+                    DrawVisibleRangeIndicator(graphics, drawableHeight);
+
+                if (hoveredBucketIndex >= 0 && hoveredBucketIndex < bucketCount)
+                    DrawTooltip(graphics, sortedBucketKeys[hoveredBucketIndex], totalBarWidth);
+                else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
+                    DrawErrorTooltip(graphics, errorLogEntries[hoveredErrorIndex]);
             }
 
             DrawTimeTickMarks(graphics, drawableHeight);
-            DrawErrorMarkers(graphics, drawableHeight);
-            DrawBookmarkMarkers(graphics, drawableHeight);
-
-            if (visibleRangeStart.HasValue && visibleRangeEnd.HasValue)
-                DrawVisibleRangeIndicator(graphics, drawableHeight);
-
-            if (hoveredBucketIndex >= 0 && hoveredBucketIndex < bucketCount)
-                DrawTooltip(graphics, sortedBucketKeys[hoveredBucketIndex], totalBarWidth);
-            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
-                DrawErrorTooltip(graphics, errorLogEntries[hoveredErrorIndex]);
 
             if (_logRange?.IsConstrained == true)
                 DrawMinimapStrip(graphics);
@@ -560,6 +578,7 @@ namespace LogScraper.Utilities.UserControls
 
         /// <summary>
         /// Draws bookmark markers one band above error markers at their exact timestamp positions.
+        /// Out-of-range bookmarks are drawn faded when showing the full timeline.
         /// </summary>
         private void DrawBookmarkMarkers(Graphics graphics, int drawableHeight)
         {
@@ -570,29 +589,46 @@ namespace LogScraper.Utilities.UserControls
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
 
+            // Draw out-of-range bookmarks first (behind in-range ones) when showing full timeline
+            if (_showFullTimeline && _logRange?.IsConstrained == true)
+            {
+                HashSet<int> inRangeIndices = new(bookmarkLogEntries.Select(entry => entry.Index));
+
+                foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
+                {
+                    if (inRangeIndices.Contains(bookmarkEntry.Index))
+                        continue;
+
+                    DrawSingleBookmarkMarker(graphics, bookmarkEntry, sortedBucketKeys, totalBarWidth, drawableHeight, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
+                }
+            }
+
+            // Draw in-range bookmarks
             for (int i = 0; i < bookmarkLogEntries.Count; i++)
             {
-                LogEntry bookmarkEntry = bookmarkLogEntries[i];
-
-                int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
-
-                if (bucketIndex < 0)
-                    continue;
-
-                DateTime bucketKey = sortedBucketKeys[bucketIndex];
-
-                float bucketStartX = bucketIndex * totalBarWidth;
-                double fractionWithinBucket = (bookmarkEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
-                float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
-
                 Color markerColor = (i == hoveredBookmarkIndex) ? BOOKMARK_MARKER_HOVER_COLOR : BOOKMARK_MARKER_COLOR;
-
-                float markerX = exactX - (ERROR_MARKER_SIZE / 2);
-                float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4);
-
-                using SolidBrush brush = new(markerColor);
-                graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
+                DrawSingleBookmarkMarker(graphics, bookmarkLogEntries[i], sortedBucketKeys, totalBarWidth, drawableHeight, markerColor);
             }
+        }
+
+        private void DrawSingleBookmarkMarker(Graphics graphics, LogEntry bookmarkEntry, List<DateTime> sortedBucketKeys, float totalBarWidth, int drawableHeight, Color markerColor)
+        {
+            int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
+
+            if (bucketIndex < 0)
+                return;
+
+            DateTime bucketKey = sortedBucketKeys[bucketIndex];
+
+            float bucketStartX = bucketIndex * totalBarWidth;
+            double fractionWithinBucket = (bookmarkEntry.TimeStamp - bucketKey).TotalSeconds / currentBucketSize.TotalSeconds;
+            float exactX = bucketStartX + (float)(fractionWithinBucket * totalBarWidth);
+
+            float markerX = exactX - (ERROR_MARKER_SIZE / 2);
+            float markerY = drawableHeight - (ERROR_MARKER_SIZE * 2 + 4);
+
+            using SolidBrush brush = new(markerColor);
+            graphics.FillEllipse(brush, markerX, markerY, ERROR_MARKER_SIZE, ERROR_MARKER_SIZE);
         }
 
         /// <summary>
@@ -689,8 +725,7 @@ namespace LogScraper.Utilities.UserControls
             using SolidBrush brush = new(Color.FromArgb(120, 120, 120));
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
 
-            int tickCount = Math.Min(10, buckets.Count / 5);
-            if (tickCount < 3) tickCount = 3;
+            int tickCount = Math.Max(2, this.Width / 65);
 
             for (int i = 0; i <= tickCount; i++)
             {
