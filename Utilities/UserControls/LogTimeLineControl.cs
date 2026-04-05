@@ -261,8 +261,8 @@ namespace LogScraper.Utilities.UserControls
             if (displayedLogEntries.Count == 0)
                 return;
 
-            minimumTimestamp = displayedLogEntries[0].TimeStamp;
-            maximumTimestamp = displayedLogEntries[^1].TimeStamp;
+            minimumTimestamp = _showFullTimeline && fullSpanMinimum != default ? fullSpanMinimum : displayedLogEntries[0].TimeStamp;
+            maximumTimestamp = _showFullTimeline && fullSpanMaximum != default ? fullSpanMaximum : displayedLogEntries[^1].TimeStamp;
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
             if (totalSpan.TotalSeconds < 1)
@@ -374,8 +374,20 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>
-        /// Returns the height available for the histogram area, excluding the minimap strip when visible.
+        /// Converts a timestamp to an x-coordinate using the full collection span.
+        /// Used for overlay calculations that must reflect the entire log, not just displayed entries.
         /// </summary>
+        private float GetXPositionForTimestampInFullSpan(DateTime timestamp)
+        {
+            if (fullSpanMaximum == fullSpanMinimum)
+                return 0;
+
+            TimeSpan fullSpan = fullSpanMaximum - fullSpanMinimum;
+            TimeSpan offset = timestamp - fullSpanMinimum;
+
+            double percentage = offset.TotalSeconds / fullSpan.TotalSeconds;
+            return (float)(Math.Clamp(percentage, 0.0, 1.0) * this.Width);
+        }
         private int GetHistogramHeight()
         {
             return _logRange?.IsConstrained == true
@@ -416,8 +428,8 @@ namespace LogScraper.Utilities.UserControls
             // When range is defined but full timeline is shown, dim everything outside the log range
             if (_logRange?.IsConstrained == true && _showFullTimeline)
             {
-                float rangeStartX = _logRange.Begin != null ? GetXPositionForTimestamp(_logRange.Begin.TimeStamp) : 0;
-                float rangeEndX = _logRange.End != null ? GetXPositionForTimestamp(_logRange.End.TimeStamp) : drawableWidth;
+                float rangeStartX = _logRange.Begin != null ? GetXPositionForTimestampInFullSpan(_logRange.Begin.TimeStamp) : 0;
+                float rangeEndX = _logRange.End != null ? GetXPositionForTimestampInFullSpan(_logRange.End.TimeStamp) : drawableWidth;
 
                 if (rangeStartX < 0) rangeStartX = 0;
                 if (rangeEndX < 0) rangeEndX = drawableWidth;
@@ -557,10 +569,10 @@ namespace LogScraper.Utilities.UserControls
             List<DateTime> sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
             int bucketCount = sortedBucketKeys.Count;
             float totalBarWidth = (float)this.Width / bucketCount;
-            List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
-            for (int i = 0; i < bookmarksLogEntriesToUse.Count; i++)
+
+            for (int i = 0; i < bookmarkLogEntries.Count; i++)
             {
-                LogEntry bookmarkEntry = bookmarksLogEntriesToUse[i];
+                LogEntry bookmarkEntry = bookmarkLogEntries[i];
 
                 int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
 
@@ -937,10 +949,9 @@ namespace LogScraper.Utilities.UserControls
             float totalBarWidth = (float)this.Width / bucketCount;
             int drawableHeight = GetHistogramHeight();
 
-            List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
-            for (int i = 0; i < bookmarksLogEntriesToUse.Count; i++)
+            for (int i = 0; i < bookmarkLogEntries.Count; i++)
             {
-                LogEntry bookmarkEntry = bookmarksLogEntriesToUse[i];
+                LogEntry bookmarkEntry = bookmarkLogEntries[i];
 
                 int bucketIndex = FindBucketIndexContainingTimestamp(bookmarkEntry.TimeStamp, sortedBucketKeys);
 
@@ -1057,8 +1068,7 @@ namespace LogScraper.Utilities.UserControls
 
             if (clickedBookmarkIndex != -1)
             {
-                List<LogEntry> bookmarksLogEntriesToUse = _showFullTimeline ? allBookmarkLogEntries : bookmarkLogEntries;
-                BookmarkMarkerClicked?.Invoke(this, bookmarksLogEntriesToUse[clickedBookmarkIndex]);
+                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntries[clickedBookmarkIndex]);
                 return;
             }
 
