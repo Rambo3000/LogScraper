@@ -64,7 +64,7 @@ namespace LogScraper
             CboLogContentType.FormattingEnabled = true;
             CboLogContentType.Location = new System.Drawing.Point(0, 0);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(243, 23);
+            CboLogContentType.Size = new System.Drawing.Size(216, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
@@ -73,7 +73,7 @@ namespace LogScraper
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtSearch.Location = new System.Drawing.Point(2, 26);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(209, 23);
+            txtSearch.Size = new System.Drawing.Size(241, 23);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
@@ -97,10 +97,11 @@ namespace LogScraper
             BtnShowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnShowTree.ImageIndex = 0;
             BtnShowTree.ImageList = imageList1;
-            BtnShowTree.Location = new System.Drawing.Point(215, 25);
+            BtnShowTree.Location = new System.Drawing.Point(218, 0);
             BtnShowTree.Name = "BtnShowTree";
             BtnShowTree.Size = new System.Drawing.Size(25, 25);
             BtnShowTree.TabIndex = 8;
+            toolTip.SetToolTip(BtnShowTree, "Hierarchische weergave");
             BtnShowTree.UseVisualStyleBackColor = true;
             BtnShowTree.Click += BtnShowTree_Click;
             // 
