@@ -97,7 +97,7 @@ namespace LogScraper
                 LogRange = new LogRange
                 {
                     Begin = logEntries?.Count > 0 ? logEntries[0] : null,
-                    End = logEntries?.Count > 0 ? logEntries[logEntries.Count - 1] : null
+                    End = logEntries?.Count > 0 ? logEntries[^1] : null
                 },
                 SearchText = IsSearchEmpty() ? string.Empty : txtSearch.Text.Trim(),
                 CaseSensitive = ItemCaseSensitive.Checked,

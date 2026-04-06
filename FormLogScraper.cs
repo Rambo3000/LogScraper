@@ -24,8 +24,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper
 {
-    //TODO: Change search into single line control with splitbutton control
-    //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: timeline show error marks darker when out of range
     //TODO: timeline show text at bookmark
     //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
@@ -441,7 +439,8 @@ namespace LogScraper
             BtnStop.Visible = downloadingInProgress;
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
-            GrpSourceAndLayout.Enabled = !downloadingInProgress;
+            //TODO: enable source specific settings instead of whole groupbox
+            //GrpSourceAndLayout.Enabled = !downloadingInProgress;
             GrpLogProvidersSettings.Enabled = !downloadingInProgress;
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();

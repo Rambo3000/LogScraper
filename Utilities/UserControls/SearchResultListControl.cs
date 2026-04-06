@@ -177,7 +177,6 @@ namespace LogScraper.Utilities.UserControls
 
             string textBefore = hasMatch ? renderedText[..matchStart] : renderedText;
             string textMatch = hasMatch ? renderedText.Substring(matchStart, matchLength) : string.Empty;
-            string textAfter = hasMatch ? renderedText[(matchStart + matchLength)..] : string.Empty;
 
             TextFormatFlags flags = TextFormatFlags.NoPadding | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix;
 

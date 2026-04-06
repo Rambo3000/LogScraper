@@ -60,6 +60,7 @@ namespace LogScraper.Utilities.UserControls
         private void BtnReset_Click(object sender, EventArgs e)
         {
             Clear();
+            RangeChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private bool UpdateCheckboxes = false;
