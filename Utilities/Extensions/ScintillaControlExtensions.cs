@@ -33,7 +33,7 @@ namespace LogScraper.Utilities.Extensions
             // Search indicator
             scintillaControl.Indicators[INDICATOR_SEARCH].Style = IndicatorStyle.StraightBox;
             scintillaControl.Indicators[INDICATOR_SEARCH].Under = true;
-            scintillaControl.Indicators[INDICATOR_SEARCH].ForeColor = Color.Gold;
+            scintillaControl.Indicators[INDICATOR_SEARCH].ForeColor = Color.Yellow;
             scintillaControl.Indicators[INDICATOR_SEARCH].Alpha = 100;
             scintillaControl.Indicators[INDICATOR_SEARCH].OutlineAlpha = 200;
 

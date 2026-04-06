@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -22,16 +21,14 @@ using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.UserControls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static LogScraper.UserControlSearch;
-using static LogScraper.Utilities.Extensions.ScintillaControlExtensions;
 
 namespace LogScraper
 {
     //TODO: Change search into single line control with splitbutton control
     //TODO: Add search all option to search which shows all log lines below the log entry view
     //TODO: timeline show error marks darker when out of range
+    //TODO: timeline show text at bookmark
     //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
-    //TODO: Fix bug wher after changing log layout name we get null reference exceptions
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -80,10 +77,34 @@ namespace LogScraper
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
-            UserControlSearch.SelectedItemChanged += UserControlSearch_SelectedItemChanged;
+            UserControlSearch.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
+            SearchResultListControl.ResultSelected += SearchResultListControl_ResultSelected;
+            SearchResultListControl.Close += SearchResultListControl_Close;
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void SearchResultListControl_Close(object sender, EventArgs e)
+        {
+            splitContainer5.Panel2Collapsed = true;
+        }
+
+        private void SearchControl_SearchSettingsChanged(SearchSettings settings)
+        {
+            if (splitContainer5.Panel2Collapsed && UserControlSearch.SelectedSearchMode == UserControlSearch.SearchMode.All)
+            {
+                splitContainer5.Panel2Collapsed = false;
+            }
+
+            SearchResultListControl.UpdateLogEntries(visibleLogEntries);
+            SearchResultListControl.UpdateSearchResults(settings);
+        }
+
+        private void SearchResultListControl_ResultSelected(object sender, LogEntry e)
+        {
+            UserControlContentFilter.ClearSelectedLogEntry();
+            UserControlLogEntriesTextBox.SelectedLogEntry = e;
         }
 
         private void FlowTreeControl_ShowTreeStateChanged(object sender, EventArgs e)
@@ -131,7 +152,6 @@ namespace LogScraper
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)
         {
             UserControlContentFilter.ClearSelectedLogEntry();
-            UserControlSearch.ClearSelectedLogEntry();
             UserControlLogEntriesTextBox.SelectedLogEntry = e;
         }
 
@@ -287,6 +307,8 @@ namespace LogScraper
                 LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings( flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
             };
 
+            UserControlSearch.LogRenderSettings = logRenderSettings;
+
             visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
@@ -357,14 +379,7 @@ namespace LogScraper
 
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
-            UserControlSearch.ClearSelectedLogEntry();
             UserControlLogEntriesTextBox.SelectedLogEntry = UserControlContentFilter.SelectedLogEntry;
-        }
-
-        private void UserControlSearch_SelectedItemChanged(object sender, EventArgs e)
-        {
-            UserControlContentFilter.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectedLogEntry = UserControlSearch.SelectedLogEntry;
         }
 
         private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
@@ -387,13 +402,13 @@ namespace LogScraper
             }
         }
 
-        private void UsrSearch_Search(string searchQuery, SearchDirectionUserControl searchDirectionUserControl, bool caseSensitive, bool wholeWord, bool wrapAround)
+        private void UsrSearch_Search(SearchSettings searchSettings)
         {
             UserControlSearch.Enabled = false;
             try
             {
-                SearchDirection searchDirection = searchDirectionUserControl == SearchDirectionUserControl.Forward ? SearchDirection.Forward : SearchDirection.Backward;
-                bool found = UserControlLogEntriesTextBox.TrySearch(searchQuery, wholeWord, caseSensitive, wrapAround, searchDirection);
+                ScintillaControlExtensions.SearchDirection searchDirection = searchSettings.Direction == UserControlSearch.SearchDirection.Forward ? ScintillaControlExtensions.SearchDirection.Forward : ScintillaControlExtensions.SearchDirection.Backward;
+                bool found = UserControlLogEntriesTextBox.TrySearch(searchSettings.SearchText, searchSettings.WholeWord, searchSettings.CaseSensitive, searchSettings.WrapAround, searchDirection);
             }
             catch (Exception ex)
             {

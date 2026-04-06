@@ -12,7 +12,7 @@ namespace LogScraper.Log.Rendering
     /// <summary>
     /// Provides functionality to render log entries based on specified render settings.
     /// </summary>
-    internal static class LogRenderer
+    public static class LogRenderer
     {
         /// <summary>
         /// Pre-computed tab prefix strings indexed by tree depth, avoiding per-entry allocation.
@@ -24,6 +24,31 @@ namespace LogScraper.Log.Rendering
         {
             for (int i = 0; i < CachedTabPrefixes.Length; i++)
                 CachedTabPrefixes[i] = new string('\t', i * 2);
+        }
+
+        /// <summary>
+        /// Renders a single log entry to a display string according to the provided render settings.
+        /// Flow tree and post-processors are not applied. Intended for use in result list controls
+        /// where per-entry display strings are needed with consistent metadata formatting.
+        /// </summary>
+        /// <param name="logEntry">The log entry to render.</param>
+        /// <param name="logRenderSettings">The render settings controlling metadata visibility and substitution.</param>
+        /// <returns>The rendered single-line string for the log entry.</returns>
+        public static string RenderSingleLogEntry(LogEntry logEntry, LogRenderSettings logRenderSettings)
+        {
+            if (logEntry == null || logRenderSettings == null) return string.Empty;
+
+            string text = logEntry.Entry;
+
+            if (!logRenderSettings.ShowOriginalMetadata)
+            {
+                if (logRenderSettings.LogLayout?.RemoveMetaDataCriteria != null)
+                {
+                    text = RemoveTextByCriteria(text, logEntry.StartIndexMetadata, logEntry.StartIndexContent);
+                }
+            }
+
+            return text;
         }
 
         /// <summary>

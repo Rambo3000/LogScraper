@@ -158,6 +158,12 @@ namespace LogScraper.Utilities.UserControls
             }
 
             DrawArrow(g, RightRect);
+
+            if (!Enabled)
+            {
+                using var brush = new SolidBrush(Color.FromArgb(120, SystemColors.Control));
+                g.FillRectangle(brush, ClientRectangle);
+            }
         }
 
         /// <summary>
@@ -341,12 +347,24 @@ namespace LogScraper.Utilities.UserControls
         #region Mouse Events
 
         /// <summary>
+        /// Repaints the control and resets hover/press states when Enabled changes
+        /// </summary>
+        /// <param name="e">Event arguments</param>
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            _leftState = _rightState = ButtonState.Normal;
+            Invalidate();
+        }
+
+        /// <summary>
         /// Handles mouse movement to update hover states
         /// </summary>
         /// <param name="e">Mouse event arguments</param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (!Enabled) return;
             UpdateHoverState(e.Location);
         }
 
@@ -357,6 +375,7 @@ namespace LogScraper.Utilities.UserControls
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            if (!Enabled) return;
             _leftState = _rightState = ButtonState.Normal;
             Invalidate();
         }
@@ -368,6 +387,7 @@ namespace LogScraper.Utilities.UserControls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            if (!Enabled) return;
             _clickHandled = false;
 
             if (LeftRect.Contains(e.Location) && e.Button == MouseButtons.Left)
@@ -389,6 +409,7 @@ namespace LogScraper.Utilities.UserControls
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
+            if (!Enabled) return;
 
             if (_clickHandled) return;
             _clickHandled = true;
@@ -416,6 +437,7 @@ namespace LogScraper.Utilities.UserControls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (!Enabled) return;
 
             // OnClick will handle the action, only reset state if OnClick didn't fire
             if (!_clickHandled)

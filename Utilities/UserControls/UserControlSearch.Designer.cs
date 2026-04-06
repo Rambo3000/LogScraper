@@ -31,158 +31,156 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlSearch));
             txtSearch = new System.Windows.Forms.TextBox();
-            btnSearchNext = new System.Windows.Forms.Button();
-            chkCaseSensitive = new System.Windows.Forms.CheckBox();
-            btnSearchPrevious = new System.Windows.Forms.Button();
-            chkWholeWordsOnly = new System.Windows.Forms.CheckBox();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            lblResults = new System.Windows.Forms.Label();
-            chkWrapAround = new System.Windows.Forms.CheckBox();
-            LstLogContent = new System.Windows.Forms.ListBox();
             BtnClear = new System.Windows.Forms.Button();
-            panel1 = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
-            panel1.SuspendLayout();
+            splitButton1 = new LogScraper.Utilities.UserControls.SplitButton();
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            ItemPrevious = new System.Windows.Forms.ToolStripMenuItem();
+            ItemNext = new System.Windows.Forms.ToolStripMenuItem();
+            ItemAll = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            ItemCaseSensitive = new System.Windows.Forms.ToolStripMenuItem();
+            ItemWholeWords = new System.Windows.Forms.ToolStripMenuItem();
+            ItemWrapAround = new System.Windows.Forms.ToolStripMenuItem();
+            imageList1 = new System.Windows.Forms.ImageList(components);
+            PnlFakeWhiteBackground = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling.SuspendLayout();
+            contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(3, 3);
+            txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtSearch.Location = new System.Drawing.Point(2, 5);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(178, 23);
+            txtSearch.Size = new System.Drawing.Size(188, 16);
             txtSearch.TabIndex = 0;
+            txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.Enter += TxtSearch_Enter;
             txtSearch.KeyDown += TxtSearch_KeyDown;
             txtSearch.Leave += TxtSearch_Leave;
             // 
-            // btnSearchNext
-            // 
-            btnSearchNext.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnSearchNext.BackgroundImage = Properties.Resources.arrow_right;
-            btnSearchNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            btnSearchNext.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            btnSearchNext.Location = new System.Drawing.Point(212, 2);
-            btnSearchNext.Name = "btnSearchNext";
-            btnSearchNext.Size = new System.Drawing.Size(30, 25);
-            btnSearchNext.TabIndex = 1;
-            btnSearchNext.UseVisualStyleBackColor = true;
-            btnSearchNext.Click += BtnSearchNext_Click;
-            // 
-            // chkCaseSensitive
-            // 
-            chkCaseSensitive.Appearance = System.Windows.Forms.Appearance.Button;
-            chkCaseSensitive.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            chkCaseSensitive.Location = new System.Drawing.Point(3, 30);
-            chkCaseSensitive.Name = "chkCaseSensitive";
-            chkCaseSensitive.Size = new System.Drawing.Size(31, 25);
-            chkCaseSensitive.TabIndex = 3;
-            chkCaseSensitive.Text = "Aa";
-            chkCaseSensitive.UseVisualStyleBackColor = true;
-            chkCaseSensitive.CheckedChanged += ChkCaseSensitive_CheckedChanged;
-            // 
-            // btnSearchPrevious
-            // 
-            btnSearchPrevious.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            btnSearchPrevious.BackgroundImage = Properties.Resources.arrow_left;
-            btnSearchPrevious.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            btnSearchPrevious.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            btnSearchPrevious.Location = new System.Drawing.Point(183, 2);
-            btnSearchPrevious.Name = "btnSearchPrevious";
-            btnSearchPrevious.Size = new System.Drawing.Size(30, 25);
-            btnSearchPrevious.TabIndex = 4;
-            btnSearchPrevious.UseVisualStyleBackColor = true;
-            btnSearchPrevious.Click += BtnSearchPrevious_Click;
-            // 
-            // chkWholeWordsOnly
-            // 
-            chkWholeWordsOnly.Appearance = System.Windows.Forms.Appearance.Button;
-            chkWholeWordsOnly.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            chkWholeWordsOnly.Location = new System.Drawing.Point(35, 30);
-            chkWholeWordsOnly.Name = "chkWholeWordsOnly";
-            chkWholeWordsOnly.Size = new System.Drawing.Size(38, 25);
-            chkWholeWordsOnly.TabIndex = 5;
-            chkWholeWordsOnly.Text = "|Ab|";
-            chkWholeWordsOnly.UseVisualStyleBackColor = true;
-            chkWholeWordsOnly.CheckedChanged += ChkWholeWordsOnly_CheckedChanged;
-            // 
-            // lblResults
-            // 
-            lblResults.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            lblResults.ForeColor = System.Drawing.Color.Black;
-            lblResults.Location = new System.Drawing.Point(110, 35);
-            lblResults.Name = "lblResults";
-            lblResults.Size = new System.Drawing.Size(108, 20);
-            lblResults.TabIndex = 6;
-            // 
-            // chkWrapAround
-            // 
-            chkWrapAround.Appearance = System.Windows.Forms.Appearance.Button;
-            chkWrapAround.BackgroundImage = Properties.Resources.arrow_wraparound;
-            chkWrapAround.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            chkWrapAround.Checked = true;
-            chkWrapAround.CheckState = System.Windows.Forms.CheckState.Checked;
-            chkWrapAround.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            chkWrapAround.Location = new System.Drawing.Point(74, 30);
-            chkWrapAround.Name = "chkWrapAround";
-            chkWrapAround.Size = new System.Drawing.Size(30, 25);
-            chkWrapAround.TabIndex = 7;
-            chkWrapAround.UseVisualStyleBackColor = true;
-            // 
-            // LstLogContent
-            // 
-            LstLogContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            LstLogContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            LstLogContent.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            LstLogContent.FormattingEnabled = true;
-            LstLogContent.IntegralHeight = false;
-            LstLogContent.Location = new System.Drawing.Point(0, 0);
-            LstLogContent.Name = "LstLogContent";
-            LstLogContent.Size = new System.Drawing.Size(244, 162);
-            LstLogContent.TabIndex = 8;
-            LstLogContent.DrawItem += LstLogContent_DrawItem;
-            LstLogContent.SelectedIndexChanged += LstLogContent_SelectedIndexChanged;
-            // 
             // BtnClear
             // 
             BtnClear.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            BtnClear.BackColor = System.Drawing.Color.White;
             BtnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             BtnClear.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            BtnClear.FlatAppearance.BorderSize = 0;
+            BtnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             BtnClear.Image = (System.Drawing.Image)resources.GetObject("BtnClear.Image");
-            BtnClear.Location = new System.Drawing.Point(224, 35);
+            BtnClear.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            BtnClear.Location = new System.Drawing.Point(188, 1);
             BtnClear.Name = "BtnClear";
             BtnClear.Size = new System.Drawing.Size(20, 20);
             BtnClear.TabIndex = 9;
-            BtnClear.UseVisualStyleBackColor = true;
+            BtnClear.UseVisualStyleBackColor = false;
             BtnClear.Click += BtnClear_Click;
-            // 
-            // panel1
-            // 
-            panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            panel1.Controls.Add(LstLogContent);
-            panel1.Location = new System.Drawing.Point(0, 57);
-            panel1.Margin = new System.Windows.Forms.Padding(2);
-            panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(244, 162);
-            panel1.TabIndex = 10;
             // 
             // PnlUsedForCorrectScaling
             // 
-            PnlUsedForCorrectScaling.Controls.Add(panel1);
-            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
-            PnlUsedForCorrectScaling.Controls.Add(lblResults);
-            PnlUsedForCorrectScaling.Controls.Add(chkCaseSensitive);
             PnlUsedForCorrectScaling.Controls.Add(BtnClear);
-            PnlUsedForCorrectScaling.Controls.Add(chkWholeWordsOnly);
-            PnlUsedForCorrectScaling.Controls.Add(chkWrapAround);
-            PnlUsedForCorrectScaling.Controls.Add(btnSearchPrevious);
-            PnlUsedForCorrectScaling.Controls.Add(btnSearchNext);
+            PnlUsedForCorrectScaling.Controls.Add(splitButton1);
+            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
+            PnlUsedForCorrectScaling.Controls.Add(PnlFakeWhiteBackground);
             PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
             PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
-            PnlUsedForCorrectScaling.Size = new System.Drawing.Size(244, 219);
+            PnlUsedForCorrectScaling.Size = new System.Drawing.Size(244, 25);
             PnlUsedForCorrectScaling.TabIndex = 11;
+            // 
+            // splitButton1
+            // 
+            splitButton1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            splitButton1.DropDownMenu = contextMenuStrip1;
+            splitButton1.DropDownWidth = 15;
+            splitButton1.Icon = null;
+            splitButton1.ImageIndex = 0;
+            splitButton1.ImageList = imageList1;
+            splitButton1.Location = new System.Drawing.Point(209, -1);
+            splitButton1.Name = "splitButton1";
+            splitButton1.Size = new System.Drawing.Size(35, 25);
+            splitButton1.TabIndex = 10;
+            splitButton1.ButtonClick += SplitButton1_ButtonClick;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemPrevious, ItemNext, ItemAll, toolStripSeparator1, ItemCaseSensitive, ItemWholeWords, ItemWrapAround });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.ShowCheckMargin = true;
+            contextMenuStrip1.Size = new System.Drawing.Size(235, 164);
+            // 
+            // ItemPrevious
+            // 
+            ItemPrevious.Image = (System.Drawing.Image)resources.GetObject("ItemPrevious.Image");
+            ItemPrevious.Name = "ItemPrevious";
+            ItemPrevious.Size = new System.Drawing.Size(234, 22);
+            ItemPrevious.Text = "Vorige zoeken";
+            // 
+            // ItemNext
+            // 
+            ItemNext.Image = (System.Drawing.Image)resources.GetObject("ItemNext.Image");
+            ItemNext.Name = "ItemNext";
+            ItemNext.Size = new System.Drawing.Size(234, 22);
+            ItemNext.Text = "Volgende zoeken";
+            // 
+            // ItemAll
+            // 
+            ItemAll.Image = (System.Drawing.Image)resources.GetObject("ItemAll.Image");
+            ItemAll.Name = "ItemAll";
+            ItemAll.Size = new System.Drawing.Size(234, 22);
+            ItemAll.Text = "Alle zoeken";
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(231, 6);
+            // 
+            // ItemCaseSensitive
+            // 
+            ItemCaseSensitive.CheckOnClick = true;
+            ItemCaseSensitive.Image = (System.Drawing.Image)resources.GetObject("ItemCaseSensitive.Image");
+            ItemCaseSensitive.Name = "ItemCaseSensitive";
+            ItemCaseSensitive.Size = new System.Drawing.Size(234, 22);
+            ItemCaseSensitive.Text = "Hoofdletter gevoelig";
+            // 
+            // ItemWholeWords
+            // 
+            ItemWholeWords.CheckOnClick = true;
+            ItemWholeWords.Image = (System.Drawing.Image)resources.GetObject("ItemWholeWords.Image");
+            ItemWholeWords.Name = "ItemWholeWords";
+            ItemWholeWords.Size = new System.Drawing.Size(234, 22);
+            ItemWholeWords.Text = "Alleen hele woorden";
+            // 
+            // ItemWrapAround
+            // 
+            ItemWrapAround.Checked = true;
+            ItemWrapAround.CheckOnClick = true;
+            ItemWrapAround.CheckState = System.Windows.Forms.CheckState.Checked;
+            ItemWrapAround.Image = (System.Drawing.Image)resources.GetObject("ItemWrapAround.Image");
+            ItemWrapAround.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            ItemWrapAround.Name = "ItemWrapAround";
+            ItemWrapAround.Size = new System.Drawing.Size(234, 22);
+            ItemWrapAround.Text = "Verder zoeken vanaf begin";
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            imageList1.Images.SetKeyName(0, "arrow right.png");
+            imageList1.Images.SetKeyName(1, "arrow left.png");
+            imageList1.Images.SetKeyName(2, "magnify 16x16.png");
+            // 
+            // PnlFakeWhiteBackground
+            // 
+            PnlFakeWhiteBackground.BackColor = System.Drawing.Color.White;
+            PnlFakeWhiteBackground.Location = new System.Drawing.Point(0, 1);
+            PnlFakeWhiteBackground.Name = "PnlFakeWhiteBackground";
+            PnlFakeWhiteBackground.Size = new System.Drawing.Size(208, 21);
+            PnlFakeWhiteBackground.TabIndex = 11;
             // 
             // UserControlSearch
             // 
@@ -190,26 +188,29 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForCorrectScaling);
             Name = "UserControlSearch";
-            Size = new System.Drawing.Size(244, 219);
-            panel1.ResumeLayout(false);
+            Size = new System.Drawing.Size(244, 25);
             PnlUsedForCorrectScaling.ResumeLayout(false);
             PnlUsedForCorrectScaling.PerformLayout();
+            contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.Button btnSearchNext;
-        private System.Windows.Forms.CheckBox chkCaseSensitive;
-        private System.Windows.Forms.Button btnSearchPrevious;
-        private System.Windows.Forms.CheckBox chkWholeWordsOnly;
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.Label lblResults;
-        private System.Windows.Forms.CheckBox chkWrapAround;
-        private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.Button BtnClear;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem ItemPrevious;
+        private System.Windows.Forms.ToolStripMenuItem ItemNext;
+        private System.Windows.Forms.ToolStripMenuItem ItemAll;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem ItemCaseSensitive;
+        private System.Windows.Forms.ToolStripMenuItem ItemWholeWords;
+        private System.Windows.Forms.ToolStripMenuItem ItemWrapAround;
+        private System.Windows.Forms.ImageList imageList1;
+        private Utilities.UserControls.SplitButton splitButton1;
+        private System.Windows.Forms.Panel PnlFakeWhiteBackground;
     }
 }

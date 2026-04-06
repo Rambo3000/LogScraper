@@ -59,17 +59,18 @@
             splitContainer2 = new System.Windows.Forms.SplitContainer();
             splitContainer4 = new System.Windows.Forms.SplitContainer();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
-            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
-            MetadataFormatingControl = new LogScraper.Log.Metadata.MetadataFormattingControl();
-            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
+            splitContainer5 = new System.Windows.Forms.SplitContainer();
             BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
-            LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
+            UserControlSearch = new UserControlSearch();
             panel1 = new System.Windows.Forms.Panel();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
+            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
+            LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
+            MetadataFormatingControl = new LogScraper.Log.Metadata.MetadataFormattingControl();
+            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
+            SearchResultListControl = new LogScraper.Utilities.UserControls.SearchResultListControl();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
-            groupBox5 = new System.Windows.Forms.GroupBox();
-            UserControlSearch = new UserControlSearch();
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
@@ -90,12 +91,14 @@
             splitContainer4.Panel1.SuspendLayout();
             splitContainer4.Panel2.SuspendLayout();
             splitContainer4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer5).BeginInit();
+            splitContainer5.Panel1.SuspendLayout();
+            splitContainer5.Panel2.SuspendLayout();
+            splitContainer5.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
-            splitContainer3.Panel1.SuspendLayout();
             splitContainer3.Panel2.SuspendLayout();
             splitContainer3.SuspendLayout();
-            groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -316,7 +319,7 @@
             // 
             btnOpenWithEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(630, -1);
+            btnOpenWithEditor.Location = new System.Drawing.Point(629, 0);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 11;
@@ -329,7 +332,7 @@
             // 
             BtnSave.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(607, -1);
+            BtnSave.Location = new System.Drawing.Point(606, 0);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 26;
@@ -417,14 +420,7 @@
             // 
             // splitContainer4.Panel2
             // 
-            splitContainer4.Panel2.Controls.Add(flowTreeControl1);
-            splitContainer4.Panel2.Controls.Add(MetadataFormatingControl);
-            splitContainer4.Panel2.Controls.Add(BtnSave);
-            splitContainer4.Panel2.Controls.Add(LogPostProcessing);
-            splitContainer4.Panel2.Controls.Add(BookMarksControl);
-            splitContainer4.Panel2.Controls.Add(btnOpenWithEditor);
-            splitContainer4.Panel2.Controls.Add(LogViewport);
-            splitContainer4.Panel2.Controls.Add(panel1);
+            splitContainer4.Panel2.Controls.Add(splitContainer5);
             splitContainer4.Size = new System.Drawing.Size(655, 447);
             splitContainer4.SplitterDistance = 48;
             splitContainer4.TabIndex = 5;
@@ -439,53 +435,55 @@
             LogTimeLineControl.Size = new System.Drawing.Size(655, 48);
             LogTimeLineControl.TabIndex = 0;
             // 
-            // flowTreeControl1
+            // splitContainer5
             // 
-            flowTreeControl1.Location = new System.Drawing.Point(284, -1);
-            flowTreeControl1.MaximumSize = new System.Drawing.Size(40, 25);
-            flowTreeControl1.MinimumSize = new System.Drawing.Size(40, 25);
-            flowTreeControl1.Name = "flowTreeControl1";
-            flowTreeControl1.Size = new System.Drawing.Size(40, 25);
-            flowTreeControl1.TabIndex = 43;
+            splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer5.Location = new System.Drawing.Point(0, 0);
+            splitContainer5.Name = "splitContainer5";
+            splitContainer5.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // MetadataFormatingControl
+            // splitContainer5.Panel1
             // 
-            MetadataFormatingControl.Location = new System.Drawing.Point(183, -1);
-            MetadataFormatingControl.MaximumSize = new System.Drawing.Size(40, 25);
-            MetadataFormatingControl.MinimumSize = new System.Drawing.Size(40, 25);
-            MetadataFormatingControl.Name = "MetadataFormatingControl";
-            MetadataFormatingControl.Size = new System.Drawing.Size(40, 25);
-            MetadataFormatingControl.TabIndex = 26;
+            splitContainer5.Panel1.Controls.Add(BookMarksControl);
+            splitContainer5.Panel1.Controls.Add(UserControlSearch);
+            splitContainer5.Panel1.Controls.Add(panel1);
+            splitContainer5.Panel1.Controls.Add(flowTreeControl1);
+            splitContainer5.Panel1.Controls.Add(LogViewport);
+            splitContainer5.Panel1.Controls.Add(MetadataFormatingControl);
+            splitContainer5.Panel1.Controls.Add(btnOpenWithEditor);
+            splitContainer5.Panel1.Controls.Add(BtnSave);
+            splitContainer5.Panel1.Controls.Add(LogPostProcessing);
             // 
-            // LogPostProcessing
+            // splitContainer5.Panel2
             // 
-            LogPostProcessing.Location = new System.Drawing.Point(229, -1);
-            LogPostProcessing.Name = "LogPostProcessing";
-            LogPostProcessing.Size = new System.Drawing.Size(49, 25);
-            LogPostProcessing.TabIndex = 41;
+            splitContainer5.Panel2.Controls.Add(SearchResultListControl);
+            splitContainer5.Panel2Collapsed = true;
+            splitContainer5.Size = new System.Drawing.Size(655, 395);
+            splitContainer5.SplitterDistance = 313;
+            splitContainer5.TabIndex = 44;
             // 
             // BookMarksControl
             // 
-            BookMarksControl.Location = new System.Drawing.Point(1, -1);
+            BookMarksControl.Location = new System.Drawing.Point(-1, 0);
             BookMarksControl.Name = "BookMarksControl";
             BookMarksControl.Size = new System.Drawing.Size(97, 25);
             BookMarksControl.TabIndex = 11;
             // 
-            // LogViewport
+            // UserControlSearch
             // 
-            LogViewport.Location = new System.Drawing.Point(104, -1);
-            LogViewport.Name = "LogViewport";
-            LogViewport.Size = new System.Drawing.Size(73, 25);
-            LogViewport.TabIndex = 40;
+            UserControlSearch.Location = new System.Drawing.Point(328, 0);
+            UserControlSearch.Name = "UserControlSearch";
+            UserControlSearch.Size = new System.Drawing.Size(215, 25);
+            UserControlSearch.TabIndex = 33;
             // 
             // panel1
             // 
             panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             panel1.Controls.Add(TxtErrorMessage);
             panel1.Controls.Add(UserControlLogEntriesTextBox);
-            panel1.Location = new System.Drawing.Point(2, 27);
+            panel1.Location = new System.Drawing.Point(0, 28);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(651, 366);
+            panel1.Size = new System.Drawing.Size(652, 364);
             panel1.TabIndex = 42;
             // 
             // TxtErrorMessage
@@ -497,7 +495,7 @@
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(469, 75);
+            TxtErrorMessage.Size = new System.Drawing.Size(470, 75);
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
@@ -507,8 +505,48 @@
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(651, 366);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(652, 364);
             UserControlLogEntriesTextBox.TabIndex = 38;
+            // 
+            // flowTreeControl1
+            // 
+            flowTreeControl1.Location = new System.Drawing.Point(282, 0);
+            flowTreeControl1.MaximumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.MinimumSize = new System.Drawing.Size(40, 25);
+            flowTreeControl1.Name = "flowTreeControl1";
+            flowTreeControl1.Size = new System.Drawing.Size(40, 25);
+            flowTreeControl1.TabIndex = 43;
+            // 
+            // LogViewport
+            // 
+            LogViewport.Location = new System.Drawing.Point(102, 0);
+            LogViewport.Name = "LogViewport";
+            LogViewport.Size = new System.Drawing.Size(73, 25);
+            LogViewport.TabIndex = 40;
+            // 
+            // MetadataFormatingControl
+            // 
+            MetadataFormatingControl.Location = new System.Drawing.Point(181, 0);
+            MetadataFormatingControl.MaximumSize = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.MinimumSize = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.Name = "MetadataFormatingControl";
+            MetadataFormatingControl.Size = new System.Drawing.Size(40, 25);
+            MetadataFormatingControl.TabIndex = 26;
+            // 
+            // LogPostProcessing
+            // 
+            LogPostProcessing.Location = new System.Drawing.Point(227, 0);
+            LogPostProcessing.Name = "LogPostProcessing";
+            LogPostProcessing.Size = new System.Drawing.Size(49, 25);
+            LogPostProcessing.TabIndex = 41;
+            // 
+            // SearchResultListControl
+            // 
+            SearchResultListControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            SearchResultListControl.Location = new System.Drawing.Point(0, 0);
+            SearchResultListControl.Name = "SearchResultListControl";
+            SearchResultListControl.Size = new System.Drawing.Size(150, 46);
+            SearchResultListControl.TabIndex = 26;
             // 
             // splitContainer3
             // 
@@ -517,35 +555,12 @@
             splitContainer3.Name = "splitContainer3";
             splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // splitContainer3.Panel1
-            // 
-            splitContainer3.Panel1.Controls.Add(groupBox5);
-            // 
             // splitContainer3.Panel2
             // 
             splitContainer3.Panel2.Controls.Add(groupBox6);
             splitContainer3.Size = new System.Drawing.Size(237, 447);
-            splitContainer3.SplitterDistance = 112;
+            splitContainer3.SplitterDistance = 107;
             splitContainer3.TabIndex = 0;
-            // 
-            // groupBox5
-            // 
-            groupBox5.Controls.Add(UserControlSearch);
-            groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox5.Location = new System.Drawing.Point(0, 0);
-            groupBox5.Name = "groupBox5";
-            groupBox5.Size = new System.Drawing.Size(237, 112);
-            groupBox5.TabIndex = 2;
-            groupBox5.TabStop = false;
-            groupBox5.Text = "Zoeken";
-            // 
-            // UserControlSearch
-            // 
-            UserControlSearch.Dock = System.Windows.Forms.DockStyle.Fill;
-            UserControlSearch.Location = new System.Drawing.Point(3, 19);
-            UserControlSearch.Name = "UserControlSearch";
-            UserControlSearch.Size = new System.Drawing.Size(231, 90);
-            UserControlSearch.TabIndex = 33;
             // 
             // groupBox6
             // 
@@ -553,7 +568,7 @@
             groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox6.Location = new System.Drawing.Point(0, 0);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(237, 331);
+            groupBox6.Size = new System.Drawing.Size(237, 336);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
             groupBox6.Text = "Inhoudsfilters";
@@ -565,13 +580,12 @@
             UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
             UserControlContentFilter.Name = "UserControlContentFilter";
-            UserControlContentFilter.Size = new System.Drawing.Size(231, 309);
+            UserControlContentFilter.Size = new System.Drawing.Size(231, 314);
             UserControlContentFilter.TabIndex = 0;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(UsrMetadataFilterOverview);
-            groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox1.Location = new System.Drawing.Point(0, 0);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(250, 447);
@@ -613,7 +627,7 @@
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(560, 5);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(460, 8);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(431, 147);
@@ -635,7 +649,7 @@
             GrpSourceAndLayout.Controls.Add(cboLogLayout);
             GrpSourceAndLayout.Controls.Add(lblLogProvider);
             GrpSourceAndLayout.Controls.Add(cboLogProvider);
-            GrpSourceAndLayout.Location = new System.Drawing.Point(420, 5);
+            GrpSourceAndLayout.Location = new System.Drawing.Point(259, 5);
             GrpSourceAndLayout.Name = "GrpSourceAndLayout";
             GrpSourceAndLayout.Size = new System.Drawing.Size(192, 147);
             GrpSourceAndLayout.TabIndex = 25;
@@ -682,13 +696,15 @@
             splitContainer4.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer4).EndInit();
             splitContainer4.ResumeLayout(false);
+            splitContainer5.Panel1.ResumeLayout(false);
+            splitContainer5.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer5).EndInit();
+            splitContainer5.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            splitContainer3.Panel1.ResumeLayout(false);
             splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
             splitContainer3.ResumeLayout(false);
-            groupBox5.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
@@ -734,7 +750,6 @@
         private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpSourceAndLayout;
         private UserControlSearch UserControlSearch;
-        private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button BtnConfig;
         private System.Windows.Forms.Label label2;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
@@ -756,5 +771,7 @@
         private System.Windows.Forms.Panel panel1;
         private Log.Metadata.MetadataFormattingControl MetadataFormatingControl;
         private Log.FlowTree.FlowTreeControl flowTreeControl1;
+        private Utilities.UserControls.SearchResultListControl SearchResultListControl;
+        private System.Windows.Forms.SplitContainer splitContainer5;
     }
 }

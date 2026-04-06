@@ -1,10 +1,13 @@
-﻿namespace LogScraper.Log.Rendering
+﻿using System;
+using System.Collections.Generic;
+
+namespace LogScraper.Log.Rendering
 {
     /// <summary>
     /// Represents a range of log entries defined by a beginning and an end log entry.
     /// This can be used to specify a subset of log entries for rendering.
     /// </summary>
-    public class LogRange
+    public class LogRange : IEquatable<LogRange>
     {
         /// <summary>
         /// The log entry that marks the beginning of the log range.
@@ -27,6 +30,27 @@
             {
                 return Begin != null || End != null;
             }
+        }
+
+        /// <summary>
+        /// Determines whether the specified LogRange is equal to the current LogRange.
+        /// </summary>
+        /// <param name="other">The LogRange to compare with the current LogRange.</param>
+        /// <returns>true if the specified LogRange is equal to the current LogRange; otherwise, false.</returns>
+        public bool Equals(LogRange other)
+        {
+            return other != null &&
+                   EqualityComparer<LogEntry>.Default.Equals(Begin, other.Begin) &&
+                   EqualityComparer<LogEntry>.Default.Equals(End, other.End);
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Begin, End);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as LogRange);
         }
     }
 }
