@@ -44,7 +44,7 @@ namespace LogScraper
             LstLogContent.ItemHeight = LstLogContent.Font.Height;
 
             CboLogContentType.Items.Clear();
-            if (logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
+            if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties.Where(item => item.IsNavigationEnabled)]);
             LogContentPropertiesError = [];
             foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)

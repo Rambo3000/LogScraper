@@ -18,6 +18,7 @@ namespace LogScraper.LogProviders.Kubernetes
 
         public event EventHandler<string, bool> StatusUpdate;
         public event EventHandler<string> UriChanged;
+        public event EventHandler<bool> IsSourceValidChanged;
 
         private List<KubernetesCluster> KubernetesClusters { get; set; }
 
@@ -32,6 +33,11 @@ namespace LogScraper.LogProviders.Kubernetes
                     e.Value = timespan.ToReadableString();
                 }
             };
+        }
+
+        public bool IsSourceValid
+        {
+            get { return SelectedKubernetesPod != null; }
         }
 
         public void Update(KubernetesConfig kubernetesConfig)
@@ -210,22 +216,30 @@ namespace LogScraper.LogProviders.Kubernetes
             StatusUpdate?.Invoke(message, isSucces);
         }
 
+        protected virtual void OnSourceValidChanged(bool isValid)
+        {
+            IsSourceValidChanged?.Invoke(this, isValid);
+        }
+
         private void CboKubernetesCluster_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesNamespaces();
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
 
         private void CboKubernetesNamespace_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesPods();
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
 
         private void CboKubernetesPod_SelectedIndexChanged(object sender, EventArgs e)
         {
             OnSourceSelectionChanged(EventArgs.Empty);
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
 
         private void BtnKubernetesRefresh_Click(object sender, EventArgs e)

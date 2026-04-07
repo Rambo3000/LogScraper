@@ -34,6 +34,18 @@ namespace LogScraper.LogProviders
         public event EventHandler<string> UriChanged;
 
         /// <summary>
+        /// Event that is raised when the validity of the log source changes.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="isValid">A boolean indicating whether the log source is valid.</param>
+        public event EventHandler<bool> IsSourceValidChanged;
+
+        /// <summary>
+        /// Gets a value indicating whether the log source is currently valid.
+        /// </summary>
+        public bool IsSourceValid { get; }
+
+        /// <summary>
         /// Updates the URI associated with the log provider and triggers the UriChanged event.
         /// </summary>
         public void UpdateUri();

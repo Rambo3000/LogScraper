@@ -42,8 +42,31 @@ namespace LogScraper.LogProviders.Runtime
 
         public event EventHandler<string, bool> StatusUpdate;
         public event EventHandler<string> UriChanged;
+        public event EventHandler<bool> IsSourceValidChanged;
 
         private List<RuntimeInstance> RuntimeInstances { get; set; }
+
+        public bool IsSourceValid
+        {
+            get
+            {
+                if (SelectedRuntimeInstance == null) return false;
+
+                // If the runtime instance has a direct URL, it's valid
+                if (!SelectedRuntimeInstance.IsUrlLinkToHtmlFolderList && !SelectedRuntimeInstance.IsUrlLinkToHtmlFileList)
+                    return !string.IsNullOrWhiteSpace(SelectedRuntimeInstance.UrlRuntimeLog);
+
+                // If it's a folder list, check for folder+file
+                if (SelectedRuntimeInstance.IsUrlLinkToHtmlFolderList)
+                    return SelectedFolderLink != null && SelectedFileLink != null;
+
+                // If it's a file list, check for file
+                if (SelectedRuntimeInstance.IsUrlLinkToHtmlFileList)
+                    return SelectedFileLink != null;
+
+                return false;
+            }
+        }
 
         public void UpdateUri()
         {
@@ -127,6 +150,11 @@ namespace LogScraper.LogProviders.Runtime
             SourceSelectionChanged?.Invoke(this, e);
         }
 
+        protected virtual void OnSourceValidChanged(bool isValid)
+        {
+            IsSourceValidChanged?.Invoke(this, isValid);
+        }
+
         private void CboRuntimeInstances_SelectedIndexChanged(object sender, EventArgs e)
         {
             RuntimeInstance runtimeInstance = SelectedRuntimeInstance;
@@ -166,6 +194,7 @@ namespace LogScraper.LogProviders.Runtime
                 ex.LogStackTraceToFile("Error selecting runtime instance");
             }
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
         private void PopulateFiles()
         {
@@ -344,6 +373,7 @@ namespace LogScraper.LogProviders.Runtime
                 }
             }
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
 
         private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
@@ -353,6 +383,7 @@ namespace LogScraper.LogProviders.Runtime
             txtUrl.Text = SelectedFileLink.Url;
             OnSourceSelectionChanged(EventArgs.Empty);
             UpdateUri();
+            OnSourceValidChanged(IsSourceValid);
         }
 
         private void UpdateFolderAndFileControls()

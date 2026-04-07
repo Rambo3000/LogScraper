@@ -48,43 +48,40 @@ namespace LogScraper
 
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
-            usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
-            usrKubernetes.StatusUpdate += HandleErrorMessages;
-            usrKubernetes.UriChanged += UsrRuntime_UriChanged;
-            usrRuntime.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
-            usrRuntime.StatusUpdate += HandleErrorMessages;
-            usrRuntime.UriChanged += UsrRuntime_UriChanged;
-            usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
-            usrFileLogProvider.StatusUpdate += HandleErrorMessages;
-            usrFileLogProvider.UriChanged += UsrRuntime_UriChanged;
+            usrLogProviderSelection.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
+            usrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
+            usrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
+            usrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
+            usrLogProviderSelection.LogProviderChanged += (s, e) => CboLogProvider_SelectedIndexChanged(s, e);
 
-            MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
             UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
             UserControlLogEntriesTextBox.LogEntryAtCursorChanged += UserControlLogEntriesTextBox_LogEntryAtCursorChanged;
 
-            UpdateTimeLineVisibility();
-
             LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
             LogTimeLineControl.BookmarkMarkerClicked += LogTimelineControl_CellClicked;
 
-            LogViewport.RangeChanged += LogViewport_RangeChanged;
-
-            LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
-
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
+            LogViewport.RangeChanged += LogViewport_RangeChanged;
+
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
+
+            MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
+
+            LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
+
             SearchResultListControl.ResultSelected += SearchResultListControl_ResultSelected;
             SearchResultListControl.Close += SearchResultListControl_Close;
 
+            UpdateTimeLineVisibility();
             SetDynamicToolTips();
             UpdateBtnErase();
         }
@@ -176,11 +173,9 @@ namespace LogScraper
         {
             try
             {
-                usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
                 PopulateLogLayouts();
-                PopulateLogProviderControls();
+                usrLogProviderSelection.PopulateLogProviders();
             }
             catch (Exception ex)
             {
@@ -199,6 +194,7 @@ namespace LogScraper
 
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
+            if (cboLogLayout.SelectedIndex == -1) return;
             try
             {
                 BtnRecord.Enabled = false;
@@ -206,14 +202,7 @@ namespace LogScraper
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
-                LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
-                ISourceAdapter logProvider = logProviderType switch
-                {
-                    LogProviderType.Runtime => usrRuntime.GetSourceAdapter(),
-                    LogProviderType.Kubernetes => usrKubernetes.GetSourceAdapter(null, lastTrailTime),
-                    LogProviderType.File => usrFileLogProvider.GetSourceAdapter(),
-                    _ => throw new NotImplementedException()
-                };
+                ISourceAdapter logProvider = usrLogProviderSelection.GetSelectedSourceAdapter(lastTrailTime);
 
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
@@ -290,6 +279,8 @@ namespace LogScraper
 
         private void FilterLogEntries()
         {
+            if (cboLogLayout.SelectedIndex == -1) return;
+
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
             currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
@@ -398,6 +389,11 @@ namespace LogScraper
             Reset();
         }
 
+        private void HandleIsSourceValidChanged(object sender, bool e)
+        {
+            UpdateButtonStatus();
+        }
+
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
         {
             if (totalDurationInSeconds == -1)
@@ -443,18 +439,20 @@ namespace LogScraper
         private void UpdateButtonStatus()
         {
             bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
+            bool sourceIsValid = usrLogProviderSelection.IsSourceValid;
+            bool layoutSelected = cboLogLayout.SelectedIndex != -1;
             if (!downloadingInProgress)
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
 
             BtnRecord.Visible = !downloadingInProgress;
-            BtnRecord.Enabled = !downloadingInProgress;
-            BtnRecordWithTimer.Enabled = !downloadingInProgress;
+            BtnRecord.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
+            BtnRecordWithTimer.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
             BtnStop.Visible = downloadingInProgress;
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
-            //TODO: enable source specific settings instead of whole groupbox
-            //GrpSourceAndLayout.Enabled = !downloadingInProgress;
-            GrpLogProvidersSettings.Enabled = !downloadingInProgress;
+            usrLogProviderSelection.Enabled = !downloadingInProgress;
+            cboLogLayout.Enabled = !downloadingInProgress;
+            usrLogProviderSelection.SetEnabled(!downloadingInProgress);
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
@@ -596,10 +594,7 @@ namespace LogScraper
                 {
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        if (kubernetesChanged)
-                            usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                        if (runtimeChanged)
-                            usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                        usrLogProviderSelection.UpdateProviderConfig();
                         CboLogProvider_SelectedIndexChanged(null, null);
                     }
                 }
@@ -613,30 +608,6 @@ namespace LogScraper
         #endregion
 
         #region Dropdowns log providers and layout
-
-        private void PopulateLogProviderControls()
-        {
-            if (ConfigurationManager.LogProvidersConfig.FileConfig != null)
-            {
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.FileConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.File)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig;
-            }
-
-            if (ConfigurationManager.LogProvidersConfig.RuntimeConfig != null)
-            {
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
-            }
-
-            if (ConfigurationManager.LogProvidersConfig.KubernetesConfig != null)
-            {
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
-            }
-        }
 
         private void PopulateLogLayouts()
         {
@@ -660,29 +631,19 @@ namespace LogScraper
 
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
+            ILogProviderConfig logProviderConfig = usrLogProviderSelection.GetSelectedLogProviderConfig();
             if (logProviderConfig == null) return;
-
-            usrRuntime.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
-            usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
-            usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
-                    GrpLogProvidersSettings.Text = "Directe URL instellingen";
-                    usrRuntime.UpdateUri();
                     break;
                 case LogProviderType.Kubernetes:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
-                    GrpLogProvidersSettings.Text = "Kubernetes instellingen";
-                    usrKubernetes.UpdateUri();
                     break;
                 case LogProviderType.File:
-                    GrpLogProvidersSettings.Text = "Lokaal bestand instellingen";
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
-                    usrFileLogProvider.UpdateUri();
                     break;
             }
 

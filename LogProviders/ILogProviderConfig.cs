@@ -7,7 +7,7 @@ namespace LogScraper.LogProviders
     /// Represents the configuration interface for a log provider.
     /// Defines properties and methods required for configuring and identifying log providers.
     /// </summary>
-    internal interface ILogProviderConfig
+    public interface ILogProviderConfig
     {
         /// <summary>
         /// Gets or sets the description of the default log layout for the log provider.

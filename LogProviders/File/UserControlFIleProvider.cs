@@ -21,11 +21,17 @@ namespace LogScraper.LogProviders.File
         public event EventHandler SourceSelectionChanged;
         public event EventHandler<string, bool> StatusUpdate;
         public event EventHandler<string> UriChanged;
+        public event EventHandler<bool> IsSourceValidChanged;
 
         public UserControlFileLogProvider()
         {
             InitializeComponent();
             InitializeFilePath();
+        }
+
+        public bool IsSourceValid
+        {
+            get { return !IsPlaceholderActive() && System.IO.File.Exists(txtFilePath.Text); }
         }
 
         public ISourceAdapter GetSourceAdapter()
@@ -88,12 +94,14 @@ namespace LogScraper.LogProviders.File
         {
             txtFilePath.Text = PlaceholderText;
             txtFilePath.ForeColor = PlaceholderColor;
+            IsSourceValidChanged?.Invoke(this, false);
         }
 
         private void SetNormalText(string text)
         {
             txtFilePath.Text = text;
             txtFilePath.ForeColor = NormalTextColor;
+            IsSourceValidChanged?.Invoke(this, IsSourceValid);
         }
 
         private bool IsPlaceholderActive()
