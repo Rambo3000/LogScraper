@@ -26,6 +26,16 @@ namespace LogScraper.LogProviders
         /// Event triggered to update the status of the log provider.
         /// Provides a message and a success flag to indicate the status.
         /// </summary>
-        public event Action<string, bool> StatusUpdate;
+        public event EventHandler<string, bool> StatusUpdate;
+
+        /// <summary>
+        /// Event triggered when the URI associated with the log provider changes.
+        /// </summary>
+        public event EventHandler<string> UriChanged;
+
+        /// <summary>
+        /// Updates the URI associated with the log provider and triggers the UriChanged event.
+        /// </summary>
+        public void UpdateUri();
     }
 }

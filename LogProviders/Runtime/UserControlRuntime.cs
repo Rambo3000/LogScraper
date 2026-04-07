@@ -40,9 +40,20 @@ namespace LogScraper.LogProviders.Runtime
 
         public event EventHandler SourceSelectionChanged;
 
-        public event Action<string, bool> StatusUpdate;
+        public event EventHandler<string, bool> StatusUpdate;
+        public event EventHandler<string> UriChanged;
 
         private List<RuntimeInstance> RuntimeInstances { get; set; }
+
+        public void UpdateUri()
+        {
+            string uri = string.Empty;
+            if( SelectedRuntimeInstance != null ) uri += $" {SelectedRuntimeInstance.Description}";
+            if (SelectedFolderLink != null) uri += $"/{SelectedFolderLink.Name}";
+            if (SelectedFileLink != null) uri += $"/{SelectedFileLink.Name}";
+
+            UriChanged?.Invoke(this, uri);
+        }
 
         public UserControlRuntimeLogProvider()
         {
@@ -154,7 +165,7 @@ namespace LogScraper.LogProviders.Runtime
                 OnStatusUpdate(ex.Message, false);
                 ex.LogStackTraceToFile("Error selecting runtime instance");
             }
-
+            UpdateUri();
         }
         private void PopulateFiles()
         {
@@ -332,6 +343,7 @@ namespace LogScraper.LogProviders.Runtime
                     ex.LogStackTraceToFile("Error selecting folder link");
                 }
             }
+            UpdateUri();
         }
 
         private void CboFileList_SelectedIndexChanged(object sender, EventArgs e)
@@ -340,6 +352,7 @@ namespace LogScraper.LogProviders.Runtime
             if (SelectedFileLink == null) return;
             txtUrl.Text = SelectedFileLink.Url;
             OnSourceSelectionChanged(EventArgs.Empty);
+            UpdateUri();
         }
 
         private void UpdateFolderAndFileControls()

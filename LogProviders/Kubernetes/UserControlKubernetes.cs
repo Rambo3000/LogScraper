@@ -16,7 +16,8 @@ namespace LogScraper.LogProviders.Kubernetes
     {
         public event EventHandler SourceSelectionChanged;
 
-        public event Action<string, bool> StatusUpdate;
+        public event EventHandler<string, bool> StatusUpdate;
+        public event EventHandler<string> UriChanged;
 
         private List<KubernetesCluster> KubernetesClusters { get; set; }
 
@@ -39,6 +40,17 @@ namespace LogScraper.LogProviders.Kubernetes
             CboKubernetesTimespan.SelectedItem = kubernetesConfig.DefaultKubernetesTimespan;
             PopulateKubernetesClusters();
         }
+
+        public void UpdateUri()
+        {
+            string uri = string.Empty;
+            if (SelectedKubernetesCluster != null) uri += $"{SelectedKubernetesCluster.Description}";
+            if (SelectedKubernetesNamespace != null) uri += $"/{SelectedKubernetesNamespace.Description}";
+            if (SelectedKubernetesPod != null) uri += $"/{SelectedKubernetesPod.Description}";
+            if (SelectedKubernetesPod != null && previousTimeSpan != null) uri += $" [{((KubernetesTimespan)previousTimeSpan).ToReadableString()}]";
+            UriChanged?.Invoke(this, uri);
+        }
+
         public ISourceAdapter GetSourceAdapter()
         {
             return GetSourceAdapter(null);
@@ -201,16 +213,19 @@ namespace LogScraper.LogProviders.Kubernetes
         private void CboKubernetesCluster_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesNamespaces();
+            UpdateUri();
         }
 
         private void CboKubernetesNamespace_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesPods();
+            UpdateUri();
         }
 
         private void CboKubernetesPod_SelectedIndexChanged(object sender, EventArgs e)
         {
             OnSourceSelectionChanged(EventArgs.Empty);
+            UpdateUri();
         }
 
         private void BtnKubernetesRefresh_Click(object sender, EventArgs e)
@@ -231,6 +246,7 @@ namespace LogScraper.LogProviders.Kubernetes
                 OnSourceSelectionChanged(EventArgs.Empty);
             }
             previousTimeSpan = newTimeSpan;
+            UpdateUri();
         }
     }
 }

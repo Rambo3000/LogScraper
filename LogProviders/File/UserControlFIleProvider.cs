@@ -19,7 +19,8 @@ namespace LogScraper.LogProviders.File
         private static readonly Color NormalTextColor = SystemColors.WindowText;
 
         public event EventHandler SourceSelectionChanged;
-        public event Action<string, bool> StatusUpdate;
+        public event EventHandler<string, bool> StatusUpdate;
+        public event EventHandler<string> UriChanged;
 
         public UserControlFileLogProvider()
         {
@@ -42,6 +43,13 @@ namespace LogScraper.LogProviders.File
             StatusUpdate?.Invoke(message, isSuccess);
         }
 
+        public void UpdateUri()
+        {
+            string uri = txtFilePath.Text;
+
+            UriChanged?.Invoke(this, uri);
+        }
+
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
             string selectedFilePath = ShowFileDialog();
@@ -56,6 +64,7 @@ namespace LogScraper.LogProviders.File
                 return;
             }
 
+            UpdateUri();
             UpdateFileMetadataDisplay(selectedFilePath);
             OnStatusUpdate("OK", true);
         }

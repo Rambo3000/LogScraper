@@ -26,7 +26,10 @@ namespace LogScraper
 {
     //TODO: timeline show error marks darker when out of range
     //TODO: timeline show text at bookmark
+    //TODO: timeline remove range bar and add explicit zoom option
     //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
+    //TODO: Add key shortcuts like F3/shift F3
+    //TODO: search wrap around not working correctly, switching between two last entries
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -47,10 +50,13 @@ namespace LogScraper
 
             usrKubernetes.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrKubernetes.StatusUpdate += HandleErrorMessages;
+            usrKubernetes.UriChanged += UsrRuntime_UriChanged;
             usrRuntime.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrRuntime.StatusUpdate += HandleErrorMessages;
+            usrRuntime.UriChanged += UsrRuntime_UriChanged;
             usrFileLogProvider.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             usrFileLogProvider.StatusUpdate += HandleErrorMessages;
+            usrFileLogProvider.UriChanged += UsrRuntime_UriChanged;
 
             MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
@@ -81,6 +87,13 @@ namespace LogScraper
 
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void UsrRuntime_UriChanged(object sender, string e)
+        {
+            string title = "LogScraper";
+            if(!string.IsNullOrWhiteSpace(e)) title += $" - {e}";
+            Text = title;
         }
 
         private void SearchResultListControl_Close(object sender, EventArgs e)
@@ -659,14 +672,17 @@ namespace LogScraper
                 case LogProviderType.Runtime:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
                     GrpLogProvidersSettings.Text = "Directe URL instellingen";
+                    usrRuntime.UpdateUri();
                     break;
                 case LogProviderType.Kubernetes:
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
                     GrpLogProvidersSettings.Text = "Kubernetes instellingen";
+                    usrKubernetes.UpdateUri();
                     break;
                 case LogProviderType.File:
                     GrpLogProvidersSettings.Text = "Lokaal bestand instellingen";
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
+                    usrFileLogProvider.UpdateUri();
                     break;
             }
 
