@@ -188,6 +188,7 @@ namespace LogScraper.Utilities.UserControls
         /// <summary>Clears the visible range indicator.</summary>
         public void ClearVisibleRange()
         {
+            SetLogRange(new LogRange());
             visibleRangeStart = null;
             visibleRangeEnd = null;
             this.Invalidate();

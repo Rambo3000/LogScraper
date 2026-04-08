@@ -286,7 +286,7 @@ namespace LogScraper
             int totalCount = LogCollection.Instance.LogEntries.Count;
             int visibleCount = visibleLogEntries?.Count ?? totalCount;
             int errorCount = LogCollection.Instance.ErrorCount;
-            lblLogEntriesTotalValue.Text = $"{totalCount} totaal  |  {visibleCount} zichtbaar  |  {errorCount} errors";
+            lblLogEntriesTotalValue.Text = $"{totalCount:N0} totaal  |  {visibleCount:N0} zichtbaar  |  {errorCount:N0} errors";
         }
 
         private void ShowException(Exception ex)
