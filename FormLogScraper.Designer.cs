@@ -34,10 +34,6 @@ namespace LogScraper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             BtnRecord = new System.Windows.Forms.Button();
             lblLogEntriesTotalValue = new System.Windows.Forms.Label();
-            lblNumberOfLogEntriesFiltered = new System.Windows.Forms.Label();
-            lblLogEntriesFiltered = new System.Windows.Forms.Label();
-            LbllogEntriesTotal = new System.Windows.Forms.Label();
-            groupBox3 = new System.Windows.Forms.GroupBox();
             BtnClearFilters = new System.Windows.Forms.Button();
             BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
             ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
@@ -47,13 +43,10 @@ namespace LogScraper
             BtnConfig = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
             BtnStop = new System.Windows.Forms.Button();
-            lblNumberOfLogEntriesFilteredWithError = new System.Windows.Forms.Label();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
-            lblLogEntriesFilteredWithError = new System.Windows.Forms.Label();
-            userControlMemoryUsage1 = new UserControlMemoryUsage();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnSave = new System.Windows.Forms.Button();
-            usrLogProviderSelection = new LogScraper.Utilities.UserControls.LogProviderSelectionControl();
+            UsrLogProviderSelection = new LogScraper.Utilities.UserControls.LogProviderSelectionControl();
             splitContainer2 = new SplitContainerWithGrip();
             splitContainer4 = new SplitContainerWithGrip();
             LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
@@ -73,8 +66,8 @@ namespace LogScraper
             groupBox1 = new System.Windows.Forms.GroupBox();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
             splitContainer1 = new SplitContainerWithGrip();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            groupBox3.SuspendLayout();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
@@ -95,15 +88,19 @@ namespace LogScraper
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
             SuspendLayout();
             // 
             // BtnRecord
             // 
             BtnRecord.Enabled = false;
             BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
-            BtnRecord.Location = new System.Drawing.Point(7, 22);
+            BtnRecord.Location = new System.Drawing.Point(7, 3);
             BtnRecord.Name = "BtnRecord";
-            BtnRecord.Size = new System.Drawing.Size(52, 40);
+            BtnRecord.Size = new System.Drawing.Size(40, 40);
             BtnRecord.TabIndex = 0;
             BtnRecord.TabStop = false;
             ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
@@ -112,69 +109,18 @@ namespace LogScraper
             // 
             // lblLogEntriesTotalValue
             // 
-            lblLogEntriesTotalValue.Location = new System.Drawing.Point(119, 71);
+            lblLogEntriesTotalValue.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            lblLogEntriesTotalValue.Location = new System.Drawing.Point(3, 253);
             lblLogEntriesTotalValue.Name = "lblLogEntriesTotalValue";
-            lblLogEntriesTotalValue.Size = new System.Drawing.Size(63, 15);
+            lblLogEntriesTotalValue.Size = new System.Drawing.Size(247, 15);
             lblLogEntriesTotalValue.TabIndex = 7;
-            lblLogEntriesTotalValue.Text = "0";
-            lblLogEntriesTotalValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblNumberOfLogEntriesFiltered
-            // 
-            lblNumberOfLogEntriesFiltered.Location = new System.Drawing.Point(119, 93);
-            lblNumberOfLogEntriesFiltered.Name = "lblNumberOfLogEntriesFiltered";
-            lblNumberOfLogEntriesFiltered.Size = new System.Drawing.Size(63, 15);
-            lblNumberOfLogEntriesFiltered.TabIndex = 17;
-            lblNumberOfLogEntriesFiltered.Text = "0";
-            lblNumberOfLogEntriesFiltered.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblLogEntriesFiltered
-            // 
-            lblLogEntriesFiltered.AutoSize = true;
-            lblLogEntriesFiltered.Location = new System.Drawing.Point(10, 93);
-            lblLogEntriesFiltered.Name = "lblLogEntriesFiltered";
-            lblLogEntriesFiltered.Size = new System.Drawing.Size(88, 15);
-            lblLogEntriesFiltered.TabIndex = 16;
-            lblLogEntriesFiltered.Text = "Regels gefilterd";
-            // 
-            // LbllogEntriesTotal
-            // 
-            LbllogEntriesTotal.AutoSize = true;
-            LbllogEntriesTotal.Location = new System.Drawing.Point(10, 71);
-            LbllogEntriesTotal.Name = "LbllogEntriesTotal";
-            LbllogEntriesTotal.Size = new System.Drawing.Size(100, 15);
-            LbllogEntriesTotal.TabIndex = 10;
-            LbllogEntriesTotal.Text = "Regels opgehaald";
-            // 
-            // groupBox3
-            // 
-            groupBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            groupBox3.Controls.Add(BtnClearFilters);
-            groupBox3.Controls.Add(BtnErase);
-            groupBox3.Controls.Add(BtnConfig);
-            groupBox3.Controls.Add(BtnFormRecord);
-            groupBox3.Controls.Add(BtnRecord);
-            groupBox3.Controls.Add(LbllogEntriesTotal);
-            groupBox3.Controls.Add(lblLogEntriesFiltered);
-            groupBox3.Controls.Add(BtnStop);
-            groupBox3.Controls.Add(lblNumberOfLogEntriesFilteredWithError);
-            groupBox3.Controls.Add(BtnRecordWithTimer);
-            groupBox3.Controls.Add(lblLogEntriesTotalValue);
-            groupBox3.Controls.Add(lblLogEntriesFilteredWithError);
-            groupBox3.Controls.Add(lblNumberOfLogEntriesFiltered);
-            groupBox3.Controls.Add(userControlMemoryUsage1);
-            groupBox3.Location = new System.Drawing.Point(0, 220);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(312, 147);
-            groupBox3.TabIndex = 19;
-            groupBox3.TabStop = false;
-            groupBox3.Tag = "test";
-            groupBox3.Text = "Uitlezen log";
+            lblLogEntriesTotalValue.Text = "-";
+            lblLogEntriesTotalValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // BtnClearFilters
             // 
             BtnClearFilters.Image = (System.Drawing.Image)resources.GetObject("BtnClearFilters.Image");
-            BtnClearFilters.Location = new System.Drawing.Point(164, 22);
+            BtnClearFilters.Location = new System.Drawing.Point(132, 3);
             BtnClearFilters.Name = "BtnClearFilters";
             BtnClearFilters.Size = new System.Drawing.Size(40, 40);
             BtnClearFilters.TabIndex = 25;
@@ -192,7 +138,7 @@ namespace LogScraper
             BtnErase.Icon = (System.Drawing.Image)resources.GetObject("BtnErase.Icon");
             BtnErase.ImageIndex = 0;
             BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(203, 22);
+            BtnErase.Location = new System.Drawing.Point(171, 3);
             BtnErase.Name = "BtnErase";
             BtnErase.Size = new System.Drawing.Size(45, 40);
             BtnErase.TabIndex = 10;
@@ -232,7 +178,7 @@ namespace LogScraper
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnConfig.Image = (System.Drawing.Image)resources.GetObject("BtnConfig.Image");
-            BtnConfig.Location = new System.Drawing.Point(281, 117);
+            BtnConfig.Location = new System.Drawing.Point(223, 3);
             BtnConfig.Name = "BtnConfig";
             BtnConfig.Size = new System.Drawing.Size(24, 24);
             BtnConfig.TabIndex = 23;
@@ -245,7 +191,7 @@ namespace LogScraper
             // BtnFormRecord
             // 
             BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
-            BtnFormRecord.Location = new System.Drawing.Point(119, 22);
+            BtnFormRecord.Location = new System.Drawing.Point(86, 3);
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
@@ -258,59 +204,32 @@ namespace LogScraper
             // BtnStop
             // 
             BtnStop.Image = (System.Drawing.Image)resources.GetObject("BtnStop.Image");
-            BtnStop.Location = new System.Drawing.Point(7, 22);
+            BtnStop.Location = new System.Drawing.Point(7, 3);
             BtnStop.Name = "BtnStop";
-            BtnStop.Size = new System.Drawing.Size(52, 40);
+            BtnStop.Size = new System.Drawing.Size(40, 40);
             BtnStop.TabIndex = 17;
             BtnStop.TabStop = false;
             ToolTip.SetToolTip(BtnStop, "Stop [CTRL-S]");
             BtnStop.UseVisualStyleBackColor = true;
             BtnStop.Click += BtnStop_Click;
             // 
-            // lblNumberOfLogEntriesFilteredWithError
-            // 
-            lblNumberOfLogEntriesFilteredWithError.Location = new System.Drawing.Point(119, 114);
-            lblNumberOfLogEntriesFilteredWithError.Name = "lblNumberOfLogEntriesFilteredWithError";
-            lblNumberOfLogEntriesFilteredWithError.Size = new System.Drawing.Size(63, 15);
-            lblNumberOfLogEntriesFilteredWithError.TabIndex = 19;
-            lblNumberOfLogEntriesFilteredWithError.Text = "0";
-            lblNumberOfLogEntriesFilteredWithError.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // BtnRecordWithTimer
             // 
             BtnRecordWithTimer.Enabled = false;
             BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            BtnRecordWithTimer.Location = new System.Drawing.Point(58, 22);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(47, 3);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
-            BtnRecordWithTimer.Size = new System.Drawing.Size(56, 40);
+            BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 16;
             BtnRecordWithTimer.TabStop = false;
             BtnRecordWithTimer.UseVisualStyleBackColor = true;
             BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
-            // lblLogEntriesFilteredWithError
-            // 
-            lblLogEntriesFilteredWithError.AutoSize = true;
-            lblLogEntriesFilteredWithError.Location = new System.Drawing.Point(10, 114);
-            lblLogEntriesFilteredWithError.Name = "lblLogEntriesFilteredWithError";
-            lblLogEntriesFilteredWithError.Size = new System.Drawing.Size(93, 15);
-            lblLogEntriesFilteredWithError.TabIndex = 18;
-            lblLogEntriesFilteredWithError.Text = "Regels met error";
-            // 
-            // userControlMemoryUsage1
-            // 
-            userControlMemoryUsage1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            userControlMemoryUsage1.AutoSize = true;
-            userControlMemoryUsage1.Location = new System.Drawing.Point(243, 100);
-            userControlMemoryUsage1.Name = "userControlMemoryUsage1";
-            userControlMemoryUsage1.Size = new System.Drawing.Size(64, 17);
-            userControlMemoryUsage1.TabIndex = 24;
-            // 
             // btnOpenWithEditor
             // 
             btnOpenWithEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(580, 0);
+            btnOpenWithEditor.Location = new System.Drawing.Point(622, 0);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 11;
@@ -323,7 +242,7 @@ namespace LogScraper
             // 
             BtnSave.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(554, 0);
+            BtnSave.Location = new System.Drawing.Point(596, 0);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 26;
@@ -332,16 +251,16 @@ namespace LogScraper
             BtnSave.UseVisualStyleBackColor = true;
             BtnSave.Click += BtnSave_Click;
             // 
-            // usrLogProviderSelection
+            // UsrLogProviderSelection
             // 
-            usrLogProviderSelection.AutoSize = true;
-            usrLogProviderSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            usrLogProviderSelection.BackColor = System.Drawing.SystemColors.Control;
-            usrLogProviderSelection.Dock = System.Windows.Forms.DockStyle.Top;
-            usrLogProviderSelection.Location = new System.Drawing.Point(0, 0);
-            usrLogProviderSelection.Name = "usrLogProviderSelection";
-            usrLogProviderSelection.Size = new System.Drawing.Size(314, 206);
-            usrLogProviderSelection.TabIndex = 25;
+            UsrLogProviderSelection.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            UsrLogProviderSelection.AutoSize = true;
+            UsrLogProviderSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            UsrLogProviderSelection.BackColor = System.Drawing.SystemColors.Control;
+            UsrLogProviderSelection.Location = new System.Drawing.Point(1, 45);
+            UsrLogProviderSelection.Name = "UsrLogProviderSelection";
+            UsrLogProviderSelection.Size = new System.Drawing.Size(249, 207);
+            UsrLogProviderSelection.TabIndex = 25;
             // 
             // splitContainer2
             // 
@@ -356,8 +275,8 @@ namespace LogScraper
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(groupBox6);
-            splitContainer2.Size = new System.Drawing.Size(898, 610);
-            splitContainer2.SplitterDistance = 605;
+            splitContainer2.Size = new System.Drawing.Size(962, 610);
+            splitContainer2.SplitterDistance = 647;
             splitContainer2.SplitterWidth = 8;
             splitContainer2.TabIndex = 8;
             // 
@@ -377,7 +296,7 @@ namespace LogScraper
             // splitContainer4.Panel2
             // 
             splitContainer4.Panel2.Controls.Add(splitContainer5);
-            splitContainer4.Size = new System.Drawing.Size(605, 610);
+            splitContainer4.Size = new System.Drawing.Size(647, 610);
             splitContainer4.SplitterDistance = 48;
             splitContainer4.SplitterWidth = 8;
             splitContainer4.TabIndex = 5;
@@ -389,7 +308,7 @@ namespace LogScraper
             LogTimeLineControl.Dock = System.Windows.Forms.DockStyle.Fill;
             LogTimeLineControl.Location = new System.Drawing.Point(0, 0);
             LogTimeLineControl.Name = "LogTimeLineControl";
-            LogTimeLineControl.Size = new System.Drawing.Size(605, 48);
+            LogTimeLineControl.Size = new System.Drawing.Size(647, 48);
             LogTimeLineControl.TabIndex = 0;
             // 
             // splitContainer5
@@ -415,7 +334,7 @@ namespace LogScraper
             // 
             splitContainer5.Panel2.Controls.Add(SearchResultListControl);
             splitContainer5.Panel2Collapsed = true;
-            splitContainer5.Size = new System.Drawing.Size(605, 554);
+            splitContainer5.Size = new System.Drawing.Size(647, 554);
             splitContainer5.SplitterDistance = 313;
             splitContainer5.SplitterWidth = 8;
             splitContainer5.TabIndex = 44;
@@ -441,7 +360,7 @@ namespace LogScraper
             panel1.Controls.Add(UserControlLogEntriesTextBox);
             panel1.Location = new System.Drawing.Point(0, 28);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(602, 523);
+            panel1.Size = new System.Drawing.Size(644, 523);
             panel1.TabIndex = 42;
             // 
             // TxtErrorMessage
@@ -453,7 +372,7 @@ namespace LogScraper
             TxtErrorMessage.Multiline = true;
             TxtErrorMessage.Name = "TxtErrorMessage";
             TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(420, 75);
+            TxtErrorMessage.Size = new System.Drawing.Size(462, 75);
             TxtErrorMessage.TabIndex = 32;
             TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             TxtErrorMessage.Visible = false;
@@ -463,7 +382,7 @@ namespace LogScraper
             UserControlLogEntriesTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlLogEntriesTextBox.Location = new System.Drawing.Point(0, 0);
             UserControlLogEntriesTextBox.Name = "UserControlLogEntriesTextBox";
-            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(602, 523);
+            UserControlLogEntriesTextBox.Size = new System.Drawing.Size(644, 523);
             UserControlLogEntriesTextBox.TabIndex = 38;
             // 
             // flowTreeControl1
@@ -512,7 +431,7 @@ namespace LogScraper
             groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             groupBox6.Location = new System.Drawing.Point(0, 0);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(285, 610);
+            groupBox6.Size = new System.Drawing.Size(307, 610);
             groupBox6.TabIndex = 1;
             groupBox6.TabStop = false;
             groupBox6.Text = "Navigeren";
@@ -524,16 +443,16 @@ namespace LogScraper
             UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
             UserControlContentFilter.Name = "UserControlContentFilter";
-            UserControlContentFilter.Size = new System.Drawing.Size(279, 588);
+            UserControlContentFilter.Size = new System.Drawing.Size(301, 588);
             UserControlContentFilter.TabIndex = 0;
             // 
             // groupBox1
             // 
-            groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox1.Controls.Add(UsrMetadataFilterOverview);
-            groupBox1.Location = new System.Drawing.Point(0, 373);
+            groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            groupBox1.Location = new System.Drawing.Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(314, 237);
+            groupBox1.Size = new System.Drawing.Size(250, 336);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Metadata";
@@ -546,7 +465,7 @@ namespace LogScraper
             UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 19);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
-            UsrMetadataFilterOverview.Size = new System.Drawing.Size(308, 215);
+            UsrMetadataFilterOverview.Size = new System.Drawing.Size(244, 314);
             UsrMetadataFilterOverview.TabIndex = 0;
             UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
             // 
@@ -558,19 +477,44 @@ namespace LogScraper
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(usrLogProviderSelection);
-            splitContainer1.Panel1.Controls.Add(groupBox1);
-            splitContainer1.Panel1.Controls.Add(groupBox3);
-            splitContainer1.Panel1MinSize = 252;
+            splitContainer1.Panel1.Controls.Add(splitContainer3);
+            splitContainer1.Panel1MinSize = 250;
             // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Panel2MinSize = 450;
+            splitContainer1.Panel2MinSize = 400;
             splitContainer1.Size = new System.Drawing.Size(1220, 610);
-            splitContainer1.SplitterDistance = 314;
+            splitContainer1.SplitterDistance = 250;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 13;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            splitContainer3.Location = new System.Drawing.Point(0, 0);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(lblLogEntriesTotalValue);
+            splitContainer3.Panel1.Controls.Add(BtnClearFilters);
+            splitContainer3.Panel1.Controls.Add(UsrLogProviderSelection);
+            splitContainer3.Panel1.Controls.Add(BtnErase);
+            splitContainer3.Panel1.Controls.Add(BtnRecord);
+            splitContainer3.Panel1.Controls.Add(BtnConfig);
+            splitContainer3.Panel1.Controls.Add(BtnRecordWithTimer);
+            splitContainer3.Panel1.Controls.Add(BtnFormRecord);
+            splitContainer3.Panel1.Controls.Add(BtnStop);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(groupBox1);
+            splitContainer3.Size = new System.Drawing.Size(250, 610);
+            splitContainer3.SplitterDistance = 270;
+            splitContainer3.TabIndex = 0;
             // 
             // ToolTip
             // 
@@ -589,8 +533,6 @@ namespace LogScraper
             Name = "FormLogScraper";
             Text = "LogScraper";
             Load += FormLogScraper_Load;
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
             ContextMenuReset.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
@@ -609,10 +551,14 @@ namespace LogScraper
             groupBox6.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
-            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel1.PerformLayout();
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -624,15 +570,7 @@ namespace LogScraper
         public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnOpenWithEditor;
         public System.Windows.Forms.Label lblLogEntriesTotalValue;
-        public System.Windows.Forms.Label lblNumberOfLogEntriesFiltered;
-        public System.Windows.Forms.Label lblNumberOfLogEntriesFilteredWithError;
-        public System.Windows.Forms.Label lblLogEntriesFilteredWithError;
         public Utilities.UserControls.SplitButton BtnErase;
-
-        private System.Windows.Forms.Label LbllogEntriesTotal;
-
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label lblLogEntriesFiltered;
         private System.Windows.Forms.Button BtnFormRecord;
         private System.Windows.Forms.GroupBox groupBox1;
         private SplitContainerWithGrip splitContainer1;
@@ -643,7 +581,6 @@ namespace LogScraper
         private System.Windows.Forms.Button BtnConfig;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;
-        private UserControlMemoryUsage userControlMemoryUsage1;
         private Utilities.UserControls.UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
         private System.Windows.Forms.ContextMenuStrip ContextMenuReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
@@ -662,6 +599,7 @@ namespace LogScraper
         private Log.FlowTree.FlowTreeControl flowTreeControl1;
         private Utilities.UserControls.SearchResultListControl SearchResultListControl;
         private SplitContainerWithGrip splitContainer5;
-        private Utilities.UserControls.LogProviderSelectionControl usrLogProviderSelection;
+        private Utilities.UserControls.LogProviderSelectionControl UsrLogProviderSelection;
+        private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }

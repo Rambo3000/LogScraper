@@ -35,7 +35,7 @@ namespace LogScraper.LogProviders.Runtime
         /// <returns>A string representing the log provider ("Directe URL").</returns>
         public override string ToString()
         {
-            return "Directe URL";
+            return "HTTP API";
         }
 
         /// <summary>

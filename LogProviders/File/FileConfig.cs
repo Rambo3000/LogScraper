@@ -37,7 +37,7 @@ namespace LogScraper.LogProviders.File
         /// <returns>A localized string representing the log provider ("Lokaal bestand").</returns>
         public override string ToString()
         {
-            return "Lokaal bestand";
+            return "Bestand";
         }
     }
 }

@@ -43,9 +43,10 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(3, 91);
+            label3.Font = new System.Drawing.Font("Segoe UI", 7F);
+            label3.Location = new System.Drawing.Point(3, 93);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(28, 15);
+            label3.Size = new System.Drawing.Size(23, 12);
             label3.TabIndex = 23;
             label3.Text = "URL";
             // 
@@ -54,30 +55,32 @@
             cboRuntimeInstances.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboRuntimeInstances.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboRuntimeInstances.FormattingEnabled = true;
-            cboRuntimeInstances.Location = new System.Drawing.Point(88, 4);
+            cboRuntimeInstances.Location = new System.Drawing.Point(49, 4);
             cboRuntimeInstances.Name = "cboRuntimeInstances";
-            cboRuntimeInstances.Size = new System.Drawing.Size(168, 23);
+            cboRuntimeInstances.Size = new System.Drawing.Size(207, 23);
             cboRuntimeInstances.TabIndex = 22;
             cboRuntimeInstances.SelectedIndexChanged += CboRuntimeInstances_SelectedIndexChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(3, 7);
+            label2.Font = new System.Drawing.Font("Segoe UI", 7F);
+            label2.Location = new System.Drawing.Point(3, 9);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(78, 15);
+            label2.Size = new System.Drawing.Size(31, 12);
             label2.TabIndex = 21;
-            label2.Text = "Omschrijving";
+            label2.Text = "Naam";
             // 
             // txtUrl
             // 
             txtUrl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtUrl.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtUrl.Location = new System.Drawing.Point(88, 91);
+            txtUrl.Font = new System.Drawing.Font("Segoe UI", 9F);
+            txtUrl.Location = new System.Drawing.Point(49, 91);
             txtUrl.Multiline = true;
             txtUrl.Name = "txtUrl";
             txtUrl.ReadOnly = true;
-            txtUrl.Size = new System.Drawing.Size(168, 45);
+            txtUrl.Size = new System.Drawing.Size(207, 45);
             txtUrl.TabIndex = 30;
             // 
             // CboFolderList
@@ -86,9 +89,9 @@
             CboFolderList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboFolderList.Enabled = false;
             CboFolderList.FormattingEnabled = true;
-            CboFolderList.Location = new System.Drawing.Point(88, 33);
+            CboFolderList.Location = new System.Drawing.Point(49, 33);
             CboFolderList.Name = "CboFolderList";
-            CboFolderList.Size = new System.Drawing.Size(168, 23);
+            CboFolderList.Size = new System.Drawing.Size(207, 23);
             CboFolderList.TabIndex = 22;
             CboFolderList.SelectedIndexChanged += CboFolderList_SelectedIndexChanged;
             // 
@@ -98,9 +101,9 @@
             CboFileList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboFileList.Enabled = false;
             CboFileList.FormattingEnabled = true;
-            CboFileList.Location = new System.Drawing.Point(88, 62);
+            CboFileList.Location = new System.Drawing.Point(49, 62);
             CboFileList.Name = "CboFileList";
-            CboFileList.Size = new System.Drawing.Size(168, 23);
+            CboFileList.Size = new System.Drawing.Size(207, 23);
             CboFileList.TabIndex = 22;
             CboFileList.SelectedIndexChanged += CboFileList_SelectedIndexChanged;
             // 
@@ -108,9 +111,10 @@
             // 
             LblFolder.AutoSize = true;
             LblFolder.Enabled = false;
-            LblFolder.Location = new System.Drawing.Point(3, 36);
+            LblFolder.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblFolder.Location = new System.Drawing.Point(3, 38);
             LblFolder.Name = "LblFolder";
-            LblFolder.Size = new System.Drawing.Size(31, 15);
+            LblFolder.Size = new System.Drawing.Size(25, 12);
             LblFolder.TabIndex = 21;
             LblFolder.Text = "Map";
             // 
@@ -118,11 +122,12 @@
             // 
             LblFile.AutoSize = true;
             LblFile.Enabled = false;
-            LblFile.Location = new System.Drawing.Point(3, 65);
+            LblFile.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblFile.Location = new System.Drawing.Point(3, 67);
             LblFile.Name = "LblFile";
-            LblFile.Size = new System.Drawing.Size(72, 15);
+            LblFile.Size = new System.Drawing.Size(40, 12);
             LblFile.TabIndex = 21;
-            LblFile.Text = "Log bestand";
+            LblFile.Text = "Bestand";
             // 
             // PnlUsedForScalingCompatibility
             // 

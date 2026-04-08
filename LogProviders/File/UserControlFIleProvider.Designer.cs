@@ -45,9 +45,8 @@
             // 
             // btnBrowse
             // 
-            btnBrowse.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             btnBrowse.Image = (System.Drawing.Image)resources.GetObject("btnBrowse.Image");
-            btnBrowse.Location = new System.Drawing.Point(256, 3);
+            btnBrowse.Location = new System.Drawing.Point(3, 3);
             btnBrowse.Name = "btnBrowse";
             btnBrowse.Size = new System.Drawing.Size(36, 36);
             btnBrowse.TabIndex = 1;
@@ -66,7 +65,7 @@
             PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
             PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
-            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(295, 113);
+            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(236, 124);
             PnlUsedForScalingCompatibility.TabIndex = 3;
             // 
             // PctWarning
@@ -74,7 +73,7 @@
             PctWarning.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             PctWarning.ErrorImage = null;
             PctWarning.Image = (System.Drawing.Image)resources.GetObject("PctWarning.Image");
-            PctWarning.Location = new System.Drawing.Point(261, 79);
+            PctWarning.Location = new System.Drawing.Point(202, 90);
             PctWarning.Name = "PctWarning";
             PctWarning.Size = new System.Drawing.Size(24, 24);
             PctWarning.TabIndex = 7;
@@ -86,9 +85,10 @@
             // 
             LblFileSizeValue.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             LblFileSizeValue.AutoSize = true;
-            LblFileSizeValue.Location = new System.Drawing.Point(103, 94);
+            LblFileSizeValue.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblFileSizeValue.Location = new System.Drawing.Point(85, 105);
             LblFileSizeValue.Name = "LblFileSizeValue";
-            LblFileSizeValue.Size = new System.Drawing.Size(12, 15);
+            LblFileSizeValue.Size = new System.Drawing.Size(9, 12);
             LblFileSizeValue.TabIndex = 6;
             LblFileSizeValue.Text = "-";
             // 
@@ -96,9 +96,10 @@
             // 
             LblModificationDateTimeValue.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             LblModificationDateTimeValue.AutoSize = true;
-            LblModificationDateTimeValue.Location = new System.Drawing.Point(103, 76);
+            LblModificationDateTimeValue.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblModificationDateTimeValue.Location = new System.Drawing.Point(83, 87);
             LblModificationDateTimeValue.Name = "LblModificationDateTimeValue";
-            LblModificationDateTimeValue.Size = new System.Drawing.Size(12, 15);
+            LblModificationDateTimeValue.Size = new System.Drawing.Size(9, 12);
             LblModificationDateTimeValue.TabIndex = 5;
             LblModificationDateTimeValue.Text = "-";
             // 
@@ -106,9 +107,10 @@
             // 
             LblModificationDateTime.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             LblModificationDateTime.AutoSize = true;
-            LblModificationDateTime.Location = new System.Drawing.Point(3, 76);
+            LblModificationDateTime.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblModificationDateTime.Location = new System.Drawing.Point(3, 87);
             LblModificationDateTime.Name = "LblModificationDateTime";
-            LblModificationDateTime.Size = new System.Drawing.Size(91, 15);
+            LblModificationDateTime.Size = new System.Drawing.Size(74, 12);
             LblModificationDateTime.TabIndex = 4;
             LblModificationDateTime.Text = "Laatst gewijzigd";
             // 
@@ -116,9 +118,10 @@
             // 
             LblFileSize.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             LblFileSize.AutoSize = true;
-            LblFileSize.Location = new System.Drawing.Point(3, 94);
+            LblFileSize.Font = new System.Drawing.Font("Segoe UI", 7F);
+            LblFileSize.Location = new System.Drawing.Point(3, 105);
             LblFileSize.Name = "LblFileSize";
-            LblFileSize.Size = new System.Drawing.Size(93, 15);
+            LblFileSize.Size = new System.Drawing.Size(76, 12);
             LblFileSize.TabIndex = 3;
             LblFileSize.Text = "Bestandsgrootte";
             // 
@@ -126,11 +129,11 @@
             // 
             txtFilePath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             txtFilePath.BackColor = System.Drawing.SystemColors.Control;
-            txtFilePath.Location = new System.Drawing.Point(3, 3);
+            txtFilePath.Location = new System.Drawing.Point(45, 3);
             txtFilePath.Multiline = true;
             txtFilePath.Name = "txtFilePath";
             txtFilePath.ReadOnly = true;
-            txtFilePath.Size = new System.Drawing.Size(247, 70);
+            txtFilePath.Size = new System.Drawing.Size(188, 81);
             txtFilePath.TabIndex = 0;
             // 
             // toolTip1
@@ -146,7 +149,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForScalingCompatibility);
             Name = "UserControlFileLogProvider";
-            Size = new System.Drawing.Size(295, 113);
+            Size = new System.Drawing.Size(236, 124);
             PnlUsedForScalingCompatibility.ResumeLayout(false);
             PnlUsedForScalingCompatibility.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)PctWarning).EndInit();

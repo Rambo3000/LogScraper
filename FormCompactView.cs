@@ -92,10 +92,6 @@ namespace LogScraper
         public void UpdateButtonsFromMainWindow()
         {
             lblLogEntriesTotalCount.Text = LogScraperForm.lblLogEntriesTotalValue.Text;
-            lblLogEntriesFilteredCount.Text = LogScraperForm.lblNumberOfLogEntriesFiltered.Text;
-            lblLogEntriesFilteredWithErrorCount.Text = LogScraperForm.lblNumberOfLogEntriesFilteredWithError.Text;
-            lblLogEntriesFilteredWithErrorCount.ForeColor = LogScraperForm.lblNumberOfLogEntriesFilteredWithError.ForeColor;
-            lblError.ForeColor = LogScraperForm.lblLogEntriesFilteredWithError.ForeColor;
 
             BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
             BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;

@@ -23,6 +23,15 @@ namespace LogScraper.Utilities.UserControls
 
         public bool IsPinned => _isPinned;
         public bool IsCollapsed => _isCollapsed;
+        public int ExpandedHeight { get; private set; }
+        public int CollapsedHeight
+        {
+            get
+            {
+                return BtnCollapseExpand.Bottom;
+            }
+        }
+
 
         public LogProviderSelectionControl()
         {
@@ -32,6 +41,7 @@ namespace LogScraper.Utilities.UserControls
             this.Resize += LogProviderSelectionControl_Resize;
             this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ExpandedHeight = Height;
         }
 
         private void AttachEventHandlers()
@@ -50,9 +60,6 @@ namespace LogScraper.Utilities.UserControls
             usrFileLogProvider.StatusUpdate += HandleStatusUpdate;
             usrFileLogProvider.UriChanged += HandleUriChanged;
             usrFileLogProvider.IsSourceValidChanged += HandleIsSourceValidChanged;
-
-            cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
-            cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
         }
 
         private void HandleSourceSelectionChanged(object sender, EventArgs e)
@@ -115,7 +122,7 @@ namespace LogScraper.Utilities.UserControls
             cboLogLayout.Items.Clear();
             if (logLayouts != null)
             {
-                cboLogLayout.Items.AddRange([..logLayouts]);
+                cboLogLayout.Items.AddRange([.. logLayouts]);
                 if (cboLogLayout.Items.Count > 0)
                 {
                     // Select default layout for the currently selected provider
@@ -234,7 +241,7 @@ namespace LogScraper.Utilities.UserControls
         {
             cboLogProvider.Enabled = enabled;
             cboLogLayout.Enabled = enabled;
-            GrpLogProvidersSettings.Enabled = enabled;
+            PnlLogProviders.Enabled = enabled;
         }
 
         public bool IsSourceValid
@@ -251,19 +258,19 @@ namespace LogScraper.Utilities.UserControls
                 };
             }
         }
-
         private void CollapseProvider()
         {
             lblLogProvider.Visible = false;
             cboLogProvider.Visible = false;
             lblLogLayout.Visible = false;
             cboLogLayout.Visible = false;
-            GrpLogProvidersSettings.Visible = false;
-            lblProviderDescription.Visible = true;
+            PnlLogProviders.Visible = false;
             BtnCollapseExpand.ImageIndex = 1;
             btnPin.Visible = false;
             _isCollapsed = true;
             UpdateProviderDescription();
+            Height = CollapsedHeight;
+
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -273,11 +280,12 @@ namespace LogScraper.Utilities.UserControls
             cboLogProvider.Visible = true;
             lblLogLayout.Visible = true;
             cboLogLayout.Visible = true;
-            GrpLogProvidersSettings.Visible = true;
-            lblProviderDescription.Visible = false;
+            PnlLogProviders.Visible = true;
             BtnCollapseExpand.ImageIndex = 0;
             btnPin.Visible = true;
             _isCollapsed = false;
+
+            Height = ExpandedHeight;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -286,17 +294,9 @@ namespace LogScraper.Utilities.UserControls
             ILogProviderConfig config = cboLogProvider.SelectedItem as ILogProviderConfig;
             LogLayout layout = cboLogLayout.SelectedItem as LogLayout;
 
-            string providerText = config?.LogProviderType switch
-            {
-                LogProviderType.File => "File",
-                LogProviderType.Runtime => "Runtime",
-                LogProviderType.Kubernetes => "Kubernetes",
-                _ => "Unknown"
-            };
-
             string layoutText = layout?.Description ?? "Unknown";
 
-            lblProviderDescription.Text = $"{providerText} - {layoutText}";
+            lblProviderDescription.Text = $"{config} - {layoutText}";
         }
 
         private void TogglePinButton()
@@ -332,8 +332,23 @@ namespace LogScraper.Utilities.UserControls
         {
             if (_isCollapsed)
                 ExpandProvider();
-            else
+            else if (IsSourceValid)
                 CollapseProvider();
+        }
+
+        private void lblProviderDescription_MouseClick(object sender, MouseEventArgs e)
+        {
+            ExpandProvider();
+        }
+
+        private void lblProviderDescription_MouseEnter(object sender, EventArgs e)
+        {
+            lblProviderDescription.LinkBehavior = LinkBehavior.AlwaysUnderline;
+        }
+
+        private void lblProviderDescription_MouseLeave(object sender, EventArgs e)
+        {
+            lblProviderDescription.LinkBehavior = LinkBehavior.NeverUnderline;
         }
     }
 }

@@ -34,23 +34,25 @@ namespace LogScraper.Utilities.UserControls
             cboLogProvider = new System.Windows.Forms.ComboBox();
             lblLogLayout = new System.Windows.Forms.Label();
             cboLogLayout = new System.Windows.Forms.ComboBox();
-            GrpLogProvidersSettings = new System.Windows.Forms.GroupBox();
             usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
             usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
             usrFileLogProvider = new LogScraper.LogProviders.File.UserControlFileLogProvider();
-            lblProviderDescription = new System.Windows.Forms.Label();
+            lblProviderDescription = new System.Windows.Forms.LinkLabel();
             btnPin = new System.Windows.Forms.Button();
             imageListPins = new System.Windows.Forms.ImageList(components);
             imageListChevron = new System.Windows.Forms.ImageList(components);
             BtnCollapseExpand = new System.Windows.Forms.Button();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
-            GrpLogProvidersSettings.SuspendLayout();
+            PnlLogProviders = new System.Windows.Forms.Panel();
+            PnlSeparator2 = new System.Windows.Forms.Panel();
+            PnlSeparator1 = new System.Windows.Forms.Panel();
+            PnlLogProviders.SuspendLayout();
             SuspendLayout();
             // 
             // lblLogProvider
             // 
             lblLogProvider.AutoSize = true;
-            lblLogProvider.Location = new System.Drawing.Point(23, 6);
+            lblLogProvider.Location = new System.Drawing.Point(3, 29);
             lblLogProvider.Name = "lblLogProvider";
             lblLogProvider.Size = new System.Drawing.Size(32, 15);
             lblLogProvider.TabIndex = 21;
@@ -58,18 +60,18 @@ namespace LogScraper.Utilities.UserControls
             // 
             // cboLogProvider
             // 
-            cboLogProvider.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogProvider.FormattingEnabled = true;
-            cboLogProvider.Location = new System.Drawing.Point(72, 3);
+            cboLogProvider.Location = new System.Drawing.Point(52, 26);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(217, 23);
+            cboLogProvider.Size = new System.Drawing.Size(163, 23);
             cboLogProvider.TabIndex = 18;
+            cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
             // 
             // lblLogLayout
             // 
             lblLogLayout.AutoSize = true;
-            lblLogLayout.Location = new System.Drawing.Point(23, 32);
+            lblLogLayout.Location = new System.Drawing.Point(3, 55);
             lblLogLayout.Name = "lblLogLayout";
             lblLogLayout.Size = new System.Drawing.Size(43, 15);
             lblLogLayout.TabIndex = 29;
@@ -77,62 +79,56 @@ namespace LogScraper.Utilities.UserControls
             // 
             // cboLogLayout
             // 
-            cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogLayout.FormattingEnabled = true;
-            cboLogLayout.Location = new System.Drawing.Point(72, 29);
+            cboLogLayout.Location = new System.Drawing.Point(52, 52);
             cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(217, 23);
+            cboLogLayout.Size = new System.Drawing.Size(163, 23);
             cboLogLayout.TabIndex = 30;
-            // 
-            // GrpLogProvidersSettings
-            // 
-            GrpLogProvidersSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            GrpLogProvidersSettings.Controls.Add(usrKubernetes);
-            GrpLogProvidersSettings.Controls.Add(usrRuntime);
-            GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(3, 56);
-            GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
-            GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
-            GrpLogProvidersSettings.Size = new System.Drawing.Size(311, 147);
-            GrpLogProvidersSettings.TabIndex = 24;
-            GrpLogProvidersSettings.TabStop = false;
-            GrpLogProvidersSettings.Text = "Instellingen";
+            cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
             // usrKubernetes
             // 
             usrKubernetes.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrKubernetes.Location = new System.Drawing.Point(3, 19);
+            usrKubernetes.Location = new System.Drawing.Point(0, 0);
             usrKubernetes.Name = "usrKubernetes";
-            usrKubernetes.Size = new System.Drawing.Size(305, 125);
+            usrKubernetes.Size = new System.Drawing.Size(308, 119);
             usrKubernetes.TabIndex = 8;
             // 
             // usrRuntime
             // 
             usrRuntime.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrRuntime.Location = new System.Drawing.Point(3, 19);
+            usrRuntime.Location = new System.Drawing.Point(0, 0);
             usrRuntime.Name = "usrRuntime";
-            usrRuntime.Size = new System.Drawing.Size(305, 125);
+            usrRuntime.Size = new System.Drawing.Size(308, 119);
             usrRuntime.TabIndex = 0;
             // 
             // usrFileLogProvider
             // 
             usrFileLogProvider.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrFileLogProvider.Location = new System.Drawing.Point(3, 19);
+            usrFileLogProvider.Location = new System.Drawing.Point(0, 0);
             usrFileLogProvider.Name = "usrFileLogProvider";
-            usrFileLogProvider.Size = new System.Drawing.Size(305, 125);
+            usrFileLogProvider.Size = new System.Drawing.Size(308, 119);
             usrFileLogProvider.TabIndex = 3;
             // 
             // lblProviderDescription
             // 
+            lblProviderDescription.ActiveLinkColor = System.Drawing.Color.Black;
             lblProviderDescription.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             lblProviderDescription.AutoEllipsis = true;
-            lblProviderDescription.Location = new System.Drawing.Point(26, 6);
+            lblProviderDescription.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            lblProviderDescription.LinkColor = System.Drawing.Color.Black;
+            lblProviderDescription.Location = new System.Drawing.Point(0, 6);
             lblProviderDescription.Name = "lblProviderDescription";
-            lblProviderDescription.Size = new System.Drawing.Size(285, 16);
+            lblProviderDescription.Size = new System.Drawing.Size(308, 16);
             lblProviderDescription.TabIndex = 25;
-            lblProviderDescription.Text = " ";
-            lblProviderDescription.Visible = false;
+            lblProviderDescription.TabStop = true;
+            lblProviderDescription.Text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+            lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblProviderDescription.VisitedLinkColor = System.Drawing.Color.Black;
+            lblProviderDescription.MouseClick += lblProviderDescription_MouseClick;
+            lblProviderDescription.MouseEnter += lblProviderDescription_MouseEnter;
+            lblProviderDescription.MouseLeave += lblProviderDescription_MouseLeave;
             // 
             // btnPin
             // 
@@ -142,7 +138,7 @@ namespace LogScraper.Utilities.UserControls
             btnPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPin.ImageIndex = 0;
             btnPin.ImageList = imageListPins;
-            btnPin.Location = new System.Drawing.Point(290, 1);
+            btnPin.Location = new System.Drawing.Point(281, 1);
             btnPin.Name = "btnPin";
             btnPin.Size = new System.Drawing.Size(24, 24);
             btnPin.TabIndex = 27;
@@ -179,22 +175,53 @@ namespace LogScraper.Utilities.UserControls
             BtnCollapseExpand.UseVisualStyleBackColor = true;
             BtnCollapseExpand.Click += BtnCollapseExpand_Click;
             // 
+            // PnlLogProviders
+            // 
+            PnlLogProviders.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlLogProviders.Controls.Add(PnlSeparator2);
+            PnlLogProviders.Controls.Add(usrKubernetes);
+            PnlLogProviders.Controls.Add(usrFileLogProvider);
+            PnlLogProviders.Controls.Add(usrRuntime);
+            PnlLogProviders.Location = new System.Drawing.Point(0, 85);
+            PnlLogProviders.Name = "PnlLogProviders";
+            PnlLogProviders.Size = new System.Drawing.Size(308, 119);
+            PnlLogProviders.TabIndex = 31;
+            // 
+            // PnlSeparator2
+            // 
+            PnlSeparator2.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlSeparator2.BackColor = System.Drawing.Color.LightGray;
+            PnlSeparator2.Location = new System.Drawing.Point(3, 118);
+            PnlSeparator2.Name = "PnlSeparator2";
+            PnlSeparator2.Size = new System.Drawing.Size(300, 1);
+            PnlSeparator2.TabIndex = 33;
+            // 
+            // PnlSeparator1
+            // 
+            PnlSeparator1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlSeparator1.BackColor = System.Drawing.Color.LightGray;
+            PnlSeparator1.Location = new System.Drawing.Point(3, 81);
+            PnlSeparator1.Name = "PnlSeparator1";
+            PnlSeparator1.Size = new System.Drawing.Size(300, 1);
+            PnlSeparator1.TabIndex = 32;
+            // 
             // LogProviderSelectionControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.Control;
+            Controls.Add(PnlSeparator1);
+            Controls.Add(PnlLogProviders);
             Controls.Add(BtnCollapseExpand);
             Controls.Add(btnPin);
-            Controls.Add(GrpLogProvidersSettings);
             Controls.Add(cboLogLayout);
             Controls.Add(lblLogLayout);
             Controls.Add(cboLogProvider);
             Controls.Add(lblLogProvider);
             Controls.Add(lblProviderDescription);
             Name = "LogProviderSelectionControl";
-            Size = new System.Drawing.Size(317, 207);
-            GrpLogProvidersSettings.ResumeLayout(false);
+            Size = new System.Drawing.Size(308, 207);
+            PnlLogProviders.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -205,15 +232,17 @@ namespace LogScraper.Utilities.UserControls
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.Label lblLogLayout;
         private System.Windows.Forms.ComboBox cboLogLayout;
-        private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
         private LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider usrKubernetes;
         private LogScraper.LogProviders.File.UserControlFileLogProvider usrFileLogProvider;
-        private System.Windows.Forms.Label lblProviderDescription;
+        private System.Windows.Forms.LinkLabel lblProviderDescription;
         private System.Windows.Forms.Button btnPin;
         private System.Windows.Forms.ImageList imageListPins;
         private System.Windows.Forms.ImageList imageListChevron;
         private System.Windows.Forms.Button BtnCollapseExpand;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Panel PnlLogProviders;
+        private System.Windows.Forms.Panel PnlSeparator1;
+        private System.Windows.Forms.Panel PnlSeparator2;
     }
 }

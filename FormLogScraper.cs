@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -29,6 +28,8 @@ namespace LogScraper
     //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: search wrap around not working correctly, switching between two last entries
+    //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
+    //TODO: optional collapsable metadata
 
     //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
@@ -47,13 +48,13 @@ namespace LogScraper
 
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
-            usrLogProviderSelection.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
-            usrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
-            usrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
-            usrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
-            usrLogProviderSelection.LogProviderChanged += usrLogProviderSelection_LogProviderChanged;
-            usrLogProviderSelection.LogLayoutChanged += usrLogProviderSelection_LogLayoutChanged;
-            usrLogProviderSelection.CollapseStateChanged += (s, e) => splitContainer1.Panel1.PerformLayout();
+            UsrLogProviderSelection.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
+            UsrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
+            UsrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
+            UsrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
+            UsrLogProviderSelection.LogProviderChanged += UsrLogProviderSelection_LogProviderChanged;
+            UsrLogProviderSelection.LogLayoutChanged += UsrLogProviderSelection_LogLayoutChanged;
+            UsrLogProviderSelection.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
@@ -87,10 +88,28 @@ namespace LogScraper
             UpdateBtnErase();
         }
 
+        private void UsrLogProviderSelection_CollapseStateChanged(object sender, EventArgs e)
+        {
+            AutoSizeLogProviderSelection();
+        }
+
+        private void AutoSizeLogProviderSelection()
+        {
+            // Force the control to recalculate its size
+            UsrLogProviderSelection.PerformLayout();
+
+            // Suspend layout to avoid flickering
+            splitContainer3.SuspendLayout();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.SplitterDistance = (UsrLogProviderSelection.IsCollapsed ? UsrLogProviderSelection.CollapsedHeight : UsrLogProviderSelection.ExpandedHeight) + 5 + BtnRecord.Bottom + 15;
+            splitContainer3.Panel1.ResumeLayout(true);
+            splitContainer3.ResumeLayout(true);
+        }
+
         private void UsrRuntime_UriChanged(object sender, string e)
         {
             string title = "LogScraper";
-            if(!string.IsNullOrWhiteSpace(e)) title += $" - {e}";
+            if (!string.IsNullOrWhiteSpace(e)) title += $" - {e}";
             Text = title;
         }
 
@@ -131,7 +150,7 @@ namespace LogScraper
 
         private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
         {
-           RenderLog(currentLogMetadataFilterResult);
+            RenderLog(currentLogMetadataFilterResult);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -175,8 +194,11 @@ namespace LogScraper
             try
             {
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                usrLogProviderSelection.PopulateLogProviders();
-                usrLogProviderSelection.PopulateLogLayouts([..ConfigurationManager.LogLayouts]);
+                UsrLogProviderSelection.PopulateLogProviders();
+                UsrLogProviderSelection.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
+                //Enforce autosizing because the IDE overrides the control's autosize settings.
+                UsrLogProviderSelection.AutoSize = false;
+                AutoSizeLogProviderSelection();
             }
             catch (Exception ex)
             {
@@ -195,7 +217,7 @@ namespace LogScraper
 
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
-            if (usrLogProviderSelection.GetSelectedLogLayout() == null) return;
+            if (UsrLogProviderSelection.GetSelectedLogLayout() == null) return;
             try
             {
                 BtnRecord.Enabled = false;
@@ -203,7 +225,7 @@ namespace LogScraper
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
-                ISourceAdapter logProvider = usrLogProviderSelection.GetSelectedSourceAdapter(lastTrailTime);
+                ISourceAdapter logProvider = UsrLogProviderSelection.GetSelectedSourceAdapter(lastTrailTime);
 
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
@@ -224,7 +246,7 @@ namespace LogScraper
 
         private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime)
         {
-            LogLayout logLayout = usrLogProviderSelection.GetSelectedLogLayout();
+            LogLayout logLayout = UsrLogProviderSelection.GetSelectedLogLayout();
             try
             {
                 bool newLogEntriesReceived = false;
@@ -261,12 +283,10 @@ namespace LogScraper
 
         private void RefreshLogStatistics()
         {
-            lblLogEntriesTotalValue.Text = LogCollection.Instance.LogEntries.Count.ToString();
-
-            int count = LogCollection.Instance.ErrorCount;
-            lblNumberOfLogEntriesFilteredWithError.Text = count.ToString();
-            lblNumberOfLogEntriesFilteredWithError.ForeColor = count > 0 ? Color.DarkRed : Color.Black;
-            lblLogEntriesFilteredWithError.ForeColor = lblNumberOfLogEntriesFilteredWithError.ForeColor;
+            int totalCount = LogCollection.Instance.LogEntries.Count;
+            int visibleCount = visibleLogEntries?.Count ?? totalCount;
+            int errorCount = LogCollection.Instance.ErrorCount;
+            lblLogEntriesTotalValue.Text = $"{totalCount} totaal  |  {visibleCount} zichtbaar  |  {errorCount} errors";
         }
 
         private void ShowException(Exception ex)
@@ -280,14 +300,14 @@ namespace LogScraper
 
         private void FilterLogEntries()
         {
-            if (usrLogProviderSelection.GetSelectedLogLayout() == null) return;
+            if (UsrLogProviderSelection.GetSelectedLogLayout() == null) return;
 
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
             currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
                 LogCollection.Instance,
                 activeFilters,
-                usrLogProviderSelection.GetSelectedLogLayout());
+                UsrLogProviderSelection.GetSelectedLogLayout());
 
             // Update counts in the filter panel to reflect the filtered result.
             UsrMetadataFilterOverview.UpdateFilterControlsCount(
@@ -303,11 +323,11 @@ namespace LogScraper
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogViewport.Range,
-                LogLayout = usrLogProviderSelection.GetSelectedLogLayout(),
+                LogLayout = UsrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
                 SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
                 LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
-                LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings( flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
+                LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings(flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
             };
 
             UserControlSearch.LogRenderSettings = logRenderSettings;
@@ -317,7 +337,7 @@ namespace LogScraper
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
             if (ConfigurationManager.GenericConfig.ShowTimelineByDefault) LogTimeLineControl.UpdateLogEntries(logMetadataFilterResult.LogEntries, logMetadataFilterResult.SourceLogCollection);
-            lblNumberOfLogEntriesFiltered.Text = logMetadataFilterResult.LogEntries.Count.ToString();
+            RefreshLogStatistics();
         }
         #endregion
 
@@ -347,7 +367,7 @@ namespace LogScraper
 
             UsrMetadataFilterOverview.Reset();
             UserControlContentFilter.Reset();
-            UserControlContentFilter.UpdateLogLayout(usrLogProviderSelection.GetSelectedLogLayout());
+            UserControlContentFilter.UpdateLogLayout(UsrLogProviderSelection.GetSelectedLogLayout());
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
 
@@ -440,19 +460,20 @@ namespace LogScraper
         private void UpdateButtonStatus()
         {
             bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
-            bool sourceIsValid = usrLogProviderSelection.IsSourceValid;
-            bool layoutSelected = usrLogProviderSelection.GetSelectedLogLayout() != null;
+            bool sourceIsValid = UsrLogProviderSelection.IsSourceValid;
+            bool layoutSelected = UsrLogProviderSelection.GetSelectedLogLayout() != null;
             if (!downloadingInProgress)
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
 
             BtnRecord.Visible = !downloadingInProgress;
             BtnRecord.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
             BtnRecordWithTimer.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
+            BtnFormRecord.Enabled = sourceIsValid && layoutSelected;
             BtnStop.Visible = downloadingInProgress;
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
-            usrLogProviderSelection.Enabled = !downloadingInProgress;
-            usrLogProviderSelection.SetEnabled(!downloadingInProgress);
+            UsrLogProviderSelection.Enabled = !downloadingInProgress;
+            UsrLogProviderSelection.SetEnabled(!downloadingInProgress);
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
@@ -520,7 +541,7 @@ namespace LogScraper
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogViewport.Range,
-                LogLayout = usrLogProviderSelection.GetSelectedLogLayout(),
+                LogLayout = UsrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = true
             };
 
@@ -588,14 +609,14 @@ namespace LogScraper
                     UpdateTimeLineVisibility();
                 }
 
-                if (logLayoutsChanged) usrLogProviderSelection.PopulateLogLayouts([..ConfigurationManager.LogLayouts]);
+                if (logLayoutsChanged) UsrLogProviderSelection.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
 
                 if (kubernetesChanged || runtimeChanged)
                 {
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        usrLogProviderSelection.UpdateProviderConfig();
-                        usrLogProviderSelection_LogProviderChanged(null, null);
+                        UsrLogProviderSelection.UpdateProviderConfig();
+                        UsrLogProviderSelection_LogProviderChanged(null, null);
                     }
                 }
             }
@@ -609,9 +630,9 @@ namespace LogScraper
 
         #region Dropdowns log providers and layout
 
-        private void usrLogProviderSelection_LogLayoutChanged(object sender, EventArgs e)
+        private void UsrLogProviderSelection_LogLayoutChanged(object sender, EventArgs e)
         {
-            LogLayout logLayout = usrLogProviderSelection.GetSelectedLogLayout();
+            LogLayout logLayout = UsrLogProviderSelection.GetSelectedLogLayout();
             if (logLayout == null) return;
             MetadataFormatingControl.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
@@ -619,7 +640,7 @@ namespace LogScraper
             Reset();
         }
 
-        private void usrLogProviderSelection_LogProviderChanged(object sender, EventArgs e)
+        private void UsrLogProviderSelection_LogProviderChanged(object sender, EventArgs e)
         {
             // This is now handled by the LogProviderSelectionControl
             // Just reset the log display

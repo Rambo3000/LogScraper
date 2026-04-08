@@ -83,7 +83,7 @@
             TabLogProviders.Location = new System.Drawing.Point(3, 3);
             TabLogProviders.Name = "TabLogProviders";
             TabLogProviders.SelectedIndex = 0;
-            TabLogProviders.Size = new System.Drawing.Size(1028, 508);
+            TabLogProviders.Size = new System.Drawing.Size(1028, 568);
             TabLogProviders.TabIndex = 0;
             // 
             // tabKubernetes
@@ -91,7 +91,7 @@
             tabKubernetes.Controls.Add(userControlKubernetesConfig);
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
-            tabKubernetes.Size = new System.Drawing.Size(1020, 480);
+            tabKubernetes.Size = new System.Drawing.Size(1020, 540);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
@@ -102,7 +102,7 @@
             userControlKubernetesConfig.Location = new System.Drawing.Point(0, 0);
             userControlKubernetesConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlKubernetesConfig.Name = "userControlKubernetesConfig";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(1020, 480);
+            userControlKubernetesConfig.Size = new System.Drawing.Size(1020, 540);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // tabUrl
@@ -110,9 +110,9 @@
             tabUrl.Controls.Add(userControlRuntimeConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
-            tabUrl.Size = new System.Drawing.Size(1020, 480);
+            tabUrl.Size = new System.Drawing.Size(1020, 540);
             tabUrl.TabIndex = 1;
-            tabUrl.Text = "Directe Url";
+            tabUrl.Text = "HTTP API";
             tabUrl.UseVisualStyleBackColor = true;
             // 
             // userControlRuntimeConfig
@@ -121,7 +121,7 @@
             userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
             userControlRuntimeConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlRuntimeConfig.Name = "userControlRuntimeConfig";
-            userControlRuntimeConfig.Size = new System.Drawing.Size(1020, 480);
+            userControlRuntimeConfig.Size = new System.Drawing.Size(1020, 540);
             userControlRuntimeConfig.TabIndex = 0;
             // 
             // tabFile
@@ -129,9 +129,9 @@
             tabFile.Controls.Add(userControlFileConfig);
             tabFile.Location = new System.Drawing.Point(4, 24);
             tabFile.Name = "tabFile";
-            tabFile.Size = new System.Drawing.Size(1020, 480);
+            tabFile.Size = new System.Drawing.Size(1020, 540);
             tabFile.TabIndex = 2;
-            tabFile.Text = "Lokaal bestand";
+            tabFile.Text = "Bestand";
             tabFile.UseVisualStyleBackColor = true;
             // 
             // userControlFileConfig
@@ -140,7 +140,7 @@
             userControlFileConfig.Location = new System.Drawing.Point(0, 0);
             userControlFileConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlFileConfig.Name = "userControlFileConfig";
-            userControlFileConfig.Size = new System.Drawing.Size(1020, 480);
+            userControlFileConfig.Size = new System.Drawing.Size(1020, 540);
             userControlFileConfig.TabIndex = 0;
             // 
             // btnOk
@@ -389,7 +389,7 @@
             TabPageLogProviders.Location = new System.Drawing.Point(4, 24);
             TabPageLogProviders.Name = "TabPageLogProviders";
             TabPageLogProviders.Padding = new System.Windows.Forms.Padding(3);
-            TabPageLogProviders.Size = new System.Drawing.Size(1034, 514);
+            TabPageLogProviders.Size = new System.Drawing.Size(1034, 574);
             TabPageLogProviders.TabIndex = 1;
             TabPageLogProviders.Text = "Bron van logging";
             TabPageLogProviders.UseVisualStyleBackColor = true;
@@ -399,7 +399,7 @@
             TabPageAbout.Controls.Add(userControlAbout);
             TabPageAbout.Location = new System.Drawing.Point(4, 24);
             TabPageAbout.Name = "TabPageAbout";
-            TabPageAbout.Size = new System.Drawing.Size(1034, 514);
+            TabPageAbout.Size = new System.Drawing.Size(1034, 574);
             TabPageAbout.TabIndex = 4;
             TabPageAbout.Text = "Info";
             TabPageAbout.UseVisualStyleBackColor = true;
@@ -410,7 +410,7 @@
             userControlAbout.Location = new System.Drawing.Point(0, 0);
             userControlAbout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlAbout.Name = "userControlAbout";
-            userControlAbout.Size = new System.Drawing.Size(1034, 514);
+            userControlAbout.Size = new System.Drawing.Size(1034, 574);
             userControlAbout.TabIndex = 0;
             // 
             // FormConfiguration
