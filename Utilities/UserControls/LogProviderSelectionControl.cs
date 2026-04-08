@@ -13,11 +13,22 @@ namespace LogScraper.Utilities.UserControls
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
         public event EventHandler LogProviderChanged;
+        public event EventHandler CollapseStateChanged;
+
+        private bool _isPinned = false;
+        private bool _isCollapsed = false;
+
+        public bool IsPinned => _isPinned;
+        public bool IsCollapsed => _isCollapsed;
 
         public LogProviderSelectionControl()
         {
             InitializeComponent();
             AttachEventHandlers();
+            this.Leave += LogProviderSelectionControl_Leave;
+            this.Resize += LogProviderSelectionControl_Resize;
+            this.AutoSize = true;
+            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
         }
 
         private void AttachEventHandlers()
@@ -52,17 +63,23 @@ namespace LogScraper.Utilities.UserControls
 
         private void HandleUriChanged(object sender, string e)
         {
+            lblProviderDescription.Text = e;
             UriChanged?.Invoke(this, e);
         }
 
         private void HandleIsSourceValidChanged(object sender, bool e)
         {
             IsSourceValidChanged?.Invoke(this, e);
+
+            // Force expand if source becomes invalid
+            if (!e && _isCollapsed)
+            {
+                ExpandProvider();
+            }
         }
 
         public void PopulateLogProviders()
         {
-
             cboLogProvider.Items.Clear();
 
             if (ConfigurationManager.LogProvidersConfig.FileConfig != null)
@@ -119,15 +136,12 @@ namespace LogScraper.Utilities.UserControls
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
-                    GrpLogProvidersSettings.Text = "Directe URL instellingen";
                     usrRuntime.UpdateUri();
                     break;
                 case LogProviderType.Kubernetes:
-                    GrpLogProvidersSettings.Text = "Kubernetes instellingen";
                     usrKubernetes.UpdateUri();
                     break;
                 case LogProviderType.File:
-                    GrpLogProvidersSettings.Text = "Lokaal bestand instellingen";
                     usrFileLogProvider.UpdateUri();
                     break;
             }
@@ -174,6 +188,83 @@ namespace LogScraper.Utilities.UserControls
                     _ => false
                 };
             }
+        }
+
+        private void CollapseProvider()
+        {
+            lblLogProvider.Visible = false;
+            cboLogProvider.Visible = false;
+            GrpLogProvidersSettings.Visible = false;
+            lblProviderDescription.Visible = true;
+            BtnCollapseExpand.ImageIndex = 1; // Change to collapse icon
+            btnPin.Visible = false;
+            _isCollapsed = true;
+            UpdateProviderLabel();
+            CollapseStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ExpandProvider()
+        {
+            lblLogProvider.Visible = true;
+            cboLogProvider.Visible = true;
+            GrpLogProvidersSettings.Visible = true;
+            lblProviderDescription.Visible = false;
+            BtnCollapseExpand.ImageIndex = 0; // Reset to default expand icon
+            btnPin.Visible = true;
+            _isCollapsed = false;
+            CollapseStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateProviderLabel()
+        {
+            //ILogProviderConfig config = cboLogProvider.SelectedItem as ILogProviderConfig;
+            //if (config != null)
+            //{
+            //    lblProviderDescription.Text = config.LogProviderType switch
+            //    {
+            //        LogProviderType.File => "File",
+            //        LogProviderType.Runtime => "Runtime",
+            //        LogProviderType.Kubernetes => "Kubernetes",
+            //        _ => "Unknown"
+            //    };
+            //}
+        }
+
+        private void TogglePinButton()
+        {
+            _isPinned = !_isPinned;
+            UpdatePinButtonImage();
+        }
+
+        private void UpdatePinButtonImage()
+        {
+            // ImageIndex 0 = unpinned, 1 = pinned
+            btnPin.ImageIndex = _isPinned ? 1 : 0;
+        }
+
+        private void LogProviderSelectionControl_Leave(object sender, EventArgs e)
+        {
+            if (IsSourceValid && !_isPinned && !_isCollapsed)
+            {
+                CollapseProvider();
+            }
+        }
+
+        private void LogProviderSelectionControl_Resize(object sender, EventArgs e)
+        {
+            // Force label to refresh ellipsis on resize
+            lblProviderDescription.Invalidate();
+        }
+
+        private void BtnPin_Click(object sender, EventArgs e)
+        {
+            TogglePinButton();
+
+        }
+
+        private void BtnCollapseExpand_Click(object sender, EventArgs e)
+        {
+            ExpandProvider();
         }
     }
 }

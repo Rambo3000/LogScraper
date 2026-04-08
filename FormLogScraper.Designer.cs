@@ -347,10 +347,8 @@ namespace LogScraper
             // 
             // usrLogProviderSelection
             // 
-            usrLogProviderSelection.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            usrLogProviderSelection.Location = new System.Drawing.Point(3, 0);
+            usrLogProviderSelection.Dock = System.Windows.Forms.DockStyle.Top;
             usrLogProviderSelection.Name = "usrLogProviderSelection";
-            usrLogProviderSelection.Size = new System.Drawing.Size(311, 192);
             usrLogProviderSelection.TabIndex = 25;
             // 
             // splitContainer2

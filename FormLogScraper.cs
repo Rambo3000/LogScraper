@@ -53,6 +53,7 @@ namespace LogScraper
             usrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
             usrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
             usrLogProviderSelection.LogProviderChanged += (s, e) => CboLogProvider_SelectedIndexChanged(s, e);
+            usrLogProviderSelection.CollapseStateChanged += (s, e) => splitContainer1.Panel1.PerformLayout();
 
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
 
