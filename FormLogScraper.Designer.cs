@@ -53,7 +53,6 @@ namespace LogScraper
             userControlMemoryUsage1 = new UserControlMemoryUsage();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnSave = new System.Windows.Forms.Button();
-            cboLogLayout = new System.Windows.Forms.ComboBox();
             usrLogProviderSelection = new LogScraper.Utilities.UserControls.LogProviderSelectionControl();
             splitContainer2 = new SplitContainerWithGrip();
             splitContainer4 = new SplitContainerWithGrip();
@@ -71,7 +70,6 @@ namespace LogScraper
             SearchResultListControl = new LogScraper.Utilities.UserControls.SearchResultListControl();
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
-            label2 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
             UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
             splitContainer1 = new SplitContainerWithGrip();
@@ -334,21 +332,15 @@ namespace LogScraper
             BtnSave.UseVisualStyleBackColor = true;
             BtnSave.Click += BtnSave_Click;
             // 
-            // cboLogLayout
-            // 
-            cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cboLogLayout.FormattingEnabled = true;
-            cboLogLayout.Location = new System.Drawing.Point(58, 191);
-            cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(252, 23);
-            cboLogLayout.TabIndex = 23;
-            cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
-            // 
             // usrLogProviderSelection
             // 
+            usrLogProviderSelection.AutoSize = true;
+            usrLogProviderSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            usrLogProviderSelection.BackColor = System.Drawing.SystemColors.Control;
             usrLogProviderSelection.Dock = System.Windows.Forms.DockStyle.Top;
+            usrLogProviderSelection.Location = new System.Drawing.Point(0, 0);
             usrLogProviderSelection.Name = "usrLogProviderSelection";
+            usrLogProviderSelection.Size = new System.Drawing.Size(314, 206);
             usrLogProviderSelection.TabIndex = 25;
             // 
             // splitContainer2
@@ -535,15 +527,6 @@ namespace LogScraper
             UserControlContentFilter.Size = new System.Drawing.Size(279, 588);
             UserControlContentFilter.TabIndex = 0;
             // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(8, 194);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(43, 15);
-            label2.TabIndex = 24;
-            label2.Text = "Layout";
-            // 
             // groupBox1
             // 
             groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -578,8 +561,6 @@ namespace LogScraper
             splitContainer1.Panel1.Controls.Add(usrLogProviderSelection);
             splitContainer1.Panel1.Controls.Add(groupBox1);
             splitContainer1.Panel1.Controls.Add(groupBox3);
-            splitContainer1.Panel1.Controls.Add(label2);
-            splitContainer1.Panel1.Controls.Add(cboLogLayout);
             splitContainer1.Panel1MinSize = 252;
             // 
             // splitContainer1.Panel2
@@ -658,8 +639,6 @@ namespace LogScraper
         private SplitContainerWithGrip splitContainer2;
         private UserControlLogContentFilter UserControlContentFilter;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cboLogLayout;
         private UserControlSearch UserControlSearch;
         private System.Windows.Forms.Button BtnConfig;
         private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;

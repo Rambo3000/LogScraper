@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 
@@ -13,6 +15,7 @@ namespace LogScraper.Utilities.UserControls
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
         public event EventHandler LogProviderChanged;
+        public event EventHandler LogLayoutChanged;
         public event EventHandler CollapseStateChanged;
 
         private bool _isPinned = false;
@@ -49,6 +52,7 @@ namespace LogScraper.Utilities.UserControls
             usrFileLogProvider.IsSourceValidChanged += HandleIsSourceValidChanged;
 
             cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
+            cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
         }
 
         private void HandleSourceSelectionChanged(object sender, EventArgs e)
@@ -63,7 +67,7 @@ namespace LogScraper.Utilities.UserControls
 
         private void HandleUriChanged(object sender, string e)
         {
-            lblProviderDescription.Text = e;
+            UpdateProviderDescription();
             UriChanged?.Invoke(this, e);
         }
 
@@ -106,6 +110,43 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
+        public void PopulateLogLayouts(List<LogLayout> logLayouts)
+        {
+            cboLogLayout.Items.Clear();
+            if (logLayouts != null)
+            {
+                cboLogLayout.Items.AddRange([..logLayouts]);
+                if (cboLogLayout.Items.Count > 0)
+                {
+                    // Select default layout for the currently selected provider
+                    ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
+                    if (logProviderConfig != null)
+                    {
+                        switch (logProviderConfig.LogProviderType)
+                        {
+                            case LogProviderType.Runtime:
+                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
+                                break;
+                            case LogProviderType.Kubernetes:
+                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
+                                break;
+                            case LogProviderType.File:
+                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
+                                break;
+                        }
+                    }
+
+                    // If no default layout was selected, select the first one
+                    if (cboLogLayout.SelectedIndex == -1 && cboLogLayout.Items.Count > 0)
+                    {
+                        cboLogLayout.SelectedIndex = 0;
+                    }
+
+                    CboLogLayout_SelectedIndexChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
         public ISourceAdapter GetSelectedSourceAdapter(DateTime? lastTrailTime = null)
         {
             LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
@@ -124,6 +165,11 @@ namespace LogScraper.Utilities.UserControls
             return config;
         }
 
+        public LogLayout GetSelectedLogLayout()
+        {
+            return cboLogLayout.SelectedItem as LogLayout;
+        }
+
         private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
@@ -137,16 +183,31 @@ namespace LogScraper.Utilities.UserControls
             {
                 case LogProviderType.Runtime:
                     usrRuntime.UpdateUri();
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.Kubernetes:
                     usrKubernetes.UpdateUri();
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.File:
                     usrFileLogProvider.UpdateUri();
+                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
                     break;
             }
 
+            if (cboLogLayout.SelectedIndex == -1 && cboLogLayout.Items.Count > 0)
+            {
+                cboLogLayout.SelectedIndex = 0;
+            }
+
+            UpdateProviderDescription();
             LogProviderChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateProviderDescription();
+            LogLayoutChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void UpdateProviderConfig()
@@ -172,6 +233,7 @@ namespace LogScraper.Utilities.UserControls
         public void SetEnabled(bool enabled)
         {
             cboLogProvider.Enabled = enabled;
+            cboLogLayout.Enabled = enabled;
             GrpLogProvidersSettings.Enabled = enabled;
         }
 
@@ -194,12 +256,14 @@ namespace LogScraper.Utilities.UserControls
         {
             lblLogProvider.Visible = false;
             cboLogProvider.Visible = false;
+            lblLogLayout.Visible = false;
+            cboLogLayout.Visible = false;
             GrpLogProvidersSettings.Visible = false;
             lblProviderDescription.Visible = true;
-            BtnCollapseExpand.ImageIndex = 1; // Change to collapse icon
+            BtnCollapseExpand.ImageIndex = 1;
             btnPin.Visible = false;
             _isCollapsed = true;
-            UpdateProviderLabel();
+            UpdateProviderDescription();
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -207,27 +271,32 @@ namespace LogScraper.Utilities.UserControls
         {
             lblLogProvider.Visible = true;
             cboLogProvider.Visible = true;
+            lblLogLayout.Visible = true;
+            cboLogLayout.Visible = true;
             GrpLogProvidersSettings.Visible = true;
             lblProviderDescription.Visible = false;
-            BtnCollapseExpand.ImageIndex = 0; // Reset to default expand icon
+            BtnCollapseExpand.ImageIndex = 0;
             btnPin.Visible = true;
             _isCollapsed = false;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void UpdateProviderLabel()
+        private void UpdateProviderDescription()
         {
-            //ILogProviderConfig config = cboLogProvider.SelectedItem as ILogProviderConfig;
-            //if (config != null)
-            //{
-            //    lblProviderDescription.Text = config.LogProviderType switch
-            //    {
-            //        LogProviderType.File => "File",
-            //        LogProviderType.Runtime => "Runtime",
-            //        LogProviderType.Kubernetes => "Kubernetes",
-            //        _ => "Unknown"
-            //    };
-            //}
+            ILogProviderConfig config = cboLogProvider.SelectedItem as ILogProviderConfig;
+            LogLayout layout = cboLogLayout.SelectedItem as LogLayout;
+
+            string providerText = config?.LogProviderType switch
+            {
+                LogProviderType.File => "File",
+                LogProviderType.Runtime => "Runtime",
+                LogProviderType.Kubernetes => "Kubernetes",
+                _ => "Unknown"
+            };
+
+            string layoutText = layout?.Description ?? "Unknown";
+
+            lblProviderDescription.Text = $"{providerText} - {layoutText}";
         }
 
         private void TogglePinButton()
@@ -238,7 +307,6 @@ namespace LogScraper.Utilities.UserControls
 
         private void UpdatePinButtonImage()
         {
-            // ImageIndex 0 = unpinned, 1 = pinned
             btnPin.ImageIndex = _isPinned ? 1 : 0;
         }
 
@@ -252,19 +320,20 @@ namespace LogScraper.Utilities.UserControls
 
         private void LogProviderSelectionControl_Resize(object sender, EventArgs e)
         {
-            // Force label to refresh ellipsis on resize
             lblProviderDescription.Invalidate();
         }
 
         private void BtnPin_Click(object sender, EventArgs e)
         {
             TogglePinButton();
-
         }
 
         private void BtnCollapseExpand_Click(object sender, EventArgs e)
         {
-            ExpandProvider();
+            if (_isCollapsed)
+                ExpandProvider();
+            else
+                CollapseProvider();
         }
     }
 }

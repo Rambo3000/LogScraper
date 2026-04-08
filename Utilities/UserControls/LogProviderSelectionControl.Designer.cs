@@ -32,6 +32,8 @@ namespace LogScraper.Utilities.UserControls
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogProviderSelectionControl));
             lblLogProvider = new System.Windows.Forms.Label();
             cboLogProvider = new System.Windows.Forms.ComboBox();
+            lblLogLayout = new System.Windows.Forms.Label();
+            cboLogLayout = new System.Windows.Forms.ComboBox();
             GrpLogProvidersSettings = new System.Windows.Forms.GroupBox();
             usrKubernetes = new LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider();
             usrRuntime = new LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider();
@@ -59,10 +61,29 @@ namespace LogScraper.Utilities.UserControls
             cboLogProvider.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogProvider.FormattingEnabled = true;
-            cboLogProvider.Location = new System.Drawing.Point(61, 3);
+            cboLogProvider.Location = new System.Drawing.Point(72, 3);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(228, 23);
+            cboLogProvider.Size = new System.Drawing.Size(217, 23);
             cboLogProvider.TabIndex = 18;
+            // 
+            // lblLogLayout
+            // 
+            lblLogLayout.AutoSize = true;
+            lblLogLayout.Location = new System.Drawing.Point(23, 32);
+            lblLogLayout.Name = "lblLogLayout";
+            lblLogLayout.Size = new System.Drawing.Size(43, 15);
+            lblLogLayout.TabIndex = 29;
+            lblLogLayout.Text = "Layout";
+            // 
+            // cboLogLayout
+            // 
+            cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cboLogLayout.FormattingEnabled = true;
+            cboLogLayout.Location = new System.Drawing.Point(72, 29);
+            cboLogLayout.Name = "cboLogLayout";
+            cboLogLayout.Size = new System.Drawing.Size(217, 23);
+            cboLogLayout.TabIndex = 30;
             // 
             // GrpLogProvidersSettings
             // 
@@ -70,7 +91,7 @@ namespace LogScraper.Utilities.UserControls
             GrpLogProvidersSettings.Controls.Add(usrKubernetes);
             GrpLogProvidersSettings.Controls.Add(usrRuntime);
             GrpLogProvidersSettings.Controls.Add(usrFileLogProvider);
-            GrpLogProvidersSettings.Location = new System.Drawing.Point(3, 30);
+            GrpLogProvidersSettings.Location = new System.Drawing.Point(3, 56);
             GrpLogProvidersSettings.MinimumSize = new System.Drawing.Size(300, 0);
             GrpLogProvidersSettings.Name = "GrpLogProvidersSettings";
             GrpLogProvidersSettings.Size = new System.Drawing.Size(311, 147);
@@ -146,7 +167,6 @@ namespace LogScraper.Utilities.UserControls
             // 
             // BtnCollapseExpand
             // 
-            BtnCollapseExpand.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnCollapseExpand.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             BtnCollapseExpand.FlatAppearance.BorderSize = 0;
             BtnCollapseExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -167,11 +187,13 @@ namespace LogScraper.Utilities.UserControls
             Controls.Add(BtnCollapseExpand);
             Controls.Add(btnPin);
             Controls.Add(GrpLogProvidersSettings);
+            Controls.Add(cboLogLayout);
+            Controls.Add(lblLogLayout);
             Controls.Add(cboLogProvider);
             Controls.Add(lblLogProvider);
             Controls.Add(lblProviderDescription);
             Name = "LogProviderSelectionControl";
-            Size = new System.Drawing.Size(317, 181);
+            Size = new System.Drawing.Size(317, 207);
             GrpLogProvidersSettings.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -181,6 +203,8 @@ namespace LogScraper.Utilities.UserControls
 
         private System.Windows.Forms.Label lblLogProvider;
         private System.Windows.Forms.ComboBox cboLogProvider;
+        private System.Windows.Forms.Label lblLogLayout;
+        private System.Windows.Forms.ComboBox cboLogLayout;
         private System.Windows.Forms.GroupBox GrpLogProvidersSettings;
         private LogScraper.LogProviders.Runtime.UserControlRuntimeLogProvider usrRuntime;
         private LogScraper.LogProviders.Kubernetes.UserControlKubernetesLogProvider usrKubernetes;

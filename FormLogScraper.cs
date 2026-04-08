@@ -14,7 +14,6 @@ using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Log.Rendering;
-using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
@@ -52,7 +51,8 @@ namespace LogScraper
             usrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
             usrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
             usrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
-            usrLogProviderSelection.LogProviderChanged += (s, e) => CboLogProvider_SelectedIndexChanged(s, e);
+            usrLogProviderSelection.LogProviderChanged += usrLogProviderSelection_LogProviderChanged;
+            usrLogProviderSelection.LogLayoutChanged += usrLogProviderSelection_LogLayoutChanged;
             usrLogProviderSelection.CollapseStateChanged += (s, e) => splitContainer1.Panel1.PerformLayout();
 
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
@@ -175,8 +175,8 @@ namespace LogScraper
             try
             {
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                PopulateLogLayouts();
                 usrLogProviderSelection.PopulateLogProviders();
+                usrLogProviderSelection.PopulateLogLayouts([..ConfigurationManager.LogLayouts]);
             }
             catch (Exception ex)
             {
@@ -195,7 +195,7 @@ namespace LogScraper
 
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
-            if (cboLogLayout.SelectedIndex == -1) return;
+            if (usrLogProviderSelection.GetSelectedLogLayout() == null) return;
             try
             {
                 BtnRecord.Enabled = false;
@@ -224,7 +224,7 @@ namespace LogScraper
 
         private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime)
         {
-            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
+            LogLayout logLayout = usrLogProviderSelection.GetSelectedLogLayout();
             try
             {
                 bool newLogEntriesReceived = false;
@@ -280,14 +280,14 @@ namespace LogScraper
 
         private void FilterLogEntries()
         {
-            if (cboLogLayout.SelectedIndex == -1) return;
+            if (usrLogProviderSelection.GetSelectedLogLayout() == null) return;
 
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
             currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
                 LogCollection.Instance,
                 activeFilters,
-                (LogLayout)cboLogLayout.SelectedItem);
+                usrLogProviderSelection.GetSelectedLogLayout());
 
             // Update counts in the filter panel to reflect the filtered result.
             UsrMetadataFilterOverview.UpdateFilterControlsCount(
@@ -303,7 +303,7 @@ namespace LogScraper
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogViewport.Range,
-                LogLayout = (LogLayout)cboLogLayout.SelectedItem,
+                LogLayout = usrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
                 SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
                 LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
@@ -347,7 +347,7 @@ namespace LogScraper
 
             UsrMetadataFilterOverview.Reset();
             UserControlContentFilter.Reset();
-            UserControlContentFilter.UpdateLogLayout((LogLayout)cboLogLayout.SelectedItem);
+            UserControlContentFilter.UpdateLogLayout(usrLogProviderSelection.GetSelectedLogLayout());
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
 
@@ -441,7 +441,7 @@ namespace LogScraper
         {
             bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
             bool sourceIsValid = usrLogProviderSelection.IsSourceValid;
-            bool layoutSelected = cboLogLayout.SelectedIndex != -1;
+            bool layoutSelected = usrLogProviderSelection.GetSelectedLogLayout() != null;
             if (!downloadingInProgress)
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
 
@@ -452,7 +452,6 @@ namespace LogScraper
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
             usrLogProviderSelection.Enabled = !downloadingInProgress;
-            cboLogLayout.Enabled = !downloadingInProgress;
             usrLogProviderSelection.SetEnabled(!downloadingInProgress);
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
@@ -521,7 +520,7 @@ namespace LogScraper
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogViewport.Range,
-                LogLayout = (LogLayout)cboLogLayout.SelectedItem,
+                LogLayout = usrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = true
             };
 
@@ -589,14 +588,14 @@ namespace LogScraper
                     UpdateTimeLineVisibility();
                 }
 
-                if (logLayoutsChanged) PopulateLogLayouts();
+                if (logLayoutsChanged) usrLogProviderSelection.PopulateLogLayouts([..ConfigurationManager.LogLayouts]);
 
                 if (kubernetesChanged || runtimeChanged)
                 {
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
                         usrLogProviderSelection.UpdateProviderConfig();
-                        CboLogProvider_SelectedIndexChanged(null, null);
+                        usrLogProviderSelection_LogProviderChanged(null, null);
                     }
                 }
             }
@@ -610,46 +609,20 @@ namespace LogScraper
 
         #region Dropdowns log providers and layout
 
-        private void PopulateLogLayouts()
+        private void usrLogProviderSelection_LogLayoutChanged(object sender, EventArgs e)
         {
-            cboLogLayout.Items.Clear();
-            if (ConfigurationManager.LogLayouts != null)
-            {
-                cboLogLayout.Items.AddRange([.. ConfigurationManager.LogLayouts]);
-                if (cboLogLayout.Items.Count > 0) CboLogProvider_SelectedIndexChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboLogLayout.SelectedItem == null) return;
-            LogLayout logLayout = (LogLayout)cboLogLayout.SelectedItem;
+            LogLayout logLayout = usrLogProviderSelection.GetSelectedLogLayout();
+            if (logLayout == null) return;
             MetadataFormatingControl.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
             UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
             flowTreeControl1.UpdateLogLayout(logLayout);
             Reset();
         }
 
-        private void CboLogProvider_SelectedIndexChanged(object sender, EventArgs e)
+        private void usrLogProviderSelection_LogProviderChanged(object sender, EventArgs e)
         {
-            ILogProviderConfig logProviderConfig = usrLogProviderSelection.GetSelectedLogProviderConfig();
-            if (logProviderConfig == null) return;
-
-            switch (logProviderConfig.LogProviderType)
-            {
-                case LogProviderType.Runtime:
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
-                    break;
-                case LogProviderType.Kubernetes:
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
-                    break;
-                case LogProviderType.File:
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
-                    break;
-            }
-
-            if (cboLogLayout.SelectedIndex == -1 && cboLogLayout.Items.Count > 0) cboLogLayout.SelectedIndex = 0;
-
+            // This is now handled by the LogProviderSelectionControl
+            // Just reset the log display
             Reset();
         }
         #endregion
