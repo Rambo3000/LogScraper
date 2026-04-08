@@ -900,6 +900,34 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
+        internal void Clear()
+        {
+            allLogEntries.Clear();
+            displayedLogEntries.Clear();
+            buckets.Clear();
+            sortedBucketKeys.Clear();
+            errorLogEntries.Clear();
+            allBookmarkLogEntries.Clear();
+            bookmarkLogEntries.Clear();
+
+            fullSpanMinimum = default;
+            fullSpanMaximum = default;
+            minimumTimestamp = default;
+            maximumTimestamp = default;
+            maximumRawValue = 0;
+            currentBucketSize = default;
+            _logRange = null;
+            visibleRangeStart = null;
+            visibleRangeEnd = null;
+            hoveredBucketIndex = -1;
+            hoveredErrorIndex = -1;
+            hoveredBookmarkIndex = -1;
+            hoveredMinimap = false;
+            _showFullTimeline = true;
+
+            this.Invalidate();
+        }
+
         #endregion
     }
 }

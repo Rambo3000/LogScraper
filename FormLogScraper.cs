@@ -347,7 +347,7 @@ namespace LogScraper
         {
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
-            LogTimeLineControl.ClearVisibleRange();
+            LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
             LogPostProcessing.Clear();
@@ -363,6 +363,7 @@ namespace LogScraper
         private void Reset()
         {
             Erase();
+            LogTimeLineControl.Clear();
             currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
