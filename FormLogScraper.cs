@@ -29,9 +29,12 @@ namespace LogScraper
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: search wrap around not working correctly, switching between two last entries
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
+    //TODO: bug when setting bookmarks, forward and backward buttons disabled, how?
     //TODO: optional collapsable metadata
+    //TODO: add option to default pin the log provider settings
+    //TODO: show/hide bookmark bar only when bookmarks are used
+    //TODO: make bookmark bar bigger and possibly use the bookmark flag
 
-    //TODO: Change main layout so log entries view spans allmost entire height
     public partial class FormLogScraper : Form
     {
         #region Form Initialization

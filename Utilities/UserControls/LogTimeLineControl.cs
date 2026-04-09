@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
@@ -11,6 +12,7 @@ namespace LogScraper.Utilities.UserControls
     /// <summary>
     /// A timeline visualization control that displays log entries as a histogram with error markers
     /// and a visible range indicator showing the current scroll position.
+    /// When a log range is constrained, zoom in/out buttons appear in a reserved right-side strip.
     /// </summary>
     public partial class LogTimeLineControl : UserControl
     {
@@ -24,12 +26,14 @@ namespace LogScraper.Utilities.UserControls
         private List<LogEntry> allBookmarkLogEntries = [];
         private List<LogEntry> bookmarkLogEntries = [];
 
-        // Full collection span (for minimap)
+        // Full collection span (for full-timeline mode and out-of-range markers)
         private DateTime fullSpanMinimum;
         private DateTime fullSpanMaximum;
 
         // Log range
         private LogRange _logRange;
+
+        // Zoom state: when true the histogram spans the full collection; when false it clips to the range
         private bool _showFullTimeline = true;
 
         // Bucketing and scaling
@@ -46,21 +50,27 @@ namespace LogScraper.Utilities.UserControls
         private int hoveredBucketIndex = -1;
         private int hoveredErrorIndex = -1;
         private int hoveredBookmarkIndex = -1;
-        private bool hoveredMinimap = false;
+        private ZoomButton hoveredZoomButton = ZoomButton.None;
 
         // Visible range tracking (timestamp-based to match timeline bars)
         private DateTime? visibleRangeStart = null;
         private DateTime? visibleRangeEnd = null;
+
+        // Zoom button rects (in control coordinates)
+        private Rectangle zoomInButtonRect = Rectangle.Empty;
+        private Rectangle zoomOutButtonRect = Rectangle.Empty;
 
         // Constants
         private const double SCALE_POWER = 0.4;
         private const int MINIMUM_BUCKET_COUNT = 256;
         private const int MARKER_SIZE = 8;
         private const int MINIMUM_VISIBLE_RANGE_WIDTH = 1;
-        private const int MINIMAP_HEIGHT = 5;
-        private const int MINIMAP_ACCENT_WIDTH = 2;
         private const int BOOKMARK_MARKER_Y_OFFSET = MARKER_SIZE * 2 + 1;
         private const int ERROR_MARKER_Y_OFFSET = MARKER_SIZE + 2;
+        private const int ZOOM_BUTTON_SIZE = 18;
+        private const int ZOOM_BUTTON_MARGIN = 2;
+        private const int ZOOM_BUTTON_SPACING = 3;
+        private const int ZOOM_STRIP_WIDTH = ZOOM_BUTTON_SIZE + ZOOM_BUTTON_MARGIN * 2;
 
         // Colors
         private static readonly Color BAR_COLOR = Color.LightGray;
@@ -69,15 +79,24 @@ namespace LogScraper.Utilities.UserControls
         private static readonly Color VISIBLE_RANGE_BORDER_COLOR = Color.FromArgb(150, 100, 160, 210);
         private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
+        private static readonly Color ERROR_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 160, 40, 40);
         private static readonly Color BOOKMARK_MARKER_COLOR = Color.SteelBlue;
         private static readonly Color BOOKMARK_MARKER_HOVER_COLOR = Color.FromArgb(255, 120, 180, 230);
         private static readonly Color BOOKMARK_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 70, 130, 180);
-        private static readonly Color MINIMAP_BACKGROUND_COLOR = Color.FromArgb(230, 230, 230);
-        private static readonly Color MINIMAP_RANGE_COLOR = Color.FromArgb(153, 70, 130, 180);
-        private static readonly Color MINIMAP_ACCENT_COLOR = Color.SteelBlue;
+        private static readonly Color ZOOM_STRIP_BACKGROUND_COLOR = Color.FromArgb(245, 247, 250);
+        private static readonly Color ZOOM_STRIP_DIVIDER_COLOR = Color.FromArgb(200, 210, 220);
+        private static readonly Color ZOOM_BUTTON_BACKGROUND_COLOR = Color.FromArgb(225, 235, 245);
+        private static readonly Color ZOOM_BUTTON_HOVER_BACKGROUND_COLOR = Color.FromArgb(190, 215, 240);
+        private static readonly Color ZOOM_BUTTON_BORDER_COLOR = Color.FromArgb(155, 185, 215);
+        private static readonly Color ZOOM_BUTTON_SYMBOL_COLOR = Color.FromArgb(55, 95, 145);
+        private static readonly Color ZOOM_BUTTON_INACTIVE_BACKGROUND_COLOR = Color.FromArgb(235, 237, 240);
+        private static readonly Color ZOOM_BUTTON_INACTIVE_SYMBOL_COLOR = Color.FromArgb(180, 190, 200);
+        private static readonly Color ZOOM_BUTTON_INACTIVE_BORDER_COLOR = Color.FromArgb(210, 215, 220);
 
         // Tooltip
         private readonly ToolTip toolTip = new();
+
+        private enum ZoomButton { None, ZoomIn, ZoomOut }
 
         #endregion
 
@@ -118,7 +137,7 @@ namespace LogScraper.Utilities.UserControls
         /// <summary>
         /// Updates the log entries displayed in the timeline.
         /// Supports incremental updates if new entries are appended to existing data.
-        /// The full collection is used to determine the minimap time span.
+        /// The full collection is used to determine the full-span time range.
         /// </summary>
         public void UpdateLogEntries(List<LogEntry> entries, LogCollection fullCollection)
         {
@@ -171,6 +190,7 @@ namespace LogScraper.Utilities.UserControls
         public void SetLogRange(LogRange logRange)
         {
             _logRange = logRange;
+
             RebuildDisplayedEntries();
             RebuildFilteredBookmarkMarkers();
             errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
@@ -185,7 +205,7 @@ namespace LogScraper.Utilities.UserControls
             this.Invalidate();
         }
 
-        /// <summary>Clears the visible range indicator.</summary>
+        /// <summary>Clears the visible range indicator and resets the log range.</summary>
         public void ClearVisibleRange()
         {
             SetLogRange(new LogRange());
@@ -199,7 +219,8 @@ namespace LogScraper.Utilities.UserControls
         #region Entry Filtering
 
         /// <summary>
-        /// Rebuilds the displayed entry set based on the current range and show-full-timeline state.
+        /// Rebuilds the displayed entry set based on the current range and zoom state.
+        /// Full-timeline mode shows all entries; zoomed-in mode clips to the range.
         /// </summary>
         private void RebuildDisplayedEntries()
         {
@@ -233,11 +254,14 @@ namespace LogScraper.Utilities.UserControls
 
         /// <summary>
         /// Recalculates time buckets and rebuilds the cached sorted bucket key list.
+        /// Uses the histogram width (excluding zoom strip) for bucket count calculation.
         /// </summary>
         private void RecalculateBuckets()
         {
             buckets.Clear();
             sortedBucketKeys.Clear();
+
+            bool rangeIsConstrained = _logRange?.IsConstrained == true;
 
             if (_showFullTimeline && fullSpanMinimum != default)
             {
@@ -258,7 +282,8 @@ namespace LogScraper.Utilities.UserControls
             if (totalSpan.TotalSeconds < 1)
                 totalSpan = TimeSpan.FromSeconds(1);
 
-            int desiredBucketCount = Math.Max(MINIMUM_BUCKET_COUNT, this.Width / 10);
+            int histogramWidth = GetHistogramWidth();
+            int desiredBucketCount = Math.Max(MINIMUM_BUCKET_COUNT, histogramWidth / 10);
             currentBucketSize = CalculateOptimalBucketSize(totalSpan, desiredBucketCount);
 
             DateTime bucketStart = RoundDownToNearestBucket(minimumTimestamp, currentBucketSize);
@@ -285,9 +310,8 @@ namespace LogScraper.Utilities.UserControls
                     maximumRawValue = Math.Pow(maximumCount, SCALE_POWER);
             }
 
-            // Cache sorted keys and bar width — used by all drawing and hit-testing
             sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
-            totalBarWidth = sortedBucketKeys.Count > 0 ? (float)this.Width / sortedBucketKeys.Count : 0;
+            totalBarWidth = sortedBucketKeys.Count > 0 ? (float)histogramWidth / sortedBucketKeys.Count : 0;
         }
 
         private static TimeSpan CalculateOptimalBucketSize(TimeSpan totalSpan, int desiredBuckets)
@@ -358,39 +382,30 @@ namespace LogScraper.Utilities.UserControls
 
         #region Layout Helpers
 
-        /// <summary>Converts a timestamp to an x-coordinate using the displayed entry span.</summary>
-        private float GetXPositionForTimestamp(DateTime timestamp)
-        {
-            if (displayedLogEntries.Count == 0)
-                return 0;
-
-            if (timestamp < minimumTimestamp || timestamp > maximumTimestamp)
-                return -1;
-
-            double percentage = (timestamp - minimumTimestamp).TotalSeconds / (maximumTimestamp - minimumTimestamp).TotalSeconds;
-            return (float)(percentage * this.Width);
-        }
-
-        /// <summary>Converts a timestamp to an x-coordinate using the full collection span.</summary>
-        private float GetXPositionForTimestampInFullSpan(DateTime timestamp)
-        {
-            if (fullSpanMaximum == fullSpanMinimum)
-                return 0;
-
-            double percentage = (timestamp - fullSpanMinimum).TotalSeconds / (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
-            return (float)(Math.Clamp(percentage, 0.0, 1.0) * this.Width);
-        }
-
-        private int GetHistogramHeight()
+        /// <summary>Returns the drawable histogram width, excluding the zoom strip when a range is constrained.</summary>
+        private int GetHistogramWidth()
         {
             return _logRange?.IsConstrained == true
-                ? this.Height - MINIMAP_HEIGHT
-                : this.Height;
+                ? Math.Max(0, this.Width - ZOOM_STRIP_WIDTH)
+                : this.Width;
         }
-
-        private bool IsInMinimapStrip(int y)
+        /// <summary>
+        /// Returns the x position for an out-of-range marker, projected onto the histogram width
+        /// using the full collection span. Returns -1 if position cannot be determined.
+        /// Only valid in full-timeline mode where the full span maps to the histogram width.
+        /// </summary>
+        private float GetOutOfRangeMarkerXPosition(LogEntry entry)
         {
-            return _logRange?.IsConstrained == true && y >= this.Height - MINIMAP_HEIGHT;
+            if (fullSpanMaximum == fullSpanMinimum)
+                return -1;
+
+            double percentage = (entry.TimeStamp - fullSpanMinimum).TotalSeconds
+                              / (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
+
+            if (percentage < 0 || percentage > 1)
+                return -1;
+
+            return (float)(Math.Clamp(percentage, 0.0, 1.0) * GetHistogramWidth());
         }
 
         /// <summary>
@@ -423,12 +438,13 @@ namespace LogScraper.Utilities.UserControls
             if (sortedBucketKeys.Count == 0)
                 return -1;
 
-            int drawableHeight = GetHistogramHeight();
+            int drawableHeight = this.Height;
+            int histogramWidth = GetHistogramWidth();
 
             for (int i = 0; i < entries.Count; i++)
             {
                 float centerX = GetMarkerXPosition(entries[i]);
-                if (centerX < 0)
+                if (centerX < 0 || centerX > histogramWidth)
                     continue;
 
                 float markerX = centerX - (MARKER_SIZE / 2);
@@ -442,6 +458,25 @@ namespace LogScraper.Utilities.UserControls
             return -1;
         }
 
+        /// <summary>Recalculates the zoom button rects. Called at paint time so they track control height.</summary>
+        private void RecalculateZoomButtonRects()
+        {
+            if (_logRange?.IsConstrained != true)
+            {
+                zoomInButtonRect = Rectangle.Empty;
+                zoomOutButtonRect = Rectangle.Empty;
+                return;
+            }
+
+            int stripLeft = this.Width - ZOOM_STRIP_WIDTH;
+            int centerX = stripLeft + (ZOOM_STRIP_WIDTH / 2) - (ZOOM_BUTTON_SIZE / 2);
+            int totalButtonsHeight = ZOOM_BUTTON_SIZE * 2 + ZOOM_BUTTON_SPACING;
+            int buttonY = this.Height / 2 - totalButtonsHeight / 2;
+
+            zoomInButtonRect = new Rectangle(centerX, buttonY, ZOOM_BUTTON_SIZE, ZOOM_BUTTON_SIZE);
+            zoomOutButtonRect = new Rectangle(centerX, buttonY + ZOOM_BUTTON_SIZE + ZOOM_BUTTON_SPACING, ZOOM_BUTTON_SIZE, ZOOM_BUTTON_SIZE);
+        }
+
         #endregion
 
         #region Painting
@@ -449,55 +484,92 @@ namespace LogScraper.Utilities.UserControls
         private void OnPaint(object sender, PaintEventArgs e)
         {
             Graphics graphics = e.Graphics;
-            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
             graphics.Clear(this.BackColor);
 
-            int drawableWidth = this.Width;
-            int drawableHeight = GetHistogramHeight();
-
-            if (drawableWidth <= 0 || drawableHeight <= 0)
+            if (this.Width <= 0 || this.Height <= 0)
                 return;
+
+            bool rangeIsConstrained = _logRange?.IsConstrained == true;
+
+            if (rangeIsConstrained)
+            {
+                RecalculateZoomButtonRects();
+                DrawZoomStrip(graphics);
+            }
 
             if (minimumTimestamp == default && maximumTimestamp == default)
                 return;
 
-            DrawRangeOverlay(graphics, drawableWidth, drawableHeight);
-            DrawHistogramBars(graphics, drawableHeight);
-            DrawErrorMarkers(graphics, drawableHeight);
-            DrawBookmarkMarkers(graphics, drawableHeight);
-            DrawVisibleRangeIndicator(graphics, drawableHeight);
-            DrawActiveTooltip(graphics);
-            DrawTimeTickMarks(graphics);
-            DrawMinimapStrip(graphics);
+            int histogramWidth = GetHistogramWidth();
+            int drawableHeight = this.Height;
+
+            // Clip all histogram drawing to the histogram area
+            graphics.SetClip(new Rectangle(0, 0, histogramWidth, drawableHeight));
+
+            if (rangeIsConstrained && _showFullTimeline)
+                DrawRangeOverlay(graphics, histogramWidth, drawableHeight);
+
+            DrawHistogramBars(graphics, histogramWidth, drawableHeight);
+            DrawErrorMarkers(graphics, histogramWidth, drawableHeight);
+            DrawBookmarkMarkers(graphics, histogramWidth, drawableHeight);
+            DrawVisibleRangeIndicator(graphics, histogramWidth, drawableHeight);
+            DrawTimeTickMarks(graphics, histogramWidth);
+
+            graphics.ResetClip();
+
+            DrawActiveTooltip(graphics, histogramWidth, drawableHeight);
         }
 
         #endregion
 
         #region Drawing
 
-        /// <summary>
-        /// Dims everything outside the log range when the full timeline is shown.
-        /// </summary>
-        private void DrawRangeOverlay(Graphics graphics, int drawableWidth, int drawableHeight)
+        /// <summary>Draws the zoom strip background and divider line.</summary>
+        private void DrawZoomStrip(Graphics graphics)
         {
-            if (_logRange?.IsConstrained != true || !_showFullTimeline)
+            int stripLeft = this.Width - ZOOM_STRIP_WIDTH;
+
+            using (SolidBrush backgroundBrush = new(ZOOM_STRIP_BACKGROUND_COLOR))
+                graphics.FillRectangle(backgroundBrush, stripLeft, 0, ZOOM_STRIP_WIDTH, this.Height);
+
+            DrawZoomButton(graphics, zoomInButtonRect, isZoomIn: true,
+                hovered: hoveredZoomButton == ZoomButton.ZoomIn,
+                active: !_showFullTimeline);
+
+            DrawZoomButton(graphics, zoomOutButtonRect, isZoomIn: false,
+                hovered: hoveredZoomButton == ZoomButton.ZoomOut,
+                active: _showFullTimeline);
+        }
+
+        /// <summary>
+        /// Dims everything outside the log range. Only drawn in full-timeline mode
+        /// so the user can see where the range sits within the full span.
+        /// </summary>
+        private void DrawRangeOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
+        {
+            if (fullSpanMaximum == fullSpanMinimum)
                 return;
 
-            float rangeStartX = _logRange.Begin != null ? GetXPositionForTimestampInFullSpan(_logRange.Begin.TimeStamp) : 0;
-            float rangeEndX = _logRange.End != null ? GetXPositionForTimestampInFullSpan(_logRange.End.TimeStamp) : drawableWidth;
+            double totalSeconds = (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
+
+            float rangeStartX = _logRange.Begin != null
+                ? (float)((_logRange.Begin.TimeStamp - fullSpanMinimum).TotalSeconds / totalSeconds * histogramWidth)
+                : 0;
+            float rangeEndX = _logRange.End != null
+                ? (float)((_logRange.End.TimeStamp - fullSpanMinimum).TotalSeconds / totalSeconds * histogramWidth)
+                : histogramWidth;
 
             using SolidBrush dimBrush = new(Color.FromArgb(60, 0, 0, 0));
 
             if (rangeStartX > 0)
                 graphics.FillRectangle(dimBrush, 0, 0, rangeStartX, drawableHeight);
-            if (rangeEndX < drawableWidth)
-                graphics.FillRectangle(dimBrush, rangeEndX, 0, drawableWidth - rangeEndX, drawableHeight);
+            if (rangeEndX < histogramWidth)
+                graphics.FillRectangle(dimBrush, rangeEndX, 0, histogramWidth - rangeEndX, drawableHeight);
         }
 
-        /// <summary>
-        /// Draws the histogram bars for all non-empty buckets.
-        /// </summary>
-        private void DrawHistogramBars(Graphics graphics, int drawableHeight)
+        /// <summary>Draws the histogram bars for all non-empty buckets.</summary>
+        private void DrawHistogramBars(Graphics graphics, int histogramWidth, int drawableHeight)
         {
             if (buckets.Count == 0)
                 return;
@@ -521,50 +593,29 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        /// <summary>
-        /// Draws the tooltip for whichever element is currently hovered.
-        /// </summary>
-        private void DrawActiveTooltip(Graphics graphics)
+        private void DrawErrorMarkers(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (hoveredBucketIndex >= 0 && hoveredBucketIndex < sortedBucketKeys.Count)
-                DrawTooltip(graphics, sortedBucketKeys[hoveredBucketIndex]);
-            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
-                DrawErrorTooltip(graphics, errorLogEntries[hoveredErrorIndex]);
-        }
+            // Draw out-of-range error markers first (faded, behind in-range ones)
+            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            {
+                HashSet<int> inRangeIndices = [.. errorLogEntries.Select(entry => entry.Index)];
 
-        private void DrawMinimapStrip(Graphics graphics)
-        {
-            if (_logRange == null || !_logRange.IsConstrained) return;
-            if (fullSpanMaximum == fullSpanMinimum) return;
+                foreach (LogEntry errorEntry in allLogEntries.Where(entry => entry.IsErrorLogEntry))
+                {
+                    if (inRangeIndices.Contains(errorEntry.Index))
+                        continue;
 
-            int stripY = this.Height - MINIMAP_HEIGHT;
-            int stripWidth = this.Width;
+                    float centerX = GetOutOfRangeMarkerXPosition(errorEntry);
+                    if (centerX < 0 || centerX > histogramWidth) continue;
 
-            using (SolidBrush backgroundBrush = new(MINIMAP_BACKGROUND_COLOR))
-                graphics.FillRectangle(backgroundBrush, 0, stripY, stripWidth, MINIMAP_HEIGHT);
+                    DrawMarkerEllipse(graphics, centerX, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_OUT_OF_RANGE_COLOR);
+                }
+            }
 
-            TimeSpan fullSpan = fullSpanMaximum - fullSpanMinimum;
-            DateTime rangeBeginTimestamp = _logRange.Begin?.TimeStamp ?? fullSpanMinimum;
-            DateTime rangeEndTimestamp = _logRange.End?.TimeStamp ?? fullSpanMaximum;
-
-            float beginX = (float)((rangeBeginTimestamp - fullSpanMinimum).TotalSeconds / fullSpan.TotalSeconds * stripWidth);
-            float endX = (float)((rangeEndTimestamp - fullSpanMinimum).TotalSeconds / fullSpan.TotalSeconds * stripWidth);
-            float rangeWidth = Math.Max(endX - beginX, 2f);
-
-            using (SolidBrush rangeBrush = new(MINIMAP_RANGE_COLOR))
-                graphics.FillRectangle(rangeBrush, beginX, stripY, rangeWidth, MINIMAP_HEIGHT);
-
-            using Pen accentPen = new(MINIMAP_ACCENT_COLOR, MINIMAP_ACCENT_WIDTH);
-            graphics.DrawLine(accentPen, beginX, stripY, beginX, this.Height);
-            graphics.DrawLine(accentPen, endX, stripY, endX, this.Height);
-        }
-
-        private void DrawErrorMarkers(Graphics graphics, int drawableHeight)
-        {
             for (int i = 0; i < errorLogEntries.Count; i++)
             {
                 float centerX = GetMarkerXPosition(errorLogEntries[i]);
-                if (centerX < 0) continue;
+                if (centerX < 0 || centerX > histogramWidth) continue;
 
                 Color color = (i == hoveredErrorIndex) ? ERROR_MARKER_HOVER_COLOR : ERROR_MARKER_COLOR;
                 DrawMarkerEllipse(graphics, centerX, drawableHeight, ERROR_MARKER_Y_OFFSET, color);
@@ -573,12 +624,11 @@ namespace LogScraper.Utilities.UserControls
 
         /// <summary>
         /// Draws bookmark markers one band above error markers.
-        /// Out-of-range bookmarks are drawn faded when showing the full timeline.
+        /// Out-of-range bookmarks are drawn faded in full-timeline mode.
         /// </summary>
-        private void DrawBookmarkMarkers(Graphics graphics, int drawableHeight)
+        private void DrawBookmarkMarkers(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            // Draw out-of-range bookmarks first (behind in-range ones)
-            if (_showFullTimeline && _logRange?.IsConstrained == true)
+            if (_logRange?.IsConstrained == true && _showFullTimeline)
             {
                 HashSet<int> inRangeIndices = [.. bookmarkLogEntries.Select(entry => entry.Index)];
 
@@ -587,25 +637,24 @@ namespace LogScraper.Utilities.UserControls
                     if (inRangeIndices.Contains(bookmarkEntry.Index))
                         continue;
 
-                    float centerX = GetMarkerXPosition(bookmarkEntry);
-                    if (centerX < 0) continue;
+                    float centerX = GetOutOfRangeMarkerXPosition(bookmarkEntry);
+                    if (centerX < 0 || centerX > histogramWidth) continue;
 
                     DrawMarkerEllipse(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
                 }
             }
 
-            // Draw in-range bookmarks on top
             for (int i = 0; i < bookmarkLogEntries.Count; i++)
             {
                 float centerX = GetMarkerXPosition(bookmarkLogEntries[i]);
-                if (centerX < 0) continue;
+                if (centerX < 0 || centerX > histogramWidth) continue;
 
                 Color color = (i == hoveredBookmarkIndex) ? BOOKMARK_MARKER_HOVER_COLOR : BOOKMARK_MARKER_COLOR;
                 DrawMarkerEllipse(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, color);
             }
         }
 
-        private void DrawVisibleRangeIndicator(Graphics graphics, int drawableHeight)
+        private void DrawVisibleRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
         {
             if (!visibleRangeStart.HasValue || !visibleRangeEnd.HasValue)
                 return;
@@ -617,11 +666,11 @@ namespace LogScraper.Utilities.UserControls
             if (totalSpan.TotalSeconds <= 0)
                 return;
 
-            float startX = (float)((visibleRangeStart.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * this.Width);
-            float endX = (float)((visibleRangeEnd.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * this.Width);
+            float startX = (float)((visibleRangeStart.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
+            float endX = (float)((visibleRangeEnd.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
 
-            startX = Math.Clamp(startX, 0, this.Width);
-            endX = Math.Clamp(endX, 0, this.Width);
+            startX = Math.Clamp(startX, 0, histogramWidth);
+            endX = Math.Clamp(endX, 0, histogramWidth);
 
             float width = endX - startX;
 
@@ -643,24 +692,24 @@ namespace LogScraper.Utilities.UserControls
             graphics.DrawLine(borderPen, endX, 0, endX, drawableHeight);
         }
 
-        private void DrawTimeTickMarks(Graphics graphics)
+        private void DrawTimeTickMarks(Graphics graphics, int histogramWidth)
         {
             using Font font = new("Segoe UI", 7);
             using SolidBrush brush = new(Color.FromArgb(120, 120, 120));
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
-            int tickCount = Math.Max(2, this.Width / 65);
+            int tickCount = Math.Max(2, histogramWidth / 65);
 
             for (int i = 0; i <= tickCount; i++)
             {
-                float x = (float)i / tickCount * this.Width;
+                float x = (float)i / tickCount * histogramWidth;
                 DateTime tickTime = minimumTimestamp.Add(TimeSpan.FromSeconds(totalSpan.TotalSeconds * i / tickCount));
                 string label = FormatTickLabelBySpan(tickTime, totalSpan);
                 SizeF labelSize = graphics.MeasureString(label, font);
 
                 float labelX = x - labelSize.Width / 2;
                 if (i == 0) labelX = 0;
-                else if (i == tickCount) labelX = this.Width - labelSize.Width;
+                else if (i == tickCount) labelX = histogramWidth - labelSize.Width;
 
                 graphics.DrawString(label, font, brush, labelX, 0);
             }
@@ -676,7 +725,21 @@ namespace LogScraper.Utilities.UserControls
             return timestamp.ToString("s.fff") + " s";
         }
 
-        private void DrawTooltip(Graphics graphics, DateTime bucketKey)
+        /// <summary>
+        /// Draws the tooltip for whichever element is currently hovered.
+        /// Called after ResetClip so tooltips can overflow the histogram area if needed.
+        /// </summary>
+        private void DrawActiveTooltip(Graphics graphics, int histogramWidth, int drawableHeight)
+        {
+            if (hoveredBookmarkIndex >= 0 && hoveredBookmarkIndex < bookmarkLogEntries.Count)
+                DrawMarkerTooltip(graphics, bookmarkLogEntries[hoveredBookmarkIndex], histogramWidth, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_COLOR, "Bookmark");
+            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
+                DrawMarkerTooltip(graphics, errorLogEntries[hoveredErrorIndex], histogramWidth, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_COLOR, "Error");
+            else if (hoveredBucketIndex >= 0 && hoveredBucketIndex < sortedBucketKeys.Count)
+                DrawBucketTooltip(graphics, histogramWidth, sortedBucketKeys[hoveredBucketIndex]);
+        }
+
+        private void DrawBucketTooltip(Graphics graphics, int histogramWidth, DateTime bucketKey)
         {
             List<LogEntry> bucketEntries = buckets[bucketKey];
             int entryCount = bucketEntries.Count;
@@ -685,47 +748,124 @@ namespace LogScraper.Utilities.UserControls
                 ? $"0 events at {bucketKey:yyyy-MM-dd HH:mm:ss}"
                 : $"{entryCount} {(entryCount == 1 ? "event" : "events")} at {bucketEntries[0].TimeStamp:yyyy-MM-dd HH:mm:ss}";
 
-            using Font font = new("Segoe UI", 9);
-            SizeF textSize = graphics.MeasureString(tooltipText, font);
-
-            float tooltipX = hoveredBucketIndex * totalBarWidth + totalBarWidth / 2 - textSize.Width / 2;
+            float tooltipX = hoveredBucketIndex * totalBarWidth + totalBarWidth / 2;
             float tooltipY = 2;
 
-            tooltipX = Math.Clamp(tooltipX, 5, this.Width - textSize.Width - 5);
-
-            using (SolidBrush backgroundBrush = new(Color.FromArgb(150, 50, 50, 50)))
-            using (Pen borderPen = new(Color.FromArgb(100, 100, 100), 1))
-            {
-                graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, textSize.Width, textSize.Height);
-                graphics.DrawRectangle(borderPen, tooltipX, tooltipY, textSize.Width, textSize.Height);
-            }
-
-            using SolidBrush textBrush = new(Color.White);
-            graphics.DrawString(tooltipText, font, textBrush, tooltipX, tooltipY);
+            DrawTooltipBox(graphics, tooltipText, ref tooltipX, ref tooltipY, histogramWidth, 
+                Color.FromArgb(150, 50, 50, 50), Color.FromArgb(100, 100, 100), padding: 0);
         }
 
-        private void DrawErrorTooltip(Graphics graphics, LogEntry errorEntry)
+        /// <summary>
+        /// Draws a tooltip for an error or bookmark marker, anchored just above its marker band.
+        /// Shared between error and bookmark marker types.
+        /// </summary>
+        private void DrawMarkerTooltip(Graphics graphics, LogEntry entry, int histogramWidth, int drawableHeight, int markerYOffset, Color accentColor, string label)
         {
-            string tooltipText = $"Error at {errorEntry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
+            string tooltipText = $"{label} at {entry.TimeStamp:yyyy-MM-dd HH:mm:ss}";
 
+            float centerX = GetMarkerXPosition(entry);
+            if (centerX < 0) return;
+
+            float markerBandTop = drawableHeight - markerYOffset;
+            float tooltipY = markerBandTop - 4; // Adjusted; will be calculated within DrawTooltipBox
+
+            DrawTooltipBox(graphics, tooltipText, ref centerX, ref tooltipY, histogramWidth,
+                Color.FromArgb(220, 30, 30, 40), accentColor, padding: 8, abovePosition: true, baselineY: markerBandTop);
+        }
+
+        /// <summary>
+        /// Shared helper to draw a tooltip box with text, avoiding duplicate code.
+        /// </summary>
+        private void DrawTooltipBox(Graphics graphics, string tooltipText, ref float tooltipX, ref float tooltipY, 
+            int histogramWidth, Color backgroundColor, Color borderColor, int padding = 0, bool abovePosition = false, float baselineY = 0)
+        {
             using Font font = new("Segoe UI", 9);
             SizeF textSize = graphics.MeasureString(tooltipText, font);
 
-            float tooltipWidth = textSize.Width + 16;
-            float tooltipHeight = textSize.Height + 4;
-            float xPosition = GetXPositionForTimestamp(errorEntry.TimeStamp);
-            float tooltipX = Math.Clamp(xPosition - tooltipWidth / 2, 5, this.Width - tooltipWidth - 5);
-            float tooltipY = 20;
+            float tooltipWidth = textSize.Width + (padding > 0 ? padding * 2 : 0);
+            float tooltipHeight = textSize.Height + (padding > 0 ? padding / 2 : 0);
 
-            using (SolidBrush backgroundBrush = new(Color.FromArgb(240, 80, 20, 20)))
-            using (Pen borderPen = new(ERROR_MARKER_COLOR, 1))
+            // Position calculation
+            if (padding > 0)
+            {
+                // For markers: anchor above the marker band
+                tooltipX = Math.Clamp(tooltipX - tooltipWidth / 2, 5, histogramWidth - tooltipWidth - 5);
+                tooltipY = Math.Max(2, baselineY - tooltipHeight - 4);
+            }
+            else
+            {
+                // For buckets: center horizontally, position near top
+                tooltipX = Math.Clamp(tooltipX - textSize.Width / 2, 5, histogramWidth - textSize.Width - 5);
+                tooltipY = Math.Max(2, tooltipY);
+            }
+
+            // Draw background and border
+            using (SolidBrush backgroundBrush = new(backgroundColor))
+            using (Pen borderPen = new(borderColor, 1))
             {
                 graphics.FillRectangle(backgroundBrush, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
                 graphics.DrawRectangle(borderPen, tooltipX, tooltipY, tooltipWidth, tooltipHeight);
             }
 
+            // Draw text
             using SolidBrush textBrush = new(Color.White);
-            graphics.DrawString(tooltipText, font, textBrush, tooltipX + 8, tooltipY + 2);
+            float textX = tooltipX + (padding > 0 ? padding : 0);
+            float textY = tooltipY + (padding > 0 ? padding / 4 : 0);
+            graphics.DrawString(tooltipText, font, textBrush, textX, textY);
+        }
+
+        /// <summary>
+        /// Draws a single zoom button with a + or - symbol.
+        /// Inactive state (button would be a no-op) is rendered greyed out.
+        /// </summary>
+        private static void DrawZoomButton(Graphics graphics, Rectangle bounds, bool isZoomIn, bool hovered, bool active)
+        {
+            if (bounds.IsEmpty) return;
+
+            Color backgroundColor = !active
+                ? ZOOM_BUTTON_INACTIVE_BACKGROUND_COLOR
+                : hovered ? ZOOM_BUTTON_HOVER_BACKGROUND_COLOR : ZOOM_BUTTON_BACKGROUND_COLOR;
+            Color borderColor = active ? ZOOM_BUTTON_INACTIVE_BORDER_COLOR : ZOOM_BUTTON_BORDER_COLOR;
+            Color symbolColor = active ? ZOOM_BUTTON_INACTIVE_SYMBOL_COLOR : ZOOM_BUTTON_SYMBOL_COLOR;
+
+            using (GraphicsPath path = CreateRoundedRectPath(bounds, 4))
+            {
+                using SolidBrush backgroundBrush = new(backgroundColor);
+                graphics.FillPath(backgroundBrush, path);
+
+                using Pen borderPen = new(borderColor, 1);
+                graphics.DrawPath(borderPen, path);
+            }
+
+            int padding = 5;
+            int centerX = bounds.X + bounds.Width / 2;
+            int centerY = bounds.Y + bounds.Height / 2;
+            int halfLine = bounds.Width / 2 - padding;
+
+            using Pen symbolPen = new(symbolColor, 1.5f) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+
+            // Horizontal bar (shared by both + and −)
+            graphics.DrawLine(symbolPen, centerX - halfLine, centerY, centerX + halfLine, centerY);
+
+            if (isZoomIn)
+            {
+                // Vertical bar for +
+                graphics.DrawLine(symbolPen, centerX, centerY - halfLine, centerX, centerY + halfLine);
+            }
+        }
+
+        private static GraphicsPath CreateRoundedRectPath(Rectangle bounds, int radius)
+        {
+            GraphicsPath path = new();
+            int diameter = radius * 2;
+
+            path.AddArc(bounds.X, bounds.Y, diameter, diameter, 180, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Y, diameter, diameter, 270, 90);
+            path.AddArc(bounds.Right - diameter, bounds.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(bounds.X, bounds.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+
+            return path;
         }
 
         #endregion
@@ -734,14 +874,25 @@ namespace LogScraper.Utilities.UserControls
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            // Minimap strip — highest priority
-            if (IsInMinimapStrip(e.Y))
-            {
-                SetHoveredMinimap(true);
-                return;
-            }
+            bool rangeIsConstrained = _logRange?.IsConstrained == true;
 
-            SetHoveredMinimap(false);
+            // Zoom button hover — checked first, takes priority over histogram
+            if (rangeIsConstrained)
+            {
+                ZoomButton newZoomHover = HitTestZoomButton(e.X, e.Y);
+                if (newZoomHover != hoveredZoomButton)
+                {
+                    hoveredZoomButton = newZoomHover;
+                    UpdateZoomButtonTooltip(newZoomHover);
+                    this.Invalidate();
+                }
+
+                if (newZoomHover != ZoomButton.None)
+                {
+                    SetCursor(Cursors.Hand);
+                    return;
+                }
+            }
 
             if (sortedBucketKeys.Count == 0)
             {
@@ -765,20 +916,24 @@ namespace LogScraper.Utilities.UserControls
                 return;
             }
 
-            // Bucket hover
-            int newBucketIndex = (int)(e.X / totalBarWidth);
-            if (newBucketIndex >= 0 && newBucketIndex < sortedBucketKeys.Count)
+            // Bucket hover — only within histogram area
+            int histogramWidth = GetHistogramWidth();
+            if (e.X < histogramWidth && totalBarWidth > 0)
             {
-                if (newBucketIndex != hoveredBucketIndex)
+                int newBucketIndex = (int)(e.X / totalBarWidth);
+                if (newBucketIndex >= 0 && newBucketIndex < sortedBucketKeys.Count)
                 {
-                    ClearHoveredMarker(ref hoveredBucketIndex);
-                    hoveredBucketIndex = newBucketIndex;
-                    this.Invalidate();
-                }
+                    if (newBucketIndex != hoveredBucketIndex)
+                    {
+                        ClearHoveredMarker(ref hoveredBucketIndex);
+                        hoveredBucketIndex = newBucketIndex;
+                        this.Invalidate();
+                    }
 
-                bool hasEntries = buckets[sortedBucketKeys[newBucketIndex]].Count > 0;
-                SetCursor(hasEntries ? Cursors.Hand : Cursors.Default);
-                return;
+                    bool hasEntries = buckets[sortedBucketKeys[newBucketIndex]].Count > 0;
+                    SetCursor(hasEntries ? Cursors.Hand : Cursors.Default);
+                    return;
+                }
             }
 
             // Nothing hovered
@@ -786,6 +941,24 @@ namespace LogScraper.Utilities.UserControls
             ClearHoveredMarker(ref hoveredErrorIndex);
             ClearHoveredMarker(ref hoveredBookmarkIndex);
             SetCursor(Cursors.Default);
+        }
+
+        private ZoomButton HitTestZoomButton(int x, int y)
+        {
+            if (!zoomInButtonRect.IsEmpty && zoomInButtonRect.Contains(x, y)) return ZoomButton.ZoomIn;
+            if (!zoomOutButtonRect.IsEmpty && zoomOutButtonRect.Contains(x, y)) return ZoomButton.ZoomOut;
+            return ZoomButton.None;
+        }
+
+        private void UpdateZoomButtonTooltip(ZoomButton button)
+        {
+            string text = button switch
+            {
+                ZoomButton.ZoomIn => "Zoom in — show selected range only",
+                ZoomButton.ZoomOut => "Zoom out — show full timeline",
+                _ => string.Empty
+            };
+            toolTip.SetToolTip(this, text);
         }
 
         /// <summary>
@@ -826,37 +999,19 @@ namespace LogScraper.Utilities.UserControls
                 this.Cursor = cursor;
         }
 
-        private void SetHoveredMinimap(bool hovered)
-        {
-            if (hovered == hoveredMinimap)
-                return;
-
-            hoveredMinimap = hovered;
-
-            if (hovered)
-            {
-                string tooltipText = _showFullTimeline
-                    ? "Klik om in te zoomen op het bereik"
-                    : "Klik om het volledige tijdlijn te tonen";
-
-                toolTip.SetToolTip(this, tooltipText);
-                SetCursor(Cursors.Hand);
-            }
-            else
-            {
-                toolTip.SetToolTip(this, string.Empty);
-                SetCursor(Cursors.Default);
-            }
-
-            this.Invalidate();
-        }
-
         private void OnMouseLeave(object sender, EventArgs e)
         {
             ClearHoveredMarker(ref hoveredBucketIndex);
             ClearHoveredMarker(ref hoveredErrorIndex);
             ClearHoveredMarker(ref hoveredBookmarkIndex);
-            SetHoveredMinimap(false);
+
+            if (hoveredZoomButton != ZoomButton.None)
+            {
+                hoveredZoomButton = ZoomButton.None;
+                toolTip.SetToolTip(this, string.Empty);
+                this.Invalidate();
+            }
+
             SetCursor(Cursors.Default);
         }
 
@@ -865,13 +1020,22 @@ namespace LogScraper.Utilities.UserControls
             if (e.Button != MouseButtons.Left)
                 return;
 
-            if (IsInMinimapStrip(e.Y))
+            // Zoom buttons
+            if (_logRange?.IsConstrained == true)
             {
-                _showFullTimeline = !_showFullTimeline;
-                RebuildDisplayedEntries();
-                errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
-                this.Invalidate();
-                return;
+                ZoomButton clicked = HitTestZoomButton(e.X, e.Y);
+                if (clicked != ZoomButton.None)
+                {
+                    bool newShowFullTimeline = clicked == ZoomButton.ZoomOut;
+                    if (_showFullTimeline != newShowFullTimeline)
+                    {
+                        _showFullTimeline = newShowFullTimeline;
+                        RebuildDisplayedEntries();
+                        errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
+                        this.Invalidate();
+                    }
+                    return;
+                }
             }
 
             if (sortedBucketKeys.Count == 0)
@@ -891,12 +1055,16 @@ namespace LogScraper.Utilities.UserControls
                 return;
             }
 
-            int clickedBucketIndex = (int)(e.X / totalBarWidth);
-            if (clickedBucketIndex >= 0 && clickedBucketIndex < sortedBucketKeys.Count)
+            int histogramWidth = GetHistogramWidth();
+            if (e.X < histogramWidth && totalBarWidth > 0)
             {
-                List<LogEntry> bucketEntries = buckets[sortedBucketKeys[clickedBucketIndex]];
-                if (bucketEntries.Count > 0)
-                    CellClicked?.Invoke(this, bucketEntries[0]);
+                int clickedBucketIndex = (int)(e.X / totalBarWidth);
+                if (clickedBucketIndex >= 0 && clickedBucketIndex < sortedBucketKeys.Count)
+                {
+                    List<LogEntry> bucketEntries = buckets[sortedBucketKeys[clickedBucketIndex]];
+                    if (bucketEntries.Count > 0)
+                        CellClicked?.Invoke(this, bucketEntries[0]);
+                }
             }
         }
 
@@ -917,13 +1085,15 @@ namespace LogScraper.Utilities.UserControls
             maximumRawValue = 0;
             currentBucketSize = default;
             _logRange = null;
+            _showFullTimeline = true;
             visibleRangeStart = null;
             visibleRangeEnd = null;
             hoveredBucketIndex = -1;
             hoveredErrorIndex = -1;
             hoveredBookmarkIndex = -1;
-            hoveredMinimap = false;
-            _showFullTimeline = true;
+            hoveredZoomButton = ZoomButton.None;
+            zoomInButtonRect = Rectangle.Empty;
+            zoomOutButtonRect = Rectangle.Empty;
 
             this.Invalidate();
         }
