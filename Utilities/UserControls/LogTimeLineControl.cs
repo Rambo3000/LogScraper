@@ -19,12 +19,18 @@ namespace LogScraper.Utilities.UserControls
         #region Fields
 
         // Log entry collections
-        private List<LogEntry> allLogEntries = [];
+        private List<LogEntry> filteredLogEntries = [];
+        private List<LogEntry> filteredLogEntriesInRange = [];
         private List<LogEntry> displayedLogEntries = [];
-        private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
-        private List<LogEntry> errorLogEntries = [];
+
+        // Cached error entries
+        private List<LogEntry> errorLogEntriesInRange = [];
+        private List<LogEntry> errorLogEntriesOutOfRange = [];
+
+        // Cached bookmarks
         private List<LogEntry> allBookmarkLogEntries = [];
-        private List<LogEntry> bookmarkLogEntries = [];
+        private List<LogEntry> bookmarkLogEntriesInRange = [];
+        private List<LogEntry> bookmarkLogEntriesOutOfRange = [];
 
         // Full collection span (for full-timeline mode and out-of-range markers)
         private DateTime fullSpanMinimum;
@@ -36,14 +42,13 @@ namespace LogScraper.Utilities.UserControls
         // Zoom state: when true the histogram spans the full collection; when false it clips to the range
         private bool _showFullTimeline = true;
 
-        // Bucketing and scaling
+        // Bucketing
+        private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
+        private List<DateTime> sortedBucketKeys = [];
         private TimeSpan currentBucketSize;
         private DateTime minimumTimestamp;
         private DateTime maximumTimestamp;
         private double maximumRawValue;
-
-        // Cached sorted bucket keys — rebuilt in RecalculateBuckets, shared across all drawing and hit-testing
-        private List<DateTime> sortedBucketKeys = [];
         private float totalBarWidth;
 
         // Hover tracking
@@ -84,7 +89,6 @@ namespace LogScraper.Utilities.UserControls
         private static readonly Color BOOKMARK_MARKER_HOVER_COLOR = Color.FromArgb(255, 120, 180, 230);
         private static readonly Color BOOKMARK_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 70, 130, 180);
         private static readonly Color ZOOM_STRIP_BACKGROUND_COLOR = Color.FromArgb(245, 247, 250);
-        private static readonly Color ZOOM_STRIP_DIVIDER_COLOR = Color.FromArgb(200, 210, 220);
         private static readonly Color ZOOM_BUTTON_BACKGROUND_COLOR = Color.FromArgb(225, 235, 245);
         private static readonly Color ZOOM_BUTTON_HOVER_BACKGROUND_COLOR = Color.FromArgb(190, 215, 240);
         private static readonly Color ZOOM_BUTTON_BORDER_COLOR = Color.FromArgb(155, 185, 215);
@@ -127,7 +131,7 @@ namespace LogScraper.Utilities.UserControls
             this.MouseClick += OnMouseClick;
             this.MouseMove += OnMouseMove;
             this.MouseLeave += OnMouseLeave;
-            this.Resize += (s, e) => { RebuildDisplayedEntries(); this.Invalidate(); };
+            this.Resize += (s, e) => { RebuildBuckets(); this.Invalidate(); };
         }
 
         #endregion
@@ -139,41 +143,27 @@ namespace LogScraper.Utilities.UserControls
         /// Supports incremental updates if new entries are appended to existing data.
         /// The full collection is used to determine the full-span time range.
         /// </summary>
-        public void UpdateLogEntries(List<LogEntry> entries, LogCollection fullCollection)
+        public void UpdateLogEntries(List<LogEntry> filteredEntries, List<LogEntry> visibleEntries, LogRange range, LogCollection fullCollection)
         {
-            if (fullCollection?.LogEntries?.Count > 0)
+            if (fullCollection?.LogEntries?.Count == 0)
             {
-                fullSpanMinimum = fullCollection.LogEntries[0].TimeStamp;
-                fullSpanMaximum = fullCollection.LogEntries[^1].TimeStamp;
-            }
-
-            if (entries == null || entries.Count == 0)
-            {
-                allLogEntries.Clear();
+                filteredLogEntries.Clear();
                 displayedLogEntries.Clear();
                 buckets.Clear();
                 sortedBucketKeys.Clear();
-                errorLogEntries.Clear();
+                errorLogEntriesInRange.Clear();
                 this.Invalidate();
                 return;
             }
 
-            bool isAppend = false;
+            fullSpanMinimum = fullCollection.LogEntries[0].TimeStamp;
+            fullSpanMaximum = fullCollection.LogEntries[^1].TimeStamp;
 
-            if (allLogEntries.Count > 0 && entries.Count > allLogEntries.Count)
-            {
-                if (allLogEntries[0].TimeStamp == entries[0].TimeStamp &&
-                    allLogEntries[^1].TimeStamp == entries[allLogEntries.Count - 1].TimeStamp)
-                    isAppend = true;
-            }
+            filteredLogEntries = filteredEntries == null ? [] : [..filteredEntries];
+            filteredLogEntriesInRange = (visibleEntries == null) ? [] : [.. visibleEntries];
+            _logRange = range;
 
-            if (isAppend)
-                allLogEntries.AddRange(entries.Skip(allLogEntries.Count));
-            else
-                allLogEntries = [.. entries];
-
-            RebuildDisplayedEntries();
-            errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
+            RebuildRangeRelatedObjects();
 
             this.Invalidate();
         }
@@ -186,15 +176,15 @@ namespace LogScraper.Utilities.UserControls
             this.Invalidate();
         }
 
-        /// <summary>Updates the log range used to filter the histogram and bookmark markers.</summary>
-        public void SetLogRange(LogRange logRange)
-        {
-            _logRange = logRange;
+        #endregion
 
-            RebuildDisplayedEntries();
+        #region Entry Filtering
+        private void RebuildRangeRelatedObjects()
+        {
+            SetDisplayedEntries();
+            RebuildErrorLogEntries();
             RebuildFilteredBookmarkMarkers();
-            errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
-            this.Invalidate();
+            RebuildBuckets();
         }
 
         /// <summary>Sets the visible range of log entries currently shown in the log viewer.</summary>
@@ -205,47 +195,60 @@ namespace LogScraper.Utilities.UserControls
             this.Invalidate();
         }
 
-        /// <summary>Clears the visible range indicator and resets the log range.</summary>
-        public void ClearVisibleRange()
-        {
-            SetLogRange(new LogRange());
-            visibleRangeStart = null;
-            visibleRangeEnd = null;
-            this.Invalidate();
-        }
-
-        #endregion
-
-        #region Entry Filtering
-
         /// <summary>
         /// Rebuilds the displayed entry set based on the current range and zoom state.
         /// Full-timeline mode shows all entries; zoomed-in mode clips to the range.
         /// </summary>
-        private void RebuildDisplayedEntries()
+        private void SetDisplayedEntries()
         {
-            bool rangeIsConstrained = _logRange?.IsConstrained == true;
-
-            if (!rangeIsConstrained || _showFullTimeline)
+            if (_showFullTimeline)
             {
-                displayedLogEntries = allLogEntries;
+                displayedLogEntries = filteredLogEntries;
             }
             else
             {
-                int rangeBegin = _logRange.Begin?.Index ?? int.MinValue;
-                int rangeEnd = _logRange.End?.Index ?? int.MaxValue;
-                displayedLogEntries = [.. allLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+                displayedLogEntries = filteredLogEntriesInRange;
             }
-
-            RecalculateBuckets();
         }
+        private void RebuildErrorLogEntries()
+        {
+            errorLogEntriesInRange = displayedLogEntries != null ? [.. filteredLogEntriesInRange.Where(entry => entry.IsErrorLogEntry)] : [];
+            errorLogEntriesOutOfRange = [];
 
+            // Draw out-of-range error markers first (faded, behind in-range ones)
+            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            {
+                HashSet<int> inRangeIndices = [.. errorLogEntriesInRange.Select(entry => entry.Index)];
+
+                foreach (LogEntry errorEntry in filteredLogEntries.Where(entry => entry.IsErrorLogEntry))
+                {
+                    if (inRangeIndices.Contains(errorEntry.Index))
+                        continue;
+
+                    errorLogEntriesOutOfRange.Add(errorEntry);
+                }
+            }
+        }
         private void RebuildFilteredBookmarkMarkers()
         {
             int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
             int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
 
-            bookmarkLogEntries = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+            bookmarkLogEntriesInRange = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+            bookmarkLogEntriesOutOfRange = [];
+
+            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            {
+                HashSet<int> inRangeIndices = [.. bookmarkLogEntriesInRange.Select(entry => entry.Index)];
+
+                foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
+                {
+                    if (inRangeIndices.Contains(bookmarkEntry.Index))
+                        continue;
+
+                    bookmarkLogEntriesOutOfRange.Add(bookmarkEntry);
+                }
+            }
         }
 
         #endregion
@@ -256,7 +259,7 @@ namespace LogScraper.Utilities.UserControls
         /// Recalculates time buckets and rebuilds the cached sorted bucket key list.
         /// Uses the histogram width (excluding zoom strip) for bucket count calculation.
         /// </summary>
-        private void RecalculateBuckets()
+        private void RebuildBuckets()
         {
             buckets.Clear();
             sortedBucketKeys.Clear();
@@ -510,7 +513,7 @@ namespace LogScraper.Utilities.UserControls
             if (rangeIsConstrained && _showFullTimeline)
                 DrawRangeOverlay(graphics, histogramWidth, drawableHeight);
 
-            DrawHistogramBars(graphics, histogramWidth, drawableHeight);
+            DrawHistogramBars(graphics, drawableHeight);
             DrawErrorMarkers(graphics, histogramWidth, drawableHeight);
             DrawBookmarkMarkers(graphics, histogramWidth, drawableHeight);
             DrawVisibleRangeIndicator(graphics, histogramWidth, drawableHeight);
@@ -569,7 +572,7 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>Draws the histogram bars for all non-empty buckets.</summary>
-        private void DrawHistogramBars(Graphics graphics, int histogramWidth, int drawableHeight)
+        private void DrawHistogramBars(Graphics graphics, int drawableHeight)
         {
             if (buckets.Count == 0)
                 return;
@@ -595,26 +598,17 @@ namespace LogScraper.Utilities.UserControls
 
         private void DrawErrorMarkers(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            // Draw out-of-range error markers first (faded, behind in-range ones)
-            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            for (int i = 0; i < errorLogEntriesOutOfRange.Count; i++)
             {
-                HashSet<int> inRangeIndices = [.. errorLogEntries.Select(entry => entry.Index)];
+                float centerX = GetOutOfRangeMarkerXPosition(errorLogEntriesOutOfRange[i]);
+                if (centerX < 0 || centerX > histogramWidth) continue;
 
-                foreach (LogEntry errorEntry in allLogEntries.Where(entry => entry.IsErrorLogEntry))
-                {
-                    if (inRangeIndices.Contains(errorEntry.Index))
-                        continue;
-
-                    float centerX = GetOutOfRangeMarkerXPosition(errorEntry);
-                    if (centerX < 0 || centerX > histogramWidth) continue;
-
-                    DrawMarkerEllipse(graphics, centerX, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_OUT_OF_RANGE_COLOR);
-                }
+                DrawMarkerEllipse(graphics, centerX, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_OUT_OF_RANGE_COLOR);
             }
 
-            for (int i = 0; i < errorLogEntries.Count; i++)
+            for (int i = 0; i < errorLogEntriesInRange.Count; i++)
             {
-                float centerX = GetMarkerXPosition(errorLogEntries[i]);
+                float centerX = GetMarkerXPosition(errorLogEntriesInRange[i]);
                 if (centerX < 0 || centerX > histogramWidth) continue;
 
                 Color color = (i == hoveredErrorIndex) ? ERROR_MARKER_HOVER_COLOR : ERROR_MARKER_COLOR;
@@ -628,25 +622,17 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         private void DrawBookmarkMarkers(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            foreach (LogEntry bookmarkEntry in bookmarkLogEntriesOutOfRange)
             {
-                HashSet<int> inRangeIndices = [.. bookmarkLogEntries.Select(entry => entry.Index)];
+                float centerX = GetOutOfRangeMarkerXPosition(bookmarkEntry);
+                if (centerX < 0 || centerX > histogramWidth) continue;
 
-                foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
-                {
-                    if (inRangeIndices.Contains(bookmarkEntry.Index))
-                        continue;
-
-                    float centerX = GetOutOfRangeMarkerXPosition(bookmarkEntry);
-                    if (centerX < 0 || centerX > histogramWidth) continue;
-
-                    DrawMarkerEllipse(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
-                }
+                DrawMarkerEllipse(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
             }
 
-            for (int i = 0; i < bookmarkLogEntries.Count; i++)
+            for (int i = 0; i < bookmarkLogEntriesInRange.Count; i++)
             {
-                float centerX = GetMarkerXPosition(bookmarkLogEntries[i]);
+                float centerX = GetMarkerXPosition(bookmarkLogEntriesInRange[i]);
                 if (centerX < 0 || centerX > histogramWidth) continue;
 
                 Color color = (i == hoveredBookmarkIndex) ? BOOKMARK_MARKER_HOVER_COLOR : BOOKMARK_MARKER_COLOR;
@@ -731,10 +717,10 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         private void DrawActiveTooltip(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (hoveredBookmarkIndex >= 0 && hoveredBookmarkIndex < bookmarkLogEntries.Count)
-                DrawMarkerTooltip(graphics, bookmarkLogEntries[hoveredBookmarkIndex], histogramWidth, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_COLOR, "Bookmark");
-            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntries.Count)
-                DrawMarkerTooltip(graphics, errorLogEntries[hoveredErrorIndex], histogramWidth, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_COLOR, "Error");
+            if (hoveredBookmarkIndex >= 0 && hoveredBookmarkIndex < bookmarkLogEntriesInRange.Count)
+                DrawMarkerTooltip(graphics, bookmarkLogEntriesInRange[hoveredBookmarkIndex], histogramWidth, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_COLOR, "Bookmark");
+            else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntriesInRange.Count)
+                DrawMarkerTooltip(graphics, errorLogEntriesInRange[hoveredErrorIndex], histogramWidth, drawableHeight, ERROR_MARKER_Y_OFFSET, ERROR_MARKER_COLOR, "Error");
             else if (hoveredBucketIndex >= 0 && hoveredBucketIndex < sortedBucketKeys.Count)
                 DrawBucketTooltip(graphics, histogramWidth, sortedBucketKeys[hoveredBucketIndex]);
         }
@@ -751,7 +737,7 @@ namespace LogScraper.Utilities.UserControls
             float tooltipX = hoveredBucketIndex * totalBarWidth + totalBarWidth / 2;
             float tooltipY = 2;
 
-            DrawTooltipBox(graphics, tooltipText, ref tooltipX, ref tooltipY, histogramWidth, 
+            DrawTooltipBox(graphics, tooltipText, ref tooltipX, ref tooltipY, histogramWidth,
                 Color.FromArgb(150, 50, 50, 50), Color.FromArgb(100, 100, 100), padding: 0);
         }
 
@@ -770,14 +756,14 @@ namespace LogScraper.Utilities.UserControls
             float tooltipY = markerBandTop - 4; // Adjusted; will be calculated within DrawTooltipBox
 
             DrawTooltipBox(graphics, tooltipText, ref centerX, ref tooltipY, histogramWidth,
-                Color.FromArgb(220, 30, 30, 40), accentColor, padding: 8, abovePosition: true, baselineY: markerBandTop);
+                Color.FromArgb(220, 30, 30, 40), accentColor, padding: 8, baselineY: markerBandTop);
         }
 
         /// <summary>
         /// Shared helper to draw a tooltip box with text, avoiding duplicate code.
         /// </summary>
-        private void DrawTooltipBox(Graphics graphics, string tooltipText, ref float tooltipX, ref float tooltipY, 
-            int histogramWidth, Color backgroundColor, Color borderColor, int padding = 0, bool abovePosition = false, float baselineY = 0)
+        private static void DrawTooltipBox(Graphics graphics, string tooltipText, ref float tooltipX, ref float tooltipY,
+            int histogramWidth, Color backgroundColor, Color borderColor, int padding = 0, float baselineY = 0)
         {
             using Font font = new("Segoe UI", 9);
             SizeF textSize = graphics.MeasureString(tooltipText, font);
@@ -901,7 +887,7 @@ namespace LogScraper.Utilities.UserControls
             }
 
             // Bookmark marker hover
-            int newBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntries, BOOKMARK_MARKER_Y_OFFSET);
+            int newBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntriesInRange, BOOKMARK_MARKER_Y_OFFSET);
             if (UpdateHoveredMarker(ref hoveredBookmarkIndex, newBookmark, ref hoveredErrorIndex, ref hoveredBucketIndex))
             {
                 SetCursor(Cursors.Hand);
@@ -909,7 +895,7 @@ namespace LogScraper.Utilities.UserControls
             }
 
             // Error marker hover
-            int newError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntries, ERROR_MARKER_Y_OFFSET);
+            int newError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntriesInRange, ERROR_MARKER_Y_OFFSET);
             if (UpdateHoveredMarker(ref hoveredErrorIndex, newError, ref hoveredBookmarkIndex, ref hoveredBucketIndex))
             {
                 SetCursor(Cursors.Hand);
@@ -1030,8 +1016,7 @@ namespace LogScraper.Utilities.UserControls
                     if (_showFullTimeline != newShowFullTimeline)
                     {
                         _showFullTimeline = newShowFullTimeline;
-                        RebuildDisplayedEntries();
-                        errorLogEntries = [.. displayedLogEntries.Where(entry => entry.IsErrorLogEntry)];
+                        RebuildRangeRelatedObjects();
                         this.Invalidate();
                     }
                     return;
@@ -1041,17 +1026,17 @@ namespace LogScraper.Utilities.UserControls
             if (sortedBucketKeys.Count == 0)
                 return;
 
-            int clickedBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntries, BOOKMARK_MARKER_Y_OFFSET);
+            int clickedBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntriesInRange, BOOKMARK_MARKER_Y_OFFSET);
             if (clickedBookmark != -1)
             {
-                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntries[clickedBookmark]);
+                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntriesInRange[clickedBookmark]);
                 return;
             }
 
-            int clickedError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntries, ERROR_MARKER_Y_OFFSET);
+            int clickedError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntriesInRange, ERROR_MARKER_Y_OFFSET);
             if (clickedError != -1)
             {
-                ErrorMarkerClicked?.Invoke(this, errorLogEntries[clickedError]);
+                ErrorMarkerClicked?.Invoke(this, errorLogEntriesInRange[clickedError]);
                 return;
             }
 
@@ -1070,13 +1055,13 @@ namespace LogScraper.Utilities.UserControls
 
         internal void Clear()
         {
-            allLogEntries.Clear();
+            filteredLogEntries.Clear();
             displayedLogEntries.Clear();
             buckets.Clear();
             sortedBucketKeys.Clear();
-            errorLogEntries.Clear();
+            errorLogEntriesInRange.Clear();
             allBookmarkLogEntries.Clear();
-            bookmarkLogEntries.Clear();
+            bookmarkLogEntriesInRange.Clear();
 
             fullSpanMinimum = default;
             fullSpanMaximum = default;
@@ -1086,8 +1071,6 @@ namespace LogScraper.Utilities.UserControls
             currentBucketSize = default;
             _logRange = null;
             _showFullTimeline = true;
-            visibleRangeStart = null;
-            visibleRangeEnd = null;
             hoveredBucketIndex = -1;
             hoveredErrorIndex = -1;
             hoveredBookmarkIndex = -1;

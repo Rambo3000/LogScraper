@@ -22,9 +22,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper
 {
-    //TODO: timeline show error marks darker when out of range
-    //TODO: timeline show text at bookmark
-    //TODO: timeline remove range bar and add explicit zoom option
     //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: search wrap around not working correctly, switching between two last entries
@@ -145,10 +142,13 @@ namespace LogScraper
 
         private void LogViewport_RangeChanged(object sender, EventArgs e)
         {
+            UpdateLogRange(true);
+        }
+        private void UpdateLogRange(bool render)
+        {
             UserControlContentFilter.LogRange = LogViewport.Range;
             BookMarksControl.SetLogRange(LogViewport.Range);
-            LogTimeLineControl.SetLogRange(LogViewport.Range);
-            HandleLogContentFilterUpdate(sender, e);
+            if (render) RenderLog(currentLogMetadataFilterResult);
         }
 
         private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
@@ -335,13 +335,22 @@ namespace LogScraper
 
             UserControlSearch.LogRenderSettings = logRenderSettings;
 
-            visibleLogEntries = LogRenderer.GetLogEntriesListToRender(logMetadataFilterResult.LogEntries, logRenderSettings);
+            visibleLogEntries = LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, logRenderSettings.LogRange);
 
             UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
             UserControlSearch.UpdateLogEntries(visibleLogEntries);
-            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault) LogTimeLineControl.UpdateLogEntries(logMetadataFilterResult.LogEntries, logMetadataFilterResult.SourceLogCollection);
+            RefreshTimeLine();
             RefreshLogStatistics();
         }
+
+        private void RefreshTimeLine()
+        {
+            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
+            {
+                LogTimeLineControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, visibleLogEntries, LogViewport.Range, currentLogMetadataFilterResult.SourceLogCollection);
+            }
+        }
+
         #endregion
 
         #region Erase and reset
@@ -353,6 +362,7 @@ namespace LogScraper
             LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
+            UpdateLogRange(false);
             LogPostProcessing.Clear();
             FilterLogEntries();
             RefreshLogStatistics();
@@ -401,7 +411,7 @@ namespace LogScraper
         private void HandleLogContentFilterUpdate(object sender, EventArgs e)
         {
             UserControlSearch.IsMetadataSearchEnabled = MetadataFormatingControl.IsOriginalMetadataShown;
-            if (currentLogMetadataFilterResult != null) RenderLog(currentLogMetadataFilterResult);
+            RenderLog(currentLogMetadataFilterResult);
         }
 
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
@@ -498,6 +508,7 @@ namespace LogScraper
             UsrMetadataFilterOverview.ResetFilters();
             UserControlContentFilter.ResetFilters();
             LogViewport.Clear();
+            UpdateLogRange(true);
         }
 
         private bool isResetUiEnabled = false;
@@ -549,7 +560,7 @@ namespace LogScraper
                 ShowOriginalMetadata = true
             };
 
-            List<LogEntry> logEntriesToRender = LogRenderer.GetLogEntriesListToRender(currentLogMetadataFilterResult.LogEntries, logRenderSettings);
+            List<LogEntry> logEntriesToRender = LogRenderer.GetLogEntriesRange(currentLogMetadataFilterResult.LogEntries, logRenderSettings.LogRange);
             string renderedLog = LogRenderer.RenderLogEntriesAsString(logEntriesToRender, logRenderSettings, null, null, null);
 
             if (renderedLog != null)

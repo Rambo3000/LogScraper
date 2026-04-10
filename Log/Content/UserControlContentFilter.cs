@@ -90,8 +90,7 @@ namespace LogScraper
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-            (int begin, int end) = LogRenderer.CalculateLogRenderRange(LogMetadataFilterResult.LogEntries, logRange);
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogMetadataFilterResult.LogEntries[begin..end]);
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(LogMetadataFilterResult.LogEntries, logRange));
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
@@ -594,7 +593,6 @@ namespace LogScraper
         {
             txtSearch.Text = string.Empty;
             TxtSearch_Leave(this, EventArgs.Empty);
-            if (ConfigurationManager.GenericConfig.AutoToggleHierarchy) showTree = true;
         }
         #endregion
 
