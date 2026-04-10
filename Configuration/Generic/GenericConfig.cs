@@ -53,14 +53,14 @@ namespace LogScraper.Configuration.Generic
         public bool ShowErrorLinesInBeginAndEndFilters { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether to automatically toggle the hierarchy when the session filter is applied
+        /// Gets or sets a value indicating whether to show the timeline by default when opening a log session.
         /// </summary>
-        public bool AutoToggleHierarchy { get; set; } = true;
+        public bool ShowTimelineByDefault { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether to show the timeline by default when opening a log session.
         /// </summary>
-        public bool ShowTimelineByDefault { get; set; } = true;
+        public bool PinLogProvidersByDefault { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether to check for updates for beta releases.

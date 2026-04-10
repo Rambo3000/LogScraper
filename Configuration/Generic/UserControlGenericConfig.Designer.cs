@@ -31,7 +31,6 @@ namespace LogScraper.Configuration
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlGenericConfig));
             LblDefaultLogProviderType = new System.Windows.Forms.Label();
             GrpExportSettings = new System.Windows.Forms.GroupBox();
             BtnBrowseEditor = new System.Windows.Forms.Button();
@@ -50,8 +49,7 @@ namespace LogScraper.Configuration
             ChkIsDebugModeEnabled = new System.Windows.Forms.CheckBox();
             ChkShowTimeLine = new System.Windows.Forms.CheckBox();
             ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
-            pictureBox3 = new System.Windows.Forms.PictureBox();
-            ChkAutoToggleHierarchy = new System.Windows.Forms.CheckBox();
+            ChkPinLogProvidersByDefault = new System.Windows.Forms.CheckBox();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             pictureBox16 = new System.Windows.Forms.PictureBox();
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
@@ -59,7 +57,6 @@ namespace LogScraper.Configuration
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).BeginInit();
             PnlUsedForScalingCompatiblity.SuspendLayout();
@@ -216,8 +213,7 @@ namespace LogScraper.Configuration
             GrpGeneralSettings.Controls.Add(ChkIsDebugModeEnabled);
             GrpGeneralSettings.Controls.Add(ChkShowTimeLine);
             GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
-            GrpGeneralSettings.Controls.Add(pictureBox3);
-            GrpGeneralSettings.Controls.Add(ChkAutoToggleHierarchy);
+            GrpGeneralSettings.Controls.Add(ChkPinLogProvidersByDefault);
             GrpGeneralSettings.Controls.Add(pictureBox1);
             GrpGeneralSettings.Controls.Add(pictureBox16);
             GrpGeneralSettings.Controls.Add(ChkShowErrorsInBeginAndEndFilters);
@@ -266,26 +262,15 @@ namespace LogScraper.Configuration
             ChkIncludePrereleaseUpdates.Text = "Controleer ook op beta-updates (prereleases)";
             ChkIncludePrereleaseUpdates.UseVisualStyleBackColor = true;
             // 
-            // pictureBox3
+            // ChkPinLogProvidersByDefault
             // 
-            pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            pictureBox3.Image = Properties.Resources.help;
-            pictureBox3.Location = new System.Drawing.Point(826, 128);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new System.Drawing.Size(16, 16);
-            pictureBox3.TabIndex = 40;
-            pictureBox3.TabStop = false;
-            toolTip.SetToolTip(pictureBox3, resources.GetString("pictureBox3.ToolTip"));
-            // 
-            // ChkAutoToggleHierarchy
-            // 
-            ChkAutoToggleHierarchy.AutoSize = true;
-            ChkAutoToggleHierarchy.Location = new System.Drawing.Point(6, 128);
-            ChkAutoToggleHierarchy.Name = "ChkAutoToggleHierarchy";
-            ChkAutoToggleHierarchy.Size = new System.Drawing.Size(425, 19);
-            ChkAutoToggleHierarchy.TabIndex = 39;
-            ChkAutoToggleHierarchy.Text = "Schakel hierarchisch tonen automatisch in zodra er op sessie wordt gefilterd";
-            ChkAutoToggleHierarchy.UseVisualStyleBackColor = true;
+            ChkPinLogProvidersByDefault.AutoSize = true;
+            ChkPinLogProvidersByDefault.Location = new System.Drawing.Point(6, 128);
+            ChkPinLogProvidersByDefault.Name = "ChkPinLogProvidersByDefault";
+            ChkPinLogProvidersByDefault.Size = new System.Drawing.Size(345, 19);
+            ChkPinLogProvidersByDefault.TabIndex = 39;
+            ChkPinLogProvidersByDefault.Text = "Bronnen automatisch verbergen zodra deze geselecteerd zijn";
+            ChkPinLogProvidersByDefault.UseVisualStyleBackColor = true;
             // 
             // pictureBox1
             // 
@@ -345,7 +330,6 @@ namespace LogScraper.Configuration
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);
             GrpGeneralSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox16).EndInit();
             PnlUsedForScalingCompatiblity.ResumeLayout(false);
@@ -373,8 +357,7 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.PictureBox pictureBox16;
         private System.Windows.Forms.Button BtnBrowseExportFIle;
         private System.Windows.Forms.Button BtnBrowseEditor;
-        private System.Windows.Forms.CheckBox ChkAutoToggleHierarchy;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.CheckBox ChkPinLogProvidersByDefault;
         private System.Windows.Forms.Panel PnlUsedForScalingCompatiblity;
         private System.Windows.Forms.CheckBox ChkIncludePrereleaseUpdates;
         private System.Windows.Forms.CheckBox ChkShowTimeLine;

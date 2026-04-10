@@ -115,7 +115,6 @@ namespace LogScraper
 
                 if (logEntry.LogContentProperties == null) continue;
 
-
                 // Try to get the content for the selected log content property
                 logEntry.LogContentProperties.TryGetValue(logContentProperty, out LogContentValue contentValue);
 

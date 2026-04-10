@@ -22,16 +22,15 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper
 {
-    //TODO: save file with two options, for reuse, only range, with same render settings as log entries textbox
+    //TODO: optional collapsable metadata
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: search wrap around not working correctly, switching between two last entries
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
-    //TODO: bug when setting bookmarks, forward and backward buttons disabled, how?
-    //TODO: optional collapsable metadata
-    //TODO: add option to default pin the log provider settings
     //TODO: show/hide bookmark bar only when bookmarks are used
     //TODO: make bookmark bar bigger and possibly use the bookmark flag
 
+    //TODO: group/move user controls into their own folders
+    //TODO: add bar at bottom of screen?
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
@@ -197,6 +196,7 @@ namespace LogScraper
             try
             {
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
+                UsrLogProviderSelection.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
                 UsrLogProviderSelection.PopulateLogProviders();
                 UsrLogProviderSelection.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
                 //Enforce autosizing because the IDE overrides the control's autosize settings.

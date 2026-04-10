@@ -22,7 +22,7 @@ namespace LogScraper.Configuration
             ChkExportToFile.Checked = config.ExportToFile;
             ChkShowErrorsInBeginAndEndFilters.Checked = config.ShowErrorLinesInBeginAndEndFilters;
             ChkShowTimeLine.Checked = config.ShowTimelineByDefault;
-            ChkAutoToggleHierarchy.Checked = config.AutoToggleHierarchy;
+            ChkPinLogProvidersByDefault.Checked = !config.PinLogProvidersByDefault;
             ChkIsDebugModeEnabled.Checked = config.IsDebugModeEnabled;
             TxtEditorLocation.Text = config.EditorFileName;
             TxtExportFileName.Text = config.ExportFileName;
@@ -65,7 +65,7 @@ namespace LogScraper.Configuration
                 EditorFileName = TxtEditorLocation.Text,
                 ExportFileName = TxtExportFileName.Text,
                 ExportToFile = ChkExportToFile.Checked,
-                AutoToggleHierarchy = ChkAutoToggleHierarchy.Checked,
+                PinLogProvidersByDefault = !ChkPinLogProvidersByDefault.Checked,
                 ShowErrorLinesInBeginAndEndFilters = ChkShowErrorsInBeginAndEndFilters.Checked,
                 ShowTimelineByDefault = ChkShowTimeLine.Checked,
                 IsDebugModeEnabled = ChkIsDebugModeEnabled.Checked,

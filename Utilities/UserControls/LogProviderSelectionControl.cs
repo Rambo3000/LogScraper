@@ -5,6 +5,7 @@ using LogScraper.Configuration;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
+using System.ComponentModel;
 
 namespace LogScraper.Utilities.UserControls
 {
@@ -21,7 +22,16 @@ namespace LogScraper.Utilities.UserControls
         private bool _isPinned = false;
         private bool _isCollapsed = false;
 
-        public bool IsPinned => _isPinned;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsPinned
+        {
+            get { return _isPinned; }
+            set
+            {
+                _isPinned = value;
+                UpdatePinButtonImage();
+            }
+        }
         public bool IsCollapsed => _isCollapsed;
         public int ExpandedHeight { get; private set; }
         public int CollapsedHeight
