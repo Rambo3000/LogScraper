@@ -46,10 +46,10 @@ namespace LogScraper.Utilities.Extensions
 
             // Bookmark margin marker - narrow filled stripe
             scintillaControl.Margins[MARGIN_BOOKMARK].Type = MarginType.Symbol;
-            scintillaControl.Margins[MARGIN_BOOKMARK].Width = 5;
+            scintillaControl.Margins[MARGIN_BOOKMARK].Width = 0;
             scintillaControl.Margins[MARGIN_BOOKMARK].Mask = 1 << MARKER_BOOKMARK;
             scintillaControl.Margins[MARGIN_BOOKMARK].Sensitive = false;
-            scintillaControl.Markers[MARKER_BOOKMARK].Symbol = MarkerSymbol.FullRect;
+            scintillaControl.Markers[MARKER_BOOKMARK].Symbol = MarkerSymbol.Bookmark;
             scintillaControl.Markers[MARKER_BOOKMARK].SetForeColor(Color.SteelBlue);
             scintillaControl.Markers[MARKER_BOOKMARK].SetBackColor(Color.SteelBlue);
 
@@ -57,6 +57,12 @@ namespace LogScraper.Utilities.Extensions
             scintillaControl.Margins[2].Width = 0;
 
         }
+
+        public static void SetBookMargeMarginVisibily(this Scintilla scintilla, bool isVisible)
+        {
+            scintilla.Margins[MARGIN_BOOKMARK].Width = isVisible ? 15 : 0;
+        }
+
 
         public static void ApplyLineIndicators(this Scintilla scintilla, int indicatorIndex, int markerIndex, IEnumerable<int> lineNumbers)
         {

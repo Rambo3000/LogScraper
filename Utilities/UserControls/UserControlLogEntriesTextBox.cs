@@ -282,14 +282,13 @@ namespace LogScraper.Utilities.UserControls
 
         private void ApplyBookmarks()
         {
-            TxtLogEntries.ApplyLineIndicators(
-                INDICATOR_BOOKMARK,
-                MARKER_BOOKMARK,
-                bookmarks == null ? [] : bookmarks
+            IEnumerable<int> bookmarksLineToApply = bookmarks == null ? [] : bookmarks
                     .Select(logEntry => LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntry, logEntriesRenderMapCache, out int visualIndex) ? (int?)visualIndex : null)
                     .Where(index => index.HasValue)
-                    .Select(index => index.Value)
-            );
+                    .Select(index => index.Value);
+
+            TxtLogEntries.SetBookMargeMarginVisibily(bookmarksLineToApply.Any());
+            TxtLogEntries.ApplyLineIndicators(INDICATOR_BOOKMARK, MARKER_BOOKMARK, bookmarksLineToApply);
         }
     }
 }

@@ -26,8 +26,6 @@ namespace LogScraper
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: search wrap around not working correctly, switching between two last entries
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
-    //TODO: show/hide bookmark bar only when bookmarks are used
-    //TODO: make bookmark bar bigger and possibly use the bookmark flag
 
     //TODO: group/move user controls into their own folders
     //TODO: add bar at bottom of screen?
