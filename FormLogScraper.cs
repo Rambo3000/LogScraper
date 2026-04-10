@@ -177,7 +177,7 @@ namespace LogScraper
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
         {
             if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
-                LogTimeLineControl.SetVisibleRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
+                LogTimeLineControl.SetOnScreenDateTimeRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
         }
 
         private void LogTimelineControl_CellClicked(object sender, LogEntry e)

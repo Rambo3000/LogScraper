@@ -61,9 +61,9 @@ namespace LogScraper.Utilities.UserControls
         private int hoveredBookmarkIndex = -1;
         private ZoomButton hoveredZoomButton = ZoomButton.None;
 
-        // Visible range tracking (timestamp-based to match timeline bars)
-        private DateTime? visibleRangeStart = null;
-        private DateTime? visibleRangeEnd = null;
+        // Time range currently represented on screen used for hover hit testing and out-of-range marker placement
+        private DateTime? onScreenRangeStart = null;
+        private DateTime? onScreenRangeEnd = null;
 
         // Zoom button rects (in control coordinates)
         private Rectangle zoomInButtonRect = Rectangle.Empty;
@@ -194,10 +194,10 @@ namespace LogScraper.Utilities.UserControls
         }
 
         /// <summary>Sets the visible range of log entries currently shown in the log viewer.</summary>
-        public void SetVisibleRange(DateTime startTimestamp, DateTime endTimestamp)
+        public void SetOnScreenDateTimeRange(DateTime startTimestamp, DateTime endTimestamp)
         {
-            visibleRangeStart = startTimestamp;
-            visibleRangeEnd = endTimestamp;
+            onScreenRangeStart = startTimestamp;
+            onScreenRangeEnd = endTimestamp;
             this.Invalidate();
         }
 
@@ -533,13 +533,11 @@ namespace LogScraper.Utilities.UserControls
             // Clip all histogram drawing to the histogram area
             graphics.SetClip(new Rectangle(0, 0, histogramWidth, drawableHeight));
 
-            if (rangeIsConstrained && _showFullTimeline)
-                DrawRangeOverlay(graphics, histogramWidth, drawableHeight);
-
+            DrawRangeOverlay(graphics, histogramWidth, drawableHeight);
             DrawHistogramBars(graphics, drawableHeight);
             DrawErrorMarkers(graphics, histogramWidth, drawableHeight);
             DrawBookmarkMarkers(graphics, histogramWidth, drawableHeight);
-            DrawVisibleRangeIndicator(graphics, histogramWidth, drawableHeight);
+            DrawOnScreenRangeIndicator(graphics, histogramWidth, drawableHeight);
             DrawTimeTickMarks(graphics, histogramWidth);
 
             graphics.ResetClip();
@@ -574,6 +572,8 @@ namespace LogScraper.Utilities.UserControls
         /// </summary>
         private void DrawRangeOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
         {
+            if (!(_logRange?.IsConstrained == true && _showFullTimeline)) return;
+
             if (fullSpanMaximum == fullSpanMinimum)
                 return;
 
@@ -675,9 +675,9 @@ namespace LogScraper.Utilities.UserControls
             }
         }
 
-        private void DrawVisibleRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
+        private void DrawOnScreenRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (!visibleRangeStart.HasValue || !visibleRangeEnd.HasValue)
+            if (!onScreenRangeStart.HasValue || !onScreenRangeEnd.HasValue)
                 return;
 
             if (sortedBucketKeys.Count == 0)
@@ -687,8 +687,8 @@ namespace LogScraper.Utilities.UserControls
             if (totalSpan.TotalSeconds <= 0)
                 return;
 
-            float startX = (float)((visibleRangeStart.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
-            float endX = (float)((visibleRangeEnd.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
+            float startX = (float)((onScreenRangeStart.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
+            float endX = (float)((onScreenRangeEnd.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
 
             startX = Math.Clamp(startX, 0, histogramWidth);
             endX = Math.Clamp(endX, 0, histogramWidth);
