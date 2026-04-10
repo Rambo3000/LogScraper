@@ -94,7 +94,6 @@ namespace LogScraper.Log.Rendering
                 {
                     if (logEntries[i].Index >= logRange.End.Index)
                     {
-                        //TODO: klopt denk ik niet
                         endindex = i + 1;
                         break;
                     }

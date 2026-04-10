@@ -34,7 +34,7 @@ namespace LogScraper.Utilities.Extensions
             scintillaControl.Indicators[INDICATOR_SEARCH].Style = IndicatorStyle.StraightBox;
             scintillaControl.Indicators[INDICATOR_SEARCH].Under = true;
             scintillaControl.Indicators[INDICATOR_SEARCH].ForeColor = Color.Yellow;
-            scintillaControl.Indicators[INDICATOR_SEARCH].Alpha = 100;
+            scintillaControl.Indicators[INDICATOR_SEARCH].Alpha = 255;
             scintillaControl.Indicators[INDICATOR_SEARCH].OutlineAlpha = 200;
 
             // Bookmark indicator
@@ -424,6 +424,7 @@ namespace LogScraper.Utilities.Extensions
                 scintillaControl.IndicatorClearRange(0, scintillaControl.TextLength);
                 return false;
             }
+            Highlight(scintillaControl, searchText, wholeWord, caseSensitive);
 
             SearchFlags flags = GetSearchFlags(wholeWord, caseSensitive);
 
@@ -433,7 +434,6 @@ namespace LogScraper.Utilities.Extensions
             int pos = scintillaControl.SearchInTarget(searchText);
             if (pos >= 0)
             {
-                Highlight(scintillaControl, searchText, wholeWord, caseSensitive);
                 scintillaControl.GotoPosition(pos);
                 return true;
             }
@@ -445,14 +445,11 @@ namespace LogScraper.Utilities.Extensions
                 pos = scintillaControl.SearchInTarget(searchText);
                 if (pos >= 0)
                 {
-                    Highlight(scintillaControl, searchText, wholeWord, caseSensitive);
                     scintillaControl.GotoPosition(pos);
                     return true;
                 }
             }
 
-            scintillaControl.IndicatorCurrent = INDICATOR_SEARCH;
-            scintillaControl.IndicatorClearRange(0, scintillaControl.TextLength);
             return false;
         }
 

@@ -335,7 +335,7 @@ namespace LogScraper
             splitContainer5.Panel2.Controls.Add(SearchResultListControl);
             splitContainer5.Panel2Collapsed = true;
             splitContainer5.Size = new System.Drawing.Size(647, 554);
-            splitContainer5.SplitterDistance = 313;
+            splitContainer5.SplitterDistance = 442;
             splitContainer5.SplitterWidth = 8;
             splitContainer5.TabIndex = 44;
             // 
@@ -422,7 +422,7 @@ namespace LogScraper
             SearchResultListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             SearchResultListControl.Location = new System.Drawing.Point(0, 0);
             SearchResultListControl.Name = "SearchResultListControl";
-            SearchResultListControl.Size = new System.Drawing.Size(150, 42);
+            SearchResultListControl.Size = new System.Drawing.Size(647, 104);
             SearchResultListControl.TabIndex = 26;
             // 
             // groupBox6

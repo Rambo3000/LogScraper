@@ -118,6 +118,7 @@ namespace LogScraper
             SelectedSearchMode = SearchMode.All;
             UpdateButtons();
             FireSearchSettingsChanged(force: true);
+            Search?.Invoke(BuildSearchSettings(SearchDirection.Forward));
         }
 
         private void ItemNext_Click(object sender, EventArgs e)
@@ -199,6 +200,7 @@ namespace LogScraper
         {
             Clear();
             UpdateButtons();
+            Search?.Invoke(BuildSearchSettings(SearchDirection.Forward));
         }
 
         #endregion
