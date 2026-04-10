@@ -30,6 +30,11 @@ namespace LogScraper.Log.Metadata
         /// <summary>
         /// Indicates whether the metadata property should always be shown in the log.
         /// </summary>
+        public bool IsCollapsedByDefault { get; set; } = false;
+
+        /// <summary>
+        /// Indicates whether the metadata property should always be shown in the log.
+        /// </summary>
         public bool IsDefaultVisibleInLog { get; set; } = false;
 
         /// <summary>
@@ -99,6 +104,7 @@ namespace LogScraper.Log.Metadata
             {
                 Description = Description,
                 IsDefaultVisibleInLog = IsDefaultVisibleInLog,
+                IsCollapsedByDefault = IsCollapsedByDefault,
                 Criteria = new FilterCriteria()
                 {
                     BeforePhrase = Criteria.BeforePhrase,

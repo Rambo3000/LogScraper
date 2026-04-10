@@ -17,6 +17,9 @@ namespace LogScraper.Log.Metadata
         // Dictionary to store per-property filter controls for quick access.
         private readonly Dictionary<LogMetadataProperty, UserControlLogMetadataFilter> filterControls = [];
 
+        // Ordered list of filter controls, used for reflowing positions after collapse/expand.
+        private readonly List<UserControlLogMetadataFilter> orderedFilterControls = [];
+
         /// <summary>
         /// Event triggered when a filter is changed.
         /// </summary>
@@ -99,8 +102,10 @@ namespace LogScraper.Log.Metadata
                         Width = ClientSize.Width
                     };
                     control.FilterChanged += OnFilterChanged;
+                    control.CollapseChanged += OnCollapseChanged;
                     Controls.Add(control);
                     filterControls[property] = control;
+                    orderedFilterControls.Add(control);
                 }
 
                 control.UpdateListView(property, allValues, propertyStats);
@@ -160,11 +165,15 @@ namespace LogScraper.Log.Metadata
             foreach (Control control in Controls)
             {
                 if (control is UserControlLogMetadataFilter filterControl)
+                {
                     filterControl.FilterChanged -= OnFilterChanged;
+                    filterControl.CollapseChanged -= OnCollapseChanged;
+                }
             }
 
             Controls.Clear();
             filterControls.Clear();
+            orderedFilterControls.Clear();
 
             this.ResumeDrawing();
         }
@@ -191,6 +200,32 @@ namespace LogScraper.Log.Metadata
         private void OnFilterChanged(object sender, EventArgs e)
         {
             if (!isResetFiltersInProgress) FilterChanged?.Invoke(this, e);
+        }
+
+        private void OnCollapseChanged(object sender, EventArgs e) => ReflowControls();
+
+        private void ReflowControls()
+        {
+            this.SuspendDrawing();
+            SuspendLayout();
+
+            Point previousScrollPosition = AutoScrollPosition;
+            AutoScrollPosition = Point.Empty;
+
+            int top = 0;
+            foreach (UserControlLogMetadataFilter ctrl in orderedFilterControls)
+            {
+                ctrl.Top = top;
+                top = ctrl.Bottom + 5;
+            }
+
+            ResumeLayout();
+
+            AutoScrollPosition = new Point(
+                Math.Abs(previousScrollPosition.X),
+                Math.Abs(previousScrollPosition.Y));
+
+            this.ResumeDrawing();
         }
 
         protected override Point ScrollToControl(Control activeControl) => AutoScrollPosition;

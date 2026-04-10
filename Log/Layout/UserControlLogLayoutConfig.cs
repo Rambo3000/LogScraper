@@ -355,6 +355,7 @@ namespace LogScraper.Log
                 TxtMetadataBeforePhrase.Text = selected.Criteria.BeforePhrase;
                 TxtMetadataAfterPhrase.Text = selected.Criteria.AfterPhrase;
                 ChkShowMetadataByDefault.Checked = selected.IsDefaultVisibleInLog;
+                ChkMetadataCollapse.Checked = selected.IsCollapsedByDefault;
             }
             UpdateButtons();
         }
@@ -699,6 +700,12 @@ namespace LogScraper.Log
         {
             if (UpdatingInformation) return;
             if (LstContent.SelectedItem is LogContentProperty selected) selected.IsNavigationEnabled = ChkContentPropertyIsNavigationEnabled.Checked;
+        }
+
+        private void ChkMetadataCollapse_CheckedChanged(object sender, EventArgs e)
+        {
+            if (UpdatingInformation) return;
+            if (LstMetadata.SelectedItem is LogMetadataProperty selected) selected.IsCollapsedByDefault = ChkMetadataCollapse.Checked;
         }
     }
 }

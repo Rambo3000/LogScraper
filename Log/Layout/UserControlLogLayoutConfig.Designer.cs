@@ -113,6 +113,7 @@ namespace LogScraper.Log
             TxtJsonPath = new ValidatedTextBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
+            ChkMetadataCollapse = new System.Windows.Forms.CheckBox();
             GrpLayouts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
@@ -495,6 +496,7 @@ namespace LogScraper.Log
             // 
             // grpMetadata
             // 
+            grpMetadata.Controls.Add(ChkMetadataCollapse);
             grpMetadata.Controls.Add(ChkShowMetadataByDefault);
             grpMetadata.Controls.Add(pictureBox5);
             grpMetadata.Controls.Add(pictureBox4);
@@ -1102,6 +1104,16 @@ namespace LogScraper.Log
             toolTip.InitialDelay = 500;
             toolTip.ReshowDelay = 100;
             // 
+            // BtnMetadataCollapse
+            // 
+            ChkMetadataCollapse.Location = new System.Drawing.Point(241, 183);
+            ChkMetadataCollapse.Name = "BtnMetadataCollapse";
+            ChkMetadataCollapse.Size = new System.Drawing.Size(373, 20);
+            ChkMetadataCollapse.TabIndex = 33;
+            ChkMetadataCollapse.Text = "Standaard deze metdata inklappen";
+            ChkMetadataCollapse.UseVisualStyleBackColor = true;
+            ChkMetadataCollapse.CheckedChanged += ChkMetadataCollapse_CheckedChanged;
+            // 
             // UserControlLogLayoutConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1232,5 +1244,6 @@ namespace LogScraper.Log
         private System.Windows.Forms.CheckBox ChkContentPropertyIsNavigationEnabled;
         private System.Windows.Forms.CheckBox ChkAutomaticTimestampDetection;
         private System.Windows.Forms.PictureBox pictureBox13;
+        private System.Windows.Forms.CheckBox ChkMetadataCollapse;
     }
 }

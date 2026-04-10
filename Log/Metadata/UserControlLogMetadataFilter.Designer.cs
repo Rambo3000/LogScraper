@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ListView = System.Windows.Forms.ListView;
 
@@ -21,16 +21,21 @@ namespace LogScraper
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogMetadataFilter));
             LblLogFilterDescription = new Label();
             ListViewItems = new ListView();
             LblIncludeExclude = new Label();
+            imageList1 = new ImageList(components);
+            BtnChevron = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)BtnChevron).BeginInit();
             SuspendLayout();
             // 
             // LblLogFilterDescription
             // 
             LblLogFilterDescription.AutoSize = true;
             LblLogFilterDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            LblLogFilterDescription.Location = new System.Drawing.Point(1, 1);
+            LblLogFilterDescription.Location = new System.Drawing.Point(25, 1);
             LblLogFilterDescription.Name = "LblLogFilterDescription";
             LblLogFilterDescription.Size = new System.Drawing.Size(32, 15);
             LblLogFilterDescription.TabIndex = 0;
@@ -51,8 +56,6 @@ namespace LogScraper
             ListViewItems.UseCompatibleStateImageBehavior = false;
             ListViewItems.View = View.Details;
             ListViewItems.VirtualMode = true;
-            ListViewItems.Columns.Add("Description", -2);
-            ListViewItems.Columns.Add("Count", 50, HorizontalAlignment.Right);
             ListViewItems.DrawColumnHeader += ListView_DrawColumnHeader;
             ListViewItems.DrawItem += ListView_DrawItem;
             ListViewItems.DrawSubItem += ListView_DrawSubItem;
@@ -73,18 +76,43 @@ namespace LogScraper
             LblIncludeExclude.Paint += LblIncludeExclude_Paint;
             LblIncludeExclude.MouseClick += LblIncludeExclude_MouseClick;
             // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            imageList1.Images.SetKeyName(0, "chevron-right 16x16.png");
+            imageList1.Images.SetKeyName(1, "chevron-down.png");
+            // 
+            // BtnChevron
+            // 
+            BtnChevron.Cursor = Cursors.Hand;
+            BtnChevron.Location = new System.Drawing.Point(7, 1);
+            BtnChevron.Name = "BtnChevron";
+            BtnChevron.Size = new System.Drawing.Size(16, 16);
+            BtnChevron.SizeMode = PictureBoxSizeMode.Zoom;
+            BtnChevron.TabIndex = 5;
+            BtnChevron.TabStop = false;
+            BtnChevron.Click += BtnChevron_Click;
+            // 
             // UserControlLogMetadataFilter
             // 
             BackColor = System.Drawing.Color.White;
             Controls.Add(LblIncludeExclude);
             Controls.Add(LblLogFilterDescription);
+            Controls.Add(BtnChevron);
             Controls.Add(ListViewItems);
             Name = "UserControlLogMetadataFilter";
             Size = new System.Drawing.Size(280, 232);
+            ((System.ComponentModel.ISupportInitialize)BtnChevron).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         private Label LblIncludeExclude;
+        private ImageList imageList1;
+        private PictureBox BtnChevron;
     }
 }
+
+

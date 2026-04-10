@@ -50,6 +50,7 @@ namespace LogScraper
 
         private void ScrollToSelectedValue()
         {
+            if (Collapsed) return;
             if (selectedEntryValue == null) return;
             int index = sortedValues.FindIndex(v => v == selectedEntryValue);
             if (index < 0) return;
@@ -112,8 +113,12 @@ namespace LogScraper
         public UserControlLogMetadataFilter(string description)
         {
             InitializeComponent();
+            // Initialize ListView columns for virtual mode. The first column fills remaining space; the second is auto-sized.
+            ListViewItems.Columns.Add("Description", -2);
+            ListViewItems.Columns.Add("Count", 50, HorizontalAlignment.Right);
             Collapsed = false;
             LblLogFilterDescription.Text = description;
+            BtnChevron.Image = imageList1.Images[1];
         }
 
         #endregion
@@ -142,7 +147,7 @@ namespace LogScraper
         /// </summary>
         private void ResizeVertically()
         {
-            if (sortedValues.Count == 0)
+            if (Collapsed || sortedValues.Count == 0)
             {
                 ListViewItems.Height = 0;
                 Height = ListViewItems.Top + Padding.Bottom;
@@ -187,6 +192,47 @@ namespace LogScraper
         #endregion
 
         #region Header Toggle
+
+        private void BtnChevron_Click(object sender, EventArgs e)
+        {
+            SetCollapsed(!Collapsed);
+        }
+
+        public void SetCollapsed(bool collapsed)
+        {
+            if (Collapsed == collapsed) return;
+
+            Collapsed = collapsed;
+            BtnChevron.Image = imageList1.Images[collapsed ? 0 : 1];
+
+            SuspendLayout();
+            ResizeVertically();
+            ResumeLayout(true);
+
+            if (!collapsed)
+            {
+                if (ListViewItems.IsHandleCreated && ListViewItems.VirtualListSize > 0)
+                    ListViewItems.EnsureVisible(0);
+                RedrawExpandedListView();
+            }
+
+            OnCollapseChanged(EventArgs.Empty);
+        }
+
+        private void RedrawExpandedListView()
+        {
+            if (!IsHandleCreated) return;
+
+            BeginInvoke((MethodInvoker)(() =>
+            {
+                if (IsDisposed || Collapsed || !ListViewItems.IsHandleCreated) return;
+
+                ListViewItems.Invalidate();
+                ListViewItems.Update();
+                Invalidate();
+                Update();
+            }));
+        }
 
         /// <summary>
         /// Draws the IN | EX toggle right-aligned.
@@ -262,6 +308,7 @@ namespace LogScraper
         /// <param name="stats">Current counts per value after filtering. Pass null to show full counts.</param>
         public void UpdateListView(LogMetadataProperty property, List<LogMetadataValue> allValues, LogMetadataFilterStats stats)
         {
+            bool isFirstLoad = metadataProperty == null;
             metadataProperty = property;
 
             bool valuesChanged =
@@ -292,7 +339,11 @@ namespace LogScraper
 
             ListViewItems.VirtualListSize = sortedValues.Count;
             AdjustCountColumnWidth();
-            ResizeVertically();
+
+            if (isFirstLoad && property.IsCollapsedByDefault)
+                SetCollapsed(true);
+            else
+                ResizeVertically();
 
             updateInProgress = false;
         }
@@ -303,7 +354,7 @@ namespace LogScraper
         /// <param name="stats">Updated counts per value. Pass null when no filters are active.</param>
         public void UpdateCounts(LogMetadataFilterStats stats)
         {
-            int topItemIndex = ListViewItems.TopItem?.Index ?? 0;
+            int topItemIndex = Collapsed ? 0 : (ListViewItems.TopItem?.Index ?? 0);
 
             ListViewItems.SuspendDrawing();
             ListViewItems.BeginUpdate();
@@ -314,7 +365,7 @@ namespace LogScraper
             ListViewItems.EndUpdate();
             ListViewItems.ResumeDrawing();
 
-            if (topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)
+            if (!Collapsed && topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)
                 ListViewItems.EnsureVisible(topItemIndex);
         }
 
