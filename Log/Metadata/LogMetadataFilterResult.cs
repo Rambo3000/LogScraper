@@ -10,12 +10,16 @@ namespace LogScraper.Log.Metadata
     /// Represents the result of filtering log metadata.
     /// This class contains the filtered log entries and their associated metadata properties.
     /// </summary>
-    public class LogMetadataFilterResult (List<LogEntry> logEntries, List<LogMetadataFilter> activeFilters, IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> filterStats, IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees, LogCollection sourceLogCollection)
+    public class LogMetadataFilterResult (List<LogEntry> logEntries, BitArray filteredLogEntriesMask, List<LogMetadataFilter> activeFilters, IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> filterStats, IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees, LogCollection sourceLogCollection)
     {
         /// <summary>
         /// A list of log entries that match the filtering criteria.
         /// </summary>
         public List<LogEntry> LogEntries { get; private set; } = logEntries;
+        /// <summary>
+        /// A BitArray indicating which log entries from the source collection are included in the filtered result.
+        /// </summary>
+        public BitArray FilteredLogEntriesMask { get; private set; } = filteredLogEntriesMask;
         /// <summary>
         /// Gets the collection of source logs associated with this instance.
         /// </summary>

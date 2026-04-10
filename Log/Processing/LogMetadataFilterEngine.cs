@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
@@ -22,11 +23,11 @@ namespace LogScraper.Log.Processing
         /// <returns>A result containing the filtered log entries, per-property value counts, and log flow trees.</returns>
         public static LogMetadataFilterResult Apply(LogCollection collection, List<LogMetadataFilter> filters, LogLayout logLayout)
         {
-            List<LogEntry> logEntries = FilterLogEntries(collection.LogEntries, filters);
+            List<LogEntry> logEntries = FilterLogEntries(collection.LogEntries, filters, out BitArray filteredLogEntriesMask);
             IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> filterStats = LogMetadataStatsBuilder.Build(logEntries, logLayout.LogMetadataProperties);
             IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees = LogFlowTreeBuilder.Build(logLayout, logEntries);
 
-            return new(logEntries, filters, filterStats, logFlowTrees, collection);
+            return new(logEntries, filteredLogEntriesMask, filters, filterStats, logFlowTrees, collection);
         }
 
         /// <summary>
@@ -37,13 +38,25 @@ namespace LogScraper.Log.Processing
         /// <param name="allLogEntries">The list of all log entries.</param>
         /// <param name="filters">The list of metadata filters to apply.</param>
         /// <returns>The filtered list of log entries.</returns>
-        private static List<LogEntry> FilterLogEntries(List<LogEntry> allLogEntries, List<LogMetadataFilter> filters)
+        private static List<LogEntry> FilterLogEntries(List<LogEntry> allLogEntries, List<LogMetadataFilter> filters, out BitArray filteredLogEntriesMask)
         {
-            if (allLogEntries == null) return [];
-            if (filters == null || filters.Count == 0) return allLogEntries;
+            if (allLogEntries == null)
+            {
+                filteredLogEntriesMask = new BitArray(0);
+                return [];
+            }
+            if (filters == null || filters.Count == 0)
+            {
+                filteredLogEntriesMask = new BitArray(allLogEntries.Count, true);
+                return allLogEntries;
+            }
 
             List<LogMetadataFilter> activeFilters = [.. filters.Where(f => f.ActiveValues.Count > 0)];
-            if (activeFilters.Count == 0) return allLogEntries;
+            if (activeFilters.Count == 0)
+            {
+                filteredLogEntriesMask = new BitArray(allLogEntries.Count, true);
+            }
+            
 
             // Build include/exclude sets once per filter, outside the entry loop.
             int activeFilterCount = activeFilters.Count;
@@ -62,6 +75,7 @@ namespace LogScraper.Log.Processing
             }
 
             List<LogEntry> result = new(allLogEntries.Count);
+            filteredLogEntriesMask = new BitArray(allLogEntries.Count);
 
             foreach (LogEntry logEntry in allLogEntries)
             {
@@ -77,7 +91,11 @@ namespace LogScraper.Log.Processing
                     if (excludeSets[f].Contains(entryValue))
                     { include = false; break; }
                 }
-                if (include) result.Add(logEntry);
+                if (include)
+                {
+                    result.Add(logEntry);
+                    filteredLogEntriesMask[logEntry.Index] = true;
+                }
             }
 
             return result;

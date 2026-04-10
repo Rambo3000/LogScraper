@@ -271,7 +271,6 @@ namespace LogScraper
                     // Pass null for stats on initial load — no filters active yet, full counts will be shown.
                     UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
                     FilterLogEntries();
-                    RefreshLogStatistics();
                 }
 
                 HandleErrorMessages(string.Empty, true);
@@ -307,16 +306,14 @@ namespace LogScraper
 
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
-            currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(
-                LogCollection.Instance,
-                activeFilters,
-                UsrLogProviderSelection.GetSelectedLogLayout());
+            currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(LogCollection.Instance, activeFilters, UsrLogProviderSelection.GetSelectedLogLayout());
 
             // Update counts in the filter panel to reflect the filtered result.
-            UsrMetadataFilterOverview.UpdateFilterControlsCount(
-                [.. currentLogMetadataFilterResult.FilterStats.Values]);
+            UsrMetadataFilterOverview.UpdateFilterControlsCount([.. currentLogMetadataFilterResult.FilterStats.Values]);
 
             UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
+            BookMarksControl.UpdateMetadataFilterResult(currentLogMetadataFilterResult);
+
             RenderLog(currentLogMetadataFilterResult);
         }
 
@@ -347,7 +344,7 @@ namespace LogScraper
         {
             if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
             {
-                LogTimeLineControl.UpdateLogEntries(currentLogMetadataFilterResult.LogEntries, visibleLogEntries, LogViewport.Range, currentLogMetadataFilterResult.SourceLogCollection);
+                LogTimeLineControl.UpdateLogEntries(currentLogMetadataFilterResult, visibleLogEntries, LogViewport.Range, currentLogMetadataFilterResult.SourceLogCollection);
             }
         }
 

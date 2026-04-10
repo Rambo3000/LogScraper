@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Utilities.UserControls
@@ -20,6 +22,7 @@ namespace LogScraper.Utilities.UserControls
 
         // Log entry collections
         private List<LogEntry> filteredLogEntries = [];
+        private BitArray filteredLogEntriesMask = null;
         private List<LogEntry> filteredLogEntriesInRange = [];
         private List<LogEntry> displayedLogEntries = [];
 
@@ -31,6 +34,7 @@ namespace LogScraper.Utilities.UserControls
         private List<LogEntry> allBookmarkLogEntries = [];
         private List<LogEntry> bookmarkLogEntriesInRange = [];
         private List<LogEntry> bookmarkLogEntriesOutOfRange = [];
+        private List<LogEntry> bookmarkLogEntriesNotAvailable = [];
 
         // Full collection span (for full-timeline mode and out-of-range markers)
         private DateTime fullSpanMinimum;
@@ -143,7 +147,7 @@ namespace LogScraper.Utilities.UserControls
         /// Supports incremental updates if new entries are appended to existing data.
         /// The full collection is used to determine the full-span time range.
         /// </summary>
-        public void UpdateLogEntries(List<LogEntry> filteredEntries, List<LogEntry> visibleEntries, LogRange range, LogCollection fullCollection)
+        public void UpdateLogEntries(LogMetadataFilterResult filterResult, List<LogEntry> visibleEntries, LogRange range, LogCollection fullCollection)
         {
             if (fullCollection?.LogEntries?.Count == 0)
             {
@@ -152,14 +156,16 @@ namespace LogScraper.Utilities.UserControls
                 buckets.Clear();
                 sortedBucketKeys.Clear();
                 errorLogEntriesInRange.Clear();
+                filteredLogEntriesMask = null;
                 this.Invalidate();
                 return;
             }
 
             fullSpanMinimum = fullCollection.LogEntries[0].TimeStamp;
             fullSpanMaximum = fullCollection.LogEntries[^1].TimeStamp;
+            filteredLogEntriesMask = filterResult.FilteredLogEntriesMask;
 
-            filteredLogEntries = filteredEntries == null ? [] : [..filteredEntries];
+            filteredLogEntries = filterResult?.LogEntries == null ? [] : [.. filterResult.LogEntries];
             filteredLogEntriesInRange = (visibleEntries == null) ? [] : [.. visibleEntries];
             _logRange = range;
 
@@ -231,23 +237,31 @@ namespace LogScraper.Utilities.UserControls
         }
         private void RebuildFilteredBookmarkMarkers()
         {
+
+            List<LogEntry> bookMarkAvailable = [];
+            bookmarkLogEntriesNotAvailable = [];
+
+            foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
+            {
+                if (filteredLogEntriesMask[bookmarkEntry.Index])
+                {
+                    bookMarkAvailable.Add(bookmarkEntry);
+                }
+                else
+                {
+                    bookmarkLogEntriesNotAvailable.Add(bookmarkEntry);
+                }
+            }
+
             int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
             int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
 
-            bookmarkLogEntriesInRange = [.. allBookmarkLogEntries.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+            bookmarkLogEntriesInRange = [.. bookMarkAvailable.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
             bookmarkLogEntriesOutOfRange = [];
 
             if (_logRange?.IsConstrained == true && _showFullTimeline)
             {
-                HashSet<int> inRangeIndices = [.. bookmarkLogEntriesInRange.Select(entry => entry.Index)];
-
-                foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
-                {
-                    if (inRangeIndices.Contains(bookmarkEntry.Index))
-                        continue;
-
-                    bookmarkLogEntriesOutOfRange.Add(bookmarkEntry);
-                }
+                bookmarkLogEntriesOutOfRange = [.. bookMarkAvailable.Where(entry => entry.Index < rangeBegin || entry.Index > rangeEnd)];
             }
         }
 
@@ -435,6 +449,15 @@ namespace LogScraper.Utilities.UserControls
             graphics.FillEllipse(brush, markerX, markerY, MARKER_SIZE, MARKER_SIZE);
         }
 
+        /// <summary>Draws only the outline of a marker (hollow ring) at the given position.</summary>
+        private static void DrawMarkerOutline(Graphics graphics, float centerX, int drawableHeight, int yOffset, Color color)
+        {
+            float markerX = centerX - (MARKER_SIZE / 2);
+            float markerY = drawableHeight - yOffset;
+            using Pen pen = new(color, 1.5f);
+            graphics.DrawEllipse(pen, markerX, markerY, MARKER_SIZE, MARKER_SIZE);
+        }
+
         /// <summary>Returns the index of the marker in the given list whose hit rect contains the mouse position, or -1.</summary>
         private int GetMarkerIndexAtPosition(int mouseX, int mouseY, List<LogEntry> entries, int yOffset)
         {
@@ -618,10 +641,21 @@ namespace LogScraper.Utilities.UserControls
 
         /// <summary>
         /// Draws bookmark markers one band above error markers.
-        /// Out-of-range bookmarks are drawn faded in full-timeline mode.
+        /// Out-of-range bookmarks are drawn as hollow circles (outlines only) in faded color.
+        /// In-range bookmarks are drawn as filled circles.
         /// </summary>
         private void DrawBookmarkMarkers(Graphics graphics, int histogramWidth, int drawableHeight)
         {
+            // Draw out-of-range bookmarks as hollow circles (faded outlines)
+            foreach (LogEntry bookmarkEntry in bookmarkLogEntriesNotAvailable)
+            {
+                float centerX = GetOutOfRangeMarkerXPosition(bookmarkEntry);
+                if (centerX < 0 || centerX > histogramWidth) continue;
+
+                DrawMarkerOutline(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
+            }
+
+            // Draw out-of-range bookmarks as hollow circles (faded outlines)
             foreach (LogEntry bookmarkEntry in bookmarkLogEntriesOutOfRange)
             {
                 float centerX = GetOutOfRangeMarkerXPosition(bookmarkEntry);
@@ -630,6 +664,7 @@ namespace LogScraper.Utilities.UserControls
                 DrawMarkerEllipse(graphics, centerX, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_OUT_OF_RANGE_COLOR);
             }
 
+            // Draw in-range bookmarks as filled circles
             for (int i = 0; i < bookmarkLogEntriesInRange.Count; i++)
             {
                 float centerX = GetMarkerXPosition(bookmarkLogEntriesInRange[i]);

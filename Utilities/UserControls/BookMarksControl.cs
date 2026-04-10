@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Utilities.UserControls
@@ -17,13 +17,35 @@ namespace LogScraper.Utilities.UserControls
         private LogEntry selectedLogEntry;
         private LogRange _logRange;
         private List<LogEntry> _filteredBookmarks = [];
+        private LogMetadataFilterResult logMetadataFilterResult;
 
         private void RebuildFilteredBookmarks()
         {
             int rangeBegin = _logRange?.Begin?.Index ?? int.MinValue;
             int rangeEnd = _logRange?.End?.Index ?? int.MaxValue;
 
-            _filteredBookmarks = [.. bookmarks.Values.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+            List<LogEntry> bookMarksWithinRange = [.. bookmarks.Values.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
+
+            if (logMetadataFilterResult?.FilteredLogEntriesMask == null)
+            {
+                _filteredBookmarks = bookMarksWithinRange;
+                return;
+            }
+
+            _filteredBookmarks = [];
+            foreach (LogEntry logEntry in bookMarksWithinRange)
+            {
+                if (logMetadataFilterResult.FilteredLogEntriesMask[logEntry.Index])
+                { 
+                    _filteredBookmarks.Add(logEntry);
+                }
+            }
+        }
+
+        public void UpdateMetadataFilterResult(LogMetadataFilterResult result)
+        {
+            logMetadataFilterResult = result;
+            RebuildFilteredBookmarks();
         }
 
         public BookMarksControl()
@@ -49,6 +71,7 @@ namespace LogScraper.Utilities.UserControls
         {
             if (bookmarks.Count == 0) return;
             bookmarks.Clear();
+            logMetadataFilterResult = null;
             RebuildFilteredBookmarks();
             OnBookmarksChanged();
             UpdateButtons();
