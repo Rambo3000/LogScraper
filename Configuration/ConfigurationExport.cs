@@ -1,5 +1,4 @@
-﻿using LogScraper.Configuration.Generic;
-using LogScraper.Log.Layout;
+﻿using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 
 namespace LogScraper.Configuration

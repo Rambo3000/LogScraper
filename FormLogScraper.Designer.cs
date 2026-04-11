@@ -1,4 +1,9 @@
-﻿using LogScraper.Utilities.Extensions;
+﻿using LogScraper.Content;
+using LogScraper.Controls;
+using LogScraper.Controls.Generic;
+using LogScraper.Controls.LogEntriesTextbox;
+using LogScraper.Controls.Metadata;
+using LogScraper.Controls.Search;
 
 namespace LogScraper
 {
@@ -35,7 +40,7 @@ namespace LogScraper
             BtnRecord = new System.Windows.Forms.Button();
             lblLogEntriesTotalValue = new System.Windows.Forms.Label();
             BtnClearFilters = new System.Windows.Forms.Button();
-            BtnErase = new LogScraper.Utilities.UserControls.SplitButton();
+            BtnErase = new SplitButton();
             ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
             ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
             ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,25 +51,25 @@ namespace LogScraper
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             BtnSave = new System.Windows.Forms.Button();
-            UsrLogProviderSelection = new LogScraper.Utilities.UserControls.LogProviderSelectionControl();
+            UsrLogProviderSelection = new LogProviderSelectionControl();
             splitContainer2 = new SplitContainerWithGrip();
             splitContainer4 = new SplitContainerWithGrip();
-            LogTimeLineControl = new LogScraper.Utilities.UserControls.LogTimeLineControl();
+            LogTimeLineControl = new LogTimeLineControl();
             splitContainer5 = new SplitContainerWithGrip();
-            BookMarksControl = new LogScraper.Utilities.UserControls.BookMarksControl();
+            BookMarksControl = new BookMarksControl();
             UserControlSearch = new UserControlSearch();
             panel1 = new System.Windows.Forms.Panel();
             TxtErrorMessage = new System.Windows.Forms.TextBox();
-            UserControlLogEntriesTextBox = new LogScraper.Utilities.UserControls.UserControlLogEntriesTextBox();
-            flowTreeControl1 = new LogScraper.Log.FlowTree.FlowTreeControl();
-            LogViewport = new LogScraper.Utilities.UserControls.LogViewportControl();
-            MetadataFormatingControl = new LogScraper.Log.Metadata.MetadataFormattingControl();
-            LogPostProcessing = new LogScraper.LogPostProcessors.LogPostProcessingControl();
-            SearchResultListControl = new LogScraper.Utilities.UserControls.SearchResultListControl();
+            UserControlLogEntriesTextBox = new UserControlLogEntriesTextBox();
+            flowTreeControl1 = new FlowTreeControl();
+            LogViewport = new LogViewportControl();
+            MetadataFormatingControl = new MetadataFormattingControl();
+            LogPostProcessing = new LogPostProcessingControl();
+            SearchResultListControl = new SearchResultListControl();
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            UsrMetadataFilterOverview = new LogScraper.Log.Metadata.UserControlMetadataFilterOverview();
+            UsrMetadataFilterOverview = new UserControlMetadataFilterOverview();
             splitContainer1 = new SplitContainerWithGrip();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             ToolTip = new System.Windows.Forms.ToolTip(components);
@@ -570,7 +575,7 @@ namespace LogScraper
         public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnOpenWithEditor;
         public System.Windows.Forms.Label lblLogEntriesTotalValue;
-        public Utilities.UserControls.SplitButton BtnErase;
+        public SplitButton BtnErase;
         private System.Windows.Forms.Button BtnFormRecord;
         private System.Windows.Forms.GroupBox groupBox1;
         private SplitContainerWithGrip splitContainer1;
@@ -579,27 +584,27 @@ namespace LogScraper
         private System.Windows.Forms.GroupBox groupBox6;
         private UserControlSearch UserControlSearch;
         private System.Windows.Forms.Button BtnConfig;
-        private Log.Metadata.UserControlMetadataFilterOverview UsrMetadataFilterOverview;
+        private UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;
-        private Utilities.UserControls.UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
+        private UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
         private System.Windows.Forms.ContextMenuStrip ContextMenuReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
         private System.Windows.Forms.ImageList imageListBtnErase;
         private System.Windows.Forms.Button BtnClearFilters;
         private SplitContainerWithGrip splitContainer4;
-        private Utilities.UserControls.LogTimeLineControl LogTimeLineControl;
+        private LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
-        private Utilities.UserControls.BookMarksControl BookMarksControl;
-        private Utilities.UserControls.LogViewportControl LogViewport;
-        private LogPostProcessors.LogPostProcessingControl LogPostProcessing;
+        private BookMarksControl BookMarksControl;
+        private LogViewportControl LogViewport;
+        private LogPostProcessingControl LogPostProcessing;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox TxtErrorMessage;
-        private Log.Metadata.MetadataFormattingControl MetadataFormatingControl;
-        private Log.FlowTree.FlowTreeControl flowTreeControl1;
-        private Utilities.UserControls.SearchResultListControl SearchResultListControl;
+        private MetadataFormattingControl MetadataFormatingControl;
+        private FlowTreeControl flowTreeControl1;
+        private SearchResultListControl SearchResultListControl;
         private SplitContainerWithGrip splitContainer5;
-        private Utilities.UserControls.LogProviderSelectionControl UsrLogProviderSelection;
+        private LogProviderSelectionControl UsrLogProviderSelection;
         private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }

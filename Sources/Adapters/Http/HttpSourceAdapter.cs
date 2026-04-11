@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LogScraper.SourceAdapters;
+using LogScraper.Controls.Generic;
 using LogScraper.Sources.Adapters.Http.Authenticators;
 
 namespace LogScraper.Sources.Adapters.Http

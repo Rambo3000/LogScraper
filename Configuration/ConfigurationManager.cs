@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using LogScraper.Configuration.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;

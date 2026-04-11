@@ -6,6 +6,9 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Controls;
+using LogScraper.Controls.LogEntriesTextbox;
+using LogScraper.Controls.Search;
 using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
@@ -17,18 +20,16 @@ using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
-using LogScraper.Utilities.UserControls;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper
 {
-    //TODO: optional collapsable metadata
     //TODO: Add key shortcuts like F3/shift F3
-    //TODO: search wrap around not working correctly, switching between two last entries
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
+    //TODO: filter begin flow add button to clear
 
     //TODO: group/move user controls into their own folders
-    //TODO: add bar at bottom of screen?
+    //TODO: status bar at bottom of screen
     public partial class FormLogScraper : Form
     {
         #region Form Initialization

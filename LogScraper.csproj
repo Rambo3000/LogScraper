@@ -82,27 +82,27 @@
     <PackageReference Include="ScintillaNET.Core" Version="3.6.51" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="LogProviders\File\UserControlFileConfig.cs">
+    <Compile Update="Controls\Configuration\LogProviders\UserControlFileConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="LogProviders\Runtime\UserControlRuntimeConfig.cs">
+    <Compile Update="Controls\Configuration\LogProviders\UserControlRuntimeConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Log\FlowTree\FlowTreeControl.cs">
+    <Compile Update="Controls\FlowTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Log\Layout\UserControlLogLayoutConfig.cs">
+    <Compile Update="Controls\Configuration\UserControlLogLayoutConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="LogProviders\File\UserControlFileConfig.resx">
+    <EmbeddedResource Update="Controls\Configuration\LogProviders\UserControlFileConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="LogProviders\Runtime\UserControlRuntimeConfig.resx">
+    <EmbeddedResource Update="Controls\Configuration\LogProviders\UserControlRuntimeConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Log\Layout\UserControlLogLayoutConfig.resx">
+    <EmbeddedResource Update="Controls\Configuration\UserControlLogLayoutConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
