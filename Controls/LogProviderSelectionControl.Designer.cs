@@ -45,6 +45,8 @@ namespace LogScraper.Controls
             imageListChevron = new System.Windows.Forms.ImageList(components);
             BtnCollapseExpand = new System.Windows.Forms.Button();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
+            LblStatusIcon = new System.Windows.Forms.Label();
+            imageListStatus = new System.Windows.Forms.ImageList(components);
             PnlLogProviders = new System.Windows.Forms.Panel();
             PnlSeparator2 = new System.Windows.Forms.Panel();
             PnlSeparator1 = new System.Windows.Forms.Panel();
@@ -120,13 +122,13 @@ namespace LogScraper.Controls
             lblProviderDescription.AutoEllipsis = true;
             lblProviderDescription.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             lblProviderDescription.LinkColor = System.Drawing.Color.Black;
-            lblProviderDescription.Location = new System.Drawing.Point(0, 6);
+            lblProviderDescription.Location = new System.Drawing.Point(27, 6);
             lblProviderDescription.Name = "lblProviderDescription";
-            lblProviderDescription.Size = new System.Drawing.Size(308, 16);
+            lblProviderDescription.Size = new System.Drawing.Size(233, 17);
             lblProviderDescription.TabIndex = 25;
             lblProviderDescription.TabStop = true;
             lblProviderDescription.Text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
-            lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             lblProviderDescription.VisitedLinkColor = System.Drawing.Color.Black;
             lblProviderDescription.MouseClick += lblProviderDescription_MouseClick;
             lblProviderDescription.MouseEnter += lblProviderDescription_MouseEnter;
@@ -140,7 +142,7 @@ namespace LogScraper.Controls
             btnPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPin.ImageIndex = 0;
             btnPin.ImageList = imageListPins;
-            btnPin.Location = new System.Drawing.Point(281, 1);
+            btnPin.Location = new System.Drawing.Point(283, 26);
             btnPin.Name = "btnPin";
             btnPin.Size = new System.Drawing.Size(24, 24);
             btnPin.TabIndex = 27;
@@ -176,6 +178,24 @@ namespace LogScraper.Controls
             BtnCollapseExpand.TabIndex = 28;
             BtnCollapseExpand.UseVisualStyleBackColor = true;
             BtnCollapseExpand.Click += BtnCollapseExpand_Click;
+            // 
+            // LblStatusIcon
+            // 
+            LblStatusIcon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblStatusIcon.ImageIndex = 0;
+            LblStatusIcon.ImageList = imageListStatus;
+            LblStatusIcon.Location = new System.Drawing.Point(288, 5);
+            LblStatusIcon.Name = "LblStatusIcon";
+            LblStatusIcon.Size = new System.Drawing.Size(16, 16);
+            LblStatusIcon.TabIndex = 33;
+            // 
+            // imageListStatus
+            // 
+            imageListStatus.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            imageListStatus.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListStatus.ImageStream");
+            imageListStatus.TransparentColor = System.Drawing.Color.Transparent;
+            imageListStatus.Images.SetKeyName(0, "download 16x16.png");
+            imageListStatus.Images.SetKeyName(1, "cogs-custom 16x16.png");
             // 
             // PnlLogProviders
             // 
@@ -221,6 +241,7 @@ namespace LogScraper.Controls
             Controls.Add(cboLogProvider);
             Controls.Add(lblLogProvider);
             Controls.Add(lblProviderDescription);
+            Controls.Add(LblStatusIcon);
             Name = "LogProviderSelectionControl";
             Size = new System.Drawing.Size(308, 207);
             PnlLogProviders.ResumeLayout(false);
@@ -246,5 +267,7 @@ namespace LogScraper.Controls
         private System.Windows.Forms.Panel PnlLogProviders;
         private System.Windows.Forms.Panel PnlSeparator1;
         private System.Windows.Forms.Panel PnlSeparator2;
+        private System.Windows.Forms.ImageList imageListStatus;
+        private System.Windows.Forms.Label LblStatusIcon;
     }
 }

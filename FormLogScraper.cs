@@ -21,12 +21,12 @@ using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static LogScraper.Controls.LogProviderSelectionControl;
 
 namespace LogScraper
 {
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
-    //TODO: filter begin flow add button to clear
 
     //TODO: status bar at bottom of screen
     public partial class FormLogScraper : Form
@@ -223,6 +223,7 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
+                UsrLogProviderSelection.UpdateStatus(StatusType.Retrieving);
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
@@ -253,6 +254,7 @@ namespace LogScraper
                 bool newLogEntriesReceived = false;
                 try
                 {
+                    UsrLogProviderSelection.UpdateStatus(StatusType.Processing);
                     newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogCollection.Instance, logLayout);
                 }
                 catch (Exception ex)
@@ -433,6 +435,7 @@ namespace LogScraper
             }
             else
             {
+                UsrLogProviderSelection.UpdateStatus(StatusType.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
@@ -472,7 +475,10 @@ namespace LogScraper
             bool sourceIsValid = UsrLogProviderSelection.IsSourceValid;
             bool layoutSelected = UsrLogProviderSelection.GetSelectedLogLayout() != null;
             if (!downloadingInProgress)
+            {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
+                UsrLogProviderSelection.UpdateStatus(StatusType.Finished);
+            }
 
             BtnRecord.Visible = !downloadingInProgress;
             BtnRecord.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;

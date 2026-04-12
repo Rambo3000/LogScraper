@@ -11,6 +11,12 @@ namespace LogScraper.Controls
 {
     public partial class LogProviderSelectionControl : UserControl
     {
+        public enum StatusType
+        {
+            Retrieving,
+            Processing,
+            Finished
+        }
         public event EventHandler SourceSelectionChanged;
         public event EventHandler<(string message, bool isSuccess)> StatusUpdate;
         public event EventHandler<string> UriChanged;
@@ -42,6 +48,16 @@ namespace LogScraper.Controls
             }
         }
 
+        public void UpdateStatus(StatusType status)
+        { 
+            if (status == StatusType.Retrieving) LblStatusIcon.ImageIndex = 0;
+            else if (status == StatusType.Processing) LblStatusIcon.ImageIndex = 1;
+
+            LblStatusIcon.Visible = status != StatusType.Finished;
+
+            //Force UI update to reflect status change immediately
+            Application.DoEvents();
+        }
 
         public LogProviderSelectionControl()
         {
