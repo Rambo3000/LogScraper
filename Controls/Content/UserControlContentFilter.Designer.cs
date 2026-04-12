@@ -1,4 +1,5 @@
-﻿using LogScraper.Utilities;
+﻿using LogScraper.Controls.Generic;
+using LogScraper.Utilities;
 
 namespace LogScraper.Content
 {
@@ -34,11 +35,11 @@ namespace LogScraper.Content
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogContentFilter));
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
-            txtSearch = new System.Windows.Forms.TextBox();
+            txtSearch = new ClearableTextBoxControl();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
             BtnShowTree = new System.Windows.Forms.Button();
             imageList1 = new System.Windows.Forms.ImageList(components);
+            PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling.SuspendLayout();
             SuspendLayout();
             // 
@@ -62,35 +63,22 @@ namespace LogScraper.Content
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(0, 0);
+            CboLogContentType.Location = new System.Drawing.Point(3, 0);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(216, 23);
+            CboLogContentType.Size = new System.Drawing.Size(213, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
             // txtSearch
             // 
             txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.Location = new System.Drawing.Point(2, 26);
+            txtSearch.BackColor = System.Drawing.SystemColors.Window;
+            txtSearch.Location = new System.Drawing.Point(3, 27);
             txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(241, 23);
+            txtSearch.PlaceholderText = "";
+            txtSearch.Size = new System.Drawing.Size(237, 20);
             txtSearch.TabIndex = 7;
             txtSearch.TextChanged += TxtSearch_TextChanged;
-            txtSearch.Enter += TxtSearch_Enter;
-            txtSearch.KeyDown += TxtSearch_KeyDown;
-            txtSearch.Leave += TxtSearch_Leave;
-            // 
-            // PnlUsedForCorrectScaling
-            // 
-            PnlUsedForCorrectScaling.Controls.Add(BtnShowTree);
-            PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
-            PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
-            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
-            PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
-            PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
-            PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
-            PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
-            PnlUsedForCorrectScaling.TabIndex = 23;
             // 
             // BtnShowTree
             // 
@@ -113,17 +101,28 @@ namespace LogScraper.Content
             imageList1.Images.SetKeyName(0, "log entries tree custommade 16x16.png");
             imageList1.Images.SetKeyName(1, "log entries tree hide custommade 16x16.png");
             // 
+            // PnlUsedForCorrectScaling
+            // 
+            PnlUsedForCorrectScaling.Controls.Add(BtnShowTree);
+            PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
+            PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
+            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
+            PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
+            PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
+            PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
+            PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
+            PnlUsedForCorrectScaling.TabIndex = 23;
+            // 
             // UserControlLogContentFilter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            BackColor = System.Drawing.SystemColors.Window;
+            BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(PnlUsedForCorrectScaling);
             Name = "UserControlLogContentFilter";
             Size = new System.Drawing.Size(243, 272);
             PnlUsedForCorrectScaling.ResumeLayout(false);
-            PnlUsedForCorrectScaling.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -131,7 +130,7 @@ namespace LogScraper.Content
 
         private System.Windows.Forms.ListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
-        private System.Windows.Forms.TextBox txtSearch;
+        private ClearableTextBoxControl txtSearch;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
         private System.Windows.Forms.Button BtnShowTree;

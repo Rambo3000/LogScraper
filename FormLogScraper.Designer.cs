@@ -353,7 +353,7 @@ namespace LogScraper
             // 
             // UserControlSearch
             // 
-            UserControlSearch.Location = new System.Drawing.Point(328, 0);
+            UserControlSearch.Location = new System.Drawing.Point(328, 1);
             UserControlSearch.Name = "UserControlSearch";
             UserControlSearch.Size = new System.Drawing.Size(215, 25);
             UserControlSearch.TabIndex = 33;
@@ -427,7 +427,7 @@ namespace LogScraper
             SearchResultListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             SearchResultListControl.Location = new System.Drawing.Point(0, 0);
             SearchResultListControl.Name = "SearchResultListControl";
-            SearchResultListControl.Size = new System.Drawing.Size(647, 104);
+            SearchResultListControl.Size = new System.Drawing.Size(150, 42);
             SearchResultListControl.TabIndex = 26;
             // 
             // groupBox6
@@ -444,7 +444,7 @@ namespace LogScraper
             // UserControlContentFilter
             // 
             UserControlContentFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            UserControlContentFilter.BackColor = System.Drawing.SystemColors.Window;
+            UserControlContentFilter.BackColor = System.Drawing.SystemColors.Control;
             UserControlContentFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             UserControlContentFilter.Location = new System.Drawing.Point(3, 19);
             UserControlContentFilter.Name = "UserControlContentFilter";

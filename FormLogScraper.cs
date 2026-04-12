@@ -28,7 +28,6 @@ namespace LogScraper
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
     //TODO: filter begin flow add button to clear
 
-    //TODO: group/move user controls into their own folders
     //TODO: status bar at bottom of screen
     public partial class FormLogScraper : Form
     {

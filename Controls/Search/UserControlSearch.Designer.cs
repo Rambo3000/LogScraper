@@ -32,10 +32,9 @@ namespace LogScraper.Controls.Search
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlSearch));
-            txtSearch = new System.Windows.Forms.TextBox();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            BtnClear = new System.Windows.Forms.Button();
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
+            TxtSearch = new ClearableTextBoxControl();
             splitButton1 = new SplitButton();
             contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             ItemPrevious = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,52 +45,29 @@ namespace LogScraper.Controls.Search
             ItemWholeWords = new System.Windows.Forms.ToolStripMenuItem();
             ItemWrapAround = new System.Windows.Forms.ToolStripMenuItem();
             imageList1 = new System.Windows.Forms.ImageList(components);
-            PnlFakeWhiteBackground = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling.SuspendLayout();
             contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // txtSearch
-            // 
-            txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            txtSearch.Location = new System.Drawing.Point(2, 5);
-            txtSearch.Name = "txtSearch";
-            txtSearch.Size = new System.Drawing.Size(188, 16);
-            txtSearch.TabIndex = 0;
-            txtSearch.TextChanged += TxtSearch_TextChanged;
-            txtSearch.Enter += TxtSearch_Enter;
-            txtSearch.KeyDown += TxtSearch_KeyDown;
-            txtSearch.Leave += TxtSearch_Leave;
-            // 
-            // BtnClear
-            // 
-            BtnClear.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnClear.BackColor = System.Drawing.Color.White;
-            BtnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            BtnClear.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            BtnClear.FlatAppearance.BorderSize = 0;
-            BtnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            BtnClear.Image = (System.Drawing.Image)resources.GetObject("BtnClear.Image");
-            BtnClear.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            BtnClear.Location = new System.Drawing.Point(188, 1);
-            BtnClear.Name = "BtnClear";
-            BtnClear.Size = new System.Drawing.Size(20, 20);
-            BtnClear.TabIndex = 9;
-            BtnClear.UseVisualStyleBackColor = false;
-            BtnClear.Click += BtnClear_Click;
-            // 
             // PnlUsedForCorrectScaling
             // 
-            PnlUsedForCorrectScaling.Controls.Add(BtnClear);
+            PnlUsedForCorrectScaling.Controls.Add(TxtSearch);
             PnlUsedForCorrectScaling.Controls.Add(splitButton1);
-            PnlUsedForCorrectScaling.Controls.Add(txtSearch);
-            PnlUsedForCorrectScaling.Controls.Add(PnlFakeWhiteBackground);
             PnlUsedForCorrectScaling.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForCorrectScaling.Location = new System.Drawing.Point(0, 0);
             PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
             PnlUsedForCorrectScaling.Size = new System.Drawing.Size(244, 25);
             PnlUsedForCorrectScaling.TabIndex = 11;
+            // 
+            // TxtSearch
+            // 
+            TxtSearch.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtSearch.BackColor = System.Drawing.SystemColors.Window;
+            TxtSearch.Location = new System.Drawing.Point(0, 2);
+            TxtSearch.Name = "TxtSearch";
+            TxtSearch.PlaceholderText = "";
+            TxtSearch.Size = new System.Drawing.Size(209, 20);
+            TxtSearch.TabIndex = 11;
             // 
             // splitButton1
             // 
@@ -112,7 +88,7 @@ namespace LogScraper.Controls.Search
             contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemPrevious, ItemNext, ItemAll, toolStripSeparator1, ItemCaseSensitive, ItemWholeWords, ItemWrapAround });
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.ShowCheckMargin = true;
-            contextMenuStrip1.Size = new System.Drawing.Size(235, 164);
+            contextMenuStrip1.Size = new System.Drawing.Size(235, 142);
             // 
             // ItemPrevious
             // 
@@ -176,14 +152,6 @@ namespace LogScraper.Controls.Search
             imageList1.Images.SetKeyName(1, "arrow left.png");
             imageList1.Images.SetKeyName(2, "magnify 16x16.png");
             // 
-            // PnlFakeWhiteBackground
-            // 
-            PnlFakeWhiteBackground.BackColor = System.Drawing.Color.White;
-            PnlFakeWhiteBackground.Location = new System.Drawing.Point(0, 1);
-            PnlFakeWhiteBackground.Name = "PnlFakeWhiteBackground";
-            PnlFakeWhiteBackground.Size = new System.Drawing.Size(208, 21);
-            PnlFakeWhiteBackground.TabIndex = 11;
-            // 
             // UserControlSearch
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -192,16 +160,12 @@ namespace LogScraper.Controls.Search
             Name = "UserControlSearch";
             Size = new System.Drawing.Size(244, 25);
             PnlUsedForCorrectScaling.ResumeLayout(false);
-            PnlUsedForCorrectScaling.PerformLayout();
             contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.Button BtnClear;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem ItemPrevious;
@@ -213,7 +177,7 @@ namespace LogScraper.Controls.Search
         private System.Windows.Forms.ToolStripMenuItem ItemWrapAround;
         private System.Windows.Forms.ImageList imageList1;
         private SplitButton splitButton1;
-        private System.Windows.Forms.Panel PnlFakeWhiteBackground;
+        private ClearableTextBoxControl TxtSearch;
     }
 }
 

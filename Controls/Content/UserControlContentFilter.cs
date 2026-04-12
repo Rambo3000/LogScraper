@@ -20,8 +20,7 @@ namespace LogScraper.Content
     internal partial class UserControlLogContentFilter : UserControl
     {
         #region Private objects and initialization
-        private const string DefaulSearchtTextFormat = "Filter {0}...";
-        private string DefaulSearchtText = "Filter...";
+        private const string DefaulSearchtText = "Filter...";
 
         private List<LogContentProperty> LogContentPropertiesError = [];
 
@@ -34,8 +33,9 @@ namespace LogScraper.Content
         public UserControlLogContentFilter()
         {
             InitializeComponent();
-            TxtSearch_Leave(null, null);
+            txtSearch.PlaceholderText = DefaulSearchtText;
         }
+
         #endregion
 
         #region Update log layout
@@ -100,7 +100,7 @@ namespace LogScraper.Content
             if (logContentProperty == null) return null;
 
             string filter = txtSearch.Text.Trim();
-            if (filter == DefaulSearchtText) filter = null;
+            if (filter == string.Empty) filter = null;
 
             bool showErrors = ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters;
             bool filterEnabled = !string.IsNullOrEmpty(filter);
@@ -461,10 +461,9 @@ namespace LogScraper.Content
         #region Search
         private string lastSearch = string.Empty;
 
-        private void PerformSearch()
+        private void PerformSearch(bool force = false)
         {
             string searchString = txtSearch.Text.Trim();
-            if (searchString == DefaulSearchtText) return;
             if (searchString != lastSearch)
             {
                 UpdateDisplayedLogEntries();
@@ -511,36 +510,11 @@ namespace LogScraper.Content
             }
         }
 
-        private void TxtSearch_Enter(object sender, EventArgs e)
-        {
-            if (txtSearch.Text == DefaulSearchtText)
-            {
-                txtSearch.Text = string.Empty;
-                txtSearch.ForeColor = SystemColors.ControlText;
-            }
-        }
-
-        private void TxtSearch_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtSearch.Text))
-            {
-                txtSearch.Text = DefaulSearchtText;
-                txtSearch.ForeColor = Color.DarkGray;
-            }
-        }
-
         private void CboLogContentType_SelectedIndexChanged(object sender, EventArgs e)
         {
             LstLogContent.Items.Clear();
             UpdateDisplayedLogEntries();
             UpdateButtons();
-
-            if (SelectedLogContentProperty != null)
-            {
-                bool resetText = txtSearch.Text == DefaulSearchtText;
-                DefaulSearchtText = string.Format(DefaulSearchtTextFormat, SelectedLogContentProperty.Description.ToLower());
-                if (resetText) txtSearch.Text = DefaulSearchtText;
-            }
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
@@ -591,7 +565,6 @@ namespace LogScraper.Content
         public void ResetFilters()
         {
             txtSearch.Text = string.Empty;
-            TxtSearch_Leave(this, EventArgs.Empty);
         }
         #endregion
 

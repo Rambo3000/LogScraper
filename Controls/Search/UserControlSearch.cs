@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
-using LogScraper.Controls.Search;
 using LogScraper.Log;
 using LogScraper.Log.Rendering;
 
@@ -42,12 +40,21 @@ namespace LogScraper.Controls.Search
         public UserControlSearch()
         {
             InitializeComponent();
-            TxtSearch_Leave(null, null);
+            TxtSearch.PlaceholderText = DefaultSearchText;
+            TxtSearch.TextChanged += TxtSearch_TextChanged;
+            TxtSearch.Reset += TxtSearch_Reset;
             ItemAll.Click += ItemAll_Click;
             ItemCaseSensitive.Click += ItemCaseSensitive_CheckedChanged;
             ItemNext.Click += ItemNext_Click;
             ItemPrevious.Click += ItemPrevious_Click;
             ItemWholeWords.Click += ItemWholeWords_CheckedChanged;
+        }
+
+        private void TxtSearch_Reset(object sender, EventArgs e)
+        {
+            Clear();
+            UpdateButtons();
+            Search?.Invoke(BuildSearchSettings(SearchDirection.Forward));
         }
 
         #endregion
@@ -76,7 +83,7 @@ namespace LogScraper.Controls.Search
 
         public void Clear()
         {
-            txtSearch.Clear();
+            TxtSearch.Clear();
             UpdateButtons();
             FireSearchSettingsChanged(force: false);
         }
@@ -99,7 +106,7 @@ namespace LogScraper.Controls.Search
                     Begin = logEntries?.Count > 0 ? logEntries[0] : null,
                     End = logEntries?.Count > 0 ? logEntries[^1] : null
                 },
-                SearchText = IsSearchEmpty() ? string.Empty : txtSearch.Text.Trim(),
+                SearchText = TxtSearch.Text.Trim(),
                 CaseSensitive = ItemCaseSensitive.Checked,
                 WholeWord = ItemWholeWords.Checked,
                 IsMetadataSearchEnabled = IsMetadataSearchEnabled,
@@ -153,72 +160,26 @@ namespace LogScraper.Controls.Search
             }
         }
 
-        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                ItemNext_Click(sender, e);
-                e.Handled = true;
-            }
-            UpdateButtons();
-        }
-
         private void ItemCaseSensitive_CheckedChanged(object sender, EventArgs e)
         {
-            txtSearch.Focus();
+              TxtSearch.Focus();
         }
 
         private void ItemWholeWords_CheckedChanged(object sender, EventArgs e)
         {
-            txtSearch.Focus();
-        }
-
-        private void TxtSearch_Enter(object sender, EventArgs e)
-        {
-            if (txtSearch.Text == DefaultSearchText)
-            {
-                txtSearch.Text = string.Empty;
-                txtSearch.ForeColor = SystemColors.ControlText;
-            }
+            TxtSearch.Focus();
         }
         private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
             UpdateButtons();
         }
 
-        private void TxtSearch_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtSearch.Text))
-            {
-                txtSearch.Text = DefaultSearchText;
-                txtSearch.ForeColor = Color.DarkGray;
-            }
-            UpdateButtons();
-        }
-
-        private void BtnClear_Click(object sender, EventArgs e)
-        {
-            Clear();
-            UpdateButtons();
-            Search?.Invoke(BuildSearchSettings(SearchDirection.Forward));
-        }
-
         #endregion
 
         #region Private helpers
 
-        private bool IsSearchEmpty()
-        {
-            string search = txtSearch.Text.Trim();
-            return string.IsNullOrEmpty(search) || search == DefaultSearchText;
-        }
-
         private void UpdateButtons()
         {
-            bool isSearchEmpty = IsSearchEmpty();
-            BtnClear.Visible = !isSearchEmpty;
-            txtSearch.Width = isSearchEmpty ? BtnClear.Right : BtnClear.Left;
-            splitButton1.Enabled = !isSearchEmpty;
             splitButton1.ImageIndex = SelectedSearchMode switch
             {
                 SearchMode.Next => 0,
@@ -234,7 +195,7 @@ namespace LogScraper.Controls.Search
         /// </summary>
         private void FireSearchSettingsChanged(bool force)
         {
-            if (IsSearchEmpty()) return;
+            if (string.IsNullOrEmpty(TxtSearch.Text.Trim())) return;
 
             SearchSettings current = BuildSearchSettings();
 
