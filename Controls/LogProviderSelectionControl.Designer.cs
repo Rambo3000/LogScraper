@@ -122,13 +122,13 @@ namespace LogScraper.Controls
             lblProviderDescription.AutoEllipsis = true;
             lblProviderDescription.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             lblProviderDescription.LinkColor = System.Drawing.Color.Black;
-            lblProviderDescription.Location = new System.Drawing.Point(27, 6);
+            lblProviderDescription.Location = new System.Drawing.Point(23, 6);
             lblProviderDescription.Name = "lblProviderDescription";
-            lblProviderDescription.Size = new System.Drawing.Size(233, 17);
+            lblProviderDescription.Size = new System.Drawing.Size(266, 17);
             lblProviderDescription.TabIndex = 25;
             lblProviderDescription.TabStop = true;
             lblProviderDescription.Text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
-            lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             lblProviderDescription.VisitedLinkColor = System.Drawing.Color.Black;
             lblProviderDescription.MouseClick += lblProviderDescription_MouseClick;
             lblProviderDescription.MouseEnter += lblProviderDescription_MouseEnter;
@@ -182,7 +182,7 @@ namespace LogScraper.Controls
             // LblStatusIcon
             // 
             LblStatusIcon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            LblStatusIcon.ImageIndex = 0;
+            LblStatusIcon.ImageIndex = 1;
             LblStatusIcon.ImageList = imageListStatus;
             LblStatusIcon.Location = new System.Drawing.Point(288, 5);
             LblStatusIcon.Name = "LblStatusIcon";
@@ -240,8 +240,8 @@ namespace LogScraper.Controls
             Controls.Add(lblLogLayout);
             Controls.Add(cboLogProvider);
             Controls.Add(lblLogProvider);
-            Controls.Add(lblProviderDescription);
             Controls.Add(LblStatusIcon);
+            Controls.Add(lblProviderDescription);
             Name = "LogProviderSelectionControl";
             Size = new System.Drawing.Size(308, 207);
             PnlLogProviders.ResumeLayout(false);
