@@ -43,11 +43,20 @@ namespace LogScraper.Controls.Search
             TxtSearch.PlaceholderText = DefaultSearchText;
             TxtSearch.TextChanged += TxtSearch_TextChanged;
             TxtSearch.Reset += TxtSearch_Reset;
+            TxtSearch.KeyDown += TxtSearch_KeyDown;
             ItemAll.Click += ItemAll_Click;
             ItemCaseSensitive.Click += ItemCaseSensitive_CheckedChanged;
             ItemNext.Click += ItemNext_Click;
             ItemPrevious.Click += ItemPrevious_Click;
             ItemWholeWords.Click += ItemWholeWords_CheckedChanged;
+        }
+
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == (char)Keys.Enter)
+            {
+                SplitButton1_ButtonClick(this, EventArgs.Empty);
+            }
         }
 
         private void TxtSearch_Reset(object sender, EventArgs e)
@@ -162,7 +171,7 @@ namespace LogScraper.Controls.Search
 
         private void ItemCaseSensitive_CheckedChanged(object sender, EventArgs e)
         {
-              TxtSearch.Focus();
+            TxtSearch.Focus();
         }
 
         private void ItemWholeWords_CheckedChanged(object sender, EventArgs e)

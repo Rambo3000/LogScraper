@@ -41,7 +41,7 @@ namespace LogScraper.Controls.Generic
         public ClearableTextBoxControl()
         {
             InitializeComponent();
-            TxtTextBox.KeyDown += KeyDown;
+            TxtTextBox.KeyDown += (s, e) => KeyDown?.Invoke(this, e);
         }
 
         private void BtnClear_Click(object sender, EventArgs e)
