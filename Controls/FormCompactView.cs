@@ -91,7 +91,8 @@ namespace LogScraper.Controls
 
         public void UpdateButtonsFromMainWindow()
         {
-            lblLogEntriesTotalCount.Text = LogScraperForm.lblLogEntriesTotalValue.Text;
+            //TODO: update the counts as well
+            //lblLogEntriesTotalCount.Text = LogScraperForm.lblLogEntriesTotalValue.Text;
 
             BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
             BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;

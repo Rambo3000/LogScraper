@@ -4,12 +4,11 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
+using System.ComponentModel;
 
 namespace LogScraper.Controls.FilterOverview
 {
-    // -------------------------------------------------------------------------
-    // Chip variant — determines color scheme and interaction behaviour
-    // -------------------------------------------------------------------------
+    #region Chip variant — determines color scheme and interaction behaviour
 
     public enum ChipVariant
     {
@@ -22,43 +21,38 @@ namespace LogScraper.Controls.FilterOverview
         /// <summary>Error count chip — red, entire chip is clickable, chevron (›) on the right.</summary>
         Error
     }
-
-    // -------------------------------------------------------------------------
-    // Color scheme per variant
-    // -------------------------------------------------------------------------
-
-    internal readonly struct ChipColors
+    public enum LogRangeChipVariant
     {
-        public readonly Color Background;
-        public readonly Color Border;
-        public readonly Color Text;
-        public readonly Color ButtonHover;
+        Begin,
+        End
+    }
+    #endregion
 
-        public ChipColors(Color background, Color border, Color text, Color buttonHover)
-        {
-            Background = background;
-            Border = border;
-            Text = text;
-            ButtonHover = buttonHover;
-        }
+    #region Color scheme per variant 
+    internal readonly struct ChipColors(Color background, Color border, Color text, Color buttonHover)
+    {
+        public readonly Color Background = background;
+        public readonly Color Border = border;
+        public readonly Color Text = text;
+        public readonly Color ButtonHover = buttonHover;
 
-        internal static readonly ChipColors Metadata = new ChipColors(
-            background: Color.FromArgb(219, 234, 254), // light blue
-            border: Color.FromArgb(59, 130, 246), // steel blue
-            text: Color.FromArgb(29, 78, 216), // dark blue
-            buttonHover: Color.FromArgb(60, 29, 78, 216));
+        internal static readonly ChipColors Metadata = new(
+            background: Color.FromArgb(235, 242, 255), // very light blue-grey
+            border: Color.FromArgb(180, 200, 230), // muted steel blue
+            text: Color.FromArgb(80, 110, 160), // soft slate blue
+            buttonHover: Color.FromArgb(40, 80, 110, 160));
 
-        internal static readonly ChipColors Range = new ChipColors(
-            background: Color.FromArgb(254, 243, 199), // light amber
-            border: Color.FromArgb(217, 119, 6), // amber
-            text: Color.FromArgb(146, 64, 14), // dark amber
-            buttonHover: Color.FromArgb(60, 146, 64, 14));
+        internal static readonly ChipColors Range = new(
+            background: Color.FromArgb(255, 248, 235), // very light warm cream
+            border: Color.FromArgb(210, 175, 110), // muted sand/amber
+            text: Color.FromArgb(150, 110, 50), // soft warm brown
+            buttonHover: Color.FromArgb(40, 150, 110, 50));
 
-        internal static readonly ChipColors Error = new ChipColors(
-            background: Color.FromArgb(254, 226, 226), // light red
-            border: Color.FromArgb(220, 38, 38), // red
-            text: Color.FromArgb(153, 27, 27), // dark red
-            buttonHover: Color.FromArgb(60, 153, 27, 27));
+        internal static readonly ChipColors Error = new(
+            background: Color.FromArgb(255, 238, 238), // very light blush
+            border: Color.FromArgb(210, 160, 160), // muted dusty rose
+            text: Color.FromArgb(160, 80, 80), // soft muted red
+            buttonHover: Color.FromArgb(40, 160, 80, 80));
 
         internal static ChipColors ForVariant(ChipVariant variant) => variant switch
         {
@@ -68,10 +62,7 @@ namespace LogScraper.Controls.FilterOverview
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };
     }
-
-    // -------------------------------------------------------------------------
-    // FilterChipControl
-    // -------------------------------------------------------------------------
+    #endregion
 
     /// <summary>
     /// A rounded chip control representing an active filter or error count.
@@ -87,19 +78,12 @@ namespace LogScraper.Controls.FilterOverview
     /// </summary>
     public class FilterChipControl : UserControl
     {
-        // -------------------------------------------------------------------------
-        // Constants
-        // -------------------------------------------------------------------------
-
+        #region Fields and constructor
         private const int CornerRadius = 4;
-        private const int ChipHeight = 20;
+        private const int ChipHeight = 18;
         private const int ButtonSize = 14;
         private const int HorizontalPad = 4;
         private const int InnerGap = 2;
-
-        // -------------------------------------------------------------------------
-        // Events
-        // -------------------------------------------------------------------------
 
         /// <summary>
         /// Raised when:
@@ -108,80 +92,18 @@ namespace LogScraper.Controls.FilterOverview
         /// </summary>
         public event EventHandler ChipClicked;
 
-        // -------------------------------------------------------------------------
-        // Fields
-        // -------------------------------------------------------------------------
-
         private readonly ChipVariant _variant;
         private readonly ChipColors _colors;
         private LogMetadataFilter _metadataFilter;
+        private LogMetadataValue _specificValue;
         private LogRange _logRange;
+        private LogRangeChipVariant _logRangeChipVariant;
         private int _errorCount;
         private string _labelText = string.Empty;
         private bool _buttonHover = false;
         private bool _chipHover = false;
         private Rectangle _buttonBounds;
         private Image _removeImage;
-
-        // -------------------------------------------------------------------------
-        // Properties
-        // -------------------------------------------------------------------------
-
-        public ChipVariant Variant => _variant;
-        public LogMetadataFilter MetadataFilter => _metadataFilter;
-        public LogRange LogRange => _logRange;
-        public int ErrorCount => _errorCount;
-
-        /// <summary>
-        /// Optional icon for the remove button (Metadata / Range chips).
-        /// When null a fallback × character is drawn.
-        /// </summary>
-        public Image RemoveImage
-        {
-            get => _removeImage;
-            set { _removeImage = value; Invalidate(); }
-        }
-
-        // -------------------------------------------------------------------------
-        // Factory methods
-        // -------------------------------------------------------------------------
-
-        /// <summary>Creates a blue chip for a metadata filter.</summary>
-        public static FilterChipControl FromMetadataFilter(LogMetadataFilter filter)
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-
-            var chip = new FilterChipControl(ChipVariant.Metadata);
-            chip._metadataFilter = filter;
-            chip.UpdateLabel();
-            return chip;
-        }
-
-        /// <summary>Creates an amber chip for a log range filter.</summary>
-        public static FilterChipControl FromLogRange(LogRange range)
-        {
-            if (range == null) throw new ArgumentNullException(nameof(range));
-
-            var chip = new FilterChipControl(ChipVariant.Range);
-            chip._logRange = range;
-            chip.UpdateLabel();
-            return chip;
-        }
-
-        /// <summary>
-        /// Creates a red error count chip.
-        /// The entire chip is clickable — subscribe to <see cref="ChipClicked"/> to handle navigation.
-        /// </summary>
-        public static FilterChipControl FromErrorCount(int errorCount)
-        {
-            var chip = new FilterChipControl(ChipVariant.Error);
-            chip.SetErrorCount(errorCount);
-            return chip;
-        }
-
-        // -------------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------------
 
         private FilterChipControl(ChipVariant variant)
         {
@@ -197,24 +119,98 @@ namespace LogScraper.Controls.FilterOverview
 
             Font = new Font("Segoe UI", 8.25f, FontStyle.Regular, GraphicsUnit.Point);
             BackColor = Color.Transparent;
-            Margin = new Padding(0, 0, 6, 0);
+            Margin = new Padding(0, 0, 6, 3);
             Height = ChipHeight;
 
             if (variant == ChipVariant.Error)
                 Cursor = Cursors.Hand;
         }
+        #endregion
+
+        #region Static constructor factory methods
+        /// <summary>
+        /// Optional icon for the remove button (Metadata / Range chips).
+        /// When null a fallback × character is drawn.
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Image RemoveImage
+        {
+            get => _removeImage;
+            set { _removeImage = value; Invalidate(); }
+        }
 
         // -------------------------------------------------------------------------
-        // Public update methods
+        // Factory methods
         // -------------------------------------------------------------------------
+
+        /// <summary>Creates a blue chip for a metadata filter (one chip represents all active values).</summary>
+        public static FilterChipControl FromMetadataFilter(LogMetadataFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+
+            FilterChipControl chip = new(ChipVariant.Metadata)
+            {
+                _metadataFilter = filter
+            };
+            chip.UpdateLabel();
+            return chip;
+        }
+
+        /// <summary>Creates a blue chip representing a single active value within a metadata filter.</summary>
+        public static FilterChipControl FromMetadataFilterValue(LogMetadataFilter filter, LogMetadataValue value)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+            ArgumentNullException.ThrowIfNull(value);
+
+            FilterChipControl chip = new(ChipVariant.Metadata)
+            {
+                _metadataFilter = filter,
+                _specificValue = value
+            };
+            chip.UpdateLabel();
+            return chip;
+        }
+
+        /// <summary>Creates an amber chip for a log range filter.</summary>
+        public static FilterChipControl FromLogRange(LogRange range, LogRangeChipVariant variant)
+        {
+            ArgumentNullException.ThrowIfNull(range);
+
+            FilterChipControl chip = new(ChipVariant.Range)
+            {
+                _logRange = range,
+                _logRangeChipVariant = variant
+            };
+            chip.UpdateLabel();
+            return chip;
+        }
+
+        /// <summary>
+        /// Creates a red error count chip.
+        /// The entire chip is clickable — subscribe to <see cref="ChipClicked"/> to handle navigation.
+        /// </summary>
+        public static FilterChipControl FromErrorCount(int errorCount)
+        {
+            var chip = new FilterChipControl(ChipVariant.Error);
+            chip.SetErrorCount(errorCount);
+            return chip;
+        }
+        #endregion
+
+        #region Public properties and methods
+        public ChipVariant Variant => _variant;
+        public LogMetadataFilter MetadataFilter => _metadataFilter;
+        public LogMetadataValue SpecificValue => _specificValue;
+        public LogRange LogRange => _logRange;
+        public int ErrorCount => _errorCount;
 
         /// <summary>Rebuilds display text and recalculates chip width. Call after filter values change.</summary>
         public void UpdateLabel()
         {
             _labelText = _variant switch
             {
-                ChipVariant.Metadata => BuildMetadataLabel(_metadataFilter),
-                ChipVariant.Range => BuildRangeLabel(_logRange),
+                ChipVariant.Metadata => BuildMetadataLabel(_metadataFilter, _specificValue),
+                ChipVariant.Range => BuildRangeLabel(_logRange, _logRangeChipVariant),
                 ChipVariant.Error => BuildErrorLabel(_errorCount),
                 _ => string.Empty
             };
@@ -229,51 +225,47 @@ namespace LogScraper.Controls.FilterOverview
             _errorCount = count;
             UpdateLabel();
         }
+        #endregion
 
-        // -------------------------------------------------------------------------
-        // Label building
-        // -------------------------------------------------------------------------
-
+        #region Label building
         private void RecalculateWidth()
         {
-            using var graphics = CreateGraphics();
-            float textWidth = graphics.MeasureString(_labelText, Font).Width;
-
-            // HorizontalPad | text | InnerGap | ButtonSize | HorizontalPad
-            Width = (int)Math.Ceiling(HorizontalPad + textWidth + InnerGap + ButtonSize + HorizontalPad);
+            int textWidth = TextRenderer.MeasureText(_labelText, Font, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width + 3;
+            Width = HorizontalPad + textWidth + InnerGap + ButtonSize + HorizontalPad;
         }
 
-        private static string BuildMetadataLabel(LogMetadataFilter filter)
+        private static string BuildMetadataLabel(LogMetadataFilter filter, LogMetadataValue specificValue)
         {
-            int count = filter.ActiveValues.Count;
+            if (specificValue != null)
+                return $"{filter.Property.Description}: {specificValue.Value}";
 
+            int count = filter.ActiveValues.Count;
             if (count == 0)
                 return filter.Property.Description;
-
-            if (count == 1)
-                foreach (var key in filter.ActiveValues.Keys)
-                    return $"{filter.Property.Description}: {key.Value}";
 
             return $"{filter.Property.Description} ({count})";
         }
 
-        private static string BuildRangeLabel(LogRange range)
+        private static string BuildRangeLabel(LogRange range, LogRangeChipVariant variant)
         {
-            if (range == null) return "Range";
-
-            string begin = range.Begin?.TimeStamp.ToString("HH:mm:ss") ?? "?";
-            string end = range.End?.TimeStamp.ToString("HH:mm:ss") ?? "?";
-
-            return $"Range: {begin} – {end}";
+            if (variant == LogRangeChipVariant.Begin)
+            {
+                string begin = range.Begin?.TimeStamp.ToString("HH:mm:ss");
+                return $"Vanaf: {begin}";
+            }
+            else if (variant == LogRangeChipVariant.End)
+            {
+                string end = range.End?.TimeStamp.ToString("HH:mm:ss");
+                return $"Tot: {end}";
+            }
+            return string.Empty ;
         }
 
         private static string BuildErrorLabel(int count) =>
             count == 1 ? "1 error" : $"{count} errors";
+        #endregion
 
-        // -------------------------------------------------------------------------
-        // Painting
-        // -------------------------------------------------------------------------
-
+        #region Painting
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
@@ -299,7 +291,8 @@ namespace LogScraper.Controls.FilterOverview
 
             // Icon bounds — right-aligned, vertically centred
             int iconX = Width - HorizontalPad - ButtonSize;
-            int iconY = (Height - ButtonSize) / 2;
+            int iconY = (Height - ButtonSize) / 2 ;
+            if (_variant == ChipVariant.Error) iconY -= 1;
             _buttonBounds = new Rectangle(iconX, iconY, ButtonSize, ButtonSize);
 
             // Label text
@@ -314,7 +307,8 @@ namespace LogScraper.Controls.FilterOverview
                 {
                     Alignment = StringAlignment.Near,
                     LineAlignment = StringAlignment.Center,
-                    Trimming = StringTrimming.EllipsisCharacter
+                    Trimming = StringTrimming.None,
+                    FormatFlags = StringFormatFlags.NoWrap
                 });
 
             // Button hover highlight (Metadata / Range only — Error highlights the whole chip)
@@ -347,11 +341,9 @@ namespace LogScraper.Controls.FilterOverview
                     LineAlignment = StringAlignment.Center
                 });
         }
+        #endregion
 
-        // -------------------------------------------------------------------------
-        // Mouse handling
-        // -------------------------------------------------------------------------
-
+        #region Mouse interaction
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -404,11 +396,9 @@ namespace LogScraper.Controls.FilterOverview
             if (shouldFire)
                 ChipClicked?.Invoke(this, EventArgs.Empty);
         }
+        #endregion
 
-        // -------------------------------------------------------------------------
-        // Helpers
-        // -------------------------------------------------------------------------
-
+        #region Helpers
         private static GraphicsPath RoundedRectangle(Rectangle bounds, int radius)
         {
             int diameter = radius * 2;
@@ -432,5 +422,6 @@ namespace LogScraper.Controls.FilterOverview
                 Math.Min(255, (int)(color.G * factor)),
                 Math.Min(255, (int)(color.B * factor)));
         }
+        #endregion
     }
 }

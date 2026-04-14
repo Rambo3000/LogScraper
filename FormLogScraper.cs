@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Controls;
+using LogScraper.Controls.FilterOverview;
 using LogScraper.Controls.LogEntriesTextbox;
 using LogScraper.Controls.Search;
 using LogScraper.Export;
@@ -27,8 +28,8 @@ namespace LogScraper
 {
     //TODO: Add key shortcuts like F3/shift F3
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
-
-    //TODO: status bar at bottom of screen
+    //TODO: filter overview, reduce redrawing flickering
+    //TODO: implement error overview from filter overview
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
@@ -68,6 +69,11 @@ namespace LogScraper
 
             LogViewport.RangeChanged += LogViewport_RangeChanged;
 
+            activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
+            activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
+            activeFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
+            PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
+
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
 
             MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
@@ -98,7 +104,7 @@ namespace LogScraper
             // Suspend layout to avoid flickering
             splitContainer3.SuspendLayout();
             splitContainer3.Panel1.SuspendLayout();
-            splitContainer3.SplitterDistance = (UsrLogProviderSelection.IsCollapsed ? UsrLogProviderSelection.CollapsedHeight : UsrLogProviderSelection.ExpandedHeight) + 5 + BtnRecord.Bottom + 15;
+            splitContainer3.SplitterDistance = (UsrLogProviderSelection.IsCollapsed ? UsrLogProviderSelection.CollapsedHeight : UsrLogProviderSelection.ExpandedHeight) + 3 + BtnRecord.Bottom;
             splitContainer3.Panel1.ResumeLayout(true);
             splitContainer3.ResumeLayout(true);
         }
@@ -141,10 +147,39 @@ namespace LogScraper
         {
             UpdateLogRange(true);
         }
+
+        private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)
+        {
+            UsrMetadataFilterOverview.RemoveFilter(e.Property, e.SingleValue);
+        }
+
+        private void ActiveFilterOverviewControl_RangeRemoved(object sender, RangeRemovedEventArgs e)
+        {
+            if (e.Variant == LogRangeChipVariant.Begin)
+                LogViewport.ClearBegin();
+            else
+                LogViewport.ClearEnd();
+        }
+
+        private bool _repositioningTextBox;
+        private void RepositionLogEntriesTextBox()
+        {
+            if (_repositioningTextBox) return;
+            _repositioningTextBox = true;
+            try
+            {
+                PnlFiltersAndLogEntriesTextBox.SuspendLayout();
+                int top = activeFilterOverviewControl.Bottom + 3;
+                UserControlLogEntriesTextBox.SetBounds(0, top, PnlFiltersAndLogEntriesTextBox.ClientSize.Width, Math.Max(0, PnlFiltersAndLogEntriesTextBox.ClientSize.Height - top));
+                PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
+            }
+            finally { _repositioningTextBox = false; }
+        }
         private void UpdateLogRange(bool render)
         {
             UserControlContentFilter.LogRange = LogViewport.Range;
             BookMarksControl.SetLogRange(LogViewport.Range);
+            activeFilterOverviewControl.SetLogRange(LogViewport.Range);
             if (render) RenderLog(currentLogMetadataFilterResult);
         }
 
@@ -208,6 +243,7 @@ namespace LogScraper
             }
 
             RefreshLogStatistics();
+            RepositionLogEntriesTextBox();
             GitHubUpdateChecker.CheckForUpdateInSeperateThread();
         }
         #endregion
@@ -270,6 +306,7 @@ namespace LogScraper
 
                     // Pass null for stats on initial load — no filters active yet, full counts will be shown.
                     UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
+                    activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntries);
                     FilterLogEntries();
                 }
 
@@ -285,10 +322,7 @@ namespace LogScraper
 
         private void RefreshLogStatistics()
         {
-            int totalCount = LogCollection.Instance.LogEntries.Count;
-            int visibleCount = visibleLogEntries?.Count ?? totalCount;
-            int errorCount = LogCollection.Instance.ErrorCount;
-            lblLogEntriesTotalValue.Text = $"{totalCount:N0} totaal  |  {visibleCount:N0} zichtbaar  |  {errorCount:N0} errors";
+            activeFilterOverviewControl.SetCounts(visibleLogEntries?.Count ?? 0, LogCollection.Instance.LogEntries.Count);
         }
 
         private void ShowException(Exception ex)
@@ -306,6 +340,7 @@ namespace LogScraper
 
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
+            activeFilterOverviewControl.SetMetadataFilters(activeFilters);
             currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(LogCollection.Instance, activeFilters, UsrLogProviderSelection.GetSelectedLogLayout());
 
             // Update counts in the filter panel to reflect the filtered result.
@@ -359,6 +394,7 @@ namespace LogScraper
             LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
+            activeFilterOverviewControl.Clear();
             UpdateLogRange(false);
             LogPostProcessing.Clear();
             FilterLogEntries();
@@ -377,6 +413,7 @@ namespace LogScraper
             currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
+            activeFilterOverviewControl.Clear();
             UserControlContentFilter.Reset();
             UserControlContentFilter.UpdateLogLayout(UsrLogProviderSelection.GetSelectedLogLayout());
             TxtErrorMessage.Text = string.Empty;
@@ -639,8 +676,6 @@ namespace LogScraper
         }
 
         private void UsrControlMetadataFormating_FilterChanged(object sender, EventArgs e) => FilterLogEntries();
-
-        private void ChkShowAllLogEntries_CheckedChanged(object sender, EventArgs e) => HandleLogContentFilterUpdate(sender, e);
 
         #endregion
 

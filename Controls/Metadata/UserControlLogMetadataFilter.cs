@@ -644,6 +644,23 @@ namespace LogScraper.Controls.Metadata
             OnFilterChanged(EventArgs.Empty);
         }
 
+        public void DeselectValue(LogMetadataValue value)
+        {
+            if (!checkedItems.Remove(value)) return;
+            if (checkedItems.Count == 0) LblIncludeExclude.Invalidate();
+            ListViewItems.Invalidate();
+            OnFilterChanged(EventArgs.Empty);
+        }
+
+        public void DeselectAllValues()
+        {
+            if (checkedItems.Count == 0) return;
+            checkedItems.Clear();
+            LblIncludeExclude.Invalidate();
+            ListViewItems.Invalidate();
+            OnFilterChanged(EventArgs.Empty);
+        }
+
         #endregion
 
         #region Event Handlers

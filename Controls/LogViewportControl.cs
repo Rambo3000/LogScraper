@@ -51,6 +51,32 @@ namespace LogScraper.Controls
             UpdateButtons();
         }
 
+        public void ClearBegin()
+        {
+            if (range.Begin == null) return;
+
+            UpdateCheckboxes = true;
+            ChkBegin.Checked = false;
+            UpdateCheckboxes = false;
+
+            range.Begin = null;
+            UpdateButtons();
+            RangeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ClearEnd()
+        {
+            if (range.End == null) return;
+
+            UpdateCheckboxes = true;
+            ChkEnd.Checked = false;
+            UpdateCheckboxes = false;
+
+            range.End = null;
+            UpdateButtons();
+            RangeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public void UpdateButtons()
         {
             ChkBegin.Enabled = SelectedLogEntry != null;

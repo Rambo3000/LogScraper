@@ -20,7 +20,7 @@ namespace LogScraper.Log
         /// <summary>
         /// Gets or sets the count of errors in the log collection.
         /// </summary>
-        public int ErrorCount;
+        public List<LogEntry> ErrorLogEntries { get; set; } = [];
 
         /// <summary>
         /// Clears the log collection by removing all log entries and resetting the error count.
@@ -28,7 +28,7 @@ namespace LogScraper.Log
         public void Clear()
         {
             LogEntries.Clear();
-            ErrorCount = 0;
+            ErrorLogEntries = [];
             _valuePool = [];
         }
 

@@ -181,6 +181,20 @@ namespace LogScraper.Controls.Metadata
         }
 
         /// <summary>
+        /// Removes a specific filter value (or all values) for the given property.
+        /// If <paramref name="specificValue"/> is non-null, only that value is deselected;
+        /// otherwise all checked values for the property are cleared.
+        /// </summary>
+        public void RemoveFilter(LogMetadataProperty property, LogMetadataValue specificValue)
+        {
+            if (!filterControls.TryGetValue(property, out UserControlLogMetadataFilter control)) return;
+            if (specificValue != null)
+                control.DeselectValue(specificValue);
+            else
+                control.DeselectAllValues();
+        }
+
+        /// <summary>
         /// Resets all active filter selections without removing the controls.
         /// </summary>
         internal void ResetFilters()

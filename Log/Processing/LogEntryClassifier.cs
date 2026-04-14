@@ -53,9 +53,14 @@ namespace LogScraper.Log.Processing
 
                 if (TryClassifyContentProperties(logEntry, logLayout))
                 {
-                    if (logEntry.IsErrorLogEntry) Interlocked.Increment(ref logCollection.ErrorCount);
                 }
             });
+
+            //TODO: make dictionary per content property type
+            foreach (var logEntry in logCollection.LogEntries)
+            {
+                if (logEntry.IsErrorLogEntry) logCollection.ErrorLogEntries.Add(logEntry);
+            }
 
             // Phase 2 — sequential: intern raw strings into shared LogMetadataValue instances.
             InternRawMetadata(logCollection, rawMetadata, logLayout, logMetadataPropertyCount);
