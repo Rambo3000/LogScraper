@@ -329,7 +329,7 @@ namespace LogScraper.Content
 
             if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
             else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-            else g.FillRectangle(SystemBrushes.Window, e.Bounds);
+            else g.FillRectangle(SystemBrushes.Control, e.Bounds);
 
             if (item.OriginalLogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
             {

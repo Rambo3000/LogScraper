@@ -348,14 +348,14 @@ namespace LogScraper
             UserControlSearch.Size = new System.Drawing.Size(215, 25);
             UserControlSearch.TabIndex = 33;
             // 
-            // panel1
+            // PnlFiltersAndLogEntriesTextBox
             // 
             PnlFiltersAndLogEntriesTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             PnlFiltersAndLogEntriesTextBox.Controls.Add(activeFilterOverviewControl);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(TxtErrorMessage);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(UserControlLogEntriesTextBox);
             PnlFiltersAndLogEntriesTextBox.Location = new System.Drawing.Point(0, 28);
-            PnlFiltersAndLogEntriesTextBox.Name = "panel1";
+            PnlFiltersAndLogEntriesTextBox.Name = "PnlFiltersAndLogEntriesTextBox";
             PnlFiltersAndLogEntriesTextBox.Size = new System.Drawing.Size(644, 523);
             PnlFiltersAndLogEntriesTextBox.TabIndex = 42;
             // 
@@ -364,7 +364,7 @@ namespace LogScraper
             activeFilterOverviewControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             activeFilterOverviewControl.Location = new System.Drawing.Point(0, 0);
             activeFilterOverviewControl.Name = "activeFilterOverviewControl";
-            activeFilterOverviewControl.Size = new System.Drawing.Size(644, 20);
+            activeFilterOverviewControl.Size = new System.Drawing.Size(644, 18);
             activeFilterOverviewControl.TabIndex = 39;
             // 
             // TxtErrorMessage
@@ -464,7 +464,7 @@ namespace LogScraper
             // UsrMetadataFilterOverview
             // 
             UsrMetadataFilterOverview.AutoScroll = true;
-            UsrMetadataFilterOverview.BackColor = System.Drawing.Color.White;
+            UsrMetadataFilterOverview.BackColor = System.Drawing.SystemColors.Control;
             UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
             UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 19);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);

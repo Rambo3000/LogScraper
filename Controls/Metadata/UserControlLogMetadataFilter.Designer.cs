@@ -34,6 +34,7 @@ namespace LogScraper.Controls.Metadata
             // LblLogFilterDescription
             // 
             LblLogFilterDescription.AutoSize = true;
+            LblLogFilterDescription.BackColor = System.Drawing.SystemColors.Control;
             LblLogFilterDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             LblLogFilterDescription.Location = new System.Drawing.Point(25, 1);
             LblLogFilterDescription.Name = "LblLogFilterDescription";
@@ -43,6 +44,7 @@ namespace LogScraper.Controls.Metadata
             // 
             // ListViewItems
             // 
+            ListViewItems.BackColor = System.Drawing.SystemColors.Control;
             ListViewItems.BorderStyle = BorderStyle.None;
             ListViewItems.Dock = DockStyle.Fill;
             ListViewItems.FullRowSelect = true;
@@ -69,6 +71,7 @@ namespace LogScraper.Controls.Metadata
             // LblIncludeExclude
             // 
             LblIncludeExclude.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            LblIncludeExclude.BackColor = System.Drawing.SystemColors.Control;
             LblIncludeExclude.Location = new System.Drawing.Point(239, 1);
             LblIncludeExclude.Name = "LblIncludeExclude";
             LblIncludeExclude.Size = new System.Drawing.Size(38, 15);
@@ -86,6 +89,7 @@ namespace LogScraper.Controls.Metadata
             // 
             // BtnChevron
             // 
+            BtnChevron.BackColor = System.Drawing.SystemColors.Control;
             BtnChevron.Cursor = Cursors.Hand;
             BtnChevron.Location = new System.Drawing.Point(7, 1);
             BtnChevron.Name = "BtnChevron";
@@ -97,7 +101,7 @@ namespace LogScraper.Controls.Metadata
             // 
             // UserControlLogMetadataFilter
             // 
-            BackColor = System.Drawing.Color.White;
+            BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(LblIncludeExclude);
             Controls.Add(LblLogFilterDescription);
             Controls.Add(BtnChevron);

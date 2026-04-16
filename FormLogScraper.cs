@@ -26,10 +26,15 @@ using static LogScraper.Controls.LogProviderSelectionControl;
 
 namespace LogScraper
 {
-    //TODO: Add key shortcuts like F3/shift F3
     //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
-    //TODO: filter overview, reduce redrawing flickering
     //TODO: implement error overview from filter overview
+    //TODO: change background of metadata and navigation filters to ControlLight
+    //TODO: change metadata headers with gray background to that color as well
+    //TODO: highlighting of visible log entry (range) in navigation filters
+    //TODO: navigatie sync optie met log
+    //TODO: Navigatietab inklapbaar
+
+    //TODO: Add key shortcuts like F3/shift F3
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
@@ -388,7 +393,7 @@ namespace LogScraper
 
         #region Erase and reset
 
-        public void Erase(bool isFromReset = false)
+        public void Erase()
         {
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
@@ -408,7 +413,7 @@ namespace LogScraper
 
         private void Reset()
         {
-            Erase(true);
+            Erase();
             LogTimeLineControl.Clear();
             currentLogMetadataFilterResult = null;
 
