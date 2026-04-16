@@ -169,7 +169,8 @@ namespace LogScraper
             try
             {
                 PnlFiltersAndLogEntriesTextBox.SuspendLayout();
-                int top = activeFilterOverviewControl.Bottom + 3;
+                activeFilterOverviewControl.Top = 2;
+                int top = activeFilterOverviewControl.Bottom + 5;
                 UserControlLogEntriesTextBox.SetBounds(0, top, PnlFiltersAndLogEntriesTextBox.ClientSize.Width, Math.Max(0, PnlFiltersAndLogEntriesTextBox.ClientSize.Height - top));
                 PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
             }
@@ -387,14 +388,13 @@ namespace LogScraper
 
         #region Erase and reset
 
-        public void Erase()
+        public void Erase(bool isFromReset = false)
         {
             LogCollection.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
             LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
-            activeFilterOverviewControl.Clear();
             UpdateLogRange(false);
             LogPostProcessing.Clear();
             FilterLogEntries();
@@ -408,16 +408,16 @@ namespace LogScraper
 
         private void Reset()
         {
-            Erase();
+            Erase(true);
             LogTimeLineControl.Clear();
             currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
-            activeFilterOverviewControl.Clear();
             UserControlContentFilter.Reset();
             UserControlContentFilter.UpdateLogLayout(UsrLogProviderSelection.GetSelectedLogLayout());
             TxtErrorMessage.Text = string.Empty;
             TxtErrorMessage.Visible = false;
+            activeFilterOverviewControl.Clear();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
