@@ -8,7 +8,6 @@ using System.Windows.Forms.VisualStyles;
 using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Metadata;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.Metadata
 {
@@ -37,7 +36,7 @@ namespace LogScraper.Controls.Metadata
             get => selectedLogEntry;
             set
             {
-                if (selectedLogEntry == value) return;
+                if (selectedLogEntry != null && selectedLogEntry.Equals(value)) return;
                 selectedLogEntry = value;
                 LogMetadataValue newSelectedValue = GetSelectedEntryValueForProperty();
                 if (newSelectedValue != selectedEntryValue)
@@ -53,7 +52,7 @@ namespace LogScraper.Controls.Metadata
         {
             if (Collapsed) return;
             if (selectedEntryValue == null) return;
-            int index = sortedValues.FindIndex(v => v == selectedEntryValue);
+            int index = sortedValues.FindIndex(v => v.Equals(selectedEntryValue));
             if (index < 0) return;
 
             int visibleRows = ListViewItems.ClientSize.Height / (ListViewItems.Items.Count > 0 ? ListViewItems.GetItemRect(0).Height : 20);
@@ -430,7 +429,7 @@ namespace LogScraper.Controls.Metadata
 
             bool isChecked = checkedItems.Contains(value);
             bool isExclude = isChecked && filterModeForAllCheckedItems == FilterMode.Exclude;
-            bool isSelectedLine = selectedEntryValue != null && selectedEntryValue == value;
+            bool isSelectedLine = selectedEntryValue != null && selectedEntryValue.Equals(value);
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
             Rectangle bounds = e.Bounds;
 
@@ -641,6 +640,8 @@ namespace LogScraper.Controls.Metadata
             filterModeForAllCheckedItems = FilterMode.Include;
             LblIncludeExclude.Invalidate();
             ListViewItems.Invalidate();
+            selectedEntryValue = null;
+            selectedLogEntry = null;
             OnFilterChanged(EventArgs.Empty);
         }
 
