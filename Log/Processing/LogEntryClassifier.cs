@@ -51,12 +51,11 @@ namespace LogScraper.Log.Processing
 
                 logEntry.Metadata = new IndexDictionary<LogMetadataProperty, LogMetadataValue>(logMetadataPropertyCount);
 
-                if (TryClassifyContentProperties(logEntry, logLayout))
-                {
-                }
+                TryClassifyContentProperties(logEntry, logLayout);
             });
 
             //TODO: make dictionary per content property type
+            logCollection.ErrorLogEntries = [];
             foreach (var logEntry in logCollection.LogEntries)
             {
                 if (logEntry.IsErrorLogEntry) logCollection.ErrorLogEntries.Add(logEntry);
