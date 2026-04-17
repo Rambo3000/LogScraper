@@ -33,11 +33,11 @@ namespace LogScraper.Log.Processing.RawLogParsing
                 }
             }
 
-            // Determine the last log entry and the starting index for extracting new log entries.
-            int startIndex = GetLogEntriesStartIndex(rawLogEntries, logCollection);
+            // Determine the range of raw entries that have not yet been parsed.
+            Range newEntriesRange = GetNewEntriesRange(rawLogEntries, logCollection);
 
             // Parse the timestamp in the log entries starting from the determined index.
-            ParsedLogEntry[] parsedLogLines = new LogTimestampParser().Parse(rawLogEntries, startIndex, !logLayout.IsAutomaticTimeStampRecognitionEnabled ? logLayout.DateTimeFormat : null);
+            ParsedLogEntry[] parsedLogLines = new LogTimestampParser().Parse(rawLogEntries, newEntriesRange, !logLayout.IsAutomaticTimeStampRecognitionEnabled ? logLayout.DateTimeFormat : null);
 
             if (parsedLogLines.Length == 0)
             {
@@ -59,7 +59,7 @@ namespace LogScraper.Log.Processing.RawLogParsing
             if (rawLogEntries.Length > 0 && logCollection.LogEntries.Count == 0)
             {
                 // Provide an explanation for the failure to parse the log entries
-                string message = 
+                string message =
                     "No timestamp detected at the start of each log line. Log filtering and navigation are disabled." + Environment.NewLine +
                     "If the timestamp is not recognized, configure a timestamp format in the log layout settings." + Environment.NewLine;
 
@@ -69,32 +69,72 @@ namespace LogScraper.Log.Processing.RawLogParsing
         }
 
         /// <summary>
-        /// Determines the last log entry in the collection and calculates the index of the new logentries array which should be used to start reading new log entries.
+        /// Determines the range of raw entries that have not yet been parsed.
         /// </summary>
-        /// <param name="rawLogEntries">Array of log entries to process.</param>
-        /// <param name="logCollection">The collection containing existing log entries.</param>
-        private static int GetLogEntriesStartIndex(string[] rawLogEntries, LogCollection logCollection)
+        /// <param name="logCollection">The collection of log entries that have already been parsed and stored.</param>
+        /// <param name="rawLogEntries">Array of raw log entries to process.</param>
+        /// <returns>A Range object representing the indices of the raw log entries that have not yet been parsed and should be processed.</returns>
+        private static Range GetNewEntriesRange(string[] rawLogEntries, LogCollection logCollection)
         {
-            // Retrieve the last log entry from the collection, if it exists.
-            if (logCollection.LogEntries.Count == 0) return 0;
+            //Note: this method compares complete log entry string. Since log entries contain a timestamp at the beginning,
+            // since ordinal searching (with SIMD) is used this comparison is very fast.
 
-            int startIndex = 0;
+            /// Uses the logcollection first and last anchors so that
+            /// multi-line call-stack continuations are never used as boundaries.
+            if (logCollection.LogEntries.Count == 0) return 0..rawLogEntries.Length;
 
-            // Find the index of the last log entry in the new log entries array.
-            LogEntry lastLogEntry = logCollection.LogEntries.Last();
-            // Iterate through the new log entries in reverse order which is generally faster
+            string firstEntry = logCollection.LogEntries[0].Entry;
+            string lastEntry = logCollection.LogEntries[^1].Entry;
+
+            // Ambiguous: cannot distinguish which anchor was matched.
+            bool singleAnchor = string.Equals(firstEntry, lastEntry, StringComparison.Ordinal);
+
+            // Backward scan: O(newCount) for normal logs.
             for (int i = rawLogEntries.Length - 1; i >= 0; i--)
             {
-                if (rawLogEntries[i] == string.Empty) continue;
+                string raw = rawLogEntries[i];
+                if (string.IsNullOrEmpty(raw)) continue;
 
-                // Note that the == operator uses ordinal string comparison
-                if (rawLogEntries[i] == lastLogEntry.Entry)
+                if (string.Equals(raw, lastEntry, StringComparison.Ordinal))
                 {
-                    startIndex = i + 1;
-                    break;
+                    // Last() (newest) encountered first from the end → normal ordering.
+                    // New entries are everything after this position.
+                    return (i + 1)..rawLogEntries.Length;
+                }
+
+                if (!singleAnchor && string.Equals(raw, firstEntry, StringComparison.Ordinal))
+                {
+                    // First() (oldest) encountered before Last() from the end → inverse ordering.
+                    // Switch to a forward scan to find Last() (newest) near the start.
+                    return GetNewEntriesRangeForInverseLog(rawLogEntries, upToIndex: i, lastEntry);
                 }
             }
-            return startIndex;
+
+            // Fallback: anchors missing (truncated/replaced log) or single-anchor ambiguity.
+            return 0..rawLogEntries.Length;
+        }
+
+        /// <summary>
+        /// Forward scan used when inverse ordering has been detected.
+        /// Searches for <paramref name="lastEntry"/> within the new-entries region (indices 0 to
+        /// <paramref name="upToIndex"/> exclusive), which is where the newest known entry sits after
+        /// new lines have been prepended to the inverse log.
+        /// Returns the range of new entries (0..j), or a full re-parse range if not found.
+        /// </summary>
+        private static Range GetNewEntriesRangeForInverseLog(string[] rawLogEntries, int upToIndex, string lastEntry)
+        {
+            for (int j = 0; j < upToIndex; j++)
+            {
+                if (!string.IsNullOrEmpty(rawLogEntries[j]) &&
+                    string.Equals(rawLogEntries[j], lastEntry, StringComparison.Ordinal))
+                {
+                    // New entries are everything before Last() in the inverse array.
+                    return 0..j;
+                }
+            }
+
+            // Last() not found — fall back to full re-parse.
+            return 0..rawLogEntries.Length;
         }
 
         /// <summary>

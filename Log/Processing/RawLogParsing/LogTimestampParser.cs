@@ -100,12 +100,12 @@ namespace LogScraper.Log.Processing.RawLogParsing
         /// Parses an array of raw log entries starting from a specified index, attempting to extract timestamps based on common formats.
         /// </summary>
         /// <param name="rawLogEntries">The array of raw log entries to parse.</param>
-        /// <param name="startIndex">The index from which to start parsing the log entries.</param>
+        /// <param name="range">The range of log entries to process, specified as a Range object. The Start property indicates the starting index, and the End property indicates the ending index (exclusive). If End is negative, it will be treated as the length of the array.</param>
         /// <param name="forceDateTimeFormat">An optional parameter to force a specific date-time format for parsing. If provided, the parser will attempt to use this format first before trying the common formats.</param>
         /// <returns>An array of ParsedLogEntry objects containing the raw log entry, whether a timestamp was found, the extracted timestamp (if any), and the length of the timestamp format used.</returns>
-        public ParsedLogEntry[] Parse(string[] rawLogEntries, int startIndex, string forceDateTimeFormat = null)
+        public ParsedLogEntry[] Parse(string[] rawLogEntries, Range range, string forceDateTimeFormat = null)
         {
-            int length = rawLogEntries.Length - startIndex;
+            int length = (range.End.Value < 0 ? rawLogEntries.Length : range.End.Value) - range.Start.Value;
             if (length == 0) return [];
 
             ParsedLogEntry[] result = new ParsedLogEntry[length];
@@ -113,14 +113,16 @@ namespace LogScraper.Log.Processing.RawLogParsing
 
             Parallel.For(0, length, i =>
             {
-                string entry = rawLogEntries[startIndex + i];
+                string entry = rawLogEntries[range.Start.Value + i];
 
-                if (string.IsNullOrEmpty(entry))
+                // Skip empty or whitespace-only entries immediately
+                if (string.IsNullOrWhiteSpace(entry))
                 {
                     result[i] = null;
                     return;
                 }
 
+                // Quick check to skip entries do not have any reasonable chance of containing a timestamp
                 if (!CouldHaveTimestamp(entry))
                 {
                     result[i] = new ParsedLogEntry(entry, false, default, -1);
