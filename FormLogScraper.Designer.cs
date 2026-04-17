@@ -73,6 +73,7 @@ namespace LogScraper
             splitContainer1 = new SplitContainerWithGrip();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            errorListControl = new ErrorListControl();
             ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
@@ -327,8 +328,8 @@ namespace LogScraper
             // 
             // splitContainer5.Panel2
             // 
+            splitContainer5.Panel2.Controls.Add(errorListControl);
             splitContainer5.Panel2.Controls.Add(SearchResultListControl);
-            splitContainer5.Panel2Collapsed = true;
             splitContainer5.Size = new System.Drawing.Size(647, 554);
             splitContainer5.SplitterDistance = 442;
             splitContainer5.SplitterWidth = 8;
@@ -356,7 +357,7 @@ namespace LogScraper
             PnlFiltersAndLogEntriesTextBox.Controls.Add(UserControlLogEntriesTextBox);
             PnlFiltersAndLogEntriesTextBox.Location = new System.Drawing.Point(0, 28);
             PnlFiltersAndLogEntriesTextBox.Name = "PnlFiltersAndLogEntriesTextBox";
-            PnlFiltersAndLogEntriesTextBox.Size = new System.Drawing.Size(644, 523);
+            PnlFiltersAndLogEntriesTextBox.Size = new System.Drawing.Size(644, 411);
             PnlFiltersAndLogEntriesTextBox.TabIndex = 42;
             // 
             // activeFilterOverviewControl
@@ -426,7 +427,7 @@ namespace LogScraper
             SearchResultListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             SearchResultListControl.Location = new System.Drawing.Point(0, 0);
             SearchResultListControl.Name = "SearchResultListControl";
-            SearchResultListControl.Size = new System.Drawing.Size(150, 42);
+            SearchResultListControl.Size = new System.Drawing.Size(647, 104);
             SearchResultListControl.TabIndex = 26;
             // 
             // groupBox6
@@ -525,6 +526,15 @@ namespace LogScraper
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
+            // errorListControl
+            // 
+            errorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            errorListControl.Location = new System.Drawing.Point(0, 0);
+            errorListControl.Name = "errorListControl";
+            errorListControl.Size = new System.Drawing.Size(647, 104);
+            errorListControl.TabIndex = 27;
+            errorListControl.Visible = false;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -604,5 +614,6 @@ namespace LogScraper
         private LogProviderSelectionControl UsrLogProviderSelection;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private Controls.FilterOverview.ActiveFilterOverviewControl activeFilterOverviewControl;
+        private ErrorListControl errorListControl;
     }
 }

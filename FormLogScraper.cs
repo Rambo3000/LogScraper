@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -26,13 +27,12 @@ using static LogScraper.Controls.LogProviderSelectionControl;
 
 namespace LogScraper
 {
-    //TODO: bug when continues reading file Stubs/JSONInvertedExample.log with JSON layout
     //TODO: implement error overview from filter overview
-    //TODO: change background of metadata and navigation filters to ControlLight
     //TODO: change metadata headers with gray background to that color as well
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: Navigatietab inklapbaar
+    //TODO: investigate making a dictionary per content property type in either logcollaction and/or filterresult
 
     //TODO: Add key shortcuts like F3/shift F3
     public partial class FormLogScraper : Form
@@ -40,6 +40,7 @@ namespace LogScraper
         #region Form Initialization
         private LogMetadataFilterResult currentLogMetadataFilterResult;
         List<LogEntry> visibleLogEntries;
+        private LogRenderSettings currentRenderSettings;
         public FormLogScraper()
         {
             InitializeComponent();
@@ -77,6 +78,8 @@ namespace LogScraper
             activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
             activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
             activeFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
+            activeFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
+
             PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
 
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
@@ -91,9 +94,17 @@ namespace LogScraper
             SearchResultListControl.ResultSelected += SearchResultListControl_ResultSelected;
             SearchResultListControl.Close += SearchResultListControl_Close;
 
+            errorListControl.ResultSelected += (s, e) => {  UserControlLogEntriesTextBox.SelectedLogEntry = e; };
+            errorListControl.Close += (s, e) => HideBottomPanel();
+
             UpdateTimeLineVisibility();
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, ErrorChipClickedEventArgs e)
+        {
+            ShowErrorPanel([.. e.ErrorEntries]);
         }
 
         private void UsrLogProviderSelection_CollapseStateChanged(object sender, EventArgs e)
@@ -123,18 +134,38 @@ namespace LogScraper
 
         private void SearchResultListControl_Close(object sender, EventArgs e)
         {
-            splitContainer5.Panel2Collapsed = true;
+            HideBottomPanel();
         }
 
         private void SearchControl_SearchSettingsChanged(SearchSettings settings)
         {
-            if (splitContainer5.Panel2Collapsed && UserControlSearch.SelectedSearchMode == UserControlSearch.SearchMode.All)
+            if (UserControlSearch.SelectedSearchMode == UserControlSearch.SearchMode.All)
             {
-                splitContainer5.Panel2Collapsed = false;
+                ShowSearchPanel();
             }
 
             SearchResultListControl.UpdateLogEntries(visibleLogEntries);
             SearchResultListControl.UpdateSearchResults(settings);
+        }
+
+        private void ShowSearchPanel()
+        {
+            errorListControl.Visible = false;
+            SearchResultListControl.Visible = true;
+            splitContainer5.Panel2Collapsed = false;
+        }
+
+        private void ShowErrorPanel(List<LogEntry> entries)
+        {
+            SearchResultListControl.Visible = false;
+            errorListControl.ShowEntries(entries, currentRenderSettings);
+            errorListControl.Visible = true;
+            splitContainer5.Panel2Collapsed = false;
+        }
+
+        private void HideBottomPanel()
+        {
+            splitContainer5.Panel2Collapsed = true;
         }
 
         private void SearchResultListControl_ResultSelected(object sender, LogEntry e)
@@ -234,6 +265,8 @@ namespace LogScraper
         {
             try
             {
+                //Collapse the bottom panel here, so it is still shown in the designer
+                splitContainer5.Panel2Collapsed = true;
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
                 UsrLogProviderSelection.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
                 UsrLogProviderSelection.PopulateLogProviders();
@@ -372,6 +405,7 @@ namespace LogScraper
             };
 
             UserControlSearch.LogRenderSettings = logRenderSettings;
+            currentRenderSettings = logRenderSettings;
 
             visibleLogEntries = LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, logRenderSettings.LogRange);
 
@@ -396,17 +430,21 @@ namespace LogScraper
         public void Erase()
         {
             LogCollection.Instance.Clear();
+
             UserControlLogEntriesTextBox.Clear();
             LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
-            UpdateLogRange(false);
             LogPostProcessing.Clear();
+            activeFilterOverviewControl.SetErrorEntries([]);
+            UpdateLogRange(false);
+
             FilterLogEntries();
             RefreshLogStatistics();
             UpdateButtonStatus();
             lastTrailTime = null;
             HandleErrorMessages(string.Empty, true);
+            splitContainer5.Panel2Collapsed = true;
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
