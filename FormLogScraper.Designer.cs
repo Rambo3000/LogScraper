@@ -245,6 +245,7 @@ namespace LogScraper
             // 
             // splitContainer2
             // 
+            splitContainer2.CollapseablePanel = CollapsePanel.Panel2;
             splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer2.Location = new System.Drawing.Point(0, 0);
             splitContainer2.Name = "splitContainer2";
@@ -260,9 +261,11 @@ namespace LogScraper
             splitContainer2.SplitterDistance = 647;
             splitContainer2.SplitterWidth = 8;
             splitContainer2.TabIndex = 8;
+            splitContainer2.TextSplitter = "Navigatie";
             // 
             // splitContainer4
             // 
+            splitContainer4.CollapseablePanel = CollapsePanel.None;
             splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             splitContainer4.Location = new System.Drawing.Point(0, 0);
@@ -281,6 +284,7 @@ namespace LogScraper
             splitContainer4.SplitterDistance = 48;
             splitContainer4.SplitterWidth = 8;
             splitContainer4.TabIndex = 5;
+            splitContainer4.TextSplitter = "";
             // 
             // LogTimeLineControl
             // 
@@ -294,6 +298,7 @@ namespace LogScraper
             // 
             // splitContainer5
             // 
+            splitContainer5.CollapseablePanel = CollapsePanel.None;
             splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer5.Location = new System.Drawing.Point(0, 0);
             splitContainer5.Name = "splitContainer5";
@@ -319,6 +324,7 @@ namespace LogScraper
             splitContainer5.SplitterDistance = 442;
             splitContainer5.SplitterWidth = 8;
             splitContainer5.TabIndex = 44;
+            splitContainer5.TextSplitter = "";
             // 
             // BookMarksControl
             // 
@@ -471,6 +477,7 @@ namespace LogScraper
             // 
             // splitContainer1
             // 
+            splitContainer1.CollapseablePanel = CollapsePanel.None;
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
             splitContainer1.Name = "splitContainer1";
@@ -488,6 +495,7 @@ namespace LogScraper
             splitContainer1.SplitterDistance = 250;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 13;
+            splitContainer1.TextSplitter = "";
             // 
             // splitContainer3
             // 

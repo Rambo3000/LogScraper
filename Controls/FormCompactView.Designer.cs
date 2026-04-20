@@ -147,8 +147,6 @@
 
         public System.Windows.Forms.Button BtnRecord;
         public System.Windows.Forms.Button BtnRecordWithTimer;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         public System.Windows.Forms.Label LblCount;
         public System.Windows.Forms.Label lblLogEntriesTotalCount;
         public System.Windows.Forms.Button btnStop;
