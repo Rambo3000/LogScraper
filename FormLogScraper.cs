@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -22,18 +21,18 @@ using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static LogScraper.Controls.LogProviderSelectionControl;
 
 namespace LogScraper
 {
-    //TODO: implement error overview from filter overview
+    //TODO: investigate making a dictionary per content property type in either logcollaction and/or filterresult
+    //TODO: change error overview to only show errors in visible log entries
     //TODO: change metadata headers with gray background to that color as well
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: Navigatietab inklapbaar
-    //TODO: investigate making a dictionary per content property type in either logcollaction and/or filterresult
+    //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 
+    //TODO: color additional log lines?
     //TODO: Add key shortcuts like F3/shift F3
     public partial class FormLogScraper : Form
     {
@@ -79,6 +78,7 @@ namespace LogScraper
             activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
             activeFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
             activeFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
+            activeFilterOverviewControl.Reset += ActiveFilterOverviewControl_Reset;
 
             PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
 
@@ -100,6 +100,16 @@ namespace LogScraper
             UpdateTimeLineVisibility();
             SetDynamicToolTips();
             UpdateBtnErase();
+        }
+
+        private void ActiveFilterOverviewControl_Reset(object sender, EventArgs e)
+        {
+            LogViewport.ClearBegin();
+            LogViewport.ClearEnd();
+
+            UsrMetadataFilterOverview.ResetFilters();
+            UserControlContentFilter.ResetFilters();
+            LogViewport.Clear();
         }
 
         private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, ErrorChipClickedEventArgs e)
@@ -298,7 +308,7 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
-                UsrLogProviderSelection.UpdateStatus(StatusType.Retrieving);
+                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
@@ -329,7 +339,7 @@ namespace LogScraper
                 bool newLogEntriesReceived = false;
                 try
                 {
-                    UsrLogProviderSelection.UpdateStatus(StatusType.Processing);
+                    UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Processing);
                     newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogCollection.Instance, logLayout);
                 }
                 catch (Exception ex)
@@ -515,7 +525,7 @@ namespace LogScraper
             }
             else
             {
-                UsrLogProviderSelection.UpdateStatus(StatusType.Retrieving);
+                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
@@ -557,7 +567,7 @@ namespace LogScraper
             if (!downloadingInProgress)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                UsrLogProviderSelection.UpdateStatus(StatusType.Finished);
+                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Finished);
             }
 
             BtnRecord.Visible = !downloadingInProgress;
@@ -582,14 +592,6 @@ namespace LogScraper
         {
             BtnStop.Enabled = false;
             SourceProcessingManager.Instance.CancelAllWorkers();
-        }
-
-        private void BtnClearFilters_Click(object sender, EventArgs e)
-        {
-            UsrMetadataFilterOverview.ResetFilters();
-            UserControlContentFilter.ResetFilters();
-            LogViewport.Clear();
-            UpdateLogRange(true);
         }
 
         private bool isResetUiEnabled = false;

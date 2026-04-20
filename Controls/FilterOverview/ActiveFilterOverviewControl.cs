@@ -14,7 +14,7 @@ namespace LogScraper.Controls.FilterOverview
         #region Fields, events, and constructor
         private const int ChipHeight = 18;
         private const int ChipLineSpacing = 5;
-        private const int CountLabelLeftGap = 4;
+        private const int CountLabelLeftGap = 0;
 
         /// <summary>
         /// Raised when the error chip is clicked.
@@ -30,6 +30,11 @@ namespace LogScraper.Controls.FilterOverview
         /// Raised when a log-range chip's remove button is clicked.
         /// </summary>
         public event EventHandler<RangeRemovedEventArgs> RangeRemoved;
+
+        /// <summary>
+        /// Raised when the "Reset filters" link is clicked. Indicates all filters should be cleared.
+        /// </summary>
+        public event EventHandler Reset;
 
         private IReadOnlyList<LogEntry> _errorEntries;
         private IReadOnlyList<LogMetadataFilter> _metadataFilters = [];
@@ -410,6 +415,9 @@ namespace LogScraper.Controls.FilterOverview
 
         #region Layout logic
 
+        private bool IsAnyFilterActive() =>
+            (_metadataFilters?.Count > 0) || (_logRange?.Begin != null) || (_logRange?.End != null);
+
         private void RecalculateLayout()
         {
             if (_inLayout) return;
@@ -418,12 +426,23 @@ namespace LogScraper.Controls.FilterOverview
             {
                 SuspendLayout();
 
-                int labelY = Math.Max(0, (ChipHeight - LblCount.Height) / 2);
+                int labelY = (ChipHeight - LblCount.Height) / 2;
                 LblCount.Location = new Point(Width - LblCount.Width, labelY);
 
-                int flowWidth = LblCount.Text.Length > 0
-                    ? Math.Max(20, LblCount.Left - CountLabelLeftGap)
-                    : Math.Max(20, Width);
+                LblReset.Visible = IsAnyFilterActive();
+                if (LblReset.Visible)
+                {
+                    int resetX = LblCount.Text.Length > 0
+                        ? LblCount.Left - CountLabelLeftGap - LblReset.Width
+                        : Width - LblReset.Width;
+                    LblReset.Location = new Point(resetX, labelY - 1);
+                }
+
+                int rightEdge = LblReset.Visible ? LblReset.Left
+                    : LblCount.Text.Length > 0 ? LblCount.Left
+                    : Width;
+
+                int flowWidth = Math.Max(20, rightEdge - CountLabelLeftGap);
 
                 FlowLayoutFilterChips.Location = new Point(0, 0);
                 FlowLayoutFilterChips.Width = flowWidth;
@@ -597,5 +616,10 @@ namespace LogScraper.Controls.FilterOverview
             FilterRemoved?.Invoke(this, new FilterRemovedEventArgs(chip.MetadataFilter.Property, null));
         }
         #endregion
+
+        private void LblReset_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Reset?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace LogScraper.Configuration
         /// <summary>
         /// Gets or sets a value indicating whether to show the timeline by default when opening a log session.
         /// </summary>
-        public bool PinLogProvidersByDefault { get; set; } = true;
+        public bool PinLogProvidersByDefault { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether to check for updates for beta releases.

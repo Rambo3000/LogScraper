@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             FlowLayoutFilterChips = new System.Windows.Forms.FlowLayoutPanel();
             LblCount = new System.Windows.Forms.Label();
+            LblReset = new System.Windows.Forms.LinkLabel();
+            toolTip1 = new System.Windows.Forms.ToolTip(components);
             SuspendLayout();
             // 
             // FlowLayoutFilterChips
@@ -38,22 +41,38 @@
             FlowLayoutFilterChips.Name = "FlowLayoutFilterChips";
             FlowLayoutFilterChips.Size = new System.Drawing.Size(484, 20);
             FlowLayoutFilterChips.TabIndex = 0;
-            FlowLayoutFilterChips.WrapContents = true;
             // 
             // LblCount
             // 
             LblCount.AutoSize = true;
-            LblCount.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            LblCount.ForeColor = System.Drawing.Color.DimGray;
             LblCount.Location = new System.Drawing.Point(529, 0);
             LblCount.Name = "LblCount";
-            LblCount.Size = new System.Drawing.Size(72, 15);
+            LblCount.Size = new System.Drawing.Size(69, 15);
             LblCount.TabIndex = 1;
-            LblCount.Text = string.Empty;
+            LblCount.Text = "123 / 12.345";
+            // 
+            // LblReset
+            // 
+            LblReset.ActiveLinkColor = System.Drawing.Color.DarkGray;
+            LblReset.AutoSize = true;
+            LblReset.DisabledLinkColor = System.Drawing.Color.DarkGray;
+            LblReset.ForeColor = System.Drawing.Color.DarkGray;
+            LblReset.LinkColor = System.Drawing.Color.DarkGray;
+            LblReset.Location = new System.Drawing.Point(553, -2);
+            LblReset.Name = "LblReset";
+            LblReset.Size = new System.Drawing.Size(32, 15);
+            LblReset.TabIndex = 2;
+            LblReset.TabStop = true;
+            LblReset.Text = "reset";
+            toolTip1.SetToolTip(LblReset, "Verwijder alle filters en toon alle logregels");
+            LblReset.LinkClicked += LblReset_LinkClicked;
             // 
             // ActiveFilterOverviewControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(LblReset);
             Controls.Add(LblCount);
             Controls.Add(FlowLayoutFilterChips);
             Name = "ActiveFilterOverviewControl";
@@ -66,5 +85,7 @@
 
         private System.Windows.Forms.FlowLayoutPanel FlowLayoutFilterChips;
         private System.Windows.Forms.Label LblCount;
+        private System.Windows.Forms.LinkLabel LblReset;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
