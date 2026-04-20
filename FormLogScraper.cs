@@ -356,6 +356,7 @@ namespace LogScraper
                     // Pass null for stats on initial load — no filters active yet, full counts will be shown.
                     UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
                     activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntries);
+                    FormCompactView.Instance.SetErrorCont(LogCollection.Instance.ErrorLogEntries.Count);
                     FilterLogEntries();
                 }
 
@@ -372,6 +373,7 @@ namespace LogScraper
         private void RefreshLogStatistics()
         {
             activeFilterOverviewControl.SetCounts(visibleLogEntries?.Count ?? 0, LogCollection.Instance.LogEntries.Count);
+            FormCompactView.Instance.SetCounts(visibleLogEntries?.Count ?? 0, LogCollection.Instance.LogEntries.Count);
         }
 
         private void ShowException(Exception ex)
@@ -447,6 +449,7 @@ namespace LogScraper
             LogViewport.Clear();
             LogPostProcessing.Clear();
             activeFilterOverviewControl.SetErrorEntries([]);
+            FormCompactView.Instance.SetErrorCont(0);
             UpdateLogRange(false);
 
             FilterLogEntries();

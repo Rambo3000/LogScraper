@@ -32,17 +32,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCompactView));
             BtnRecord = new System.Windows.Forms.Button();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
-            label1 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
-            lblLogEntriesFilteredCount = new System.Windows.Forms.Label();
-            lblLogEntriesTotalCount = new System.Windows.Forms.Label();
+            LblCount = new System.Windows.Forms.Label();
             btnStop = new System.Windows.Forms.Button();
             btnErase = new System.Windows.Forms.Button();
-            lblLogEntriesFilteredWithErrorCount = new System.Windows.Forms.Label();
-            lblError = new System.Windows.Forms.Label();
             btnBack = new System.Windows.Forms.Button();
-            btnOpenWithEditor = new System.Windows.Forms.Button();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            LblErrorCount = new System.Windows.Forms.Label();
             SuspendLayout();
             // 
             // BtnRecord
@@ -67,41 +62,18 @@
             BtnRecordWithTimer.UseVisualStyleBackColor = true;
             BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
-            // label1
+            // LblCount
             // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(6, 48);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(41, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Regels";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(6, 65);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(52, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Gefilterd";
-            // 
-            // lblLogEntriesFilteredCount
-            // 
-            lblLogEntriesFilteredCount.Location = new System.Drawing.Point(60, 65);
-            lblLogEntriesFilteredCount.Name = "lblLogEntriesFilteredCount";
-            lblLogEntriesFilteredCount.Size = new System.Drawing.Size(63, 15);
-            lblLogEntriesFilteredCount.TabIndex = 8;
-            lblLogEntriesFilteredCount.Text = "0";
-            lblLogEntriesFilteredCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblLogEntriesTotalCount
-            // 
-            lblLogEntriesTotalCount.Location = new System.Drawing.Point(60, 48);
-            lblLogEntriesTotalCount.Name = "lblLogEntriesTotalCount";
-            lblLogEntriesTotalCount.Size = new System.Drawing.Size(63, 15);
-            lblLogEntriesTotalCount.TabIndex = 9;
-            lblLogEntriesTotalCount.Text = "0";
-            lblLogEntriesTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            LblCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblCount.ForeColor = System.Drawing.Color.DimGray;
+            LblCount.Location = new System.Drawing.Point(8, 48);
+            LblCount.Name = "LblCount";
+            LblCount.Size = new System.Drawing.Size(170, 15);
+            LblCount.TabIndex = 8;
+            LblCount.Text = "12.345 / 123.456";
+            LblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            ToolTip.SetToolTip(LblCount, "Zichtbare logregels / Totaal aantal logregels");
+            LblCount.Click += LblCount_Click;
             // 
             // btnStop
             // 
@@ -118,7 +90,7 @@
             // btnErase
             // 
             btnErase.Image = (System.Drawing.Image)resources.GetObject("btnErase.Image");
-            btnErase.Location = new System.Drawing.Point(182, 5);
+            btnErase.Location = new System.Drawing.Point(137, 5);
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(40, 40);
             btnErase.TabIndex = 11;
@@ -126,28 +98,10 @@
             btnErase.UseVisualStyleBackColor = true;
             btnErase.Click += BtnErase_Click;
             // 
-            // lblLogEntriesFilteredWithErrorCount
-            // 
-            lblLogEntriesFilteredWithErrorCount.Location = new System.Drawing.Point(60, 82);
-            lblLogEntriesFilteredWithErrorCount.Name = "lblLogEntriesFilteredWithErrorCount";
-            lblLogEntriesFilteredWithErrorCount.Size = new System.Drawing.Size(63, 15);
-            lblLogEntriesFilteredWithErrorCount.TabIndex = 13;
-            lblLogEntriesFilteredWithErrorCount.Text = "0";
-            lblLogEntriesFilteredWithErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblError
-            // 
-            lblError.AutoSize = true;
-            lblError.Location = new System.Drawing.Point(6, 82);
-            lblError.Name = "lblError";
-            lblError.Size = new System.Drawing.Size(32, 15);
-            lblError.TabIndex = 12;
-            lblError.Text = "Error";
-            // 
             // btnBack
             // 
             btnBack.Image = (System.Drawing.Image)resources.GetObject("btnBack.Image");
-            btnBack.Location = new System.Drawing.Point(90, 5);
+            btnBack.Location = new System.Drawing.Point(91, 5);
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
@@ -155,32 +109,26 @@
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 
-            // btnOpenWithEditor
+            // LblErrorCount
             // 
-            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
-            btnOpenWithEditor.Location = new System.Drawing.Point(136, 5);
-            btnOpenWithEditor.Name = "btnOpenWithEditor";
-            btnOpenWithEditor.Size = new System.Drawing.Size(40, 40);
-            btnOpenWithEditor.TabIndex = 15;
-            ToolTip.SetToolTip(btnOpenWithEditor, "Open in externe editor");
-            btnOpenWithEditor.UseVisualStyleBackColor = true;
-            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
+            LblErrorCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblErrorCount.ForeColor = System.Drawing.Color.DimGray;
+            LblErrorCount.Location = new System.Drawing.Point(8, 66);
+            LblErrorCount.Name = "LblErrorCount";
+            LblErrorCount.Size = new System.Drawing.Size(170, 15);
+            LblErrorCount.TabIndex = 13;
+            LblErrorCount.Text = "0 errors";
+            LblErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // FormRecord
+            // FormCompactView
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            AutoSize = true;
-            ClientSize = new System.Drawing.Size(229, 103);
-            Controls.Add(btnOpenWithEditor);
+            ClientSize = new System.Drawing.Size(181, 86);
             Controls.Add(btnBack);
-            Controls.Add(lblLogEntriesFilteredWithErrorCount);
-            Controls.Add(lblError);
+            Controls.Add(LblErrorCount);
             Controls.Add(btnErase);
-            Controls.Add(lblLogEntriesTotalCount);
-            Controls.Add(lblLogEntriesFilteredCount);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(LblCount);
             Controls.Add(BtnRecord);
             Controls.Add(btnStop);
             Controls.Add(BtnRecordWithTimer);
@@ -188,12 +136,11 @@
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "FormRecord";
+            Name = "FormCompactView";
             Text = " LogScraper";
             TopMost = true;
             FormClosing += FormMiniTop_FormClosing;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -202,14 +149,14 @@
         public System.Windows.Forms.Button BtnRecordWithTimer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        public System.Windows.Forms.Label lblLogEntriesFilteredCount;
+        public System.Windows.Forms.Label LblCount;
         public System.Windows.Forms.Label lblLogEntriesTotalCount;
         public System.Windows.Forms.Button btnStop;
         public System.Windows.Forms.Button btnErase;
-        public System.Windows.Forms.Label lblLogEntriesFilteredWithErrorCount;
         public System.Windows.Forms.Label lblError;
         public System.Windows.Forms.Button btnBack;
         public System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.ToolTip ToolTip;
+        public System.Windows.Forms.Label LblErrorCount;
     }
 }

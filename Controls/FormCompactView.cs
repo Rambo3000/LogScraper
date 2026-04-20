@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
+using LogScraper.Log;
 using LogScraper.Sources.Workers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper.Controls
 {
@@ -24,6 +27,24 @@ namespace LogScraper.Controls
                 }
                 return instance;
             }
+        }
+        /// <summary>
+        /// Updates the visible / total entry count shown at the top-right.
+        /// When <paramref name="visible"/> equals <paramref name="total"/>, only the total is displayed.
+        /// </summary>
+        public void SetCounts(int visible, int total)
+        {
+            LblCount.Text = visible == total ? $"{total:N0}" : $"{visible:N0} / {total:N0}";
+            ToolTip.SetToolTip(LblCount, visible == total
+                ? "Totaal aantal logregels"
+                : "Zichtbare logregels / Totaal aantal logregels");
+        }
+        public void SetErrorCont(int errorCount)
+        {
+            bool hasError = errorCount > 0;
+            LblErrorCount.Text = $"{errorCount:N0} error" + (errorCount > 1 ? "s" : "");
+            LblErrorCount.ForeColor = hasError ? System.Drawing.Color.DarkRed : System.Drawing.Color.DimGray;
+            LblErrorCount.Font = new System.Drawing.Font(LblErrorCount.Font, hasError ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular);
         }
 
         private FormLogScraper LogScraperForm = null;
@@ -84,16 +105,9 @@ namespace LogScraper.Controls
             HideForm();
             e.Cancel = true;
         }
-        private void BtnOpenWithEditor_Click(object sender, System.EventArgs e)
-        {
-            LogScraperForm.BtnOpenWithEditor_Click(sender, e);
-        }
 
         public void UpdateButtonsFromMainWindow()
         {
-            //TODO: update the counts as well
-            //lblLogEntriesTotalCount.Text = LogScraperForm.lblLogEntriesTotalValue.Text;
-
             BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
             BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;
             btnStop.Visible = LogScraperForm.BtnStop.Visible;
@@ -102,7 +116,6 @@ namespace LogScraper.Controls
             BtnRecordWithTimer.Image = LogScraperForm.BtnRecordWithTimer.Image;
             BtnRecordWithTimer.Enabled = LogScraperForm.BtnRecordWithTimer.Enabled;
             btnErase.Enabled = LogScraperForm.BtnErase.Enabled;
-            btnOpenWithEditor.Enabled = LogScraperForm.btnOpenWithEditor.Enabled;
         }
 
         #region Form key shortcuts
@@ -146,5 +159,10 @@ namespace LogScraper.Controls
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
+
+        private void LblCount_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
