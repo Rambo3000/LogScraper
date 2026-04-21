@@ -477,7 +477,7 @@ namespace LogScraper
             // 
             // splitContainer1
             // 
-            splitContainer1.CollapseablePanel = CollapsePanel.None;
+            splitContainer1.CollapseablePanel = CollapsePanel.Panel1;
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
             splitContainer1.Name = "splitContainer1";
@@ -495,7 +495,7 @@ namespace LogScraper
             splitContainer1.SplitterDistance = 250;
             splitContainer1.SplitterWidth = 8;
             splitContainer1.TabIndex = 13;
-            splitContainer1.TextSplitter = "";
+            splitContainer1.TextSplitter = "Logbron & metadata filters";
             // 
             // splitContainer3
             // 
