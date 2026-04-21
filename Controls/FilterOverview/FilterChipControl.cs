@@ -112,6 +112,7 @@ namespace LogScraper.Controls.FilterOverview
 
         private bool _isCollapsed = false;
         private bool _buttonHover = false;
+        private readonly ToolTip _toolTip = new();
         private bool _chipHover = false;
         private Rectangle _buttonBounds;
         private Image _removeImage;
@@ -332,7 +333,17 @@ namespace LogScraper.Controls.FilterOverview
         {
             _labelText = _isCollapsed ? _collapsedLabelText : _expandedLabelText;
             Width = _isCollapsed ? CollapsedWidth : ExpandedWidth;
+            _toolTip.SetToolTip(this, _isCollapsed ? BuildCollapsedTooltip() : null);
             Invalidate();
+        }
+
+        private string BuildCollapsedTooltip()
+        {
+            if (_variant != ChipVariant.Metadata) return null;
+            if (_specificValue != null) return _specificValue.Value;
+            if (_metadataFilter?.ActiveValues.Count > 0)
+                return string.Join(Environment.NewLine, _metadataFilter.ActiveValues.Keys.Select(v => v.Value));
+            return null;
         }
 
         private int MeasureLabelWidth(string text)
