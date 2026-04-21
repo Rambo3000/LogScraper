@@ -64,11 +64,11 @@
             // 
             // LblCount
             // 
-            LblCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblCount.ForeColor = System.Drawing.Color.DimGray;
-            LblCount.Location = new System.Drawing.Point(8, 48);
+            LblCount.Location = new System.Drawing.Point(0, 48);
             LblCount.Name = "LblCount";
-            LblCount.Size = new System.Drawing.Size(170, 15);
+            LblCount.Size = new System.Drawing.Size(163, 15);
             LblCount.TabIndex = 8;
             LblCount.Text = "12.345 / 123.456";
             LblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -92,7 +92,7 @@
             btnErase.Image = (System.Drawing.Image)resources.GetObject("btnErase.Image");
             btnErase.Location = new System.Drawing.Point(137, 5);
             btnErase.Name = "btnErase";
-            btnErase.Size = new System.Drawing.Size(40, 40);
+            btnErase.Size = new System.Drawing.Size(25, 25);
             btnErase.TabIndex = 11;
             ToolTip.SetToolTip(btnErase, "Wis het log");
             btnErase.UseVisualStyleBackColor = true;
@@ -113,9 +113,9 @@
             // 
             LblErrorCount.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             LblErrorCount.ForeColor = System.Drawing.Color.DimGray;
-            LblErrorCount.Location = new System.Drawing.Point(8, 66);
+            LblErrorCount.Location = new System.Drawing.Point(0, 66);
             LblErrorCount.Name = "LblErrorCount";
-            LblErrorCount.Size = new System.Drawing.Size(170, 15);
+            LblErrorCount.Size = new System.Drawing.Size(163, 15);
             LblErrorCount.TabIndex = 13;
             LblErrorCount.Text = "0 errors";
             LblErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -124,7 +124,7 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(181, 86);
+            ClientSize = new System.Drawing.Size(166, 86);
             Controls.Add(btnBack);
             Controls.Add(LblErrorCount);
             Controls.Add(btnErase);

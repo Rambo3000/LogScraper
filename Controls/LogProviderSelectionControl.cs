@@ -65,8 +65,6 @@ namespace LogScraper.Controls
             AttachEventHandlers();
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
-            this.AutoSize = true;
-            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ExpandedHeight = Height;
         }
 
@@ -295,6 +293,7 @@ namespace LogScraper.Controls
             btnPin.Visible = false;
             _isCollapsed = true;
             UpdateProviderDescription();
+            AutoSize = false;
             Height = CollapsedHeight;
 
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
@@ -311,6 +310,7 @@ namespace LogScraper.Controls
             btnPin.Visible = true;
             _isCollapsed = false;
 
+            AutoSize = false;
             Height = ExpandedHeight;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }

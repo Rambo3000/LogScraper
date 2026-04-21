@@ -64,11 +64,12 @@ namespace LogScraper.Controls
             // 
             // cboLogProvider
             // 
+            cboLogProvider.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogProvider.FormattingEnabled = true;
             cboLogProvider.Location = new System.Drawing.Point(52, 26);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(163, 23);
+            cboLogProvider.Size = new System.Drawing.Size(101, 23);
             cboLogProvider.TabIndex = 18;
             cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
             // 
@@ -83,11 +84,12 @@ namespace LogScraper.Controls
             // 
             // cboLogLayout
             // 
+            cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogLayout.FormattingEnabled = true;
             cboLogLayout.Location = new System.Drawing.Point(52, 52);
             cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(163, 23);
+            cboLogLayout.Size = new System.Drawing.Size(101, 23);
             cboLogLayout.TabIndex = 30;
             cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
@@ -96,7 +98,7 @@ namespace LogScraper.Controls
             usrKubernetes.Dock = System.Windows.Forms.DockStyle.Fill;
             usrKubernetes.Location = new System.Drawing.Point(0, 0);
             usrKubernetes.Name = "usrKubernetes";
-            usrKubernetes.Size = new System.Drawing.Size(308, 119);
+            usrKubernetes.Size = new System.Drawing.Size(184, 119);
             usrKubernetes.TabIndex = 8;
             // 
             // usrRuntime
@@ -104,7 +106,7 @@ namespace LogScraper.Controls
             usrRuntime.Dock = System.Windows.Forms.DockStyle.Fill;
             usrRuntime.Location = new System.Drawing.Point(0, 0);
             usrRuntime.Name = "usrRuntime";
-            usrRuntime.Size = new System.Drawing.Size(308, 119);
+            usrRuntime.Size = new System.Drawing.Size(184, 119);
             usrRuntime.TabIndex = 0;
             // 
             // usrFileLogProvider
@@ -112,7 +114,7 @@ namespace LogScraper.Controls
             usrFileLogProvider.Dock = System.Windows.Forms.DockStyle.Fill;
             usrFileLogProvider.Location = new System.Drawing.Point(0, 0);
             usrFileLogProvider.Name = "usrFileLogProvider";
-            usrFileLogProvider.Size = new System.Drawing.Size(308, 119);
+            usrFileLogProvider.Size = new System.Drawing.Size(184, 119);
             usrFileLogProvider.TabIndex = 3;
             // 
             // lblProviderDescription
@@ -124,7 +126,7 @@ namespace LogScraper.Controls
             lblProviderDescription.LinkColor = System.Drawing.Color.Black;
             lblProviderDescription.Location = new System.Drawing.Point(23, 6);
             lblProviderDescription.Name = "lblProviderDescription";
-            lblProviderDescription.Size = new System.Drawing.Size(266, 17);
+            lblProviderDescription.Size = new System.Drawing.Size(142, 17);
             lblProviderDescription.TabIndex = 25;
             lblProviderDescription.TabStop = true;
             lblProviderDescription.Text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
@@ -142,7 +144,7 @@ namespace LogScraper.Controls
             btnPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             btnPin.ImageIndex = 0;
             btnPin.ImageList = imageListPins;
-            btnPin.Location = new System.Drawing.Point(283, 26);
+            btnPin.Location = new System.Drawing.Point(159, 26);
             btnPin.Name = "btnPin";
             btnPin.Size = new System.Drawing.Size(24, 24);
             btnPin.TabIndex = 27;
@@ -184,7 +186,7 @@ namespace LogScraper.Controls
             LblStatusIcon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             LblStatusIcon.ImageIndex = 1;
             LblStatusIcon.ImageList = imageListStatus;
-            LblStatusIcon.Location = new System.Drawing.Point(288, 5);
+            LblStatusIcon.Location = new System.Drawing.Point(164, 5);
             LblStatusIcon.Name = "LblStatusIcon";
             LblStatusIcon.Size = new System.Drawing.Size(16, 16);
             LblStatusIcon.TabIndex = 33;
@@ -206,7 +208,7 @@ namespace LogScraper.Controls
             PnlLogProviders.Controls.Add(usrRuntime);
             PnlLogProviders.Location = new System.Drawing.Point(0, 85);
             PnlLogProviders.Name = "PnlLogProviders";
-            PnlLogProviders.Size = new System.Drawing.Size(308, 119);
+            PnlLogProviders.Size = new System.Drawing.Size(184, 119);
             PnlLogProviders.TabIndex = 31;
             // 
             // PnlSeparator2
@@ -215,7 +217,7 @@ namespace LogScraper.Controls
             PnlSeparator2.BackColor = System.Drawing.Color.LightGray;
             PnlSeparator2.Location = new System.Drawing.Point(3, 118);
             PnlSeparator2.Name = "PnlSeparator2";
-            PnlSeparator2.Size = new System.Drawing.Size(300, 1);
+            PnlSeparator2.Size = new System.Drawing.Size(176, 1);
             PnlSeparator2.TabIndex = 33;
             // 
             // PnlSeparator1
@@ -224,7 +226,7 @@ namespace LogScraper.Controls
             PnlSeparator1.BackColor = System.Drawing.Color.LightGray;
             PnlSeparator1.Location = new System.Drawing.Point(3, 81);
             PnlSeparator1.Name = "PnlSeparator1";
-            PnlSeparator1.Size = new System.Drawing.Size(300, 1);
+            PnlSeparator1.Size = new System.Drawing.Size(176, 1);
             PnlSeparator1.TabIndex = 32;
             // 
             // LogProviderSelectionControl
@@ -243,7 +245,7 @@ namespace LogScraper.Controls
             Controls.Add(LblStatusIcon);
             Controls.Add(lblProviderDescription);
             Name = "LogProviderSelectionControl";
-            Size = new System.Drawing.Size(308, 207);
+            Size = new System.Drawing.Size(184, 207);
             PnlLogProviders.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
