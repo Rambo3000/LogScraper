@@ -35,7 +35,7 @@
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
-            BackColor = System.Drawing.Color.White;
+            BackColor = System.Drawing.SystemColors.Control;
             Margin = new System.Windows.Forms.Padding(0);
             Name = "UserControlMetadataFilterOverview";
             Resize += UserControlMetadataFilterOverview_Resize;

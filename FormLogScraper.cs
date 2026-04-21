@@ -24,12 +24,11 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: investigate making a dictionary per content property type in either logcollaction and/or filterresult
+    //TODO: investigate making a (lazy) dictionary per content property type in either logcollaction and/or filterresult
     //TODO: change error overview to only show errors in visible log entries
     //TODO: change metadata headers with gray background to that color as well
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
-    //TODO: Navigatietab inklapbaar
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 
     //TODO: color additional log lines?

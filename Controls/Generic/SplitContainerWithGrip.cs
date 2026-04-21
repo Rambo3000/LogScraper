@@ -261,7 +261,19 @@ namespace LogScraper.Controls.Generic
         #region Event Handlers
 
         private void OnSplitterMoved(object sender, SplitterEventArgs e) => Invalidate();
-        private void OnSizeChanged(object sender, EventArgs e) => Invalidate();
+
+        private void OnSizeChanged(object sender, EventArgs e)
+        {
+            // Re-pin the splitter to the correct edge when collapsed so the
+            // collapsed panel never leaks into view after a resize.
+            if (_isCollapsed && _collapseablePanel == CollapsePanel.Panel2)
+            {
+                int totalSize    = Orientation == Orientation.Vertical ? ClientSize.Width : ClientSize.Height;
+                SplitterDistance = totalSize - _collapsedSplitterWidth;
+            }
+
+            Invalidate();
+        }
 
         #endregion
 
