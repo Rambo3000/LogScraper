@@ -38,11 +38,6 @@ namespace LogScraper
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             BtnRecord = new System.Windows.Forms.Button();
-            BtnErase = new SplitButton();
-            ContextMenuReset = new System.Windows.Forms.ContextMenuStrip(components);
-            ToolStripMenuItemClear = new System.Windows.Forms.ToolStripMenuItem();
-            ToolStripMenuItemReset = new System.Windows.Forms.ToolStripMenuItem();
-            imageListBtnErase = new System.Windows.Forms.ImageList(components);
             BtnConfig = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
             BtnStop = new System.Windows.Forms.Button();
@@ -72,8 +67,9 @@ namespace LogScraper
             UsrMetadataFilterOverview = new UserControlMetadataFilterOverview();
             splitContainer1 = new SplitContainerWithGrip();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
+            BtnReset = new System.Windows.Forms.Button();
+            BtnErase = new System.Windows.Forms.Button();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            ContextMenuReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
@@ -112,49 +108,6 @@ namespace LogScraper
             BtnRecord.UseVisualStyleBackColor = true;
             BtnRecord.Click += BtnRecord_Click;
             // 
-            // BtnErase
-            // 
-            BtnErase.DropDownMenu = ContextMenuReset;
-            BtnErase.DropDownWidth = 15;
-            BtnErase.Icon = (System.Drawing.Image)resources.GetObject("BtnErase.Icon");
-            BtnErase.ImageIndex = 0;
-            BtnErase.ImageList = imageListBtnErase;
-            BtnErase.Location = new System.Drawing.Point(132, 3);
-            BtnErase.Name = "BtnErase";
-            BtnErase.Size = new System.Drawing.Size(45, 40);
-            BtnErase.TabIndex = 10;
-            BtnErase.ButtonClick += BtnErase_Click;
-            // 
-            // ContextMenuReset
-            // 
-            ContextMenuReset.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolStripMenuItemClear, ToolStripMenuItemReset });
-            ContextMenuReset.Name = "ContextMenuReset";
-            ContextMenuReset.Size = new System.Drawing.Size(211, 48);
-            // 
-            // ToolStripMenuItemClear
-            // 
-            ToolStripMenuItemClear.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemClear.Image");
-            ToolStripMenuItemClear.Name = "ToolStripMenuItemClear";
-            ToolStripMenuItemClear.Size = new System.Drawing.Size(210, 22);
-            ToolStripMenuItemClear.Text = "Wis log (filters behouden)";
-            ToolStripMenuItemClear.Click += ToolStripMenuItemClear_Click;
-            // 
-            // ToolStripMenuItemReset
-            // 
-            ToolStripMenuItemReset.Image = (System.Drawing.Image)resources.GetObject("ToolStripMenuItemReset.Image");
-            ToolStripMenuItemReset.Name = "ToolStripMenuItemReset";
-            ToolStripMenuItemReset.Size = new System.Drawing.Size(210, 22);
-            ToolStripMenuItemReset.Text = "Reset log en filters";
-            ToolStripMenuItemReset.Click += ToolStripMenuItemReset_Click;
-            // 
-            // imageListBtnErase
-            // 
-            imageListBtnErase.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            imageListBtnErase.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageListBtnErase.ImageStream");
-            imageListBtnErase.TransparentColor = System.Drawing.Color.Transparent;
-            imageListBtnErase.Images.SetKeyName(0, "trash-can-outline-24x24.png");
-            imageListBtnErase.Images.SetKeyName(1, "reset 24x24.png");
-            // 
             // BtnConfig
             // 
             BtnConfig.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -172,7 +125,7 @@ namespace LogScraper
             // BtnFormRecord
             // 
             BtnFormRecord.Image = (System.Drawing.Image)resources.GetObject("BtnFormRecord.Image");
-            BtnFormRecord.Location = new System.Drawing.Point(86, 3);
+            BtnFormRecord.Location = new System.Drawing.Point(85, 3);
             BtnFormRecord.Name = "BtnFormRecord";
             BtnFormRecord.Size = new System.Drawing.Size(40, 40);
             BtnFormRecord.TabIndex = 11;
@@ -198,7 +151,7 @@ namespace LogScraper
             // 
             BtnRecordWithTimer.Enabled = false;
             BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            BtnRecordWithTimer.Location = new System.Drawing.Point(47, 3);
+            BtnRecordWithTimer.Location = new System.Drawing.Point(46, 3);
             BtnRecordWithTimer.Name = "BtnRecordWithTimer";
             BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
             BtnRecordWithTimer.TabIndex = 16;
@@ -507,8 +460,9 @@ namespace LogScraper
             // 
             // splitContainer3.Panel1
             // 
-            splitContainer3.Panel1.Controls.Add(UsrLogProviderSelection);
+            splitContainer3.Panel1.Controls.Add(BtnReset);
             splitContainer3.Panel1.Controls.Add(BtnErase);
+            splitContainer3.Panel1.Controls.Add(UsrLogProviderSelection);
             splitContainer3.Panel1.Controls.Add(BtnRecord);
             splitContainer3.Panel1.Controls.Add(BtnConfig);
             splitContainer3.Panel1.Controls.Add(BtnRecordWithTimer);
@@ -521,6 +475,32 @@ namespace LogScraper
             splitContainer3.Size = new System.Drawing.Size(250, 610);
             splitContainer3.SplitterDistance = 270;
             splitContainer3.TabIndex = 0;
+            // 
+            // BtnReset
+            // 
+            BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
+            BtnReset.Location = new System.Drawing.Point(171, 3);
+            BtnReset.Name = "BtnReset";
+            BtnReset.Size = new System.Drawing.Size(40, 40);
+            BtnReset.TabIndex = 27;
+            BtnReset.TabStop = false;
+            BtnReset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(BtnReset, "Reset");
+            BtnReset.UseVisualStyleBackColor = true;
+            BtnReset.Click += BtnReset_Click;
+            // 
+            // BtnErase
+            // 
+            BtnErase.Image = (System.Drawing.Image)resources.GetObject("BtnErase.Image");
+            BtnErase.Location = new System.Drawing.Point(132, 3);
+            BtnErase.Name = "BtnErase";
+            BtnErase.Size = new System.Drawing.Size(40, 40);
+            BtnErase.TabIndex = 26;
+            BtnErase.TabStop = false;
+            BtnErase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            ToolTip.SetToolTip(BtnErase, "Wis het log (filters behouden)");
+            BtnErase.UseVisualStyleBackColor = true;
+            BtnErase.Click += BtnErase_Click;
             // 
             // ToolTip
             // 
@@ -539,7 +519,6 @@ namespace LogScraper
             Name = "FormLogScraper";
             Text = "LogScraper";
             Load += FormLogScraper_Load;
-            ContextMenuReset.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
@@ -575,7 +554,6 @@ namespace LogScraper
         public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnOpenWithEditor;
-        public SplitButton BtnErase;
         private System.Windows.Forms.Button BtnFormRecord;
         private System.Windows.Forms.GroupBox groupBox1;
         private SplitContainerWithGrip splitContainer1;
@@ -587,10 +565,6 @@ namespace LogScraper
         private UserControlMetadataFilterOverview UsrMetadataFilterOverview;
         private System.Windows.Forms.ToolTip ToolTip;
         private UserControlLogEntriesTextBox UserControlLogEntriesTextBox;
-        private System.Windows.Forms.ContextMenuStrip ContextMenuReset;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReset;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemClear;
-        private System.Windows.Forms.ImageList imageListBtnErase;
         private SplitContainerWithGrip splitContainer4;
         private LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
@@ -607,5 +581,7 @@ namespace LogScraper
         private System.Windows.Forms.SplitContainer splitContainer3;
         private Controls.FilterOverview.ActiveFilterOverviewControl activeFilterOverviewControl;
         private ErrorListControl errorListControl;
+        public System.Windows.Forms.Button BtnReset;
+        public System.Windows.Forms.Button BtnErase;
     }
 }

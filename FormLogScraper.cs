@@ -93,12 +93,11 @@ namespace LogScraper
             SearchResultListControl.ResultSelected += SearchResultListControl_ResultSelected;
             SearchResultListControl.Close += SearchResultListControl_Close;
 
-            errorListControl.ResultSelected += (s, e) => {  UserControlLogEntriesTextBox.SelectedLogEntry = e; };
+            errorListControl.ResultSelected += (s, e) => { UserControlLogEntriesTextBox.SelectedLogEntry = e; };
             errorListControl.Close += (s, e) => HideBottomPanel();
 
             UpdateTimeLineVisibility();
             SetDynamicToolTips();
-            UpdateBtnErase();
         }
 
         private void ActiveFilterOverviewControl_Reset(object sender, EventArgs e)
@@ -596,42 +595,14 @@ namespace LogScraper
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
 
-        private bool isResetUiEnabled = false;
-
         public void BtnErase_Click(object sender, EventArgs e)
         {
-            if (isResetUiEnabled) Reset();
-            else Erase();
-        }
-
-        private void ToolStripMenuItemReset_Click(object sender, EventArgs e)
-        {
-            isResetUiEnabled = true;
-            UpdateBtnErase();
-            Reset();
-        }
-
-        private void ToolStripMenuItemClear_Click(object sender, EventArgs e)
-        {
-            isResetUiEnabled = false;
-            UpdateBtnErase();
             Erase();
         }
 
-        private void UpdateBtnErase()
+        public void BtnReset_Click(object sender, EventArgs e)
         {
-            string toolTipText;
-            if (!isResetUiEnabled)
-            {
-                toolTipText = "Wis log (filters behouden)";
-                BtnErase.ImageIndex = 0;
-            }
-            else
-            {
-                toolTipText = "Reset log en filters";
-                BtnErase.ImageIndex = 1;
-            }
-            ToolTip.SetToolTip(BtnErase, toolTipText);
+            Reset();
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
@@ -771,6 +742,5 @@ namespace LogScraper
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion
-
     }
 }

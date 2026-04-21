@@ -36,7 +36,7 @@ namespace LogScraper.Controls.Generic
         #region Events
 
         /// <summary>Raised after the panel is collapsed or expanded. The bool argument is <c>true</c> when collapsed.</summary>
-        public event EventHandler<bool>? CollapseChanged;
+        public event EventHandler<bool> CollapseChanged;
 
         #endregion
 
