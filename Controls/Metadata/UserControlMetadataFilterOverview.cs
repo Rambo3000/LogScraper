@@ -88,6 +88,8 @@ namespace LogScraper.Controls.Metadata
         {
             this.SuspendDrawing();
 
+            LblExplenation.Visible = logLayout.LogMetadataProperties.Count == 0;
+
             UserControlLogMetadataFilter previousControl = null;
 
             foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
@@ -113,7 +115,7 @@ namespace LogScraper.Controls.Metadata
                 control.UpdateListView(property, allValues, propertyStats);
 
                 if (previousControl != null)
-                    control.Top = previousControl.Bottom + 5;
+                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 5 : 15);
 
                 previousControl = control;
             }
@@ -173,10 +175,13 @@ namespace LogScraper.Controls.Metadata
                 }
             }
 
-            Controls.Clear();
+            foreach (UserControlLogMetadataFilter control in orderedFilterControls)
+                Controls.Remove(control);
+
             filterControls.Clear();
             orderedFilterControls.Clear();
 
+            LblExplenation.Visible = true;
             this.ResumeDrawing();
         }
 
@@ -228,11 +233,13 @@ namespace LogScraper.Controls.Metadata
             Point previousScrollPosition = AutoScrollPosition;
             AutoScrollPosition = Point.Empty;
 
-            int top = 0;
-            foreach (UserControlLogMetadataFilter ctrl in orderedFilterControls)
+            UserControlLogMetadataFilter previousControl = null;
+            foreach (UserControlLogMetadataFilter control in orderedFilterControls)
             {
-                ctrl.Top = top;
-                top = ctrl.Bottom + 5;
+                if (previousControl != null)
+                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 5 : 15);
+
+                previousControl = control;
             }
 
             ResumeLayout();

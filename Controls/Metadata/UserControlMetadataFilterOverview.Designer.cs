@@ -28,7 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            LblExplenation = new System.Windows.Forms.Label();
             SuspendLayout();
+            // 
+            // LblExplenation
+            // 
+            LblExplenation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblExplenation.ForeColor = System.Drawing.SystemColors.ControlDark;
+            LblExplenation.Location = new System.Drawing.Point(0, 0);
+            LblExplenation.Margin = new System.Windows.Forms.Padding(0);
+            LblExplenation.Name = "LblExplenation";
+            LblExplenation.Padding = new System.Windows.Forms.Padding(5);
+            LblExplenation.Size = new System.Drawing.Size(150, 65);
+            LblExplenation.TabIndex = 0;
+            LblExplenation.Text = "Metadata filters";
+            LblExplenation.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // UserControlMetadataFilterOverview
             // 
@@ -36,6 +50,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = System.Drawing.SystemColors.Control;
+            Controls.Add(LblExplenation);
             Margin = new System.Windows.Forms.Padding(0);
             Name = "UserControlMetadataFilterOverview";
             Resize += UserControlMetadataFilterOverview_Resize;
@@ -43,5 +58,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Label LblExplenation;
     }
 }

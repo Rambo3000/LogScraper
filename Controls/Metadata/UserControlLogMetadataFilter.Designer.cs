@@ -1,14 +1,11 @@
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using ListView = System.Windows.Forms.ListView;
 
 namespace LogScraper.Controls.Metadata
 {
     partial class UserControlLogMetadataFilter
     {
         private System.ComponentModel.IContainer components = null;
-        private Label LblLogFilterDescription;
-        private ListView ListViewItems;
+        private LogMetadataValueList ValueList;
 
         protected override void Dispose(bool disposing)
         {
@@ -19,104 +16,69 @@ namespace LogScraper.Controls.Metadata
             base.Dispose(disposing);
         }
 
+        #region Component Designer generated code
+
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogMetadataFilter));
-            LblLogFilterDescription = new Label();
-            ListViewItems = new ListView();
+            PnlHeader = new DoubleBufferedPanel();
+            ValueList = new LogMetadataValueList();
             LblIncludeExclude = new Label();
-            imageList1 = new ImageList(components);
-            BtnChevron = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)BtnChevron).BeginInit();
             SuspendLayout();
             // 
-            // LblLogFilterDescription
+            // PnlHeader
             // 
-            LblLogFilterDescription.AutoSize = true;
-            LblLogFilterDescription.BackColor = System.Drawing.SystemColors.Control;
-            LblLogFilterDescription.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            LblLogFilterDescription.Location = new System.Drawing.Point(25, 1);
-            LblLogFilterDescription.Name = "LblLogFilterDescription";
-            LblLogFilterDescription.Size = new System.Drawing.Size(32, 15);
-            LblLogFilterDescription.TabIndex = 0;
-            LblLogFilterDescription.Text = "Title";
+            PnlHeader.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            PnlHeader.BackColor = System.Drawing.SystemColors.Control;
+            PnlHeader.Cursor = Cursors.Hand;
+            PnlHeader.Location = new System.Drawing.Point(0, 0);
+            PnlHeader.Name = "PnlHeader";
+            PnlHeader.Size = new System.Drawing.Size(280, 20);
+            PnlHeader.TabIndex = 0;
+            PnlHeader.Paint += PnlHeader_Paint;
+            PnlHeader.MouseClick += Header_Click;
+            PnlHeader.MouseEnter += Header_MouseEnter;
+            PnlHeader.MouseLeave += Header_MouseLeave;
             // 
-            // ListViewItems
+            // ValueList
             // 
-            ListViewItems.BackColor = System.Drawing.SystemColors.Control;
-            ListViewItems.BorderStyle = BorderStyle.None;
-            ListViewItems.Dock = DockStyle.Fill;
-            ListViewItems.FullRowSelect = true;
-            ListViewItems.HeaderStyle = ColumnHeaderStyle.None;
-            ListViewItems.Location = new System.Drawing.Point(0, 0);
-            ListViewItems.Margin = new Padding(0);
-            ListViewItems.Name = "ListViewItems";
-            ListViewItems.OwnerDraw = true;
-            ListViewItems.Size = new System.Drawing.Size(280, 232);
-            ListViewItems.TabIndex = 3;
-            ListViewItems.UseCompatibleStateImageBehavior = false;
-            ListViewItems.View = View.Details;
-            ListViewItems.VirtualMode = true;
-            ListViewItems.DrawColumnHeader += ListView_DrawColumnHeader;
-            ListViewItems.DrawItem += ListView_DrawItem;
-            ListViewItems.DrawSubItem += ListView_DrawSubItem;
-            ListViewItems.RetrieveVirtualItem += ListView_RetrieveVirtualItem;
-            ListViewItems.DoubleClick += ListViewItems_DoubleClick;
-            ListViewItems.MouseClick += ListView_MouseClick;
-            ListViewItems.MouseDown += ListView_MouseDown;
-            ListViewItems.MouseWheel += ListView_MouseWheel;
-            ListViewItems.Resize += ListView_Resize;
+            ValueList.Dock = DockStyle.Bottom;
+            ValueList.Location = new System.Drawing.Point(0, 23);
+            ValueList.Margin = new Padding(0);
+            ValueList.Name = "ValueList";
+            ValueList.Size = new System.Drawing.Size(280, 209);
+            ValueList.TabIndex = 3;
+            ValueList.MouseEnter += ValueList_MouseEnter;
             // 
             // LblIncludeExclude
             // 
             LblIncludeExclude.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            LblIncludeExclude.BackColor = System.Drawing.SystemColors.Control;
-            LblIncludeExclude.Location = new System.Drawing.Point(239, 1);
+            LblIncludeExclude.BackColor = System.Drawing.Color.Transparent;
+            LblIncludeExclude.Cursor = Cursors.Hand;
+            LblIncludeExclude.Location = new System.Drawing.Point(239, 2);
             LblIncludeExclude.Name = "LblIncludeExclude";
             LblIncludeExclude.Size = new System.Drawing.Size(38, 15);
             LblIncludeExclude.TabIndex = 4;
+            LblIncludeExclude.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            LblIncludeExclude.Visible = false;
             LblIncludeExclude.Paint += LblIncludeExclude_Paint;
             LblIncludeExclude.MouseClick += LblIncludeExclude_MouseClick;
-            // 
-            // imageList1
-            // 
-            imageList1.ColorDepth = ColorDepth.Depth32Bit;
-            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-            imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "chevron-right 16x16.png");
-            imageList1.Images.SetKeyName(1, "chevron-down.png");
-            // 
-            // BtnChevron
-            // 
-            BtnChevron.BackColor = System.Drawing.SystemColors.Control;
-            BtnChevron.Cursor = Cursors.Hand;
-            BtnChevron.Location = new System.Drawing.Point(7, 1);
-            BtnChevron.Name = "BtnChevron";
-            BtnChevron.Size = new System.Drawing.Size(16, 16);
-            BtnChevron.SizeMode = PictureBoxSizeMode.Zoom;
-            BtnChevron.TabIndex = 5;
-            BtnChevron.TabStop = false;
-            BtnChevron.Click += BtnChevron_Click;
+            LblIncludeExclude.MouseEnter += Header_MouseEnter;
+            LblIncludeExclude.MouseLeave += Header_MouseLeave;
             // 
             // UserControlLogMetadataFilter
             // 
             BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(LblIncludeExclude);
-            Controls.Add(LblLogFilterDescription);
-            Controls.Add(BtnChevron);
-            Controls.Add(ListViewItems);
+            Controls.Add(PnlHeader);
+            Controls.Add(ValueList);
             Name = "UserControlLogMetadataFilter";
             Size = new System.Drawing.Size(280, 232);
-            ((System.ComponentModel.ISupportInitialize)BtnChevron).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
+        #endregion
+
         private Label LblIncludeExclude;
-        private ImageList imageList1;
-        private PictureBox BtnChevron;
+        private DoubleBufferedPanel PnlHeader;
     }
 }
-
-

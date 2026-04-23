@@ -63,7 +63,6 @@ namespace LogScraper
             SearchResultListControl = new SearchResultListControl();
             groupBox6 = new System.Windows.Forms.GroupBox();
             UserControlContentFilter = new UserControlLogContentFilter();
-            groupBox1 = new System.Windows.Forms.GroupBox();
             UsrMetadataFilterOverview = new UserControlMetadataFilterOverview();
             splitContainer1 = new SplitContainerWithGrip();
             splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -84,7 +83,6 @@ namespace LogScraper
             splitContainer5.SuspendLayout();
             PnlFiltersAndLogEntriesTextBox.SuspendLayout();
             groupBox6.SuspendLayout();
-            groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -403,26 +401,15 @@ namespace LogScraper
             UserControlContentFilter.Size = new System.Drawing.Size(310, 588);
             UserControlContentFilter.TabIndex = 0;
             // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(UsrMetadataFilterOverview);
-            groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox1.Location = new System.Drawing.Point(0, 0);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new System.Drawing.Size(230, 336);
-            groupBox1.TabIndex = 17;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Metadata";
-            // 
             // UsrMetadataFilterOverview
             // 
             UsrMetadataFilterOverview.AutoScroll = true;
             UsrMetadataFilterOverview.BackColor = System.Drawing.SystemColors.Control;
             UsrMetadataFilterOverview.Dock = System.Windows.Forms.DockStyle.Fill;
-            UsrMetadataFilterOverview.Location = new System.Drawing.Point(3, 19);
+            UsrMetadataFilterOverview.Location = new System.Drawing.Point(0, 0);
             UsrMetadataFilterOverview.Margin = new System.Windows.Forms.Padding(0);
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
-            UsrMetadataFilterOverview.Size = new System.Drawing.Size(224, 314);
+            UsrMetadataFilterOverview.Size = new System.Drawing.Size(230, 356);
             UsrMetadataFilterOverview.TabIndex = 0;
             UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
             // 
@@ -469,9 +456,9 @@ namespace LogScraper
             // 
             // splitContainer3.Panel2
             // 
-            splitContainer3.Panel2.Controls.Add(groupBox1);
+            splitContainer3.Panel2.Controls.Add(UsrMetadataFilterOverview);
             splitContainer3.Size = new System.Drawing.Size(230, 610);
-            splitContainer3.SplitterDistance = 270;
+            splitContainer3.SplitterDistance = 250;
             splitContainer3.TabIndex = 0;
             // 
             // BtnReset
@@ -532,7 +519,6 @@ namespace LogScraper
             PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
             PnlFiltersAndLogEntriesTextBox.PerformLayout();
             groupBox6.ResumeLayout(false);
-            groupBox1.ResumeLayout(false);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
@@ -552,7 +538,6 @@ namespace LogScraper
         public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.Button BtnFormRecord;
-        private System.Windows.Forms.GroupBox groupBox1;
         private SplitContainerWithGrip splitContainer1;
         private SplitContainerWithGrip splitContainer2;
         private UserControlLogContentFilter UserControlContentFilter;
