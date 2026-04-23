@@ -313,6 +313,7 @@ namespace LogScraper.Controls.FilterOverview
                 if (!chipByValue.TryGetValue(value, out var chip)) continue;
                 group.ValueChips.Add(chip);
                 FlowLayoutFilterChips.Controls.SetChildIndex(chip, position++);
+                chip.SyncFilter(filter); // update reference so FilterMode changes are reflected
             }
         }
 

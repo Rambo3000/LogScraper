@@ -216,6 +216,24 @@ namespace LogScraper.Controls.FilterOverview
         public int ErrorCount => _errorCount;
 
         /// <summary>
+        /// Returns true when all displayed values are in Exclude mode.
+        /// Drives the strikethrough rendering of the value portion.
+        /// </summary>
+        private bool IsExcluded
+        {
+            get
+            {
+                if (_variant != ChipVariant.Metadata) return false;
+                if (_specificValue != null)
+                    return _metadataFilter?.ActiveValues.TryGetValue(_specificValue, out FilterMode m) == true
+                           && m == FilterMode.Exclude;
+                if (_metadataFilter?.ActiveValues.Count > 0)
+                    return _metadataFilter.ActiveValues.Values.All(v => v == FilterMode.Exclude);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Width of this chip when showing a single explicit value ("Property: Value").
         /// For non-metadata chips, equals <see cref="CollapsedWidth"/>.
         /// </summary>
@@ -248,6 +266,17 @@ namespace LogScraper.Controls.FilterOverview
         #endregion
 
         #region Public update methods
+
+        /// <summary>
+        /// Updates the filter reference in place (e.g. when FilterMode changed) and repaints.
+        /// Does NOT rebuild label text or recalculate widths — use UpdateMetadataFilter for that.
+        /// </summary>
+        public void SyncFilter(LogMetadataFilter filter)
+        {
+            ArgumentNullException.ThrowIfNull(filter);
+            _metadataFilter = filter;
+            Invalidate();
+        }
 
         /// <summary>
         /// Updates the metadata filter data in place — recalculates both widths and redraws.
@@ -447,14 +476,7 @@ namespace LogScraper.Controls.FilterOverview
                 Width - HorizontalPad - InnerGap - ButtonSize - HorizontalPad,
                 Height);
 
-            using (var brush = new SolidBrush(_colors.Text))
-                g.DrawString(_labelText, Font, brush, textArea, new StringFormat
-                {
-                    Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center,
-                    Trimming = StringTrimming.None,
-                    FormatFlags = StringFormatFlags.NoWrap
-                });
+            DrawLabelText(g, textArea);
 
             // Button hover highlight (Metadata / Range only — Error highlights the whole chip)
             if (_buttonHover && _variant != ChipVariant.Error)
@@ -465,6 +487,53 @@ namespace LogScraper.Controls.FilterOverview
             }
 
             DrawRightIcon(g);
+        }
+
+        private void DrawLabelText(Graphics g, RectangleF textArea)
+        {
+            using var brush = new SolidBrush(_colors.Text);
+            var sfCenter = new StringFormat
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.None,
+                FormatFlags = StringFormatFlags.NoWrap
+            };
+
+            if (!IsExcluded)
+            {
+                g.DrawString(_labelText, Font, brush, textArea, sfCenter);
+                return;
+            }
+
+            // Excluded — strikethrough the value portion only.
+            // Expanded label has the form "Property: Value"; strike the value part.
+            // Collapsed label ("Property (n)") has no explicit value — strike everything.
+            int sepIdx = _labelText.IndexOf(": ", StringComparison.Ordinal);
+
+            using var strikeFont = new Font(Font, FontStyle.Strikeout);
+
+            if (sepIdx < 0)
+            {
+                // Collapsed: strike the whole label — same DrawString call as the normal path.
+                g.DrawString(_labelText, strikeFont, brush, textArea, sfCenter);
+                return;
+            }
+
+            // Expanded: draw prefix normally, then draw value with strikethrough.
+            // Both segments use g.DrawString so vertical positioning matches the normal path.
+            string prefix = _labelText[..(sepIdx + 2)];    // "Property: "
+            string value  = _labelText[(sepIdx + 2)..];    // "Value"
+
+            // Measure the prefix width with NoPadding so segments abut correctly.
+            float prefixPx = TextRenderer.MeasureText(prefix, Font,
+                new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPadding).Width;
+
+            var prefixArea = textArea with { Width = prefixPx };
+            var valueArea  = textArea with { X = textArea.X + prefixPx, Width = textArea.Width - prefixPx };
+
+            g.DrawString(prefix, Font,       brush, prefixArea, sfCenter);
+            g.DrawString(value,  strikeFont, brush, valueArea,  sfCenter);
         }
 
         private void DrawRightIcon(Graphics g)
