@@ -362,17 +362,17 @@ namespace LogScraper.Controls
                 CollapseProvider();
         }
 
-        private void lblProviderDescription_MouseClick(object sender, MouseEventArgs e)
+        private void LblProviderDescription_MouseClick(object sender, MouseEventArgs e)
         {
             ExpandProvider();
         }
 
-        private void lblProviderDescription_MouseEnter(object sender, EventArgs e)
+        private void LblProviderDescription_MouseEnter(object sender, EventArgs e)
         {
             lblProviderDescription.LinkBehavior = LinkBehavior.AlwaysUnderline;
         }
 
-        private void lblProviderDescription_MouseLeave(object sender, EventArgs e)
+        private void LblProviderDescription_MouseLeave(object sender, EventArgs e)
         {
             lblProviderDescription.LinkBehavior = LinkBehavior.NeverUnderline;
         }

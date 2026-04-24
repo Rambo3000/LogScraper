@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
@@ -13,16 +12,15 @@ namespace LogScraper.Log
     /// </summary>
     public class LogCollection
     {
-        // Singleton instance of LogCollection.
-        private static LogCollection instance = null;
-
-        // Lock object to ensure thread safety when creating the singleton instance.
-        private static readonly Lock padlock = new();
+        /// <summary>
+        /// A list of log entries stored in the collection.
+        /// </summary>
+        public List<LogEntry> LogEntries { get; set; } = [];
 
         /// <summary>
         /// A BitArray indicating which log entries in the collection are error log entries.
         /// </summary>
-        public BitArray ErrorLogEntriesmask { get; set; } = null;
+        public BitArray ErrorMask { get; set; } = null;
 
         /// <summary>
         /// A dictionary mapping each content property to a BitArray indicating which log entries (by index) have that property.
@@ -35,37 +33,10 @@ namespace LogScraper.Log
         public void Clear()
         {
             LogEntries.Clear();
-            ErrorLogEntriesmask = null;
+            ErrorMask = null;
             ContentPropertyMask = null;
             _valuePool = [];
         }
-
-        /// <summary>
-        /// Gets the singleton instance of the LogCollection class.
-        /// Ensures that only one instance is created, even in a multithreaded environment.
-        /// </summary>
-        public static LogCollection Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance.
-                    lock (padlock)
-                    {
-                        instance ??= new LogCollection();
-                    }
-                }
-                return instance;
-            }
-        }
-
-        /// <summary>
-        /// A list of log entries stored in the collection.
-        /// </summary>
-        public List<LogEntry> LogEntries { get; set; } = [];
-
-
         /// <summary>
         /// A dictionary that serves as a pool of shared LogMetadataValue objects. 
         /// This pool allows for efficient reuse of LogMetadataValue instances.

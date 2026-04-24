@@ -8,8 +8,6 @@ namespace LogScraper.Controls
 {
     public partial class LogViewportControl : UserControl
     {
-        public event EventHandler RangeChanged;
-
         private LogEntry selectedLogEntry;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LogEntry SelectedLogEntry
@@ -61,7 +59,7 @@ namespace LogScraper.Controls
 
             range.Begin = null;
             UpdateButtons();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseRangeChanged();
         }
 
         public void ClearEnd()
@@ -74,7 +72,7 @@ namespace LogScraper.Controls
 
             range.End = null;
             UpdateButtons();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseRangeChanged();
         }
 
         public void UpdateButtons()
@@ -83,10 +81,16 @@ namespace LogScraper.Controls
             ChkEnd.Enabled = SelectedLogEntry != null;
             BtnReset.Enabled = range.IsConstrained;
         }
+
+        private void RaiseRangeChanged()
+        {
+            LogAppState.Instance.SetLogRange(range);
+        }
+
         private void BtnReset_Click(object sender, EventArgs e)
         {
             Clear();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseRangeChanged();
         }
 
         private bool UpdateCheckboxes = false;
@@ -105,7 +109,7 @@ namespace LogScraper.Controls
 
             range.Begin = checkState ? SelectedLogEntry : null;
             UpdateButtons();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseRangeChanged();
         }
 
         private void ChkEnd_CheckedChanged(object sender, EventArgs e)
@@ -123,7 +127,7 @@ namespace LogScraper.Controls
 
             range.End = checkState ? SelectedLogEntry : null;
             UpdateButtons();
-            RangeChanged?.Invoke(this, EventArgs.Empty);
+            RaiseRangeChanged();
         }
     }
 }

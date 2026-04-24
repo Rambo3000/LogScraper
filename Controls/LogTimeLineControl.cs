@@ -138,6 +138,20 @@ namespace LogScraper.Controls
             this.Resize += (s, e) => { RebuildBuckets(); this.Invalidate(); };
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.FilterResultWithRangeChanged += OnFilterResultWithRangeChanged;
+        }
+
+        private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
+        {
+            var state = LogAppState.Instance;
+            if (state.FilterResultWithRange == null) { Clear(); return; }
+            UpdateLogEntries(state.MetadataFilterResult, state.FilterResultWithRange.LogEntries, state.LogRange, state.LogCollection);
+        }
+
         #endregion
 
         #region Public Methods

@@ -24,16 +24,30 @@ namespace LogScraper.Content
 
         private List<LogContentProperty> LogContentPropertiesError = [];
 
-        private LogMetadataFilterResult LogMetadataFilterResult;
-
-        private LogRange logRange = new();
-
         private bool showTree = false;
 
         public UserControlLogContentFilter()
         {
             InitializeComponent();
             txtSearch.PlaceholderText = DefaulSearchtText;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
+            LogAppState.Instance.MetadataFilterResultChanged += OnMetadataFilterResultChanged;
+        }
+
+        private void OnLogRangeChanged(object sender, EventArgs e)
+        {
+            UpdateDisplayedLogEntries();
+        }
+
+        private void OnMetadataFilterResultChanged(object sender, EventArgs e)
+        {
+            UpdateDisplayedLogEntries();
         }
 
         #endregion
@@ -76,13 +90,13 @@ namespace LogScraper.Content
 
         public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
         {
-            LogMetadataFilterResult = logMetadataFilterResult;
             UpdateDisplayedLogEntries();
         }
 
         private void UpdateDisplayedLogEntries()
         {
-            if (LogMetadataFilterResult == null || LogMetadataFilterResult.LogEntries == null)
+            LogMetadataFilterResult logMetadataFilterResult = LogAppState.Instance.MetadataFilterResult;
+            if (logMetadataFilterResult == null || logMetadataFilterResult.LogEntries == null)
             {
                 LstLogContent.Items.Clear();
                 return;
@@ -90,7 +104,7 @@ namespace LogScraper.Content
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(LogMetadataFilterResult.LogEntries, logRange));
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.LogRange));
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
@@ -136,7 +150,7 @@ namespace LogScraper.Content
                     if (!contentValue.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)) continue;
                 }
 
-                LogFlowTree logFlowTree = LogMetadataFilterResult.LogFlowTrees[logContentProperty];
+                LogFlowTree logFlowTree = LogAppState.Instance.MetadataFilterResult.LogFlowTrees[logContentProperty];
                 LogFlowTreeNode flowtreeNode = null;
                 logFlowTree?.LogEntryDictionary?.TryGetValue(logEntry, out flowtreeNode);
 
@@ -270,19 +284,6 @@ namespace LogScraper.Content
             }
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogRange LogRange
-        {
-            get
-            {
-                return logRange;
-            }
-            set
-            {
-                logRange = value;
-                UpdateDisplayedLogEntries();
-            }
-        }
 
         private LogEntryDisplayObject SelectedLogEntryDisplayObject
         {
@@ -306,7 +307,6 @@ namespace LogScraper.Content
         {
             ClearSelectedLogEntry();
             LogContentPropertiesError = [];
-            LogMetadataFilterResult = null;
         }
         #endregion
 
@@ -449,12 +449,12 @@ namespace LogScraper.Content
         /// <param name="logEntryDisplayObject">The <see cref="LogEntryDisplayObject"/> to evaluate. Must not be <c>null</c>.</param>
         /// <returns><see langword="true"/> if the <paramref name="logEntryDisplayObject"/> is outside the range defined by  the
         /// selected begin and end entry display objects; otherwise, <see langword="false"/>.</returns>
-        private bool IslogEntryDisplayObjectOutOfScope(LogEntryDisplayObject logEntryDisplayObject)
+        private static bool IslogEntryDisplayObjectOutOfScope(LogEntryDisplayObject logEntryDisplayObject)
         {
             if (logEntryDisplayObject == null) return true;
 
-            return (LogRange.Begin != null && logEntryDisplayObject.Index < LogRange.Begin.Index) ||
-                   (LogRange.End != null && logEntryDisplayObject.Index > LogRange.End.Index);
+            return (LogAppState.Instance.LogRange?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.LogRange.Begin.Index) ||
+                   (LogAppState.Instance.LogRange?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.LogRange.End.Index);
         }
         #endregion
 

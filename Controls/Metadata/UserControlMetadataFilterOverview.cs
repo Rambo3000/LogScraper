@@ -84,8 +84,7 @@ namespace LogScraper.Controls.Metadata
         /// </summary>
         /// <param name="logLayout">The layout of the log, including metadata properties.</param>
         /// <param name="logCollection">The collection of log entries, providing the value pool.</param>
-        /// <param name="stats">Current filter stats (counts per value). Pass null when no filters are active.</param>
-        public void UpdateFilterControls(LogLayout logLayout, LogCollection logCollection, List<LogMetadataFilterStats> stats)
+        public void UpdateFilterControls(LogLayout logLayout, LogCollection logCollection)
         {
             this.SuspendDrawing();
 
@@ -97,8 +96,6 @@ namespace LogScraper.Controls.Metadata
             {
                 if (!logCollection.MetadataValues.TryGetValue(property, out List<LogMetadataValue> allValues))
                     continue;
-
-                LogMetadataFilterStats propertyStats = stats?.Find(s => s.Property == property);
 
                 if (!filterControls.TryGetValue(property, out UserControlLogMetadataFilter control))
                 {
@@ -113,7 +110,7 @@ namespace LogScraper.Controls.Metadata
                     orderedFilterControls.Add(control);
                 }
 
-                control.UpdateListView(property, allValues, propertyStats);
+                control.UpdateListView(property, allValues);
 
                 if (previousControl != null)
                     control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);
@@ -138,6 +135,20 @@ namespace LogScraper.Controls.Metadata
                 if (filterControls.TryGetValue(propertyStats.Property, out UserControlLogMetadataFilter control))
                     control.UpdateCounts(propertyStats);
             }
+
+            this.ResumeDrawing();
+        }
+        /// <summary>
+        /// Updates only the counts in all filter controls without rebuilding the value lists.
+        /// Call this after filtering to reflect the new counts.
+        /// </summary>
+        /// <param name="stats">Updated filter stats per property.</param>
+        public void UpdateFilterControlsCountToZero()
+        {
+            this.SuspendDrawing();
+
+            foreach (UserControlLogMetadataFilter control in filterControls.Values)
+                control.UpdateCountsToZero();
 
             this.ResumeDrawing();
         }

@@ -17,7 +17,6 @@ namespace LogScraper.Controls
         private LogEntry selectedLogEntry;
         private LogRange _logRange;
         private List<LogEntry> _filteredBookmarks = [];
-        private LogMetadataFilterResult logMetadataFilterResult;
 
         private void RebuildFilteredBookmarks()
         {
@@ -26,7 +25,8 @@ namespace LogScraper.Controls
 
             List<LogEntry> bookMarksWithinRange = [.. bookmarks.Values.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
 
-            if (logMetadataFilterResult?.FilteredLogEntriesMask == null)
+            LogMetadataFilterResult metadataFilterResult = LogAppState.Instance.MetadataFilterResult;
+            if (metadataFilterResult?.FilteredLogEntriesMask == null)
             {
                 _filteredBookmarks = bookMarksWithinRange;
                 return;
@@ -35,22 +35,38 @@ namespace LogScraper.Controls
             _filteredBookmarks = [];
             foreach (LogEntry logEntry in bookMarksWithinRange)
             {
-                if (logMetadataFilterResult.FilteredLogEntriesMask[logEntry.Index])
-                { 
+                if (metadataFilterResult.FilteredLogEntriesMask[logEntry.Index])
+                {
                     _filteredBookmarks.Add(logEntry);
                 }
             }
         }
 
-        public void UpdateMetadataFilterResult(LogMetadataFilterResult result)
-        {
-            logMetadataFilterResult = result;
-            RebuildFilteredBookmarks();
-        }
 
         public BookMarksControl()
         {
             InitializeComponent();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
+            LogAppState.Instance.MetadataFilterResultChanged += OnMetadataFilterResultChanged;
+        }
+
+        private void OnMetadataFilterResultChanged(object sender, EventArgs e)
+        {
+            RebuildFilteredBookmarks();
+            UpdateButtons();
+        }
+
+        private void OnLogRangeChanged(object sender, EventArgs e)
+        {
+            _logRange = LogAppState.Instance.LogRange;
+            RebuildFilteredBookmarks();
+            UpdateButtons();
         }
 
         public IEnumerable<LogEntry> Bookmarks => bookmarks.Values;
@@ -60,18 +76,11 @@ namespace LogScraper.Controls
             selectedLogEntry = logEntry;
             UpdateButtons();
         }
-        public void SetLogRange(LogRange logRange)
-        {
-            _logRange = logRange;
-            RebuildFilteredBookmarks();
-            UpdateButtons();
-        }
 
         public void Clear()
         {
             if (bookmarks.Count == 0) return;
             bookmarks.Clear();
-            logMetadataFilterResult = null;
             RebuildFilteredBookmarks();
             OnBookmarksChanged();
             UpdateButtons();

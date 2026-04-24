@@ -132,9 +132,9 @@ namespace LogScraper.Controls
             lblProviderDescription.Text = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
             lblProviderDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             lblProviderDescription.VisitedLinkColor = System.Drawing.Color.Black;
-            lblProviderDescription.MouseClick += lblProviderDescription_MouseClick;
-            lblProviderDescription.MouseEnter += lblProviderDescription_MouseEnter;
-            lblProviderDescription.MouseLeave += lblProviderDescription_MouseLeave;
+            lblProviderDescription.MouseClick += LblProviderDescription_MouseClick;
+            lblProviderDescription.MouseEnter += LblProviderDescription_MouseEnter;
+            lblProviderDescription.MouseLeave += LblProviderDescription_MouseLeave;
             // 
             // btnPin
             // 

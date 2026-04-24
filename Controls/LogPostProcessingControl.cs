@@ -66,7 +66,7 @@ namespace LogScraper.Controls
 
             CancelPostProcessing();
 
-            postProcessManager = new(LogCollection.Instance);
+            postProcessManager = new(LogAppState.Instance.LogCollection);
             postProcessCancellationSource = new CancellationTokenSource();
             postProcessManager.ProcessingFinished += Manager_ProcessingFinished;
 

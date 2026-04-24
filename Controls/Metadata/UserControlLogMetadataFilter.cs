@@ -301,9 +301,9 @@ namespace LogScraper.Controls.Metadata
         /// <summary>
         /// Updates the embedded list with all known values for this property.
         /// </summary>
-        public void UpdateListView(LogMetadataProperty property, List<LogMetadataValue> allValues, LogMetadataFilterStats stats)
+        public void UpdateListView(LogMetadataProperty property, List<LogMetadataValue> allValues)
         {
-            bool needsResize = ValueList.UpdateValues(property, allValues, stats);
+            bool needsResize = ValueList.UpdateValues(property, allValues);
 
             if (property.IsCollapsedByDefault && ValueList.SortedValueCount > 0 && !Collapsed)
                 SetCollapsed(true);
@@ -312,6 +312,11 @@ namespace LogScraper.Controls.Metadata
 
             PnlHeader.Invalidate();
         }
+
+        /// <summary>
+        /// Sets all counts to zero without rebuilding the value list.
+        /// </summary>
+        public void UpdateCountsToZero() => ValueList.UpdateCountsToZero();
 
         /// <summary>
         /// Lightweight update that only refreshes counts without rebuilding the value list.

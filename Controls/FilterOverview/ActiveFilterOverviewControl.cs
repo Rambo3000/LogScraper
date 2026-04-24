@@ -61,6 +61,20 @@ namespace LogScraper.Controls.FilterOverview
             InitializeComponent();
             LblCount.Text = string.Empty;
         }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
+        }
+
+        private void OnLogRangeChanged(object sender, EventArgs e)
+        {
+            _logRange = LogAppState.Instance.LogRange;
+            SyncRangeChips();
+            RecalculateLayout();
+        }
         #endregion
 
         #region Inner type — property group
@@ -111,16 +125,6 @@ namespace LogScraper.Controls.FilterOverview
             RecalculateLayout();
         }
 
-        /// <summary>
-        /// Updates range chips in place, or adds/removes them as needed.
-        /// Pass <see langword="null"/> to remove all range chips.
-        /// </summary>
-        public void SetLogRange(LogRange range)
-        {
-            _logRange = range;
-            SyncRangeChips();
-            RecalculateLayout();
-        }
 
         /// <summary>
         /// Updates the visible / total entry count shown at the top-right.
@@ -139,7 +143,7 @@ namespace LogScraper.Controls.FilterOverview
         {
             _errorEntries = null;
             _metadataFilters = [];
-            _logRange = null;
+            _logRange = LogAppState.Instance.LogRange;
             DisposeAllChips();
             RecalculateLayout();
         }

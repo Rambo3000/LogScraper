@@ -6,21 +6,17 @@ using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Filtering
 {
-    internal class LogFilterResultWithRange(LogMetadataFilterResult metadataFilterResult, LogRange range)
+    public class LogFilterResultWithRange(LogMetadataFilterResult metadataFilterResult, LogRange range)
     {
+        /// <summary>
+        /// The result of applying metadata filters to a log collection, which includes the filtered log entries and a BitArray mask indicating which entries passed the filters.
+        /// </summary>
         public LogMetadataFilterResult MetadataFilterResult { get; } = metadataFilterResult;
 
+        /// <summary>
+        /// The range of log entries to consider within the filtered results, defined by optional begin and end LogEntry references.
+        /// </summary>
         public LogRange Range { get; } = range;
-
-        /// <summary>
-        /// The inclusive source-collection index of the first log entry in the range.
-        /// </summary>
-        private int BeginIndex { get; } = range?.Begin?.Index ?? 0;
-
-        /// <summary>
-        /// The inclusive source-collection index of the last log entry in the range.
-        /// </summary>
-        private int EndIndex { get; } = range?.End?.Index ?? int.MaxValue;
 
         private List<LogEntry> _logEntriesCache;
 
@@ -36,34 +32,95 @@ namespace LogScraper.Log.Filtering
             {
                 if (_logEntriesCache != null) return _logEntriesCache;
 
-                List<LogEntry> entries = MetadataFilterResult.LogEntries;
-                if (entries == null || entries.Count == 0) return _logEntriesCache = [];
+                _logEntriesCache = LogRenderer.GetLogEntriesRange(MetadataFilterResult.LogEntries, Range);
+                return _logEntriesCache;
+            }
+        }
 
-                if (!Range.IsConstrained) return _logEntriesCache = entries;
+        private BitArray _filteredAndRangedMask = null;
 
-                // Binary search for the first entry with Index >= BeginIndex
-                int lo = 0, hi = entries.Count - 1, startPos = entries.Count;
-                while (lo <= hi)
+        /// <summary>
+        /// Combines the FilteredLogEntriesMask from the metadata filter result with the range to produce a new BitArray
+        /// </summary>
+        public BitArray FilteredAndRangedMask
+        {
+            get
+            {
+                if (_filteredAndRangedMask != null) return _filteredAndRangedMask;
+
+                BitArray filteredMask = MetadataFilterResult.FilteredLogEntriesMask;
+                if (filteredMask == null) return new BitArray(0);
+
+                if (Range == null || !Range.IsConstrained)
                 {
-                    int mid = (lo + hi) >> 1;
-                    if (entries[mid].Index >= BeginIndex) { startPos = mid; hi = mid - 1; }
-                    else lo = mid + 1;
+                    _filteredAndRangedMask = filteredMask;
+                    return _filteredAndRangedMask;
                 }
 
-                List<LogEntry> result = [];
-                for (int i = startPos; i < entries.Count; i++)
+                int beginIndex = Range.Begin?.Index ?? 0;
+                int endIndex = Range.End?.Index ?? (filteredMask.Length - 1);
+
+                BitArray rangeMask = new(filteredMask.Length);
+                for (int i = beginIndex; i <= endIndex && i < filteredMask.Length; i++)
+                    rangeMask[i] = true;
+
+                _filteredAndRangedMask = new BitArray(filteredMask).And(rangeMask);
+                return _filteredAndRangedMask;
+            }
+        }
+
+        private BitArray _errorMaskCache = null;
+
+        /// <summary>
+        /// Returns the count of log entries within the current range that are marked as errors in the source log collection's ErrorMask.
+        /// </summary>
+        /// <returns>The number of error log entries within the current range.</returns>
+        public BitArray ErrorMask
+        {
+            get
+            {
+                if (_errorMaskCache != null) return _errorMaskCache;
+                _errorMaskCache = new BitArray(MetadataFilterResult.SourceLogCollection.ErrorMask).And(FilteredAndRangedMask);
+                return _errorMaskCache;
+            }
+        }
+
+        private List<LogEntry> _errorLogEntries = null;
+
+        /// <summary>
+        /// Returns the count of log entries within the current range that are marked as errors in the source log collection's ErrorMask.
+        /// </summary>
+        /// <returns>The number of error log entries within the current range.</returns>
+        public List<LogEntry> ErrorLogEntries
+        {
+            get
+            {
+                if (_errorLogEntries != null) return _errorLogEntries;
+                _errorLogEntries = [];
+
+                foreach (LogEntry entry in LogEntries)
                 {
-                    if (entries[i].Index > EndIndex) break;
-                    result.Add(entries[i]);
+                    if (ErrorMask[entry.Index]) _errorLogEntries.Add(entry);
                 }
-                return _logEntriesCache = result;
+                return _errorLogEntries;
             }
         }
 
         /// <summary>
         /// A cache of log entries by content property, built lazily on demand by <see cref="GetLogEntriesOfContentProperty"/>.
         /// </summary>
-        private IndexDictionary<LogContentProperty, List<LogEntry>> _entriesByContentProperty;
+        private IndexDictionary<LogContentProperty, List<LogEntry>> _entriesByContentPropertCache;
+
+        /// <summary>
+        /// Returns the log entries within the current range that have the specified content property.
+        /// The result is lazily built and cached per property.
+        /// </summary>
+        public List<LogEntry> GetLogEntriesOfContentProperty(LogContentProperty property)
+        {
+            if (_entriesByContentPropertCache == null || !_entriesByContentPropertCache.ContainsKey(property))
+                BuildEntriesByContentProperty(property);
+            return _entriesByContentPropertCache.TryGetValue(property, out List<LogEntry> entries) ? entries : [];
+        }
 
         /// <summary>
         /// Builds the entries list for a single content property by iterating <see cref="LogEntries"/>
@@ -71,10 +128,10 @@ namespace LogScraper.Log.Filtering
         /// </summary>
         private void BuildEntriesByContentProperty(LogContentProperty property)
         {
-            if (_entriesByContentProperty == null)
+            if (_entriesByContentPropertCache == null)
             {
                 int capacity = MetadataFilterResult.SourceLogCollection.ContentPropertyMask?.Capacity ?? property.Index + 1;
-                _entriesByContentProperty = new(capacity);
+                _entriesByContentPropertCache = new(capacity);
             }
 
             MetadataFilterResult.SourceLogCollection.ContentPropertyMask.TryGetValue(property, out BitArray logCollectionMask);
@@ -89,19 +146,8 @@ namespace LogScraper.Log.Filtering
             {
                 if (contentPropertyMask[entry.Index]) result.Add(entry);
             }
-                    
-            _entriesByContentProperty[property] = result;
-        }
 
-        /// <summary>
-        /// Returns the log entries within the current range that have the specified content property.
-        /// The result is lazily built and cached per property.
-        /// </summary>
-        public List<LogEntry> GetLogEntriesOfContentProperty(LogContentProperty property)
-        {
-            if (!_entriesByContentProperty.ContainsKey(property))
-                BuildEntriesByContentProperty(property);
-            return _entriesByContentProperty.TryGetValue(property, out List<LogEntry> entries) ? entries : [];
+            _entriesByContentPropertCache[property] = result;
         }
     }
 }

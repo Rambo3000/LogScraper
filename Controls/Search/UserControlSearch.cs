@@ -51,6 +51,19 @@ namespace LogScraper.Controls.Search
             ItemWholeWords.Click += ItemWholeWords_CheckedChanged;
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.FilterResultWithRangeChanged += OnFilterResultWithRangeChanged;
+        }
+
+        private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
+        {
+            logEntries = LogAppState.Instance.FilterResultWithRange?.LogEntries;
+            lastFiredSearchSettings = null;
+        }
+
         private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == (char)Keys.Enter)

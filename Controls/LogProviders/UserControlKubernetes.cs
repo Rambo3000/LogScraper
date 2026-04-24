@@ -253,7 +253,7 @@ namespace LogScraper.Controls.LogProviders
         private void CboKubernetesTimespan_SelectedIndexChanged(object sender, EventArgs e)
         {
             KubernetesTimespan newTimeSpan = (KubernetesTimespan)CboKubernetesTimespan.SelectedItem;
-            if ( LogCollection.Instance.LogEntries.Count > 0 &&
+            if (LogAppState.Instance.LogCollection?.LogEntries.Count > 0 &&
                 cboKubernetesPod.SelectedIndex != -1 &&
                 previousTimeSpan != null && previousTimeSpan != KubernetesTimespan.Everything &&
                 (newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&

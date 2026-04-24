@@ -127,10 +127,10 @@ namespace LogScraper.Controls.Metadata
 
         /// <summary>
         /// Updates the ListView with all known values for this property.
-        /// Preserves existing checked states. If the set of values has not changed, only updates counts.
+        /// Preserves existing checked states.
         /// Returns true when the value list changed (caller may need to resize).
         /// </summary>
-        public bool UpdateValues(LogMetadataProperty property, List<LogMetadataValue> allValues, LogMetadataFilterStats stats)
+        public bool UpdateValues(LogMetadataProperty property, List<LogMetadataValue> allValues)
         {
             bool isFirstLoad = metadataProperty == null;
             metadataProperty = property;
@@ -141,7 +141,7 @@ namespace LogScraper.Controls.Metadata
 
             if (!valuesChanged)
             {
-                UpdateCounts(stats);
+                UpdateCounts(null);
                 return false;
             }
 
@@ -158,7 +158,7 @@ namespace LogScraper.Controls.Metadata
                     checkedItems.Add(value);
             }
 
-            BuildValueCounts(stats);
+            BuildValueCounts(null);
 
             ListViewItems.VirtualListSize = sortedValues.Count;
             AdjustCountColumnWidth();
@@ -166,6 +166,11 @@ namespace LogScraper.Controls.Metadata
             updateInProgress = false;
             return isFirstLoad && property.IsCollapsedByDefault ? false : true;
         }
+
+        /// <summary>
+        /// Sets all counts to zero without rebuilding the value list.
+        /// </summary>
+        public void UpdateCountsToZero() => UpdateCounts(null);
 
         /// <summary>
         /// Lightweight update that only refreshes counts without rebuilding the value list.

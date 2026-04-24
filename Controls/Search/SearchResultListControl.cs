@@ -43,8 +43,6 @@ namespace LogScraper.Controls.Search
 
         #region Private fields
 
-        private List<LogEntry> logEntries;
-
         #endregion
 
         #region Public events
@@ -75,15 +73,6 @@ namespace LogScraper.Controls.Search
         #region Public interface
 
         /// <summary>
-        /// Stores the log entries for use in subsequent searches. Does not trigger a refresh.
-        /// Call UpdateSearchResults to refresh the list.
-        /// </summary>
-        public void UpdateLogEntries(List<LogEntry> entries)
-        {
-            logEntries = entries;
-        }
-
-        /// <summary>
         /// Refreshes the result list based on the provided search settings.
         /// Should be called by the main form in response to UserControlSearch.SearchSettingsChanged.
         /// </summary>
@@ -91,6 +80,7 @@ namespace LogScraper.Controls.Search
         {
             LstSearchResults.ItemHeight = LstSearchResults.Font.Height;
 
+            List<LogEntry> logEntries = LogAppState.Instance.FilterResultWithRange?.LogEntries;
             if (logEntries == null || logEntries.Count == 0 || string.IsNullOrEmpty(searchSettings?.SearchText))
             {
                 Clear();

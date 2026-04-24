@@ -35,8 +35,6 @@ namespace LogScraper
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
-        private LogMetadataFilterResult currentLogMetadataFilterResult;
-        List<LogEntry> visibleLogEntries;
         private LogRenderSettings currentRenderSettings;
         public FormLogScraper()
         {
@@ -70,7 +68,7 @@ namespace LogScraper
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
-            LogViewport.RangeChanged += LogViewport_RangeChanged;
+            LogAppState.Instance.LogRangeChanged += (s, e) => UpdateLogRange(true);
 
             activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
             activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
@@ -82,7 +80,7 @@ namespace LogScraper
 
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
 
-            MetadataFormatingControl.SelectionChanged += HandleLogContentFilterUpdate;
+            MetadataFormatingControl.SelectionChanged += MetadataFormatingControl_SelectionChanged;
 
             LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
 
@@ -151,7 +149,6 @@ namespace LogScraper
                 ShowSearchPanel();
             }
 
-            SearchResultListControl.UpdateLogEntries(visibleLogEntries);
             SearchResultListControl.UpdateSearchResults(settings);
         }
 
@@ -183,13 +180,9 @@ namespace LogScraper
 
         private void FlowTreeControl_ShowTreeStateChanged(object sender, EventArgs e)
         {
-            RenderLog(currentLogMetadataFilterResult);
+            RenderLog(LogAppState.Instance.MetadataFilterResult);
         }
 
-        private void LogViewport_RangeChanged(object sender, EventArgs e)
-        {
-            UpdateLogRange(true);
-        }
 
         private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)
         {
@@ -221,15 +214,12 @@ namespace LogScraper
         }
         private void UpdateLogRange(bool render)
         {
-            UserControlContentFilter.LogRange = LogViewport.Range;
-            BookMarksControl.SetLogRange(LogViewport.Range);
-            activeFilterOverviewControl.SetLogRange(LogViewport.Range);
-            if (render) RenderLog(currentLogMetadataFilterResult);
+            if (render) RenderLog(LogAppState.Instance.MetadataFilterResult);
         }
 
         private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
         {
-            RenderLog(currentLogMetadataFilterResult);
+            RenderLog(LogAppState.Instance.MetadataFilterResult);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -333,11 +323,13 @@ namespace LogScraper
             LogLayout logLayout = UsrLogProviderSelection.GetSelectedLogLayout();
             try
             {
+                if (LogAppState.Instance.LogCollection == null) LogAppState.Instance.SetLogCollection(new());
+
                 bool newLogEntriesReceived = false;
                 try
                 {
                     UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Processing);
-                    newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogCollection.Instance, logLayout);
+                    newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, LogAppState.Instance.LogCollection, logLayout);
                 }
                 catch (Exception ex)
                 {
@@ -348,14 +340,13 @@ namespace LogScraper
 
                 if (newLogEntriesReceived)
                 {
-                    LogEntryClassifier.Classify(logLayout, LogCollection.Instance);
+                    LogEntryClassifier.Classify(logLayout, LogAppState.Instance.LogCollection);
 
-                    // Pass null for stats on initial load — no filters active yet, full counts will be shown.
-                    UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
+                    UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogAppState.Instance.LogCollection);
 
                     // TODO: fix total/visible error counts
                     //activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntriesmask);
-                    FormCompactView.Instance.SetErrorCont(LogCollection.Instance.ErrorLogEntriesmask.Count);
+                    FormCompactView.Instance.SetErrorCont(LogAppState.Instance.LogCollection.ErrorMask.Count);
                     FilterLogEntries();
                 }
 
@@ -371,8 +362,10 @@ namespace LogScraper
 
         private void RefreshLogStatistics()
         {
-            activeFilterOverviewControl.SetCounts(visibleLogEntries?.Count ?? 0, LogCollection.Instance.LogEntries.Count);
-            FormCompactView.Instance.SetCounts(visibleLogEntries?.Count ?? 0, LogCollection.Instance.LogEntries.Count);
+            int countFilteredEntries = LogAppState.Instance.FilterResultWithRange?.LogEntries?.Count ?? 0;
+            int totalCount = LogAppState.Instance.LogCollection?.LogEntries?.Count ?? 0;
+            activeFilterOverviewControl.SetCounts(countFilteredEntries, totalCount);
+            FormCompactView.Instance.SetCounts(countFilteredEntries, totalCount);
         }
 
         private void ShowException(Exception ex)
@@ -386,20 +379,18 @@ namespace LogScraper
 
         private void FilterLogEntries()
         {
-            if (UsrLogProviderSelection.GetSelectedLogLayout() == null) return;
+            if (UsrLogProviderSelection.GetSelectedLogLayout() == null || LogAppState.Instance.LogCollection == null) return;
 
             List<LogMetadataFilter> activeFilters = UsrMetadataFilterOverview.GetActiveFilters();
 
             activeFilterOverviewControl.SetMetadataFilters(activeFilters);
-            currentLogMetadataFilterResult = LogMetadataFilterEngine.Apply(LogCollection.Instance, activeFilters, UsrLogProviderSelection.GetSelectedLogLayout());
+            LogMetadataFilterResult metadataFilterResult = LogMetadataFilterEngine.Apply(LogAppState.Instance.LogCollection, activeFilters, UsrLogProviderSelection.GetSelectedLogLayout());
+            LogAppState.Instance.SetMetadataFilterResult(metadataFilterResult);
 
             // Update counts in the filter panel to reflect the filtered result.
-            UsrMetadataFilterOverview.UpdateFilterControlsCount([.. currentLogMetadataFilterResult.FilterStats.Values]);
+            UsrMetadataFilterOverview.UpdateFilterControlsCount([.. metadataFilterResult.FilterStats.Values]);
 
-            UserControlContentFilter.UpdateLogEntries(currentLogMetadataFilterResult);
-            BookMarksControl.UpdateMetadataFilterResult(currentLogMetadataFilterResult);
-
-            RenderLog(currentLogMetadataFilterResult);
+            RenderLog(metadataFilterResult);
         }
 
         private void RenderLog(LogMetadataFilterResult logMetadataFilterResult)
@@ -407,7 +398,7 @@ namespace LogScraper
             if (logMetadataFilterResult == null) return;
             LogRenderSettings logRenderSettings = new()
             {
-                LogRange = LogViewport.Range,
+                LogRange = LogAppState.Instance.LogRange,
                 LogLayout = UsrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
                 SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
@@ -417,22 +408,12 @@ namespace LogScraper
 
             UserControlSearch.LogRenderSettings = logRenderSettings;
             currentRenderSettings = logRenderSettings;
+            LogAppState.Instance.SetRenderSettings(logRenderSettings);
+            LogAppState.Instance.SetFilterResultWithRange(new(logMetadataFilterResult, LogAppState.Instance.LogRange));
 
-            visibleLogEntries = LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, logRenderSettings.LogRange);
-
-            UserControlLogEntriesTextBox.UpdateLogMetadataFilterResult(logMetadataFilterResult, visibleLogEntries, logRenderSettings);
-            UserControlSearch.UpdateLogEntries(visibleLogEntries);
-            RefreshTimeLine();
             RefreshLogStatistics();
         }
 
-        private void RefreshTimeLine()
-        {
-            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
-            {
-                LogTimeLineControl.UpdateLogEntries(currentLogMetadataFilterResult, visibleLogEntries, LogViewport.Range, currentLogMetadataFilterResult.SourceLogCollection);
-            }
-        }
 
         #endregion
 
@@ -440,9 +421,9 @@ namespace LogScraper
 
         public void Erase()
         {
-            LogCollection.Instance.Clear();
-
+            LogAppState.Instance.Clear();
             UserControlLogEntriesTextBox.Clear();
+            UsrMetadataFilterOverview.UpdateFilterControlsCountToZero();
             LogTimeLineControl.Clear();
             BookMarksControl.Clear();
             LogViewport.Clear();
@@ -465,7 +446,6 @@ namespace LogScraper
         {
             Erase();
             LogTimeLineControl.Clear();
-            currentLogMetadataFilterResult = null;
 
             UsrMetadataFilterOverview.Reset();
             UserControlContentFilter.Reset();
@@ -497,10 +477,10 @@ namespace LogScraper
             UpdateButtonStatus();
         }
 
-        private void HandleLogContentFilterUpdate(object sender, EventArgs e)
+        private void MetadataFormatingControl_SelectionChanged(object sender, EventArgs e)
         {
             UserControlSearch.IsMetadataSearchEnabled = MetadataFormatingControl.IsOriginalMetadataShown;
-            RenderLog(currentLogMetadataFilterResult);
+            RenderLog(LogAppState.Instance.MetadataFilterResult);
         }
 
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
@@ -608,16 +588,17 @@ namespace LogScraper
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            if (currentLogMetadataFilterResult == null || currentLogMetadataFilterResult.LogEntries == null || currentLogMetadataFilterResult.LogEntries.Count == 0) return;
+            LogMetadataFilterResult metadataFilterResult = LogAppState.Instance.MetadataFilterResult;
+            if (metadataFilterResult == null || metadataFilterResult.LogEntries == null || metadataFilterResult.LogEntries.Count == 0) return;
 
             LogRenderSettings logRenderSettings = new()
             {
-                LogRange = LogViewport.Range,
+                LogRange = LogAppState.Instance.LogRange,
                 LogLayout = UsrLogProviderSelection.GetSelectedLogLayout(),
                 ShowOriginalMetadata = true
             };
 
-            List<LogEntry> logEntriesToRender = LogRenderer.GetLogEntriesRange(currentLogMetadataFilterResult.LogEntries, logRenderSettings.LogRange);
+            List<LogEntry> logEntriesToRender = LogRenderer.GetLogEntriesRange(metadataFilterResult.LogEntries, logRenderSettings.LogRange);
             string renderedLog = LogRenderer.RenderLogEntriesAsString(logEntriesToRender, logRenderSettings, null, null, null);
 
             if (renderedLog != null)
