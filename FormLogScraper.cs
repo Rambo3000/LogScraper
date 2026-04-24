@@ -12,8 +12,8 @@ using LogScraper.Controls.LogEntriesTextbox;
 using LogScraper.Controls.Search;
 using LogScraper.Export;
 using LogScraper.Log;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
-using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Log.Rendering;
@@ -26,7 +26,6 @@ namespace LogScraper
 {
     //TODO: investigate making a (lazy) dictionary per content property type in either logcollaction and/or filterresult
     //TODO: change error overview to only show errors in visible log entries
-    //TODO: change metadata headers with gray background to that color as well
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
@@ -353,8 +352,10 @@ namespace LogScraper
 
                     // Pass null for stats on initial load — no filters active yet, full counts will be shown.
                     UsrMetadataFilterOverview.UpdateFilterControls(logLayout, LogCollection.Instance, null);
-                    activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntries);
-                    FormCompactView.Instance.SetErrorCont(LogCollection.Instance.ErrorLogEntries.Count);
+
+                    // TODO: fix total/visible error counts
+                    //activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntriesmask);
+                    FormCompactView.Instance.SetErrorCont(LogCollection.Instance.ErrorLogEntriesmask.Count);
                     FilterLogEntries();
                 }
 

@@ -181,6 +181,11 @@ namespace LogScraper.Utilities.IndexDictionary
         }
 
         /// <summary>
+        /// Gets the total capacity of the dictionary (the size of the underlying array).
+        /// </summary>
+        public int Capacity => _values.Length;
+
+        /// <summary>
         /// Gets the number of used entries in the dictionary.
         /// </summary>
         public int Count

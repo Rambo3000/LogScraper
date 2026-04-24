@@ -9,11 +9,11 @@ using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
-using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 using LogScraper.Utilities;
 using System.ComponentModel;
 using LogScraper.Controls.Generic;
+using LogScraper.Log.Filtering;
 
 namespace LogScraper.Content
 {

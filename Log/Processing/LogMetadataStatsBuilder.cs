@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
 using LogScraper.Log;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 
@@ -115,7 +116,7 @@ namespace LogScraper.Controls.Metadata
                 control.UpdateListView(property, allValues, propertyStats);
 
                 if (previousControl != null)
-                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 5 : 15);
+                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);
 
                 previousControl = control;
             }
@@ -237,7 +238,7 @@ namespace LogScraper.Controls.Metadata
             foreach (UserControlLogMetadataFilter control in orderedFilterControls)
             {
                 if (previousControl != null)
-                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 5 : 15);
+                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);
 
                 previousControl = control;
             }

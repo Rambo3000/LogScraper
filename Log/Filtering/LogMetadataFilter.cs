@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using LogScraper.Log.Metadata;
 
-namespace LogScraper.Log.Metadata
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Represents a filter that enables selection of log entries based on a specific metadata property and its

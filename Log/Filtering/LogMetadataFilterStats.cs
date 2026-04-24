@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using LogScraper.Log.Metadata;
 
-namespace LogScraper.Log.Metadata
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Represents the statistics for a log metadata filter, including the metadata property and the counts of each value associated with that property.

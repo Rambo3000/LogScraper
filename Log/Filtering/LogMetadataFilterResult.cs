@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
+using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log.Metadata
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Represents the result of filtering log metadata.

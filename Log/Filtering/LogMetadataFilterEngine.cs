@@ -5,9 +5,10 @@ using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Processing;
 using LogScraper.Utilities.IndexDictionary;
 
-namespace LogScraper.Log.Processing
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Provides functionality to filter log entries based on specified metadata filters, and to generate associated log flow trees.

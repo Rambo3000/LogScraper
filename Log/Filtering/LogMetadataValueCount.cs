@@ -1,4 +1,6 @@
-﻿namespace LogScraper.Log.Metadata
+﻿using LogScraper.Log.Metadata;
+
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Represents a log metadata value along with its associated count of filtered log entries.

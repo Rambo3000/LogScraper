@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using LogScraper.Controls.Generic;
 using LogScraper.Log;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Controls.Metadata

@@ -55,11 +55,8 @@ namespace LogScraper.Log.Processing
             });
 
             //TODO: make dictionary per content property type
-            logCollection.ErrorLogEntries = [];
-            foreach (var logEntry in logCollection.LogEntries)
-            {
-                if (logEntry.IsErrorLogEntry) logCollection.ErrorLogEntries.Add(logEntry);
-            }
+            logCollection.ContentPropertyMask = LogContentMaskBuilder.Build(logCollection.LogEntries, logLayout.LogContentProperties, logCollection.ContentPropertyMask);
+            logCollection.ErrorLogEntriesmask = LogContentMaskBuilder.BuildErrorMask(logLayout.LogContentProperties, logCollection.ContentPropertyMask, logCollection.LogEntries.Count);
 
             // Phase 2 — sequential: intern raw strings into shared LogMetadataValue instances.
             InternRawMetadata(logCollection, rawMetadata, logLayout, logMetadataPropertyCount);

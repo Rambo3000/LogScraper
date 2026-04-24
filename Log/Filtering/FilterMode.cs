@@ -1,4 +1,4 @@
-﻿namespace LogScraper.Log.Metadata
+﻿namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Specifies the filtering behavior to determine whether items are included or excluded from a collection or

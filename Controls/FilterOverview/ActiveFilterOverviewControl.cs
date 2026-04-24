@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 

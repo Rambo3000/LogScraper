@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using LogScraper.Log.Content;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;
 
@@ -18,9 +20,14 @@ namespace LogScraper.Log
         private static readonly Lock padlock = new();
 
         /// <summary>
-        /// Gets or sets the count of errors in the log collection.
+        /// A BitArray indicating which log entries in the collection are error log entries.
         /// </summary>
-        public List<LogEntry> ErrorLogEntries { get; set; } = [];
+        public BitArray ErrorLogEntriesmask { get; set; } = null;
+
+        /// <summary>
+        /// A dictionary mapping each content property to a BitArray indicating which log entries (by index) have that property.
+        /// </summary>
+        public IndexDictionary<LogContentProperty, BitArray> ContentPropertyMask { get; set; } = null;
 
         /// <summary>
         /// Clears the log collection by removing all log entries and resetting the error count.
@@ -28,7 +35,8 @@ namespace LogScraper.Log
         public void Clear()
         {
             LogEntries.Clear();
-            ErrorLogEntries = [];
+            ErrorLogEntriesmask = null;
+            ContentPropertyMask = null;
             _valuePool = [];
         }
 
