@@ -32,7 +32,7 @@ namespace LogScraper.Controls
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlowTreeControl));
-            splitButton1 = new SplitButton();
+            BtnTreeView = new SplitButton();
             ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             ItemShowTree = new System.Windows.Forms.ToolStripMenuItem();
             ItemHideTree = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,26 +42,26 @@ namespace LogScraper.Controls
             ContextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // splitButton1
+            // BtnTreeView
             // 
-            splitButton1.DropDownMenu = ContextMenuStrip1;
-            splitButton1.DropDownWidth = 15;
-            splitButton1.Icon = null;
-            splitButton1.ImageIndex = 0;
-            splitButton1.ImageList = imageList1;
-            splitButton1.Location = new System.Drawing.Point(0, 0);
-            splitButton1.Name = "splitButton1";
-            splitButton1.Size = new System.Drawing.Size(40, 25);
-            splitButton1.TabIndex = 4;
-            splitButton1.Tag = "";
-            toolTip1.SetToolTip(splitButton1, "Hierarchische weergave");
-            splitButton1.ButtonClick += SplitButton1_Click;
+            BtnTreeView.DropDownMenu = ContextMenuStrip1;
+            BtnTreeView.DropDownWidth = 15;
+            BtnTreeView.Icon = null;
+            BtnTreeView.ImageIndex = 0;
+            BtnTreeView.ImageList = imageList1;
+            BtnTreeView.Location = new System.Drawing.Point(0, 0);
+            BtnTreeView.Name = "BtnTreeView";
+            BtnTreeView.Size = new System.Drawing.Size(40, 25);
+            BtnTreeView.TabIndex = 4;
+            BtnTreeView.Tag = "";
+            toolTip1.SetToolTip(BtnTreeView, "Hierarchische weergave");
+            BtnTreeView.ButtonClick += BtnTreeView_Click;
             // 
             // ContextMenuStrip1
             // 
             ContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemShowTree, ItemHideTree, CboContentProperties });
             ContextMenuStrip1.Name = "ContextMenuStrip";
-            ContextMenuStrip1.Size = new System.Drawing.Size(194, 97);
+            ContextMenuStrip1.Size = new System.Drawing.Size(194, 75);
             // 
             // ItemShowTree
             // 
@@ -96,17 +96,18 @@ namespace LogScraper.Controls
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            Controls.Add(splitButton1);
+            Controls.Add(BtnTreeView);
             MaximumSize = new System.Drawing.Size(40, 25);
             MinimumSize = new System.Drawing.Size(40, 25);
             Name = "FlowTreeControl";
             Size = new System.Drawing.Size(40, 25);
+            Load += FlowTreeControl_Load;
             ContextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-        private SplitButton splitButton1;
+        private SplitButton BtnTreeView;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ContextMenuStrip ContextMenuStrip1;
         private System.Windows.Forms.ToolTip toolTip1;

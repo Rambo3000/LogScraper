@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 
@@ -35,7 +36,7 @@ namespace LogScraper.Controls.FilterOverview
         /// <summary>
         /// Raised when the "Reset filters" link is clicked. Indicates all filters should be cleared.
         /// </summary>
-        public event EventHandler Reset;
+        public event EventHandler ResetAllFilters;
 
         private IReadOnlyList<LogEntry> _errorEntries;
         private IReadOnlyList<LogMetadataFilter> _metadataFilters = [];
@@ -66,12 +67,13 @@ namespace LogScraper.Controls.FilterOverview
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
+            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.ResetRequested += OnResetRequested;
         }
 
         private void OnLogRangeChanged(object sender, EventArgs e)
         {
-            _logRange = LogAppState.Instance.LogRange;
+            _logRange = LogAppState.Instance.LogRange.Value;
             SyncRangeChips();
             RecalculateLayout();
         }
@@ -81,7 +83,6 @@ namespace LogScraper.Controls.FilterOverview
 
         private sealed class MetadataPropertyGroup(LogMetadataFilter filter)
         {
-            /// <summary>The filter this group represents. Updated on each sync.</summary>
             public LogMetadataFilter Filter { get; set; } = filter;
 
             /// <summary>
@@ -139,12 +140,19 @@ namespace LogScraper.Controls.FilterOverview
             RecalculateLayout();
         }
 
-        internal void Clear()
+        private void OnResetRequested(object sender, ResetEventArgs e)
+        {
+            if (e.KeepFilters)
+                SetErrorEntries([]);
+            else
+                Reset();
+        }
+
+        internal void Reset()
         {
             _errorEntries = null;
             _metadataFilters = [];
-            _logRange = LogAppState.Instance.LogRange;
-            DisposeAllChips();
+            _logRange = LogAppState.Instance.LogRange.Value;
             RecalculateLayout();
         }
         #endregion
@@ -625,7 +633,7 @@ namespace LogScraper.Controls.FilterOverview
 
         private void LblReset_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Reset?.Invoke(this, EventArgs.Empty);
+            ResetAllFilters?.Invoke(this, EventArgs.Empty);
         }
     }
 }

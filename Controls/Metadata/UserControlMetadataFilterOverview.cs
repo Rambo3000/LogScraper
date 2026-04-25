@@ -7,6 +7,7 @@ using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Controls.Metadata
@@ -34,6 +35,24 @@ namespace LogScraper.Controls.Metadata
         public UserControlMetadataFilterOverview()
         {
             InitializeComponent();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (DesignMode) return;
+            LogAppState.Instance.ResetRequested += OnResetRequested;
+        }
+
+        private void OnResetRequested(object sender, ResetEventArgs e)
+        {
+            if (e.KeepFilters)
+            {
+                UpdateFilterControlsCountToZero();
+                ResetFilters();
+            }
+            else
+                Reset();
         }
 
         /// <summary>

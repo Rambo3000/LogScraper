@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using LogScraper.Log.Filtering;
 using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Metadata

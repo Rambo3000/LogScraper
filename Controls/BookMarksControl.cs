@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
@@ -25,7 +26,7 @@ namespace LogScraper.Controls
 
             List<LogEntry> bookMarksWithinRange = [.. bookmarks.Values.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
 
-            LogMetadataFilterResult metadataFilterResult = LogAppState.Instance.MetadataFilterResult;
+            LogMetadataFilterResult metadataFilterResult = LogAppState.Instance.MetadataFilterResult.Value;
             if (metadataFilterResult?.FilteredLogEntriesMask == null)
             {
                 _filteredBookmarks = bookMarksWithinRange;
@@ -52,8 +53,9 @@ namespace LogScraper.Controls
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
-            LogAppState.Instance.MetadataFilterResultChanged += OnMetadataFilterResultChanged;
+            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.MetadataFilterResult.Changed += OnMetadataFilterResultChanged;
+            LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
         private void OnMetadataFilterResultChanged(object sender, EventArgs e)
@@ -64,7 +66,7 @@ namespace LogScraper.Controls
 
         private void OnLogRangeChanged(object sender, EventArgs e)
         {
-            _logRange = LogAppState.Instance.LogRange;
+            _logRange = LogAppState.Instance.LogRange.Value;
             RebuildFilteredBookmarks();
             UpdateButtons();
         }
@@ -77,7 +79,7 @@ namespace LogScraper.Controls
             UpdateButtons();
         }
 
-        public void Clear()
+        public void Reset()
         {
             if (bookmarks.Count == 0) return;
             bookmarks.Clear();
@@ -140,7 +142,7 @@ namespace LogScraper.Controls
             }
         }
 
-        private void BtnReset_Click(object sender, EventArgs e) => Clear();
+        private void BtnReset_Click(object sender, EventArgs e) => Reset();
 
         private void NavigateToEntry(LogEntry entry)
         {

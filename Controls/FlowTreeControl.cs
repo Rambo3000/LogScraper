@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
+using LogScraper.Log.LogAppState;
 
 namespace LogScraper.Controls
 {
@@ -14,9 +15,21 @@ namespace LogScraper.Controls
         public FlowTreeControl()
         {
             InitializeComponent();
+        }
+
+        private void FlowTreeControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
+            LogAppState.Instance.ResetRequested += (s, e) => Reset();
             ItemShowTree.Click += ItemShowTree_Click;
             ItemHideTree.Click += ItemHideTree_Click;
             CboContentProperties.SelectedIndexChanged += CboContentProperties_SelectedIndexChanged;
+            UpdateControls();
+        }
+
+        private void Reset()
+        {
+            showTree = false;
             UpdateControls();
         }
 
@@ -32,7 +45,6 @@ namespace LogScraper.Controls
 
         public void UpdateLogLayout(LogLayout logLayout)
         {
-
             CboContentProperties.Items.Clear();
 
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0)
@@ -55,9 +67,10 @@ namespace LogScraper.Controls
         {
             if (updateShowTreeInProgress) return;
 
-            splitButton1.ImageIndex = showTree ? 1 : 0;
-
+            BtnTreeView.ImageIndex = showTree ? 1 : 0;
+            BtnTreeView.Enabled = LogAppState.Instance.LogCollectionIsAvailable;
             updateShowTreeInProgress = true;
+            
             if (CboContentProperties.Items.Count == 0)
             {
                 ItemShowTree.Enabled = false;
@@ -78,7 +91,7 @@ namespace LogScraper.Controls
 
         #region User control events
 
-        private void SplitButton1_Click(object sender, EventArgs e)
+        private void BtnTreeView_Click(object sender, EventArgs e)
         {
             showTree = !showTree;
             UpdateControls();

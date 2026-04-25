@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
@@ -142,14 +143,15 @@ namespace LogScraper.Controls
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.FilterResultWithRangeChanged += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {
             var state = LogAppState.Instance;
-            if (state.FilterResultWithRange == null) { Clear(); return; }
-            UpdateLogEntries(state.MetadataFilterResult, state.FilterResultWithRange.LogEntries, state.LogRange, state.LogCollection);
+            if (state.FilterResultWithRange.Value == null) { Reset(); return; }
+            UpdateLogEntries(state.MetadataFilterResult.Value, state.FilterResultWithRange.Value.LogEntries, state.LogRange.Value, state.LogCollection.Value);
         }
 
         #endregion
@@ -1102,7 +1104,7 @@ namespace LogScraper.Controls
             }
         }
 
-        internal void Clear()
+        internal void Reset()
         {
             filteredLogEntries.Clear();
             displayedLogEntries.Clear();

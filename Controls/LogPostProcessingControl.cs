@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
-using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.LogPostProcessors;
 
 namespace LogScraper.Controls
@@ -21,6 +21,11 @@ namespace LogScraper.Controls
         #endregion
 
         #region Public properties and methods
+        private void LogPostProcessingControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.ResetRequested += (ss, ee) => Reset();
+            LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
+        }
 
         public event EventHandler PostProcessingResultsChanged;
 
@@ -46,7 +51,7 @@ namespace LogScraper.Controls
         /// <summary>
         /// Resets the state of the object by clearing all post-processing data and related flags.
         /// </summary>
-        public void Clear()
+        public void Reset()
         {
             CancelPostProcessing();
             JsonProcessingIsApplicable = false;
@@ -66,12 +71,15 @@ namespace LogScraper.Controls
 
             CancelPostProcessing();
 
-            postProcessManager = new(LogAppState.Instance.LogCollection);
-            postProcessCancellationSource = new CancellationTokenSource();
-            postProcessManager.ProcessingFinished += Manager_ProcessingFinished;
+            bool started = false;
+            if (LogAppState.Instance.LogCollectionIsAvailable)
+            {
+                postProcessManager = new(LogAppState.Instance.LogCollection.Value);
+                postProcessCancellationSource = new CancellationTokenSource();
+                postProcessManager.ProcessingFinished += Manager_ProcessingFinished;
 
-            bool started = postProcessManager.TryRun(VisibleProcessorKinds, postProcessCancellationSource.Token);
-
+                started = postProcessManager.TryRun(VisibleProcessorKinds, postProcessCancellationSource.Token);
+            }
             if (!started)
             {
                 postProcessCancellationSource?.Dispose();
@@ -95,8 +103,6 @@ namespace LogScraper.Controls
 
             IsProcessing = false;
             UpdateControls();
-            BtnJson.ImageIndex = 0;
-            BtnXml.ImageIndex = 1;
 
             bool hasChanges = false;
             LogPostProcessingFinishedEventArgs eventArgs = (LogPostProcessingFinishedEventArgs)e;
@@ -116,14 +122,14 @@ namespace LogScraper.Controls
         private void BtnJson_Click(object sender, EventArgs e)
         {
             JsonProcessingIsApplicable = true;
-            BtnJson.ImageIndex = 2;
+            UpdateControls();
             StartPostProcessing();
         }
 
         private void BtnXml_Click(object sender, EventArgs e)
         {
             XmlProcessingIsApplicable = true;
-            BtnXml.ImageIndex = 2;
+            UpdateControls();
             StartPostProcessing();
         }
 
@@ -137,10 +143,13 @@ namespace LogScraper.Controls
 
         private void UpdateControls()
         {
-            BtnJson.Enabled = !IsProcessing;
-            BtnXml.Enabled = !IsProcessing;
+            BtnJson.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
+            BtnXml.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
+            BtnJson.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 2 : 0;
+            BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
         }
 
         #endregion
+
     }
 }

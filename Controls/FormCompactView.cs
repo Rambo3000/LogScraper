@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
-using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.Sources.Workers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -92,7 +92,7 @@ namespace LogScraper.Controls
 
         private void BtnErase_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.Erase();
+            LogAppState.Instance.Reset(keepFilters: true);
         }
 
         private void BtnBack_Click(object sender, System.EventArgs e)

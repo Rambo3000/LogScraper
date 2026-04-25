@@ -14,6 +14,7 @@ using LogScraper.Utilities;
 using System.ComponentModel;
 using LogScraper.Controls.Generic;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
 
 namespace LogScraper.Content
 {
@@ -36,8 +37,9 @@ namespace LogScraper.Content
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.LogRangeChanged += OnLogRangeChanged;
-            LogAppState.Instance.MetadataFilterResultChanged += OnMetadataFilterResultChanged;
+            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.MetadataFilterResult.Changed += OnMetadataFilterResultChanged;
+            LogAppState.Instance.ResetRequested += OnResetRequested;
         }
 
         private void OnLogRangeChanged(object sender, EventArgs e)
@@ -48,6 +50,14 @@ namespace LogScraper.Content
         private void OnMetadataFilterResultChanged(object sender, EventArgs e)
         {
             UpdateDisplayedLogEntries();
+        }
+
+        private void OnResetRequested(object sender, ResetEventArgs e)
+        {
+            if (e.KeepFilters)
+                ResetFilters();
+            else
+                Reset();
         }
 
         #endregion
@@ -95,7 +105,7 @@ namespace LogScraper.Content
 
         private void UpdateDisplayedLogEntries()
         {
-            LogMetadataFilterResult logMetadataFilterResult = LogAppState.Instance.MetadataFilterResult;
+            LogMetadataFilterResult logMetadataFilterResult = LogAppState.Instance.MetadataFilterResult.Value;
             if (logMetadataFilterResult == null || logMetadataFilterResult.LogEntries == null)
             {
                 LstLogContent.Items.Clear();
@@ -104,7 +114,7 @@ namespace LogScraper.Content
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.LogRange));
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.LogRange.Value));
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
@@ -150,7 +160,7 @@ namespace LogScraper.Content
                     if (!contentValue.Value.Contains(filter, StringComparison.OrdinalIgnoreCase)) continue;
                 }
 
-                LogFlowTree logFlowTree = LogAppState.Instance.MetadataFilterResult.LogFlowTrees[logContentProperty];
+                LogFlowTree logFlowTree = LogAppState.Instance.MetadataFilterResult.Value.LogFlowTrees[logContentProperty];
                 LogFlowTreeNode flowtreeNode = null;
                 logFlowTree?.LogEntryDictionary?.TryGetValue(logEntry, out flowtreeNode);
 
@@ -174,7 +184,8 @@ namespace LogScraper.Content
 
             for (int i = 0; i < compareCount; i++)
             {
-                if (!newLogEntries[i].ContentValue.Equals(((LogEntryDisplayObject)LstLogContent.Items[i]).ContentValue))
+                // TODO: Fix newLogEntries[i].ContentValue != null, this goes haywire on error entries
+                if (newLogEntries[i].ContentValue != null && !newLogEntries[i].ContentValue.Equals(((LogEntryDisplayObject)LstLogContent.Items[i]).ContentValue))
                 {
                     startMatches = false;
                     break;
@@ -453,8 +464,8 @@ namespace LogScraper.Content
         {
             if (logEntryDisplayObject == null) return true;
 
-            return (LogAppState.Instance.LogRange?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.LogRange.Begin.Index) ||
-                   (LogAppState.Instance.LogRange?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.LogRange.End.Index);
+            return (LogAppState.Instance.LogRange.Value?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.LogRange.Value.Begin.Index) ||
+                   (LogAppState.Instance.LogRange.Value?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.LogRange.Value.End.Index);
         }
         #endregion
 

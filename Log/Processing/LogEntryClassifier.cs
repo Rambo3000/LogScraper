@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log.Content;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Utilities.IndexDictionary;

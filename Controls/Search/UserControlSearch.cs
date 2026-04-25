@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Search
@@ -55,12 +56,12 @@ namespace LogScraper.Controls.Search
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.FilterResultWithRangeChanged += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {
-            logEntries = LogAppState.Instance.FilterResultWithRange?.LogEntries;
+            logEntries = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries;
             lastFiredSearchSettings = null;
         }
 

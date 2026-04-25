@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
@@ -34,9 +35,10 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             UpdateButtons();
+            Load += (s, e) => LogAppState.Instance.ResetRequested += (ss, ee) => Reset();
         }
 
-        public void Clear()
+        public void Reset()
         {
             UpdateCheckboxes = true;
 
@@ -84,12 +86,12 @@ namespace LogScraper.Controls
 
         private void RaiseRangeChanged()
         {
-            LogAppState.Instance.SetLogRange(range);
+            LogAppState.Instance.LogRange.ForceSet(range);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
         {
-            Clear();
+            Reset();
             RaiseRangeChanged();
         }
 

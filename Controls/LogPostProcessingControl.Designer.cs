@@ -83,6 +83,7 @@
             Controls.Add(BtnJson);
             Name = "LogPostProcessingControl";
             Size = new System.Drawing.Size(49, 25);
+            Load += LogPostProcessingControl_Load;
             ResumeLayout(false);
         }
 

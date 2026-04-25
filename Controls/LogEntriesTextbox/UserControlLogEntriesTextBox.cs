@@ -9,9 +9,9 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 using ScintillaNET;
-using static System.Net.Mime.MediaTypeNames;
 using static LogScraper.Controls.LogEntriesTextbox.ScintillaControlExtensions;
 
 namespace LogScraper.Controls.LogEntriesTextbox
@@ -39,13 +39,14 @@ namespace LogScraper.Controls.LogEntriesTextbox
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.FilterResultWithRangeChanged += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {
-            _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange;
-            _logRenderSettings = LogAppState.Instance.RenderSettings;
+            _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+            _logRenderSettings = LogAppState.Instance.RenderSettings.Value;
             RenderLogEntries();
         }
 
@@ -99,7 +100,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
             // Nothing to render if there is no data or render configuration
             if (_logFilterResultWithRange == null || _logFilterResultWithRange.MetadataFilterResult == null || _logRenderSettings == null)
             {
-                Clear();
+                Reset();
                 return;
             }
 
@@ -187,7 +188,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
                 }
             }
         }
-        public void Clear()
+        public void Reset()
         {
             Text = string.Empty;
             LogEntryAtCursorChanged?.Invoke(this, null);

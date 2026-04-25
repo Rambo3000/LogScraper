@@ -8,6 +8,7 @@ using LogScraper.Controls.Generic;
 using LogScraper.Controls.LogEntriesTextbox;
 using LogScraper.Log;
 using LogScraper.Log.Content;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;

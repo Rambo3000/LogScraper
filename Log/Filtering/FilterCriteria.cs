@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace LogScraper.Log
+namespace LogScraper.Log.Filtering
 {
     /// <summary>
     /// Represents criteria for filtering log content or metadata.

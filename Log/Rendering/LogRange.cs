@@ -32,6 +32,8 @@ namespace LogScraper.Log.Rendering
             }
         }
 
+        public static LogRange Full { get; } = new LogRange();
+
         /// <summary>
         /// Determines whether the specified LogRange is equal to the current LogRange.
         /// </summary>

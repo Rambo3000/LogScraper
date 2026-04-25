@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 using LogScraper.Utilities;
 
@@ -80,7 +81,7 @@ namespace LogScraper.Controls.Search
         {
             LstSearchResults.ItemHeight = LstSearchResults.Font.Height;
 
-            List<LogEntry> logEntries = LogAppState.Instance.FilterResultWithRange?.LogEntries;
+            List<LogEntry> logEntries = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries;
             if (logEntries == null || logEntries.Count == 0 || string.IsNullOrEmpty(searchSettings?.SearchText))
             {
                 Clear();
