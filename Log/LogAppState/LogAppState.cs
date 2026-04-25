@@ -1,5 +1,6 @@
 using System;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.Layout;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Log.LogAppState
@@ -14,23 +15,37 @@ namespace LogScraper.Log.LogAppState
         public static LogAppState Instance { get; } = new();
         private LogAppState() { }
 
-        // ── raw data ────────────────────────────────────────────────────────────
+        /// <summary>
+        /// The main log collection
+        /// </summary>
         public StateSlice<LogCollection> LogCollection { get; } = new();
         public bool LogCollectionIsAvailable => LogCollection.Value != null;
 
-        // ── after metadata filters applied ──────────────────────────────────────
+        /// <summary>
+        /// The result of applying active filters to the log collection.
+        /// </summary>
         public StateSlice<LogMetadataFilterResult> MetadataFilterResult { get; } = new();
 
-        // ── log range (begin/end viewport selection) ────────────────────────────
+        /// <summary>
+        /// The currently active log range (start/end indices) for rendering.
+        /// </summary>
         public StateSlice<LogRange> LogRange { get; } = new();
 
-        // ── after range applied to metadata filter result ───────────────────────
+        /// <summary>
+        /// The result of applying active filters to the log collection, along with the range of log entries it covers.
+        /// </summary>
         internal StateSlice<LogFilterResultWithRange> FilterResultWithRange { get; } = new();
 
-        // ── render settings (how entries are formatted on screen) ───────────────
+        /// <summary>
+        /// The current settings for how log entries are rendered on screen (e.g. which columns are visible, their widths, etc).
+        /// </summary>
         public StateSlice<LogRenderSettings> RenderSettings { get; } = new();
 
-        // ── reset ───────────────────────────────────────────────────────────────
+        /// <summary>
+        /// The current layout of the log (e.g. which columns are visible, their order, etc).
+        /// </summary>
+        public StateSlice<LogLayout> LogLayout { get; } = new();
+
         /// <summary>
         /// Raised when a reset is requested.
         /// Subscribe to this event in controls or forms to perform their own cleanup.

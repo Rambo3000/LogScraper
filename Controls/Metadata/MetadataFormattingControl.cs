@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Controls.Metadata
@@ -15,6 +16,11 @@ namespace LogScraper.Controls.Metadata
             ItemShowOriginalMetadata.CheckedChanged += ItemShowOriginalMetadata_CheckedChanged;
             ItemHideAllMetadata.Click += ItemHideAllMetadata_CheckedChanged;
             UpdateButtons();
+        }
+
+        private void MetadataFormattingControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogMetadataProperties(LogAppState.Instance.LogLayout.Value?.LogMetadataProperties ?? []);
         }
 
         private void ItemShowOriginalMetadata_CheckedChanged(object sender, EventArgs e)

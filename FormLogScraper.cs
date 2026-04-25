@@ -53,7 +53,6 @@ namespace LogScraper
             UsrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
             UsrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
             UsrLogProviderSelection.LogProviderChanged += UsrLogProviderSelection_LogProviderChanged;
-            UsrLogProviderSelection.LogLayoutChanged += UsrLogProviderSelection_LogLayoutChanged;
             UsrLogProviderSelection.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
@@ -399,7 +398,7 @@ namespace LogScraper
             LogRenderSettings logRenderSettings = new()
             {
                 LogRange = LogAppState.Instance.LogRange.Value,
-                LogLayout = UsrLogProviderSelection.GetSelectedLogLayout(),
+                LogLayout = LogAppState.Instance.LogLayout.Value,
                 ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
                 SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
                 LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
@@ -664,16 +663,6 @@ namespace LogScraper
         #endregion
 
         #region Dropdowns log providers and layout
-
-        private void UsrLogProviderSelection_LogLayoutChanged(object sender, EventArgs e)
-        {
-            LogLayout logLayout = UsrLogProviderSelection.GetSelectedLogLayout();
-            if (logLayout == null) return;
-            MetadataFormatingControl.UpdateLogMetadataProperties(logLayout.LogMetadataProperties);
-            UserControlLogEntriesTextBox.UpdateLogLayout(logLayout);
-            flowTreeControl1.UpdateLogLayout(logLayout);
-            LogAppState.Instance.Reset(keepFilters: false);
-        }
 
         private void UsrLogProviderSelection_LogProviderChanged(object sender, EventArgs e)
         {

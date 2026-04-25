@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Log.Layout;
+using LogScraper.Log.LogAppState;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
-using System.ComponentModel;
 
 namespace LogScraper.Controls
 {
@@ -22,7 +23,6 @@ namespace LogScraper.Controls
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
         public event EventHandler LogProviderChanged;
-        public event EventHandler LogLayoutChanged;
         public event EventHandler CollapseStateChanged;
 
         private bool _isPinned = false;
@@ -238,7 +238,9 @@ namespace LogScraper.Controls
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateProviderDescription();
-            LogLayoutChanged?.Invoke(this, EventArgs.Empty);
+
+            LogAppState.Instance.LogLayout.Set(GetSelectedLogLayout());
+            LogAppState.Instance.Reset(false);
         }
 
         public void UpdateProviderConfig()

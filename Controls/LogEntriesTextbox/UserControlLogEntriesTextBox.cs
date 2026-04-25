@@ -40,6 +40,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
             base.OnLoad(e);
             if (DesignMode) return;
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
+            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.LogLayout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
@@ -77,7 +78,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
 
         #region Update log layout and render log entries
 
-        public void UpdateLogLayout(LogLayout logLayout)
+        private void UpdateLogLayout(LogLayout logLayout)
         {
             // Determine content properties with custom coloring
             _contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];

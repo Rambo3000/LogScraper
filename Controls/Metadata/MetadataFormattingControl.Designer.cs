@@ -100,6 +100,7 @@ namespace LogScraper.Controls.Metadata
             MinimumSize = new System.Drawing.Size(40, 25);
             Name = "MetadataFormattingControl";
             Size = new System.Drawing.Size(40, 25);
+            Load += MetadataFormattingControl_Load;
             ContextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
         }

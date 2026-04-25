@@ -20,6 +20,7 @@ namespace LogScraper.Controls
         private void FlowTreeControl_Load(object sender, EventArgs e)
         {
             LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
+            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.LogLayout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             ItemShowTree.Click += ItemShowTree_Click;
             ItemHideTree.Click += ItemHideTree_Click;
@@ -43,7 +44,7 @@ namespace LogScraper.Controls
             }
         }
 
-        public void UpdateLogLayout(LogLayout logLayout)
+        private void UpdateLogLayout(LogLayout logLayout)
         {
             CboContentProperties.Items.Clear();
 
