@@ -27,8 +27,6 @@ namespace LogScraper.Controls
             LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
         }
 
-        public event EventHandler PostProcessingResultsChanged;
-
         /// <summary>
         /// Gets the list of log post-processor kinds that are available and currently visible to the user.
         /// </summary>
@@ -112,7 +110,7 @@ namespace LogScraper.Controls
                 if (hasChanges) break;
             }
 
-            if (hasChanges) PostProcessingResultsChanged?.Invoke(this, EventArgs.Empty);
+            if (hasChanges) LogAppState.Instance.RenderProcessorKinds.Set(VisibleProcessorKinds);
         }
 
         #endregion
@@ -148,8 +146,6 @@ namespace LogScraper.Controls
             BtnJson.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 2 : 0;
             BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
         }
-
         #endregion
-
     }
 }

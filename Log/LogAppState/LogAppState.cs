@@ -4,6 +4,7 @@ using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
+using LogScraper.LogPostProcessors;
 
 namespace LogScraper.Log.LogAppState
 {
@@ -57,6 +58,11 @@ namespace LogScraper.Log.LogAppState
         /// The list of metadata properties to render as separate columns in the log view when <see cref="RenderOriginalMetadata"/> is <c>false</c>.
         /// </summary>
         public StateSlice<List<LogMetadataProperty>> RenderSeperateMetadataProperties { get; } = new();
+
+        /// <summary>
+        /// The list of log post-processor kinds that are currently visible to the user and can be applied to log entries.
+        /// </summary>
+        public StateSlice<List<LogPostProcessorKind>> RenderProcessorKinds { get; } = new();
 
         /// <summary>
         /// Raised when a reset is requested.

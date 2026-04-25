@@ -81,7 +81,8 @@ namespace LogScraper
 
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
 
-            LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
+            //TODO: REQUIRED Render log on MetadataFormatingControl_SelectionChanged
+            //LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
 
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
@@ -212,11 +213,6 @@ namespace LogScraper
         private void UpdateLogRange(bool render)
         {
             if (render) RenderLog(LogAppState.Instance.MetadataFilterResult.Value);
-        }
-
-        private void LogPostProcessing_PostProcessingResultsChanged(object sender, EventArgs e)
-        {
-            RenderLog(LogAppState.Instance.MetadataFilterResult.Value);
         }
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
@@ -399,7 +395,7 @@ namespace LogScraper
                 LogLayout = LogAppState.Instance.LogLayout.Value,
                 ShowOriginalMetadata = LogAppState.Instance.RenderOriginalMetadata.Value,
                 SelectedMetadataProperties = LogAppState.Instance.RenderSeperateMetadataProperties.Value,
-                LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
+                LogPostProcessorKinds = LogAppState.Instance.RenderProcessorKinds.Value,
                 LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings(flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
             };
 
