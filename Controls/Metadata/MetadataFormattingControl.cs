@@ -8,8 +8,6 @@ namespace LogScraper.Controls.Metadata
 {
     public partial class MetadataFormattingControl : UserControl
     {
-        public event EventHandler SelectionChanged;
-
         public MetadataFormattingControl()
         {
             InitializeComponent();
@@ -25,8 +23,9 @@ namespace LogScraper.Controls.Metadata
 
         private void ItemShowOriginalMetadata_CheckedChanged(object sender, EventArgs e)
         {
+            LogAppState.Instance.RenderOriginalMetadata.Set(ItemShowOriginalMetadata.Checked);
             UpdateButtons();
-            OnSelectionChanged(e);
+            UpdateLogAppStateMetadataProperties();
         }
 
         /// <summary>
@@ -46,13 +45,14 @@ namespace LogScraper.Controls.Metadata
             }
 
             suppressItemHideAllMetadataCheckedChanged = false;
+
             UpdateButtons();
-            OnSelectionChanged(e);
+            UpdateLogAppStateMetadataProperties();
         }
 
         private void ChkPanelControls_CheckedChanged(object sender, EventArgs e)
         {
-            OnSelectionChanged(e);
+            UpdateLogAppStateMetadataProperties();
             UpdateButtons();
         }
 
@@ -108,18 +108,18 @@ namespace LogScraper.Controls.Metadata
             ContextMenuStrip1.Items.AddRange([ItemShowOriginalMetadata, ItemHideAllMetadata, toolStripSeparator1]);
         }
 
-        protected virtual void OnSelectionChanged(EventArgs e)
+        private void UpdateLogAppStateMetadataProperties()
         {
+            // When we update the state of all the checkable items in ItemHideAllMetadata_CheckedChanged do not trigger for every check change.
             if (suppressItemHideAllMetadataCheckedChanged) return;
 
-            SelectionChanged?.Invoke(this, e);
+            LogAppState.Instance.RenderSeperateMetadataProperties.Set(SelectedMetadataProperties);
         }
 
         private void SplitButton1_Click(object sender, EventArgs e)
         {
             ItemShowOriginalMetadata.Checked = !ItemShowOriginalMetadata.Checked;
             UpdateButtons();
-            OnSelectionChanged(e);
         }
 
         private void UpdateButtons()

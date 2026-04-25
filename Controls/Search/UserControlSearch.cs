@@ -93,10 +93,6 @@ namespace LogScraper.Controls.Search
         #endregion
 
         #region Public interface
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool IsMetadataSearchEnabled { get; set; }
-
         /// <summary>
         /// Render settings used to produce display strings in the result list.
         /// Set by the main form when log render settings change.
@@ -132,7 +128,8 @@ namespace LogScraper.Controls.Search
                 SearchText = TxtSearch.Text.Trim(),
                 CaseSensitive = ItemCaseSensitive.Checked,
                 WholeWord = ItemWholeWords.Checked,
-                IsMetadataSearchEnabled = IsMetadataSearchEnabled,
+                // Only if the metadata is shown, then allow searching in it.
+                IsMetadataSearchEnabled = LogAppState.Instance.RenderOriginalMetadata.Value,
                 Direction = direction,
                 WrapAround = ItemWrapAround.Checked,
                 LogRenderSettings = LogRenderSettings

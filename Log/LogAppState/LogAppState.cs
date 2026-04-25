@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
+using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Log.LogAppState
@@ -45,6 +47,16 @@ namespace LogScraper.Log.LogAppState
         /// The current layout of the log (e.g. which columns are visible, their order, etc).
         /// </summary>
         public StateSlice<LogLayout> LogLayout { get; } = new();
+
+        /// <summary>
+        /// Whether to render the original metadata in the log viewport.
+        /// </summary>
+        public StateSlice<bool> RenderOriginalMetadata { get; } = new();
+
+        /// <summary>
+        /// The list of metadata properties to render as separate columns in the log view when <see cref="RenderOriginalMetadata"/> is <c>false</c>.
+        /// </summary>
+        public StateSlice<List<LogMetadataProperty>> RenderSeperateMetadataProperties { get; } = new();
 
         /// <summary>
         /// Raised when a reset is requested.

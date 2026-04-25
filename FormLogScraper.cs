@@ -25,7 +25,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: investigate making a (lazy) dictionary per content property type in either logcollaction and/or filterresult
     //TODO: change error overview to only show errors in visible log entries
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
@@ -36,6 +35,7 @@ namespace LogScraper
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
+        //TODO: remove rendersettings
         private LogRenderSettings currentRenderSettings;
         public FormLogScraper()
         {
@@ -80,8 +80,6 @@ namespace LogScraper
             PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
 
             flowTreeControl1.ShowTreeStateChanged += FlowTreeControl_ShowTreeStateChanged;
-
-            MetadataFormatingControl.SelectionChanged += MetadataFormatingControl_SelectionChanged;
 
             LogPostProcessing.PostProcessingResultsChanged += LogPostProcessing_PostProcessingResultsChanged;
 
@@ -399,8 +397,8 @@ namespace LogScraper
             {
                 LogRange = LogAppState.Instance.LogRange.Value,
                 LogLayout = LogAppState.Instance.LogLayout.Value,
-                ShowOriginalMetadata = MetadataFormatingControl.ShowOriginalMetadata,
-                SelectedMetadataProperties = MetadataFormatingControl.SelectedMetadataProperties,
+                ShowOriginalMetadata = LogAppState.Instance.RenderOriginalMetadata.Value,
+                SelectedMetadataProperties = LogAppState.Instance.RenderSeperateMetadataProperties.Value,
                 LogPostProcessorKinds = LogPostProcessing.VisibleProcessorKinds,
                 LogFlowTreeRenderSettings = new LogFlowTreeRenderSettings(flowTreeControl1.ShowTree, flowTreeControl1.SelectedContentProperty)
             };
@@ -462,7 +460,7 @@ namespace LogScraper
 
         private void MetadataFormatingControl_SelectionChanged(object sender, EventArgs e)
         {
-            UserControlSearch.IsMetadataSearchEnabled = MetadataFormatingControl.IsOriginalMetadataShown;
+            //TODO: render on MetadataFormatingControl_SelectionChanged
             RenderLog(LogAppState.Instance.MetadataFilterResult.Value);
         }
 
