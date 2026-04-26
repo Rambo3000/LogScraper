@@ -8,6 +8,7 @@ using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.FilterOverview
 {
@@ -21,7 +22,7 @@ namespace LogScraper.Controls.FilterOverview
         /// <summary>
         /// Raised when the error chip is clicked.
         /// </summary>
-        public event EventHandler<ErrorChipClickedEventArgs> ErrorChipClicked;
+        public event EventHandler ErrorChipClicked;
 
         /// <summary>
         /// Raised when a metadata filter chip's remove button is clicked.
@@ -38,7 +39,8 @@ namespace LogScraper.Controls.FilterOverview
         /// </summary>
         public event EventHandler ResetAllFilters;
 
-        private IReadOnlyList<LogEntry> _errorEntries;
+        private int _errorEntriesFilterResultWithRangeCount;
+        private int _errorEntriesCollectionCount;
         private List<LogMetadataFilter> _metadataFilters = [];
         private LogRange _logRange;
 
@@ -105,14 +107,6 @@ namespace LogScraper.Controls.FilterOverview
 
         #region Public API
 
-        //TODO: REQUIRED get log entries from LogAppState
-        public void SetErrorEntries(IReadOnlyList<LogEntry> entries)
-        {
-            _errorEntries = entries;
-            SyncErrorChip();
-            RecalculateLayout();
-        }
-
         /// <summary>
         /// Diffs the supplied filter list against the current metadata chips:
         /// adds chips for new properties, updates chips whose values changed,
@@ -140,20 +134,22 @@ namespace LogScraper.Controls.FilterOverview
             _toolTip.SetToolTip(LblCount, visible == total
                 ? "Totaal aantal logregels"
                 : "Zichtbare logregels / Totaal aantal logregels");
+
+            _errorEntriesCollectionCount = LogAppState.Instance.LogCollection.Value?.ErrorMask?.CountSetBits() ?? 0;
+            _errorEntriesFilterResultWithRangeCount = LogAppState.Instance.FilterResultWithRange.Value?.ErrorMask?.CountSetBits() ?? 0;
+            SyncErrorChip();
             RecalculateLayout();
         }
 
         private void OnResetRequested(object sender, ResetEventArgs e)
         {
-            if (e.KeepFilters)
-                SetErrorEntries([]);
-            else
-                Reset();
+            if (!e.KeepFilters) Reset();
         }
 
         internal void Reset()
         {
-            _errorEntries = null;
+            _errorEntriesFilterResultWithRangeCount = 0;
+            _errorEntriesCollectionCount = 0;
             _metadataFilters = [];
             _logRange = LogAppState.Instance.Range.Value;
             RecalculateLayout();
@@ -163,22 +159,22 @@ namespace LogScraper.Controls.FilterOverview
         #region Chip synchronisation
 
         /// <summary>
-        /// Adds, updates, or removes the error chip to match <see cref="_errorEntries"/>.
+        /// Adds, updates, or removes the error chip to match <see cref="_errorEntriesFilterResultWithRange"/>.
         /// </summary>
         private void SyncErrorChip()
         {
-            bool shouldExist = _errorEntries?.Count > 0;
+            bool shouldExist = _errorEntriesCollectionCount > 0;
 
             if (shouldExist && _errorChip == null)
             {
-                _errorChip = FilterChipControl.FromErrorCount(_errorEntries.Count);
+                _errorChip = FilterChipControl.FromErrorCount(_errorEntriesFilterResultWithRangeCount, _errorEntriesCollectionCount);
                 _errorChip.ChipClicked += OnErrorChipClicked;
                 FlowLayoutFilterChips.Controls.Add(_errorChip);
                 FlowLayoutFilterChips.Controls.SetChildIndex(_errorChip, 0);
             }
             else if (shouldExist)
             {
-                _errorChip.SetErrorCount(_errorEntries.Count);
+                _errorChip.SetErrorCount(_errorEntriesFilterResultWithRangeCount, _errorEntriesCollectionCount);
             }
             else if (_errorChip != null)
             {
@@ -600,7 +596,7 @@ namespace LogScraper.Controls.FilterOverview
 
         private void OnErrorChipClicked(object sender, EventArgs e)
         {
-            ErrorChipClicked?.Invoke(this, new ErrorChipClickedEventArgs(_errorEntries));
+            ErrorChipClicked?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRangeBeginChipClicked(object sender, EventArgs e)

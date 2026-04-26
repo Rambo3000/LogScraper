@@ -106,6 +106,7 @@ namespace LogScraper.Controls.FilterOverview
         private LogRange _logRange;
         private LogRangeChipVariant _logRangeChipVariant;
         private int _errorCount;
+        private int _totalErrorCount;
 
         private string _labelText = string.Empty;
         private string _expandedLabelText = string.Empty;
@@ -201,10 +202,10 @@ namespace LogScraper.Controls.FilterOverview
         /// Creates a red error count chip.
         /// The entire chip is clickable — subscribe to <see cref="ChipClicked"/> to handle navigation.
         /// </summary>
-        public static FilterChipControl FromErrorCount(int errorCount)
+        public static FilterChipControl FromErrorCount(int errorCount, int totalErrorCount)
         {
             var chip = new FilterChipControl(ChipVariant.Error);
-            chip.SetErrorCount(errorCount);
+            chip.SetErrorCount(errorCount, totalErrorCount);
             return chip;
         }
         #endregion
@@ -215,6 +216,7 @@ namespace LogScraper.Controls.FilterOverview
         public LogMetadataValue SpecificValue => _specificValue;
         public LogRange LogRange => _logRange;
         public int ErrorCount => _errorCount;
+        public int TotalErrorCount => _totalErrorCount;
 
         /// <summary>
         /// Returns true when all displayed values are in Exclude mode.
@@ -294,9 +296,10 @@ namespace LogScraper.Controls.FilterOverview
         }
 
         /// <summary>Updates the error count and redraws. Only meaningful for Error variant.</summary>
-        public void SetErrorCount(int count)
+        public void SetErrorCount(int count, int totalCount)
         {
             _errorCount = count;
+            _totalErrorCount = totalCount;
             RecalculateBothWidths();
             ApplyCurrentLabel();
         }
@@ -344,7 +347,7 @@ namespace LogScraper.Controls.FilterOverview
                     string label = _variant switch
                     {
                         ChipVariant.Range => BuildRangeLabel(_logRange, _logRangeChipVariant),
-                        ChipVariant.Error => BuildErrorLabel(_errorCount),
+                        ChipVariant.Error => BuildErrorLabel(_errorCount, _totalErrorCount),
                         _ => string.Empty
                     };
                     _expandedLabelText = label;
@@ -363,8 +366,15 @@ namespace LogScraper.Controls.FilterOverview
         {
             _labelText = _isCollapsed ? _collapsedLabelText : _expandedLabelText;
             Width = _isCollapsed ? CollapsedWidth : ExpandedWidth;
-            _toolTip.SetToolTip(this, _isCollapsed ? BuildCollapsedTooltip() : null);
+            _toolTip.SetToolTip(this, _variant == ChipVariant.Error ? BuildErrorTooltip() : (_isCollapsed ? BuildCollapsedTooltip() : null));
             Invalidate();
+        }
+
+        private string BuildErrorTooltip()
+        {
+            if (_errorCount == _totalErrorCount)
+                return $"Totaal aantal fouten: {_totalErrorCount}";
+            return $"Zichtbare fouten: {_errorCount}\nTotaal aantal fouten: {_totalErrorCount}";
         }
 
         private string BuildCollapsedTooltip()
@@ -436,8 +446,12 @@ namespace LogScraper.Controls.FilterOverview
             return string.Empty;
         }
 
-        private static string BuildErrorLabel(int count) =>
-            count == 1 ? "1 error" : $"{count} errors";
+        private static string BuildErrorLabel(int count, int totalCount)
+        {
+            if (count == totalCount)
+                return totalCount == 1 ? "1 error" : $"{totalCount} errors";
+            return $"{count}/{totalCount} errors";
+        }
         #endregion
 
         #region Painting

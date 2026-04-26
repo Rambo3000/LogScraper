@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Log.LogAppState;
 using LogScraper.Sources.Workers;
+using LogScraper.Utilities.Extensions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper.Controls
@@ -45,9 +45,8 @@ namespace LogScraper.Controls
             ToolTip.SetToolTip(LblCount, visible == total
                 ? "Totaal aantal logregels"
                 : "Zichtbare logregels / Totaal aantal logregels");
-        }
-        public void SetErrorCont(int errorCount)
-        {
+
+            int errorCount = LogAppState.Instance.FilterResultWithRange.Value.ErrorMask.CountSetBits();
             bool hasError = errorCount > 0;
             LblErrorCount.Text = $"{errorCount:N0} error" + (errorCount > 1 ? "s" : "");
             LblErrorCount.ForeColor = hasError ? System.Drawing.Color.DarkRed : System.Drawing.Color.DimGray;

@@ -25,7 +25,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: change error overview to only show errors in visible log entries
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
@@ -46,6 +45,8 @@ namespace LogScraper
 
             SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
 
+            LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
+
             UsrLogProviderSelection.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             UsrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
             UsrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
@@ -65,8 +66,6 @@ namespace LogScraper
 
             BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
-
-            LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
 
             activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
             activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
@@ -97,9 +96,12 @@ namespace LogScraper
             LogViewport.Reset();
         }
 
-        private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, ErrorChipClickedEventArgs e)
+        private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, EventArgs e)
         {
-            ShowErrorPanel([.. e.ErrorEntries]);
+            SearchResultListControl.Visible = false;
+            errorListControl.ShowEntries();
+            errorListControl.Visible = true;
+            splitContainer5.Panel2Collapsed = false;
         }
 
         private void UsrLogProviderSelection_CollapseStateChanged(object sender, EventArgs e)
@@ -136,25 +138,11 @@ namespace LogScraper
         {
             if (UserControlSearch.SelectedSearchMode == UserControlSearch.SearchMode.All)
             {
-                ShowSearchPanel();
+                errorListControl.Visible = false;
+                SearchResultListControl.Visible = true;
+                splitContainer5.Panel2Collapsed = false;
             }
-
-            SearchResultListControl.UpdateSearchResults(settings);
-        }
-
-        private void ShowSearchPanel()
-        {
-            errorListControl.Visible = false;
-            SearchResultListControl.Visible = true;
-            splitContainer5.Panel2Collapsed = false;
-        }
-
-        private void ShowErrorPanel(List<LogEntry> entries)
-        {
-            SearchResultListControl.Visible = false;
-            errorListControl.ShowEntries(entries, LogAppState.Instance.RenderSettings.Value);
-            errorListControl.Visible = true;
-            splitContainer5.Panel2Collapsed = false;
+            if (SearchResultListControl.Visible) SearchResultListControl.UpdateSearchResults(settings);
         }
 
         private void HideBottomPanel()
@@ -317,10 +305,6 @@ namespace LogScraper
                 {
                     LogEntryClassifier.Classify(logLayout, logCollection);
                     LogAppState.Instance.LogCollection.ForceSet(logCollection);
-
-                    // TODO: fix total/visible error counts
-                    //activeFilterOverviewControl.SetErrorEntries(LogCollection.Instance.ErrorLogEntriesmask);
-                    FormCompactView.Instance.SetErrorCont(LogAppState.Instance.LogCollection.Value.ErrorMask.Count);
                 }
 
                 HandleErrorMessages(string.Empty, true);
@@ -344,8 +328,6 @@ namespace LogScraper
 
         private void LogAppState_ResetRequested(object sender, ResetEventArgs e)
         {
-            FormCompactView.Instance.SetErrorCont(0);
-
             if (!e.KeepFilters)
             {
                 //TODOL: REUIQRED what is this about?

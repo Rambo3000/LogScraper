@@ -184,7 +184,7 @@ namespace LogScraper.Content
 
             for (int i = 0; i < compareCount; i++)
             {
-                // TODO: Fix newLogEntries[i].ContentValue != null, this goes haywire on error entries
+                //TODO: REQUIRED Fix newLogEntries[i].ContentValue != null, this goes haywire on error entries
                 if (newLogEntries[i].ContentValue != null && !newLogEntries[i].ContentValue.Equals(((LogEntryDisplayObject)LstLogContent.Items[i]).ContentValue))
                 {
                     startMatches = false;

@@ -95,6 +95,8 @@ namespace LogScraper.Log.LogAppState
         /// </summary>
         public event EventHandler<ResetEventArgs> ResetRequested;
 
+        private bool _resetInProgress = false;
+
         /// <summary>
         /// Resets the application state and raises <see cref="ResetRequested"/> so all subscribers
         /// can perform their own cleanup.
@@ -105,14 +107,20 @@ namespace LogScraper.Log.LogAppState
         /// </param>
         public void Reset(bool keepFilters)
         {
+            _resetInProgress = true;
+
             LogCollection.Value?.Clear();
             LogCollection.ForceSet(null);
-            //TODO: REQUIRED UpdateFilterResultWithRange just hit it once instead of 5x
+
             MetadataFilterResult.ForceSet(null);
             FilterResultWithRange.ForceSet(null);
             Range.ForceSet(LogRange.Full);
             RenderProcessorKinds.ForceSet([]);
             if (!keepFilters) MetadataFilters.ForceSet([]);
+
+            _resetInProgress = false;
+
+            UpdateMetadataFilterResult();
 
             ResetRequested?.Invoke(this, new ResetEventArgs(keepFilters));
         }
@@ -138,6 +146,8 @@ namespace LogScraper.Log.LogAppState
         /// </summary>
         private void UpdateMetadataFilterResult()
         {
+            if (_resetInProgress) return;
+
             if (!LogCollectionIsAvailable || Layout.Value == null || MetadataFilters.Value == null)
             {
                 MetadataFilterResult.Set(null);
@@ -154,6 +164,8 @@ namespace LogScraper.Log.LogAppState
         /// </summary>
         private void UpdateFilterResultWithRange()
         {
+            if (_resetInProgress) return;
+
             FilterResultWithRange.Set(new(MetadataFilterResult.Value, Range.Value));
         }
     }

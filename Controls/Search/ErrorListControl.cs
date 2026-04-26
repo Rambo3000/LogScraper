@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Log;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Search
@@ -33,24 +33,28 @@ namespace LogScraper.Controls.Search
 
         #region Public interface
 
-        public void ShowEntries(List<LogEntry> entries, LogRenderSettings renderSettings = null)
+        public void ShowEntries()
         {
-            LstEntries.BeginUpdate();
-            LstEntries.Items.Clear();
+            List<LogEntry> entries = LogAppState.Instance.FilterResultWithRange.Value.ErrorLogEntries;
+            LogRenderSettings renderSettings = LogAppState.Instance.RenderSettings.Value;
 
-            if (entries != null)
+            LstEntries.Items.Clear();
+            LblCount.Text = string.Empty;
+
+            if (entries == null) return;
+
+            LstEntries.BeginUpdate();
+
+            List<LogEntryDisplayObject> logEntryDisplayObjects = new(entries.Count);
+            foreach (LogEntry entry in entries)
             {
-                List<LogEntryDisplayObject> logEntryDisplayObjects = new (entries.Count);
-                foreach (LogEntry entry in entries)
-                {
-                    if (entry?.Entry == null) continue;
-                    string text = renderSettings != null
-                        ? LogRenderer.RenderSingleLogEntry(entry, renderSettings)
-                        : entry.Entry;
-                    logEntryDisplayObjects.Add(new LogEntryDisplayObject(entry, text));
-                }
-                LstEntries.Items.AddRange([.. logEntryDisplayObjects]);
+                if (entry?.Entry == null) continue;
+                string text = renderSettings != null
+                    ? LogRenderer.RenderSingleLogEntry(entry, renderSettings)
+                    : entry.Entry;
+                logEntryDisplayObjects.Add(new LogEntryDisplayObject(entry, text));
             }
+            LstEntries.Items.AddRange([.. logEntryDisplayObjects]);
 
             LblCount.Text = $"{LstEntries.Items.Count} fout{(LstEntries.Items.Count == 1 ? string.Empty : "en")} gevonden";
             LstEntries.EndUpdate();

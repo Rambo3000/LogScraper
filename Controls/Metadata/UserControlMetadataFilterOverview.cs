@@ -44,10 +44,11 @@ namespace LogScraper.Controls.Metadata
             if (e.KeepFilters)
             {
                 UpdateFilterControlsCountToZero();
-                ResetFilters();
             }
             else
+            {
                 Reset();
+            }
         }
 
         /// <summary>

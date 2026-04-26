@@ -39,7 +39,7 @@ namespace LogScraper.Log.Processing
             // Create a 2D array to hold raw metadata values for each property and log entry during parallel processing.
             string[][] rawMetadata = new string[logCollection.LogEntries.Count][];
 
-            // Phase 1 — parallel: extract raw string values and classify content properties.
+            // Extract raw string values and classify content properties.
             Parallel.For(0, logCollection.LogEntries.Count, i =>
             {
                 LogEntry logEntry = logCollection.LogEntries[i];
@@ -55,11 +55,11 @@ namespace LogScraper.Log.Processing
                 TryClassifyContentProperties(logEntry, logLayout);
             });
 
-            //TODO: make dictionary per content property type
+            // Make mask dictionary per content property type
             logCollection.ContentPropertyMask = LogContentMaskBuilder.Build(logCollection.LogEntries, logLayout.LogContentProperties, logCollection.ContentPropertyMask);
             logCollection.ErrorMask = LogContentMaskBuilder.BuildErrorMask(logLayout.LogContentProperties, logCollection.ContentPropertyMask, logCollection.LogEntries.Count);
 
-            // Phase 2 — sequential: intern raw strings into shared LogMetadataValue instances.
+            // Intern raw strings into shared LogMetadataValue instances.
             InternRawMetadata(logCollection, rawMetadata, logLayout, logMetadataPropertyCount);
         }
 
