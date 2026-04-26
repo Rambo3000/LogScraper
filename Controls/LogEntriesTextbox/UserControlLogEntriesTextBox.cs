@@ -35,18 +35,21 @@ namespace LogScraper.Controls.LogEntriesTextbox
             TxtLogEntries.UseDefaultFont(this);
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void UserControlLogEntriesTextBox_Load(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            if (DesignMode) return;
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
-            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.LogLayout.Value);
+            LogAppState.Instance.RenderSettings.Changed += OnRenderSettingsChanged;
+            LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {
             _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+            RenderLogEntries();
+        }
+        private void OnRenderSettingsChanged(object sender, EventArgs e)
+        {
             _logRenderSettings = LogAppState.Instance.RenderSettings.Value;
             RenderLogEntries();
         }

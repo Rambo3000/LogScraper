@@ -86,7 +86,7 @@ namespace LogScraper.Controls
 
         private void RaiseRangeChanged()
         {
-            LogAppState.Instance.LogRange.ForceSet(range);
+            LogAppState.Instance.Range.ForceSet(range);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)

@@ -10,8 +10,6 @@ namespace LogScraper.Log.Rendering
     /// </summary>
     public class LogRenderSettings
     {
-        public LogRange LogRange { get; set; }
-
         /// <summary>
         /// The layout of the log file, including metadata and content properties.
         /// </summary>

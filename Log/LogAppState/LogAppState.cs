@@ -16,7 +16,22 @@ namespace LogScraper.Log.LogAppState
     public sealed class LogAppState
     {
         public static LogAppState Instance { get; } = new();
-        private LogAppState() { }
+        private LogAppState()
+        {
+            // Whenever the log collection, layout, or active metadata filters change, we need to recalculate the filtered result.
+            LogCollection.Changed += (s, e) => UpdateMetadataFilterResult();
+            Layout.Changed += (s, e) => UpdateMetadataFilterResult();
+            MetadataFilters.Changed += (s, e) => UpdateMetadataFilterResult();
+
+            // Whenever the log range or the metadata-filtered result changes, we need to recalculate the combined FilterResultWithRange.
+            Range.Changed += (s, e) => UpdateFilterResultWithRange();
+            MetadataFilterResult.Changed += (s, e) => UpdateFilterResultWithRange();
+
+            RenderOriginalMetadata.Changed += (s, e) => UpdateRenderSettings();
+            RenderSeperateMetadataProperties.Changed += (s, e) => UpdateRenderSettings();
+            RenderProcessorKinds.Changed += (s, e) => UpdateRenderSettings();
+            RenderFlowTreeSettings.Changed += (s, e) => UpdateRenderSettings();
+        }
 
         /// <summary>
         /// The main log collection
@@ -32,7 +47,7 @@ namespace LogScraper.Log.LogAppState
         /// <summary>
         /// The currently active log range (start/end indices) for rendering.
         /// </summary>
-        public StateSlice<LogRange> LogRange { get; } = new();
+        public StateSlice<LogRange> Range { get; } = new();
 
         /// <summary>
         /// The result of applying active filters to the log collection, along with the range of log entries it covers.
@@ -47,7 +62,7 @@ namespace LogScraper.Log.LogAppState
         /// <summary>
         /// The current layout of the log (e.g. which columns are visible, their order, etc).
         /// </summary>
-        public StateSlice<LogLayout> LogLayout { get; } = new();
+        public StateSlice<LogLayout> Layout { get; } = new();
 
         /// <summary>
         /// Whether to render the original metadata in the log viewport.
@@ -63,6 +78,16 @@ namespace LogScraper.Log.LogAppState
         /// The list of log post-processor kinds that are currently visible to the user and can be applied to log entries.
         /// </summary>
         public StateSlice<List<LogPostProcessorKind>> RenderProcessorKinds { get; } = new();
+
+        /// <summary>
+        /// The current settings for how the flow tree is rendered on screen (e.g. which columns are visible, their widths, etc).
+        /// </summary>
+        public StateSlice<LogFlowTreeRenderSettings> RenderFlowTreeSettings { get; } = new();
+
+        /// <summary>
+        /// The list of active metadata filters that are applied to the log collection to produce <see cref="MetadataFilterResult"/>.
+        /// </summary>
+        public StateSlice<List<LogMetadataFilter>> MetadataFilters { get; } = new();
 
         /// <summary>
         /// Raised when a reset is requested.
@@ -82,12 +107,54 @@ namespace LogScraper.Log.LogAppState
         {
             LogCollection.Value?.Clear();
             LogCollection.ForceSet(null);
+            //TODO: REQUIRED UpdateFilterResultWithRange just hit it once instead of 5x
             MetadataFilterResult.ForceSet(null);
             FilterResultWithRange.ForceSet(null);
-            LogRange.ForceSet(new Rendering.LogRange());
-            RenderSettings.ForceSet(null);
+            Range.ForceSet(LogRange.Full);
+            RenderProcessorKinds.ForceSet([]);
+            if (!keepFilters) MetadataFilters.ForceSet([]);
 
             ResetRequested?.Invoke(this, new ResetEventArgs(keepFilters));
+        }
+
+        /// <summary>
+        /// Updates the current render settings based on the latest user interface values.
+        /// </summary>
+        private void UpdateRenderSettings()
+        {
+            LogRenderSettings logRenderSettings = new()
+            {
+                LogLayout = Layout.Value,
+                ShowOriginalMetadata = RenderOriginalMetadata.Value,
+                SelectedMetadataProperties = RenderSeperateMetadataProperties.Value,
+                LogPostProcessorKinds = RenderProcessorKinds.Value,
+                LogFlowTreeRenderSettings = RenderFlowTreeSettings.Value
+            };
+            RenderSettings.Set(logRenderSettings);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="MetadataFilterResult"/> by applying the active <see cref="MetadataFilters"/> to the <see cref="LogCollection"/>
+        /// </summary>
+        private void UpdateMetadataFilterResult()
+        {
+            if (!LogCollectionIsAvailable || Layout.Value == null || MetadataFilters.Value == null)
+            {
+                MetadataFilterResult.Set(null);
+                return;
+            }
+
+            LogMetadataFilterResult metadataFilterResult = LogMetadataFilterEngine.Apply(LogCollection.Value, MetadataFilters.Value, Layout.Value);
+           
+            MetadataFilterResult.Set(metadataFilterResult);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="FilterResultWithRange"/> by combining the current <see cref="MetadataFilterResult"/> with the current <see cref="Range"/>.
+        /// </summary>
+        private void UpdateFilterResultWithRange()
+        {
+            FilterResultWithRange.Set(new(MetadataFilterResult.Value, Range.Value));
         }
     }
 }

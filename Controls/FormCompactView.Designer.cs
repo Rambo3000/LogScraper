@@ -140,6 +140,7 @@
             Text = " LogScraper";
             TopMost = true;
             FormClosing += FormMiniTop_FormClosing;
+            Load += FormCompactView_Load;
             ResumeLayout(false);
         }
 

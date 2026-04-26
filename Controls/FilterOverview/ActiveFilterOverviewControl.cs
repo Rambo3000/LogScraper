@@ -39,7 +39,7 @@ namespace LogScraper.Controls.FilterOverview
         public event EventHandler ResetAllFilters;
 
         private IReadOnlyList<LogEntry> _errorEntries;
-        private IReadOnlyList<LogMetadataFilter> _metadataFilters = [];
+        private List<LogMetadataFilter> _metadataFilters = [];
         private LogRange _logRange;
 
         private FilterChipControl _errorChip;
@@ -62,18 +62,17 @@ namespace LogScraper.Controls.FilterOverview
             InitializeComponent();
             LblCount.Text = string.Empty;
         }
-
-        protected override void OnLoad(EventArgs e)
+        private void ActiveFilterOverviewControl_Load(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            if (DesignMode) return;
-            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.Range.Changed += OnLogRangeChanged;
             LogAppState.Instance.ResetRequested += OnResetRequested;
+            LogAppState.Instance.MetadataFilters.Changed += (s, e) => SetMetadataFilters();
+            LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => SetCounts();
         }
 
         private void OnLogRangeChanged(object sender, EventArgs e)
         {
-            _logRange = LogAppState.Instance.LogRange.Value;
+            _logRange = LogAppState.Instance.Range.Value;
             SyncRangeChips();
             RecalculateLayout();
         }
@@ -106,6 +105,7 @@ namespace LogScraper.Controls.FilterOverview
 
         #region Public API
 
+        //TODO: REQUIRED get log entries from LogAppState
         public void SetErrorEntries(IReadOnlyList<LogEntry> entries)
         {
             _errorEntries = entries;
@@ -119,9 +119,9 @@ namespace LogScraper.Controls.FilterOverview
         /// removes chips whose property is no longer present.
         /// Pass <see langword="null"/> or an empty list to clear all metadata chips.
         /// </summary>
-        public void SetMetadataFilters(IReadOnlyList<LogMetadataFilter> filters)
+        private void SetMetadataFilters()
         {
-            _metadataFilters = filters ?? [];
+            _metadataFilters = LogAppState.Instance.MetadataFilters.Value ?? [];
             SyncMetadataChips();
             RecalculateLayout();
         }
@@ -131,8 +131,11 @@ namespace LogScraper.Controls.FilterOverview
         /// Updates the visible / total entry count shown at the top-right.
         /// When <paramref name="visible"/> equals <paramref name="total"/>, only the total is displayed.
         /// </summary>
-        public void SetCounts(int visible, int total)
+        private void SetCounts()
         {
+            int visible = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries?.Count ?? 0;
+            int total = LogAppState.Instance.LogCollection.Value?.LogEntries?.Count ?? 0;
+
             LblCount.Text = visible == total ? $"{total:N0}" : $"{visible:N0} / {total:N0}";
             _toolTip.SetToolTip(LblCount, visible == total
                 ? "Totaal aantal logregels"
@@ -152,7 +155,7 @@ namespace LogScraper.Controls.FilterOverview
         {
             _errorEntries = null;
             _metadataFilters = [];
-            _logRange = LogAppState.Instance.LogRange.Value;
+            _logRange = LogAppState.Instance.Range.Value;
             RecalculateLayout();
         }
         #endregion
@@ -635,5 +638,6 @@ namespace LogScraper.Controls.FilterOverview
         {
             ResetAllFilters?.Invoke(this, EventArgs.Empty);
         }
+
     }
 }

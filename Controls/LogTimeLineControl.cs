@@ -151,7 +151,7 @@ namespace LogScraper.Controls
         {
             var state = LogAppState.Instance;
             if (state.FilterResultWithRange.Value == null) { Reset(); return; }
-            UpdateLogEntries(state.MetadataFilterResult.Value, state.FilterResultWithRange.Value.LogEntries, state.LogRange.Value, state.LogCollection.Value);
+            UpdateLogEntries(state.MetadataFilterResult.Value, state.FilterResultWithRange.Value.LogEntries, state.Range.Value, state.LogCollection.Value);
         }
 
         #endregion
@@ -165,7 +165,7 @@ namespace LogScraper.Controls
         /// </summary>
         public void UpdateLogEntries(LogMetadataFilterResult filterResult, List<LogEntry> visibleEntries, LogRange range, LogCollection fullCollection)
         {
-            if (fullCollection?.LogEntries?.Count == 0)
+            if (fullCollection?.LogEntries == null || fullCollection?.LogEntries?.Count == 0)
             {
                 filteredLogEntries.Clear();
                 displayedLogEntries.Clear();

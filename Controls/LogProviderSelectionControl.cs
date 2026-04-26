@@ -196,7 +196,7 @@ namespace LogScraper.Controls
             return config;
         }
 
-        public LogLayout GetSelectedLogLayout()
+        private LogLayout GetSelectedLogLayout()
         {
             return cboLogLayout.SelectedItem as LogLayout;
         }
@@ -239,7 +239,7 @@ namespace LogScraper.Controls
         {
             UpdateProviderDescription();
 
-            LogAppState.Instance.LogLayout.Set(GetSelectedLogLayout());
+            LogAppState.Instance.Layout.Set(GetSelectedLogLayout());
             LogAppState.Instance.Reset(false);
         }
 

@@ -93,12 +93,6 @@ namespace LogScraper.Controls.Search
         #endregion
 
         #region Public interface
-        /// <summary>
-        /// Render settings used to produce display strings in the result list.
-        /// Set by the main form when log render settings change.
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogRenderSettings LogRenderSettings { get; set; }
 
         public void Clear()
         {
@@ -132,7 +126,7 @@ namespace LogScraper.Controls.Search
                 IsMetadataSearchEnabled = LogAppState.Instance.RenderOriginalMetadata.Value,
                 Direction = direction,
                 WrapAround = ItemWrapAround.Checked,
-                LogRenderSettings = LogRenderSettings
+                LogRenderSettings = LogAppState.Instance.RenderSettings.Value
             };
         }
 

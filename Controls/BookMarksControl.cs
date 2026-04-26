@@ -53,7 +53,7 @@ namespace LogScraper.Controls
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.Range.Changed += OnLogRangeChanged;
             LogAppState.Instance.MetadataFilterResult.Changed += OnMetadataFilterResultChanged;
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
@@ -66,7 +66,7 @@ namespace LogScraper.Controls
 
         private void OnLogRangeChanged(object sender, EventArgs e)
         {
-            _logRange = LogAppState.Instance.LogRange.Value;
+            _logRange = LogAppState.Instance.Range.Value;
             RebuildFilteredBookmarks();
             UpdateButtons();
         }

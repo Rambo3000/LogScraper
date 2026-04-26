@@ -25,23 +25,18 @@ namespace LogScraper.Controls.Metadata
         private readonly List<UserControlLogMetadataFilter> orderedFilterControls = [];
 
         /// <summary>
-        /// Event triggered when a filter is changed.
-        /// </summary>
-        public event EventHandler FilterChanged;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="UserControlMetadataFilterOverview"/> class.
         /// </summary>
         public UserControlMetadataFilterOverview()
         {
             InitializeComponent();
         }
-
-        protected override void OnLoad(EventArgs e)
+        private void UserControlMetadataFilterOverview_Load(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            if (DesignMode) return;
             LogAppState.Instance.ResetRequested += OnResetRequested;
+            LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateFilterControls();
+            LogAppState.Instance.Layout.Changed += (s, e) => UpdateFilterControls();
+            LogAppState.Instance.MetadataFilterResult.Changed += (s, e) => UpdateFilterControlsCount();
         }
 
         private void OnResetRequested(object sender, ResetEventArgs e)
@@ -103,8 +98,13 @@ namespace LogScraper.Controls.Metadata
         /// </summary>
         /// <param name="logLayout">The layout of the log, including metadata properties.</param>
         /// <param name="logCollection">The collection of log entries, providing the value pool.</param>
-        public void UpdateFilterControls(LogLayout logLayout, LogCollection logCollection)
+        public void UpdateFilterControls()
         {
+            LogLayout logLayout = LogAppState.Instance.Layout.Value;
+            LogCollection logCollection = LogAppState.Instance.LogCollection.Value;
+
+            if (logLayout == null || logCollection == null) return;
+
             this.SuspendDrawing();
 
             LblExplenation.Visible = logLayout.LogMetadataProperties.Count == 0;
@@ -137,6 +137,8 @@ namespace LogScraper.Controls.Metadata
                 previousControl = control;
             }
 
+            UpdateFilterControlsCount();
+
             this.ResumeDrawing();
         }
 
@@ -145,9 +147,12 @@ namespace LogScraper.Controls.Metadata
         /// Call this after filtering to reflect the new counts.
         /// </summary>
         /// <param name="stats">Updated filter stats per property.</param>
-        public void UpdateFilterControlsCount(List<LogMetadataFilterStats> stats)
+        private void UpdateFilterControlsCount()
         {
+            if (LogAppState.Instance.MetadataFilterResult.Value == null || filterControls.Count == 0) return;
+
             this.SuspendDrawing();
+            List<LogMetadataFilterStats> stats = [.. LogAppState.Instance.MetadataFilterResult.Value.FilterStats.Values];
 
             foreach (LogMetadataFilterStats propertyStats in stats)
             {
@@ -176,7 +181,7 @@ namespace LogScraper.Controls.Metadata
         /// Retrieves the current metadata filters from all child controls.
         /// Only returns filters that have active values.
         /// </summary>
-        public List<LogMetadataFilter> GetActiveFilters()
+        private List<LogMetadataFilter> GetActiveFilters()
         {
             List<LogMetadataFilter> filters = [];
 
@@ -251,7 +256,7 @@ namespace LogScraper.Controls.Metadata
 
         private void OnFilterChanged(object sender, EventArgs e)
         {
-            if (!isResetFiltersInProgress) FilterChanged?.Invoke(this, e);
+            if (!isResetFiltersInProgress) LogAppState.Instance.MetadataFilters.Set(GetActiveFilters());
         }
 
         private void OnCollapseChanged(object sender, EventArgs e) => ReflowControls();
@@ -283,5 +288,6 @@ namespace LogScraper.Controls.Metadata
         }
 
         protected override Point ScrollToControl(Control activeControl) => AutoScrollPosition;
+
     }
 }

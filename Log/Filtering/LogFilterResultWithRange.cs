@@ -30,7 +30,7 @@ namespace LogScraper.Log.Filtering
         {
             get
             {
-                if (_logEntriesCache != null) return _logEntriesCache;
+                if (_logEntriesCache != null || MetadataFilterResult == null) return _logEntriesCache;
 
                 _logEntriesCache = LogRenderer.GetLogEntriesRange(MetadataFilterResult.LogEntries, Range);
                 return _logEntriesCache;

@@ -28,12 +28,19 @@ namespace LogScraper.Controls
                 return instance;
             }
         }
+        private void FormCompactView_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => SetCounts();
+        }
+
         /// <summary>
         /// Updates the visible / total entry count shown at the top-right.
         /// When <paramref name="visible"/> equals <paramref name="total"/>, only the total is displayed.
         /// </summary>
-        public void SetCounts(int visible, int total)
+        private void SetCounts()
         {
+            int visible = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries?.Count ?? 0;
+            int total = LogAppState.Instance.LogCollection.Value?.LogEntries?.Count ?? 0;
             LblCount.Text = visible == total ? $"{total:N0}" : $"{visible:N0} / {total:N0}";
             ToolTip.SetToolTip(LblCount, visible == total
                 ? "Totaal aantal logregels"
@@ -164,5 +171,6 @@ namespace LogScraper.Controls
         {
 
         }
+
     }
 }

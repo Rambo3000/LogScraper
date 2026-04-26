@@ -411,7 +411,6 @@ namespace LogScraper
             UsrMetadataFilterOverview.Name = "UsrMetadataFilterOverview";
             UsrMetadataFilterOverview.Size = new System.Drawing.Size(230, 356);
             UsrMetadataFilterOverview.TabIndex = 0;
-            UsrMetadataFilterOverview.FilterChanged += UsrControlMetadataFormating_FilterChanged;
             // 
             // splitContainer1
             // 

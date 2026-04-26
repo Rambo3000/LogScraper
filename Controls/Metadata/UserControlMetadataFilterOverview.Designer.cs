@@ -53,6 +53,7 @@
             Controls.Add(LblExplenation);
             Margin = new System.Windows.Forms.Padding(0);
             Name = "UserControlMetadataFilterOverview";
+            Load += UserControlMetadataFilterOverview_Load;
             Resize += UserControlMetadataFilterOverview_Resize;
             ResumeLayout(false);
         }

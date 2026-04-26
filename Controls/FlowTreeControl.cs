@@ -5,13 +5,12 @@ using System.Windows.Forms;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
 {
     public partial class FlowTreeControl : UserControl
     {
-        public event EventHandler ShowTreeStateChanged;
-
         public FlowTreeControl()
         {
             InitializeComponent();
@@ -20,7 +19,7 @@ namespace LogScraper.Controls
         private void FlowTreeControl_Load(object sender, EventArgs e)
         {
             LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
-            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.LogLayout.Value);
+            LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             ItemShowTree.Click += ItemShowTree_Click;
             ItemHideTree.Click += ItemHideTree_Click;
@@ -35,14 +34,6 @@ namespace LogScraper.Controls
         }
 
         private bool showTree = false;
-
-        public bool ShowTree
-        {
-            get
-            {
-                return showTree;
-            }
-        }
 
         private void UpdateLogLayout(LogLayout logLayout)
         {
@@ -71,7 +62,7 @@ namespace LogScraper.Controls
             BtnTreeView.ImageIndex = showTree ? 1 : 0;
             BtnTreeView.Enabled = LogAppState.Instance.LogCollectionIsAvailable;
             updateShowTreeInProgress = true;
-            
+
             if (CboContentProperties.Items.Count == 0)
             {
                 ItemShowTree.Enabled = false;
@@ -96,16 +87,22 @@ namespace LogScraper.Controls
         {
             showTree = !showTree;
             UpdateControls();
-            ShowTreeStateChanged?.Invoke(this, EventArgs.Empty);
+            LogAppStateUpdate();
             ActiveControl = null;
         }
+
+        private void LogAppStateUpdate()
+        {
+            LogAppState.Instance.RenderFlowTreeSettings.Set(new LogFlowTreeRenderSettings(showTree, SelectedContentProperty));
+        }
+
         private void ItemHideTree_Click(object sender, System.EventArgs e)
         {
             if (updateShowTreeInProgress) return;
 
             showTree = false;
             UpdateControls();
-            ShowTreeStateChanged?.Invoke(this, EventArgs.Empty);
+            LogAppStateUpdate();
             ActiveControl = null;
         }
 
@@ -115,7 +112,7 @@ namespace LogScraper.Controls
 
             showTree = true;
             UpdateControls();
-            ShowTreeStateChanged?.Invoke(this, EventArgs.Empty);
+            LogAppStateUpdate();
             ActiveControl = null;
         }
 
@@ -123,11 +120,11 @@ namespace LogScraper.Controls
         {
             if (updateShowTreeInProgress) return;
 
-            ShowTreeStateChanged?.Invoke(this, EventArgs.Empty);
+            LogAppStateUpdate();
         }
         #endregion
 
-        public LogContentProperty SelectedContentProperty
+        private LogContentProperty SelectedContentProperty
         {
             get
             {

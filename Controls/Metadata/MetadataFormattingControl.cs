@@ -18,7 +18,7 @@ namespace LogScraper.Controls.Metadata
 
         private void MetadataFormattingControl_Load(object sender, EventArgs e)
         {
-            LogAppState.Instance.LogLayout.Changed += (s, e) => UpdateLogMetadataProperties(LogAppState.Instance.LogLayout.Value?.LogMetadataProperties ?? []);
+            LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogMetadataProperties(LogAppState.Instance.Layout.Value?.LogMetadataProperties ?? []);
         }
 
         private void ItemShowOriginalMetadata_CheckedChanged(object sender, EventArgs e)

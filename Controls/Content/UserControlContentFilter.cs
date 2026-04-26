@@ -37,7 +37,7 @@ namespace LogScraper.Content
         {
             base.OnLoad(e);
             if (DesignMode) return;
-            LogAppState.Instance.LogRange.Changed += OnLogRangeChanged;
+            LogAppState.Instance.Range.Changed += OnLogRangeChanged;
             LogAppState.Instance.MetadataFilterResult.Changed += OnMetadataFilterResultChanged;
             LogAppState.Instance.ResetRequested += OnResetRequested;
         }
@@ -114,7 +114,7 @@ namespace LogScraper.Content
 
             LogContentProperty logContentProperty = SelectedLogContentProperty;
             if (logContentProperty == null) return;
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.LogRange.Value));
+            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.Range.Value));
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
         }
@@ -464,8 +464,8 @@ namespace LogScraper.Content
         {
             if (logEntryDisplayObject == null) return true;
 
-            return (LogAppState.Instance.LogRange.Value?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.LogRange.Value.Begin.Index) ||
-                   (LogAppState.Instance.LogRange.Value?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.LogRange.Value.End.Index);
+            return (LogAppState.Instance.Range.Value?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.Range.Value.Begin.Index) ||
+                   (LogAppState.Instance.Range.Value?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.Range.Value.End.Index);
         }
         #endregion
 
