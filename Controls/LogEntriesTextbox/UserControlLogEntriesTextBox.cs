@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
@@ -41,6 +40,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
             LogAppState.Instance.RenderSettings.Changed += OnRenderSettingsChanged;
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
+            LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => ScrollToAndSelectLogEntry();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -57,24 +57,14 @@ namespace LogScraper.Controls.LogEntriesTextbox
         #endregion
 
         #region Selected log entry
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
+        private void ScrollToAndSelectLogEntry()
         {
-            get
-            {
-                return _selectedLogEntry;
-            }
-            set
-            {
-                if (_selectedLogEntry != value)
-                {
-                    if (value == null) return;
+            LogEntry newSelectedLogEntry = LogAppState.Instance.ViewportSelectedLogEntry.Value;
+            if (newSelectedLogEntry == null || _selectedLogEntry == newSelectedLogEntry) return;
 
-                    if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(value, _logEntriesRenderMapCache, out int selectedIndex))
-                    {
-                        TxtLogEntries.ScrollToLine(selectedIndex);
-                    }
-                }
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(newSelectedLogEntry, _logEntriesRenderMapCache, out int selectedIndex))
+            {
+                TxtLogEntries.ScrollToLine(selectedIndex);
             }
         }
         #endregion 
@@ -195,7 +185,6 @@ namespace LogScraper.Controls.LogEntriesTextbox
         public void Reset()
         {
             Text = string.Empty;
-            LogEntryAtCursorChanged?.Invoke(this, null);
         }
         /// <summary>
         /// Event that is triggered when the text in the log entries text box changes.
@@ -222,16 +211,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
         #endregion
 
         #region Scroll and log entry at cursor handling
-        public class VisibleRangeChangedEventArgs(LogEntryRenderPosition topPosition, LogEntryRenderPosition bottomPosition) : EventArgs
-        {
-            public LogEntryRenderPosition TopPosition { get; } = topPosition;
-            public LogEntryRenderPosition BottomPosition { get; } = bottomPosition;
-        }
         private int lastTopVisibleLine = -1;
-
-        public event EventHandler<VisibleRangeChangedEventArgs> VisibleRangeChanged;
-
-        public event EventHandler<LogEntry> LogEntryAtCursorChanged;
 
         private int? lastKnownLine = null;
 
@@ -253,7 +233,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
                 _logEntryAtCursor = null;
                 lastKnownLine = null;
                 _selectedLogEntry = _logEntryAtCursor;
-                LogEntryAtCursorChanged?.Invoke(this, _logEntryAtCursor);
+                LogAppState.Instance.ViewportSelectedLogEntry.Set(_logEntryAtCursor);
                 return;
             }
 
@@ -266,7 +246,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
                     {
                         _logEntryAtCursor = logEntryAtCursorNew;
                         _selectedLogEntry = _logEntryAtCursor;
-                        LogEntryAtCursorChanged?.Invoke(this, _logEntryAtCursor);
+                        LogAppState.Instance.ViewportSelectedLogEntry.Set(_logEntryAtCursor);
                     }
                 }
             }
@@ -274,8 +254,6 @@ namespace LogScraper.Controls.LogEntriesTextbox
 
         private void RaiseVisibleRangeChanged(bool force = false)
         {
-            if (VisibleRangeChanged == null) return;
-
             int topVisibleLine = TxtLogEntries.FirstVisibleLine;
 
             if (!force && topVisibleLine == lastTopVisibleLine)
@@ -289,7 +267,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
 
             if (!LogEntryVisualIndexCalculator.TryGetRenderPosition(bottomVisibleLine, _logEntriesRenderMapCache, out LogEntryRenderPosition bottomPosition)) return;
 
-            VisibleRangeChanged?.Invoke(this, new VisibleRangeChangedEventArgs(topPosition, bottomPosition));
+            LogAppState.Instance.ViewportVisibleRange.Set(new LogRange() { Begin = topPosition.LogEntry, End = bottomPosition.LogEntry });
         }
         #endregion
 

@@ -30,13 +30,14 @@
         {
             SuspendLayout();
             // 
-            // LogHeatmapControl
+            // LogTimeLineControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            Name = "LogHeatmapControl";
+            Name = "LogTimeLineControl";
             Size = new System.Drawing.Size(324, 49);
+            Load += LogTimeLineControl_Load;
             ResumeLayout(false);
         }
 

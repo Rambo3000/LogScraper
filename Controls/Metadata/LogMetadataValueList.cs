@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,6 +7,7 @@ using System.Windows.Forms.VisualStyles;
 using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 
 namespace LogScraper.Controls.Metadata
@@ -27,28 +27,6 @@ namespace LogScraper.Controls.Metadata
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The currently selected log entry. Set to null to deselect.
-        /// Updates the indicator in the list to show which value matches the selected line.
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
-        {
-            get => selectedLogEntry;
-            set
-            {
-                if (selectedLogEntry != null && selectedLogEntry.Equals(value)) return;
-                selectedLogEntry = value;
-                LogMetadataValue newSelectedValue = GetSelectedEntryValueForProperty();
-                if (newSelectedValue != selectedEntryValue)
-                {
-                    selectedEntryValue = newSelectedValue;
-                    ListViewItems.Invalidate();
-                    if (IsScrollableViewEnabled) ScrollToSelectedValue();
-                }
-            }
-        }
 
         public int SortedValueCount => sortedValues.Count;
         public int CheckedItemCount => checkedItems.Count;
@@ -83,6 +61,10 @@ namespace LogScraper.Controls.Metadata
             InitializeComponent();
             ListViewItems.Columns.Add("Description", -2);
             ListViewItems.Columns.Add("Count", 50, HorizontalAlignment.Right);
+        }
+        private void LogMetadataValueList_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedEntry();
         }
 
         #endregion
@@ -164,7 +146,7 @@ namespace LogScraper.Controls.Metadata
             AdjustCountColumnWidth();
 
             updateInProgress = false;
-            return isFirstLoad && property.IsCollapsedByDefault ? false : true;
+            return !isFirstLoad || !property.IsCollapsedByDefault;
         }
 
         /// <summary>
@@ -190,6 +172,21 @@ namespace LogScraper.Controls.Metadata
 
             if (topItemIndex < ListViewItems.VirtualListSize && ListViewItems.VirtualListSize > 0)
                 ListViewItems.EnsureVisible(topItemIndex);
+        }
+
+        private void UpdateSelectedEntry()
+        {
+            LogEntry newSelectedLogEntry = LogAppState.Instance.ViewportSelectedLogEntry.Value;
+            if (selectedLogEntry != null && selectedLogEntry.Equals(newSelectedLogEntry)) return;
+            selectedLogEntry = newSelectedLogEntry;
+
+            LogMetadataValue newSelectedValue = GetSelectedEntryValueForProperty();
+            if (newSelectedValue != selectedEntryValue)
+            {
+                selectedEntryValue = newSelectedValue;
+                ListViewItems.Invalidate();
+                if (IsScrollableViewEnabled) ScrollToSelectedValue();
+            }
         }
 
         private void BuildValueCounts(LogMetadataFilterStats stats)

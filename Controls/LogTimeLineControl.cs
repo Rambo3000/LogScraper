@@ -63,8 +63,7 @@ namespace LogScraper.Controls
         private ZoomButton hoveredZoomButton = ZoomButton.None;
 
         // Time range currently represented on screen used for hover hit testing and out-of-range marker placement
-        private DateTime? onScreenRangeStart = null;
-        private DateTime? onScreenRangeEnd = null;
+        private LogRange _viewportRange = new();
 
         // Zoom button rects (in control coordinates)
         private Rectangle zoomInButtonRect = Rectangle.Empty;
@@ -109,18 +108,6 @@ namespace LogScraper.Controls
 
         #endregion
 
-        #region Events
-
-        /// <summary>Raised when a histogram bar is clicked.</summary>
-        public event EventHandler<LogEntry> CellClicked;
-
-        /// <summary>Raised when an error marker is clicked.</summary>
-        public event EventHandler<LogEntry> ErrorMarkerClicked;
-
-        /// <summary>Raised when a bookmark marker is clicked.</summary>
-        public event EventHandler<LogEntry> BookmarkMarkerClicked;
-
-        #endregion
 
         #region Constructor
 
@@ -138,13 +125,11 @@ namespace LogScraper.Controls
             this.MouseLeave += OnMouseLeave;
             this.Resize += (s, e) => { RebuildBuckets(); this.Invalidate(); };
         }
-
-        protected override void OnLoad(EventArgs e)
+        private void LogTimeLineControl_Load(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            if (DesignMode) return;
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
+            LogAppState.Instance.ViewportVisibleRange.Changed += (s, e) => SetViewportRange();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -152,6 +137,12 @@ namespace LogScraper.Controls
             var state = LogAppState.Instance;
             if (state.FilterResultWithRange.Value == null) { Reset(); return; }
             UpdateLogEntries(state.MetadataFilterResult.Value, state.FilterResultWithRange.Value.LogEntries, state.Range.Value, state.LogCollection.Value);
+        }
+
+        private void SetViewportRange()
+        {
+            _viewportRange = LogAppState.Instance.ViewportVisibleRange.Value ?? new LogRange();
+            Invalidate();
         }
 
         #endregion
@@ -209,13 +200,6 @@ namespace LogScraper.Controls
             RebuildBuckets();
         }
 
-        /// <summary>Sets the visible range of log entries currently shown in the log viewer.</summary>
-        public void SetOnScreenDateTimeRange(DateTime startTimestamp, DateTime endTimestamp)
-        {
-            onScreenRangeStart = startTimestamp;
-            onScreenRangeEnd = endTimestamp;
-            this.Invalidate();
-        }
 
         /// <summary>
         /// Rebuilds the displayed entry set based on the current range and zoom state.
@@ -238,7 +222,7 @@ namespace LogScraper.Controls
             errorLogEntriesOutOfRange = [];
 
             // Draw out-of-range error markers first (faded, behind in-range ones)
-            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            if (_logRange?.IsBeginOrEndSet == true && _showFullTimeline)
             {
                 HashSet<int> inRangeIndices = [.. errorLogEntriesInRange.Select(entry => entry.Index)];
 
@@ -275,7 +259,7 @@ namespace LogScraper.Controls
             bookmarkLogEntriesInRange = [.. bookMarkAvailable.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
             bookmarkLogEntriesOutOfRange = [];
 
-            if (_logRange?.IsConstrained == true && _showFullTimeline)
+            if (_logRange?.IsBeginOrEndSet == true && _showFullTimeline)
             {
                 bookmarkLogEntriesOutOfRange = [.. bookMarkAvailable.Where(entry => entry.Index < rangeBegin || entry.Index > rangeEnd)];
             }
@@ -294,7 +278,7 @@ namespace LogScraper.Controls
             buckets.Clear();
             sortedBucketKeys.Clear();
 
-            bool rangeIsConstrained = _logRange?.IsConstrained == true;
+            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
 
             if (_showFullTimeline && fullSpanMinimum != default)
             {
@@ -418,7 +402,7 @@ namespace LogScraper.Controls
         /// <summary>Returns the drawable histogram width, excluding the zoom strip when a range is constrained.</summary>
         private int GetHistogramWidth()
         {
-            return _logRange?.IsConstrained == true
+            return _logRange?.IsBeginOrEndSet == true
                 ? Math.Max(0, this.Width - ZOOM_STRIP_WIDTH)
                 : this.Width;
         }
@@ -503,7 +487,7 @@ namespace LogScraper.Controls
         /// <summary>Recalculates the zoom button rects. Called at paint time so they track control height.</summary>
         private void RecalculateZoomButtonRects()
         {
-            if (_logRange?.IsConstrained != true)
+            if (_logRange?.IsBeginOrEndSet != true)
             {
                 zoomInButtonRect = Rectangle.Empty;
                 zoomOutButtonRect = Rectangle.Empty;
@@ -532,7 +516,7 @@ namespace LogScraper.Controls
             if (this.Width <= 0 || this.Height <= 0)
                 return;
 
-            bool rangeIsConstrained = _logRange?.IsConstrained == true;
+            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
 
             if (rangeIsConstrained)
             {
@@ -588,7 +572,7 @@ namespace LogScraper.Controls
         /// </summary>
         private void DrawRangeOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (!(_logRange?.IsConstrained == true && _showFullTimeline)) return;
+            if (!(_logRange?.IsBeginOrEndSet == true && _showFullTimeline)) return;
 
             if (fullSpanMaximum == fullSpanMinimum)
                 return;
@@ -693,18 +677,17 @@ namespace LogScraper.Controls
 
         private void DrawOnScreenRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (!onScreenRangeStart.HasValue || !onScreenRangeEnd.HasValue)
-                return;
+            if (_viewportRange == null || !_viewportRange.IsBeginOrEndSet) return;
 
-            if (sortedBucketKeys.Count == 0)
-                return;
+            if (sortedBucketKeys.Count == 0) return;
 
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
-            if (totalSpan.TotalSeconds <= 0)
-                return;
+            if (totalSpan.TotalSeconds <= 0) return;
 
-            float startX = (float)((onScreenRangeStart.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
-            float endX = (float)((onScreenRangeEnd.Value - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
+            DateTime viewPortBegin = _viewportRange.Begin?.TimeStamp ?? minimumTimestamp;
+            DateTime viewPortEnd = _viewportRange.End?.TimeStamp ?? maximumTimestamp;
+            float startX = (float)((viewPortBegin - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
+            float endX = (float)((viewPortEnd - minimumTimestamp).TotalSeconds / totalSpan.TotalSeconds * histogramWidth);
 
             startX = Math.Clamp(startX, 0, histogramWidth);
             endX = Math.Clamp(endX, 0, histogramWidth);
@@ -911,7 +894,7 @@ namespace LogScraper.Controls
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            bool rangeIsConstrained = _logRange?.IsConstrained == true;
+            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
 
             // Zoom button hover — checked first, takes priority over histogram
             if (rangeIsConstrained)
@@ -1058,7 +1041,7 @@ namespace LogScraper.Controls
                 return;
 
             // Zoom buttons
-            if (_logRange?.IsConstrained == true)
+            if (_logRange?.IsBeginOrEndSet == true)
             {
                 ZoomButton clicked = HitTestZoomButton(e.X, e.Y);
                 if (clicked != ZoomButton.None)
@@ -1080,14 +1063,14 @@ namespace LogScraper.Controls
             int clickedBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntriesInRange, BOOKMARK_MARKER_Y_OFFSET);
             if (clickedBookmark != -1)
             {
-                BookmarkMarkerClicked?.Invoke(this, bookmarkLogEntriesInRange[clickedBookmark]);
+                SetViewportSelectedLogEntry(bookmarkLogEntriesInRange[clickedBookmark]);
                 return;
             }
 
             int clickedError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntriesInRange, ERROR_MARKER_Y_OFFSET);
             if (clickedError != -1)
             {
-                ErrorMarkerClicked?.Invoke(this, errorLogEntriesInRange[clickedError]);
+                SetViewportSelectedLogEntry(errorLogEntriesInRange[clickedError]);
                 return;
             }
 
@@ -1099,9 +1082,13 @@ namespace LogScraper.Controls
                 {
                     List<LogEntry> bucketEntries = buckets[sortedBucketKeys[clickedBucketIndex]];
                     if (bucketEntries.Count > 0)
-                        CellClicked?.Invoke(this, bucketEntries[0]);
+                        SetViewportSelectedLogEntry(bucketEntries[0]);
                 }
             }
+        }
+        private static void SetViewportSelectedLogEntry(LogEntry entry)
+        {
+            LogAppState.Instance.ViewportSelectedLogEntry.Set(entry);
         }
 
         internal void Reset()

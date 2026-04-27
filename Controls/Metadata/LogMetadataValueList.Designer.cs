@@ -51,11 +51,12 @@ namespace LogScraper.Controls.Metadata
             // LogMetadataValueList
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(ListViewItems);
             Margin = new Padding(0);
             Name = "LogMetadataValueList";
             Size = new System.Drawing.Size(280, 232);
+            Load += LogMetadataValueList_Load;
             ResumeLayout(false);
         }
 

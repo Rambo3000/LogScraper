@@ -26,24 +26,14 @@ namespace LogScraper.Controls.Metadata
         public event EventHandler FilterChanged;
         public event EventHandler CollapseChanged;
 
-        /// <summary>
-        /// The currently selected log entry. Forwarded to the embedded value list.
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
-        {
-            get => ValueList.SelectedLogEntry;
-            set => ValueList.SelectedLogEntry = value;
-        }
-
         #endregion
 
         #region Constructor
 
-        private string baseDescription;
+        private readonly string baseDescription;
         private bool headerHovered = false;
         private bool toggleHovered = false;
-        private ToolTip toolTip;
+        private readonly ToolTip toolTip;
 
         public UserControlLogMetadataFilter(string description)
         {

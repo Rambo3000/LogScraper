@@ -51,11 +51,6 @@ namespace LogScraper.Controls.Search
         /// <summary>
         /// Fired when the user selects a result entry. The main form should navigate the log view to this entry.
         /// </summary>
-        public event EventHandler<LogEntry> ResultSelected;
-
-        /// <summary>
-        /// Fired when the user selects a result entry. The main form should navigate the log view to this entry.
-        /// </summary>
         public event EventHandler Close;
 
         #endregion
@@ -133,7 +128,7 @@ namespace LogScraper.Controls.Search
         {
             if (LstSearchResults.SelectedItem is LogEntryDisplayObject selected)
             {
-                ResultSelected?.Invoke(this, selected.OriginalLogEntry);
+                LogAppState.Instance.ViewportSelectedLogEntry.Set(selected.OriginalLogEntry);
             }
         }
 
@@ -156,7 +151,7 @@ namespace LogScraper.Controls.Search
             Graphics graphics = e.Graphics;
             Rectangle bounds = e.Bounds;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
-            
+
             if (isSelected) graphics.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
             else graphics.FillRectangle(SystemBrushes.Window, e.Bounds);
 

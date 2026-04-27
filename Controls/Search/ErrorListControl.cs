@@ -26,7 +26,6 @@ namespace LogScraper.Controls.Search
 
         #region Public events
 
-        public event EventHandler<LogEntry> ResultSelected;
         public event EventHandler Close;
 
         #endregion
@@ -73,7 +72,7 @@ namespace LogScraper.Controls.Search
         {
             if (LstEntries.SelectedItem is LogEntryDisplayObject item)
             {
-                ResultSelected?.Invoke(this, item.LogEntry);
+                LogAppState.Instance.ViewportSelectedLogEntry.Set(item.LogEntry);
             }
         }
 

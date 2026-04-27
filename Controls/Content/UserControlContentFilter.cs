@@ -38,7 +38,6 @@ namespace LogScraper.Controls.Content
         #endregion
 
         #region Update log layout
-        //TODO: REQUIRED remove
         private void UpdateLogLayout()
         {
             LogLayout logLayout = LogAppState.Instance.Layout.Value;
@@ -180,7 +179,6 @@ namespace LogScraper.Controls.Content
                 return;
             }
 
-            bool selectedEntryFound = false;
             // Iterate through the new log entries and select the previously selected log entry if it exists
             foreach (LogContentDisplayItem logContentDisplayItem in newLogEntries)
             {
@@ -190,7 +188,6 @@ namespace LogScraper.Controls.Content
                     {
                         ignoreSelectedItemChanged = true;
                         LstLogContent.SelectedItem = logContentDisplayItem;
-                        selectedEntryFound = true;
                     }
                     finally
                     {
@@ -201,22 +198,10 @@ namespace LogScraper.Controls.Content
             }
 
             LstLogContent.ResumeDrawing();
-
-            // If the selected item cannot be reselected raise the event that the selection changed
-            if (!selectedEntryFound) SelectedItemChanged(this, EventArgs.Empty);
         }
         #endregion
 
         #region Public methods and properties
-
-        private bool ClearSelectedLogEntryExternallyInProgress = false;
-
-        public void ClearSelectedLogEntry()
-        {
-            ClearSelectedLogEntryExternallyInProgress = true;
-            LstLogContent.SelectedIndex = -1;
-            ClearSelectedLogEntryExternallyInProgress = false;
-        }
 
         public LogEntry SelectedLogEntry
         {
@@ -254,7 +239,7 @@ namespace LogScraper.Controls.Content
         public void Reset()
         {
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
-            ClearSelectedLogEntry();
+            LstLogContent.Items.Clear();
             ResetFilters();
         }
         #endregion
@@ -402,30 +387,6 @@ namespace LogScraper.Controls.Content
         }
         #endregion
 
-        #region Events
-
-        public event EventHandler EndEntryChanged;
-        protected virtual void OnEndEntryChanged(EventArgs e)
-        {
-            EndEntryChanged?.Invoke(this, e);
-        }
-
-        /// Event to filter log entries based on the selected log content property
-        public event EventHandler BeginEntryChanged;
-        protected virtual void OnBeginEntryChanged(EventArgs e)
-        {
-            BeginEntryChanged?.Invoke(this, e);
-        }
-
-        /// Event to filter log entries based on the selected log content property
-        public event EventHandler SelectedItemChanged;
-        protected virtual void OnSelectedItemChanged(EventArgs e)
-        {
-            if (ClearSelectedLogEntryExternallyInProgress) return;
-            SelectedItemChanged?.Invoke(this, e);
-        }
-        #endregion
-
         #region Control events
         private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
@@ -461,13 +422,8 @@ namespace LogScraper.Controls.Content
         {
             if (!ignoreSelectedItemChanged)
             {
-                OnSelectedItemChanged(EventArgs.Empty);
+                LogAppState.Instance.ViewportSelectedLogEntry.Set(SelectedLogEntry);
             }
-        }
-
-        private void LstLogContent_DoubleClick(object sender, EventArgs e)
-        {
-            if (SelectedContentValue == null) return;
         }
 
         private bool updateShowTreeInProgress = false;

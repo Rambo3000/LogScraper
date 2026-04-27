@@ -9,25 +9,13 @@ namespace LogScraper.Controls
 {
     public partial class LogRangeSelectionControl : UserControl
     {
-        private LogEntry selectedLogEntry;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
-        {
-            get => selectedLogEntry;
-            set
-            {
-                selectedLogEntry = value;
-                UpdateButtons();
-            }
-        }
-
-        private LogRange range = new();
-
+        private LogRange _range = new();
+        private LogEntry _selectedLogEntry = null;
         public LogRange Range
         {
             get
             {
-                return range;
+                return _range;
             }
         }
 
@@ -35,7 +23,17 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             UpdateButtons();
-            Load += (s, e) => LogAppState.Instance.ResetRequested += (ss, ee) => Reset();
+        }
+        private void LogRangeSelectionControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedLogEntry();
+            LogAppState.Instance.ResetRequested += (ss, ee) => Reset();
+        }
+
+        private void UpdateSelectedLogEntry()
+        {
+            _selectedLogEntry = LogAppState.Instance.ViewportSelectedLogEntry.Value;
+            UpdateButtons();
         }
 
         public void Reset()
@@ -47,46 +45,46 @@ namespace LogScraper.Controls
 
             UpdateCheckboxes = false;
 
-            range = new LogRange();
+            _range = new LogRange();
             UpdateButtons();
         }
 
         public void ClearBegin()
         {
-            if (range.Begin == null) return;
+            if (_range.Begin == null) return;
 
             UpdateCheckboxes = true;
             ChkBegin.Checked = false;
             UpdateCheckboxes = false;
 
-            range.Begin = null;
+            _range.Begin = null;
             UpdateButtons();
             RaiseRangeChanged();
         }
 
         public void ClearEnd()
         {
-            if (range.End == null) return;
+            if (_range.End == null) return;
 
             UpdateCheckboxes = true;
             ChkEnd.Checked = false;
             UpdateCheckboxes = false;
 
-            range.End = null;
+            _range.End = null;
             UpdateButtons();
             RaiseRangeChanged();
         }
 
         public void UpdateButtons()
         {
-            ChkBegin.Enabled = SelectedLogEntry != null;
-            ChkEnd.Enabled = SelectedLogEntry != null;
-            BtnReset.Enabled = range.IsConstrained;
+            ChkBegin.Enabled = _selectedLogEntry != null;
+            ChkEnd.Enabled = _selectedLogEntry != null;
+            BtnReset.Enabled = _range.IsBeginOrEndSet;
         }
 
         private void RaiseRangeChanged()
         {
-            LogAppState.Instance.Range.ForceSet(range);
+            LogAppState.Instance.Range.ForceSet(_range);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
@@ -100,16 +98,16 @@ namespace LogScraper.Controls
         {
             if (UpdateCheckboxes) return;
 
-            if (SelectedLogEntry == null) return;
+            if (_selectedLogEntry == null) return;
 
             UpdateCheckboxes = true;
 
-            bool checkState = SelectedLogEntry != range.Begin;
+            bool checkState = _selectedLogEntry != _range.Begin;
             ChkBegin.Checked = checkState;
 
             UpdateCheckboxes = false;
 
-            range.Begin = checkState ? SelectedLogEntry : null;
+            _range.Begin = checkState ? _selectedLogEntry : null;
             UpdateButtons();
             RaiseRangeChanged();
         }
@@ -118,16 +116,16 @@ namespace LogScraper.Controls
         {
             if (UpdateCheckboxes) return;
 
-            if (SelectedLogEntry == null) return;
+            if (_selectedLogEntry == null) return;
 
             UpdateCheckboxes = true;
 
-            bool checkState = SelectedLogEntry != range.End;
+            bool checkState = _selectedLogEntry != _range.End;
             ChkEnd.Checked = checkState;
 
             UpdateCheckboxes = false;
 
-            range.End = checkState ? SelectedLogEntry : null;
+            _range.End = checkState ? _selectedLogEntry : null;
             UpdateButtons();
             RaiseRangeChanged();
         }

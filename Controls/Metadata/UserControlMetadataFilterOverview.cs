@@ -51,25 +51,8 @@ namespace LogScraper.Controls.Metadata
             }
         }
 
-        /// <summary>
-        /// The currently selected log entry. Set to null to deselect.
-        /// Updates the indicator in each child control to show which value matches the selected line.
-        /// </summary>
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public LogEntry SelectedLogEntry
-        {
-            get => selectedLogEntry;
-            set
-            {
-                selectedLogEntry = value;
-                foreach (UserControlLogMetadataFilter control in filterControls.Values)
-                    control.SelectedLogEntry = selectedLogEntry;
-            }
-        }
-
         private int previousWidth = 0;
         private bool isResetFiltersInProgress = false;
-        private LogEntry selectedLogEntry;
 
         /// <summary>
         /// Handles resize to adjust child control widths.

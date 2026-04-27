@@ -90,6 +90,16 @@ namespace LogScraper.Log.LogAppState
         public StateSlice<List<LogMetadataFilter>> MetadataFilters { get; } = new();
 
         /// <summary>
+        /// The log entry that is currently selected in the log viewport, if any.
+        /// </summary>
+        public StateSlice<LogEntry> ViewportSelectedLogEntry { get; } = new();
+
+        /// <summary>
+        /// The log entry that is currently at the top of the log viewport (i.e. the first visible log entry), if any.
+        /// </summary>
+        public StateSlice<LogRange> ViewportVisibleRange { get; } = new();
+
+        /// <summary>
         /// Raised when a reset is requested.
         /// Subscribe to this event in controls or forms to perform their own cleanup.
         /// </summary>
@@ -107,6 +117,7 @@ namespace LogScraper.Log.LogAppState
         /// </param>
         public void Reset(bool keepFilters)
         {
+            //Track reset in progress so UpdateMetadataFilterResult is just forcely called once at the end of this method
             _resetInProgress = true;
 
             LogCollection.Value?.Clear();
@@ -118,7 +129,11 @@ namespace LogScraper.Log.LogAppState
             RenderProcessorKinds.ForceSet([]);
             if (!keepFilters) MetadataFilters.ForceSet([]);
 
+            ViewportSelectedLogEntry.ForceSet(null);
+            ViewportVisibleRange.ForceSet(null);
+
             _resetInProgress = false;
+
 
             UpdateMetadataFilterResult();
 

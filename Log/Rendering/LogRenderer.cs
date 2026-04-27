@@ -63,7 +63,7 @@ namespace LogScraper.Log.Rendering
         {
             if (logEntries == null || logRange == null) return [];
 
-            if (!logRange.IsConstrained) return logEntries;
+            if (!logRange.IsBeginOrEndSet) return logEntries;
 
             int numberOfLogEntriesTotal = logEntries.Count;
 

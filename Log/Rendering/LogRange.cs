@@ -24,7 +24,7 @@ namespace LogScraper.Log.Rendering
         /// <summary>
         /// Indicates whether the log range is constrained by either a beginning or an end log entry.
         /// </summary>
-        public bool IsConstrained
+        public bool IsBeginOrEndSet
         {
             get
             {

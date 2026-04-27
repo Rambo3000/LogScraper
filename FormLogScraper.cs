@@ -26,10 +26,9 @@ using LogScraper.Utilities.Extensions;
 namespace LogScraper
 {
     //TODO: REQUIRED move bookmarks to LogAppState
-    //TODO: REQUIRED move viewportSelectedLogEntry to LogAppState
     //TODO: search list use collapsed splitcontainer by default
     //TODO: reduce flickering on filter overview control
-    //TODO: highlighting of visible log entry (range) in navigation filters
+    //TODO: highlighting of visible log entry range and selected entry in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 
@@ -56,17 +55,8 @@ namespace LogScraper
             UsrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
             UsrLogProviderSelection.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
-            UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
-
             UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
-            UserControlLogEntriesTextBox.VisibleRangeChanged += UserControlLogEntriesTextBox_VisibleRangeChanged;
-            UserControlLogEntriesTextBox.LogEntryAtCursorChanged += UserControlLogEntriesTextBox_LogEntryAtCursorChanged;
 
-            LogTimeLineControl.CellClicked += LogTimelineControl_CellClicked;
-            LogTimeLineControl.ErrorMarkerClicked += LogTimelineControl_CellClicked;
-            LogTimeLineControl.BookmarkMarkerClicked += LogTimelineControl_CellClicked;
-
-            BookMarksControl.NavigateToEntryRequested += BookMarksControl_NavigateToEntryRequested;
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
             activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
@@ -80,10 +70,8 @@ namespace LogScraper
             UserControlSearch.Search += UsrSearch_Search;
             UserControlSearch.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
 
-            SearchResultListControl.ResultSelected += SearchResultListControl_ResultSelected;
             SearchResultListControl.Close += SearchResultListControl_Close;
 
-            errorListControl.ResultSelected += (s, e) => { UserControlLogEntriesTextBox.SelectedLogEntry = e; };
             errorListControl.Close += (s, e) => HideBottomPanel();
 
             UpdateTimeLineVisibility();
@@ -95,7 +83,6 @@ namespace LogScraper
             UsrMetadataFilterOverview.ResetFilters();
             UserControlContentFilter.ResetFilters();
             LogAppState.Instance.Range.ForceSet(LogRange.Full);
-            LogRangeSelectionControl.Reset();
         }
 
         private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, EventArgs e)
@@ -152,13 +139,6 @@ namespace LogScraper
             splitContainer5.Panel2Collapsed = true;
         }
 
-        private void SearchResultListControl_ResultSelected(object sender, LogEntry e)
-        {
-            UserControlContentFilter.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectedLogEntry = e;
-        }
-
-
         private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)
         {
             UsrMetadataFilterOverview.RemoveFilter(e.Property, e.SingleValue);
@@ -192,30 +172,6 @@ namespace LogScraper
         {
             UserControlLogEntriesTextBox.UpdateBookMarks(BookMarksControl.Bookmarks);
             LogTimeLineControl.SetBookmarks([.. BookMarksControl.Bookmarks]);
-        }
-
-        private void BookMarksControl_NavigateToEntryRequested(object sender, LogEntry logEntry)
-        {
-            UserControlLogEntriesTextBox.SelectedLogEntry = logEntry;
-        }
-
-        private void UserControlLogEntriesTextBox_LogEntryAtCursorChanged(object sender, LogEntry e)
-        {
-            UsrMetadataFilterOverview.SelectedLogEntry = e;
-            BookMarksControl.UpdateSelectedLogEntry(e);
-            LogRangeSelectionControl.SelectedLogEntry = e;
-        }
-
-        private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)
-        {
-            if (ConfigurationManager.GenericConfig.ShowTimelineByDefault)
-                LogTimeLineControl.SetOnScreenDateTimeRange(e.TopPosition.LogEntry.TimeStamp, e.BottomPosition.LogEntry.TimeStamp);
-        }
-
-        private void LogTimelineControl_CellClicked(object sender, LogEntry e)
-        {
-            UserControlContentFilter.ClearSelectedLogEntry();
-            UserControlLogEntriesTextBox.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
@@ -362,11 +318,6 @@ namespace LogScraper
         private void HandleLogProviderManagerQueueUpdate()
         {
             UpdateButtonStatus();
-        }
-
-        private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
-        {
-            UserControlLogEntriesTextBox.SelectedLogEntry = UserControlContentFilter.SelectedLogEntry;
         }
 
         private void HandleIsSourceValidChanged(object sender, bool e)

@@ -51,7 +51,7 @@ namespace LogScraper.Log.Filtering
                 BitArray filteredMask = MetadataFilterResult.FilteredLogEntriesMask;
                 if (filteredMask == null) return new BitArray(0);
 
-                if (Range == null || !Range.IsConstrained)
+                if (Range == null || !Range.IsBeginOrEndSet)
                 {
                     _filteredAndRangedMask = filteredMask;
                     return _filteredAndRangedMask;

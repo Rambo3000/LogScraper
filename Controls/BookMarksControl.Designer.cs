@@ -127,6 +127,7 @@
             Controls.Add(BtnBookMark);
             Name = "BookMarksControl";
             Size = new System.Drawing.Size(97, 25);
+            Load += BookMarksControl_Load;
             ResumeLayout(false);
         }
 

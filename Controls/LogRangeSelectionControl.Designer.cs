@@ -79,15 +79,16 @@ namespace LogScraper.Controls
             toolTip1.InitialDelay = 500;
             toolTip1.ReshowDelay = 100;
             // 
-            // LogViewportControl
+            // LogRangeSelectionControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(ChkEnd);
             Controls.Add(ChkBegin);
             Controls.Add(BtnReset);
-            Name = "LogViewportControl";
+            Name = "LogRangeSelectionControl";
             Size = new System.Drawing.Size(73, 25);
+            Load += LogRangeSelectionControl_Load;
             ResumeLayout(false);
         }
 
