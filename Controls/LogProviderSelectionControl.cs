@@ -68,20 +68,20 @@ namespace LogScraper.Controls
 
         private void AttachEventHandlers()
         {
-            usrKubernetes.SourceSelectionChanged += HandleSourceSelectionChanged;
-            usrKubernetes.StatusUpdate += HandleStatusUpdate;
-            usrKubernetes.UriChanged += HandleUriChanged;
-            usrKubernetes.IsSourceValidChanged += HandleIsSourceValidChanged;
+            KubernetesProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
+            KubernetesProviderControl.StatusUpdate += HandleStatusUpdate;
+            KubernetesProviderControl.UriChanged += HandleUriChanged;
+            KubernetesProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
 
-            usrRuntime.SourceSelectionChanged += HandleSourceSelectionChanged;
-            usrRuntime.StatusUpdate += HandleStatusUpdate;
-            usrRuntime.UriChanged += HandleUriChanged;
-            usrRuntime.IsSourceValidChanged += HandleIsSourceValidChanged;
+            RuntimeProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
+            RuntimeProviderControl.StatusUpdate += HandleStatusUpdate;
+            RuntimeProviderControl.UriChanged += HandleUriChanged;
+            RuntimeProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
 
-            usrFileLogProvider.SourceSelectionChanged += HandleSourceSelectionChanged;
-            usrFileLogProvider.StatusUpdate += HandleStatusUpdate;
-            usrFileLogProvider.UriChanged += HandleUriChanged;
-            usrFileLogProvider.IsSourceValidChanged += HandleIsSourceValidChanged;
+            FileProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
+            FileProviderControl.StatusUpdate += HandleStatusUpdate;
+            FileProviderControl.UriChanged += HandleUriChanged;
+            FileProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
         }
 
         private void HandleSourceSelectionChanged(object sender, EventArgs e)
@@ -124,7 +124,7 @@ namespace LogScraper.Controls
 
             if (ConfigurationManager.LogProvidersConfig.RuntimeConfig != null)
             {
-                usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                RuntimeProviderControl.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
                 cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
                 if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime)
                     cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
@@ -132,7 +132,7 @@ namespace LogScraper.Controls
 
             if (ConfigurationManager.LogProvidersConfig.KubernetesConfig != null)
             {
-                usrKubernetes.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
+                KubernetesProviderControl.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
                 cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
                 if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes)
                     cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
@@ -181,9 +181,9 @@ namespace LogScraper.Controls
             LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
             return logProviderType switch
             {
-                LogProviderType.Runtime => usrRuntime.GetSourceAdapter(),
-                LogProviderType.Kubernetes => usrKubernetes.GetSourceAdapter(null, lastTrailTime),
-                LogProviderType.File => usrFileLogProvider.GetSourceAdapter(),
+                LogProviderType.Runtime => RuntimeProviderControl.GetSourceAdapter(),
+                LogProviderType.Kubernetes => KubernetesProviderControl.GetSourceAdapter(null, lastTrailTime),
+                LogProviderType.File => FileProviderControl.GetSourceAdapter(),
                 _ => throw new NotImplementedException()
             };
         }
@@ -204,22 +204,22 @@ namespace LogScraper.Controls
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
             if (logProviderConfig == null) return;
 
-            usrRuntime.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
-            usrKubernetes.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
-            usrFileLogProvider.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
+            RuntimeProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
+            KubernetesProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
+            FileProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
-                    usrRuntime.UpdateUri();
+                    RuntimeProviderControl.UpdateUri();
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.Kubernetes:
-                    usrKubernetes.UpdateUri();
+                    KubernetesProviderControl.UpdateUri();
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.File:
-                    usrFileLogProvider.UpdateUri();
+                    FileProviderControl.UpdateUri();
                     cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
                     break;
             }
@@ -249,14 +249,14 @@ namespace LogScraper.Controls
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
-                    usrRuntime.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                    usrRuntime.UpdateUri();
+                    RuntimeProviderControl.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                    RuntimeProviderControl.UpdateUri();
                     break;
                 case LogProviderType.Kubernetes:
-                    usrKubernetes.UpdateUri();
+                    KubernetesProviderControl.UpdateUri();
                     break;
                 case LogProviderType.File:
-                    usrFileLogProvider.UpdateUri();
+                    FileProviderControl.UpdateUri();
                     break;
             }
         }
@@ -275,9 +275,9 @@ namespace LogScraper.Controls
                 LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem)?.LogProviderType ?? LogProviderType.File;
                 return logProviderType switch
                 {
-                    LogProviderType.Runtime => usrRuntime.IsSourceValid,
-                    LogProviderType.Kubernetes => usrKubernetes.IsSourceValid,
-                    LogProviderType.File => usrFileLogProvider.IsSourceValid,
+                    LogProviderType.Runtime => RuntimeProviderControl.IsSourceValid,
+                    LogProviderType.Kubernetes => KubernetesProviderControl.IsSourceValid,
+                    LogProviderType.File => FileProviderControl.IsSourceValid,
                     _ => false
                 };
             }

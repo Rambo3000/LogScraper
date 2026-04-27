@@ -14,7 +14,7 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.LogProviders
 {
-    public partial class UserControlKubernetesLogProvider : UserControl, ILogProviderUserControl
+    public partial class KubernetesProviderControl : UserControl, ILogProviderUserControl
     {
         public event EventHandler SourceSelectionChanged;
 
@@ -24,7 +24,7 @@ namespace LogScraper.Controls.LogProviders
 
         private List<KubernetesCluster> KubernetesClusters { get; set; }
 
-        public UserControlKubernetesLogProvider()
+        public KubernetesProviderControl()
         {
             InitializeComponent();
             CboKubernetesTimespan.DataSource = Enum.GetValues<KubernetesTimespan>();

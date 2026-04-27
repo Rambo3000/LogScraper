@@ -11,11 +11,11 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 using ScintillaNET;
-using static LogScraper.Controls.LogEntriesTextbox.ScintillaControlExtensions;
+using static LogScraper.Controls.Viewport.ScintillaControlExtensions;
 
-namespace LogScraper.Controls.LogEntriesTextbox
+namespace LogScraper.Controls.Viewport
 {
-    public partial class UserControlLogEntriesTextBox : UserControl
+    public partial class LogViewportControl : UserControl
     {
         #region Private objects and initialization
 
@@ -27,7 +27,7 @@ namespace LogScraper.Controls.LogEntriesTextbox
         private LogEntry _logEntryAtCursor = null;
         private IEnumerable<LogEntry> _bookmarks = null;
 
-        public UserControlLogEntriesTextBox()
+        public LogViewportControl()
         {
             InitializeComponent();
             TxtLogEntries.Initialize();

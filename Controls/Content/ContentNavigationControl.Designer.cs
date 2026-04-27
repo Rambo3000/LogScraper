@@ -3,7 +3,7 @@ using LogScraper.Utilities;
 
 namespace LogScraper.Controls.Content
 {
-    partial class UserControlLogContentFilter
+    partial class ContentNavigationControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -32,7 +32,7 @@ namespace LogScraper.Controls.Content
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlLogContentFilter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContentNavigationControl));
             LstLogContent = new System.Windows.Forms.ListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             txtSearch = new ClearableTextBoxControl();

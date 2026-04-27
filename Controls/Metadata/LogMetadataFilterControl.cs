@@ -16,7 +16,7 @@ namespace LogScraper.Controls.Metadata
     /// All list logic is encapsulated in the embedded LogMetadataValueList control.
     /// Resizing of LogMetadataValueList is also handled here based on item count.
     /// </summary>
-    public partial class UserControlLogMetadataFilter : UserControl
+    public partial class LogMetadataFilterControl : UserControl
     {
         #region Properties and Events
 
@@ -35,7 +35,7 @@ namespace LogScraper.Controls.Metadata
         private bool toggleHovered = false;
         private readonly ToolTip toolTip;
 
-        public UserControlLogMetadataFilter(string description)
+        public LogMetadataFilterControl(string description)
         {
             InitializeComponent();
             Collapsed = false;
@@ -94,8 +94,8 @@ namespace LogScraper.Controls.Metadata
 
             int itemHeight = TextRenderer.MeasureText("Test", ValueList.Font).Height + ScaleByDpi(4);
             int totalHeight = ValueList.SortedValueCount * itemHeight;
-            int maxHeight = LogMetadataValueList.MAX_NUMBER_OF_ITEMS_BEFORE_SCROLL * itemHeight;
-            int actualHeight = totalHeight > maxHeight ? LogMetadataValueList.SCROLL_VIEW_NUMBER_OF_ITEMS_SHOWN * itemHeight : totalHeight;
+            int maxHeight = LogMetadataValueListControl.MAX_NUMBER_OF_ITEMS_BEFORE_SCROLL * itemHeight;
+            int actualHeight = totalHeight > maxHeight ? LogMetadataValueListControl.SCROLL_VIEW_NUMBER_OF_ITEMS_SHOWN * itemHeight : totalHeight;
             int newHeight = ValueList.Top + actualHeight + Padding.Bottom;
 
             if (Height != newHeight) Height = newHeight;

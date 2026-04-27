@@ -9,7 +9,7 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.LogProviders
 {
-    public partial class UserControlFileLogProvider : UserControl, ILogProviderUserControl
+    public partial class FileProviderControl : UserControl, ILogProviderUserControl
     {
         private const string PlaceholderText = "Geen bestand geselecteerd";
         private const int SampleSizeForValidation = 8192; // 8KB
@@ -24,7 +24,7 @@ namespace LogScraper.Controls.LogProviders
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
 
-        public UserControlFileLogProvider()
+        public FileProviderControl()
         {
             InitializeComponent();
             InitializeFilePath();

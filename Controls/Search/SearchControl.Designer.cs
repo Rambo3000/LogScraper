@@ -2,7 +2,7 @@
 
 namespace LogScraper.Controls.Search
 {
-    partial class UserControlSearch
+    partial class SearchControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace LogScraper.Controls.Search
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlSearch));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchControl));
             ToolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
             TxtSearch = new ClearableTextBoxControl();

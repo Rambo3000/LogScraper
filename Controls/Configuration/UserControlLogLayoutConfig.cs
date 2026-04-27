@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
-using LogScraper.Controls.LogEntriesTextbox;
+using LogScraper.Controls.Viewport;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;

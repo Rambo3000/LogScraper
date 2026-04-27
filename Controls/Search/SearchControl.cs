@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.LogAppState;
@@ -8,7 +7,7 @@ using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Search
 {
-    public partial class UserControlSearch : UserControl
+    public partial class SearchControl : UserControl
     {
         #region Private fields and initialization
 
@@ -38,7 +37,7 @@ namespace LogScraper.Controls.Search
         public SearchMode SelectedSearchMode { get; private set; } = SearchMode.Next;
         private SearchSettings lastFiredSearchSettings;
 
-        public UserControlSearch()
+        public SearchControl()
         {
             InitializeComponent();
             TxtSearch.PlaceholderText = DefaultSearchText;

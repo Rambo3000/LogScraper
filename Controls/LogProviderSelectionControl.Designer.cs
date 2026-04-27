@@ -36,9 +36,9 @@ namespace LogScraper.Controls
             cboLogProvider = new System.Windows.Forms.ComboBox();
             lblLogLayout = new System.Windows.Forms.Label();
             cboLogLayout = new System.Windows.Forms.ComboBox();
-            usrKubernetes = new UserControlKubernetesLogProvider();
-            usrRuntime = new UserControlRuntimeLogProvider();
-            usrFileLogProvider = new UserControlFileLogProvider();
+            KubernetesProviderControl = new KubernetesProviderControl();
+            RuntimeProviderControl = new RuntimeProviderControl();
+            FileProviderControl = new FileProviderControl();
             lblProviderDescription = new System.Windows.Forms.LinkLabel();
             btnPin = new System.Windows.Forms.Button();
             imageListPins = new System.Windows.Forms.ImageList(components);
@@ -95,27 +95,27 @@ namespace LogScraper.Controls
             // 
             // usrKubernetes
             // 
-            usrKubernetes.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrKubernetes.Location = new System.Drawing.Point(0, 0);
-            usrKubernetes.Name = "usrKubernetes";
-            usrKubernetes.Size = new System.Drawing.Size(184, 119);
-            usrKubernetes.TabIndex = 8;
+            KubernetesProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            KubernetesProviderControl.Location = new System.Drawing.Point(0, 0);
+            KubernetesProviderControl.Name = "usrKubernetes";
+            KubernetesProviderControl.Size = new System.Drawing.Size(184, 119);
+            KubernetesProviderControl.TabIndex = 8;
             // 
             // usrRuntime
             // 
-            usrRuntime.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrRuntime.Location = new System.Drawing.Point(0, 0);
-            usrRuntime.Name = "usrRuntime";
-            usrRuntime.Size = new System.Drawing.Size(184, 119);
-            usrRuntime.TabIndex = 0;
+            RuntimeProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            RuntimeProviderControl.Location = new System.Drawing.Point(0, 0);
+            RuntimeProviderControl.Name = "usrRuntime";
+            RuntimeProviderControl.Size = new System.Drawing.Size(184, 119);
+            RuntimeProviderControl.TabIndex = 0;
             // 
             // usrFileLogProvider
             // 
-            usrFileLogProvider.Dock = System.Windows.Forms.DockStyle.Fill;
-            usrFileLogProvider.Location = new System.Drawing.Point(0, 0);
-            usrFileLogProvider.Name = "usrFileLogProvider";
-            usrFileLogProvider.Size = new System.Drawing.Size(184, 119);
-            usrFileLogProvider.TabIndex = 3;
+            FileProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            FileProviderControl.Location = new System.Drawing.Point(0, 0);
+            FileProviderControl.Name = "usrFileLogProvider";
+            FileProviderControl.Size = new System.Drawing.Size(184, 119);
+            FileProviderControl.TabIndex = 3;
             // 
             // lblProviderDescription
             // 
@@ -203,9 +203,9 @@ namespace LogScraper.Controls
             // 
             PnlLogProviders.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             PnlLogProviders.Controls.Add(PnlSeparator2);
-            PnlLogProviders.Controls.Add(usrKubernetes);
-            PnlLogProviders.Controls.Add(usrFileLogProvider);
-            PnlLogProviders.Controls.Add(usrRuntime);
+            PnlLogProviders.Controls.Add(KubernetesProviderControl);
+            PnlLogProviders.Controls.Add(FileProviderControl);
+            PnlLogProviders.Controls.Add(RuntimeProviderControl);
             PnlLogProviders.Location = new System.Drawing.Point(0, 85);
             PnlLogProviders.Name = "PnlLogProviders";
             PnlLogProviders.Size = new System.Drawing.Size(184, 119);
@@ -257,9 +257,9 @@ namespace LogScraper.Controls
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.Label lblLogLayout;
         private System.Windows.Forms.ComboBox cboLogLayout;
-        private UserControlRuntimeLogProvider usrRuntime;
-        private UserControlKubernetesLogProvider usrKubernetes;
-        private UserControlFileLogProvider usrFileLogProvider;
+        private RuntimeProviderControl RuntimeProviderControl;
+        private KubernetesProviderControl KubernetesProviderControl;
+        private FileProviderControl FileProviderControl;
         private System.Windows.Forms.LinkLabel lblProviderDescription;
         private System.Windows.Forms.Button btnPin;
         private System.Windows.Forms.ImageList imageListPins;

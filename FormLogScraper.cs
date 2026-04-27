@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Controls;
 using LogScraper.Controls.FilterOverview;
-using LogScraper.Controls.LogEntriesTextbox;
+using LogScraper.Controls.Viewport;
 using LogScraper.Controls.Search;
 using LogScraper.Export;
 using LogScraper.Log;
@@ -50,29 +50,29 @@ namespace LogScraper
 
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
 
-            UsrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
-            UsrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
-            UsrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
-            UsrLogProviderSelection.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
+            LogProviderSelectionControl.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
+            LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
+            LogProviderSelectionControl.IsSourceValidChanged += HandleIsSourceValidChanged;
+            LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
-            UserControlLogEntriesTextBox.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
+            LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
             BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
-            activeFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
-            activeFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
-            activeFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
-            activeFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
-            activeFilterOverviewControl.ResetAllFilters += ActiveFilterOverviewControl_Reset;
+            ActiveFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
+            ActiveFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
+            ActiveFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
+            ActiveFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
+            ActiveFilterOverviewControl.ResetAllFilters += ActiveFilterOverviewControl_Reset;
 
             PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
 
-            UserControlSearch.Search += UsrSearch_Search;
-            UserControlSearch.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
+            SearchControl.Search += UsrSearch_Search;
+            SearchControl.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
 
             SearchResultListControl.Close += SearchResultListControl_Close;
 
-            errorListControl.Close += (s, e) => HideBottomPanel();
+            ErrorListControl.Close += (s, e) => HideBottomPanel();
 
             UpdateTimeLineVisibility();
             SetDynamicToolTips();
@@ -80,17 +80,17 @@ namespace LogScraper
 
         private void ActiveFilterOverviewControl_Reset(object sender, EventArgs e)
         {
-            UsrMetadataFilterOverview.ResetFilters();
-            UserControlContentFilter.ResetFilters();
+            LogMetadataFiltersOverviewControl.ResetFilters();
+            ContentNavigationControl.ResetFilters();
             LogAppState.Instance.Range.ForceSet(LogRange.Full);
         }
 
         private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, EventArgs e)
         {
             SearchResultListControl.Visible = false;
-            errorListControl.ShowEntries();
-            errorListControl.Visible = true;
-            splitContainer5.Panel2Collapsed = false;
+            ErrorListControl.ShowEntries();
+            ErrorListControl.Visible = true;
+            SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
         }
 
         private void UsrLogProviderSelection_CollapseStateChanged(object sender, EventArgs e)
@@ -101,14 +101,14 @@ namespace LogScraper
         private void AutoSizeLogProviderSelection()
         {
             // Force the control to recalculate its size
-            UsrLogProviderSelection.PerformLayout();
+            LogProviderSelectionControl.PerformLayout();
 
             // Suspend layout to avoid flickering
-            splitContainer3.SuspendLayout();
-            splitContainer3.Panel1.SuspendLayout();
-            splitContainer3.SplitterDistance = (UsrLogProviderSelection.IsCollapsed ? UsrLogProviderSelection.CollapsedHeight : UsrLogProviderSelection.ExpandedHeight) + 3 + BtnRecord.Bottom;
-            splitContainer3.Panel1.ResumeLayout(true);
-            splitContainer3.ResumeLayout(true);
+            SplitContainerSourceControlAndMetadata.SuspendLayout();
+            SplitContainerSourceControlAndMetadata.Panel1.SuspendLayout();
+            SplitContainerSourceControlAndMetadata.SplitterDistance = (LogProviderSelectionControl.IsCollapsed ? LogProviderSelectionControl.CollapsedHeight : LogProviderSelectionControl.ExpandedHeight) + 3 + BtnRecord.Bottom;
+            SplitContainerSourceControlAndMetadata.Panel1.ResumeLayout(true);
+            SplitContainerSourceControlAndMetadata.ResumeLayout(true);
         }
 
         private void UsrRuntime_UriChanged(object sender, string e)
@@ -125,23 +125,23 @@ namespace LogScraper
 
         private void SearchControl_SearchSettingsChanged(SearchSettings settings)
         {
-            if (UserControlSearch.SelectedSearchMode == UserControlSearch.SearchMode.All)
+            if (SearchControl.SelectedSearchMode == SearchControl.SearchMode.All)
             {
-                errorListControl.Visible = false;
+                ErrorListControl.Visible = false;
                 SearchResultListControl.Visible = true;
-                splitContainer5.Panel2Collapsed = false;
+                SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
             }
             if (SearchResultListControl.Visible) SearchResultListControl.UpdateSearchResults(settings);
         }
 
         private void HideBottomPanel()
         {
-            splitContainer5.Panel2Collapsed = true;
+            SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
         }
 
         private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)
         {
-            UsrMetadataFilterOverview.RemoveFilter(e.Property, e.SingleValue);
+            LogMetadataFiltersOverviewControl.RemoveFilter(e.Property, e.SingleValue);
         }
 
         private void ActiveFilterOverviewControl_RangeRemoved(object sender, RangeRemovedEventArgs e)
@@ -160,9 +160,9 @@ namespace LogScraper
             try
             {
                 PnlFiltersAndLogEntriesTextBox.SuspendLayout();
-                activeFilterOverviewControl.Top = 2;
-                int top = activeFilterOverviewControl.Bottom + 5;
-                UserControlLogEntriesTextBox.SetBounds(0, top, PnlFiltersAndLogEntriesTextBox.ClientSize.Width, Math.Max(0, PnlFiltersAndLogEntriesTextBox.ClientSize.Height - top));
+                ActiveFilterOverviewControl.Top = 2;
+                int top = ActiveFilterOverviewControl.Bottom + 5;
+                LogViewportControl.SetBounds(0, top, PnlFiltersAndLogEntriesTextBox.ClientSize.Width, Math.Max(0, PnlFiltersAndLogEntriesTextBox.ClientSize.Height - top));
                 PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
             }
             finally { _repositioningTextBox = false; }
@@ -170,14 +170,14 @@ namespace LogScraper
 
         private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
         {
-            UserControlLogEntriesTextBox.UpdateBookMarks(BookMarksControl.Bookmarks);
+            LogViewportControl.UpdateBookMarks(BookMarksControl.Bookmarks);
             LogTimeLineControl.SetBookmarks([.. BookMarksControl.Bookmarks]);
         }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(UserControlLogEntriesTextBox.Text)) return;
-            LogExportWorkerManager.WriteToFile(UserControlLogEntriesTextBox.Text);
+            if (string.IsNullOrEmpty(LogViewportControl.Text)) return;
+            LogExportWorkerManager.WriteToFile(LogViewportControl.Text);
         }
 
         private void FormLogScraper_Load(object sender, EventArgs e)
@@ -185,13 +185,13 @@ namespace LogScraper
             try
             {
                 //Collapse the bottom panel here, so it is still shown in the designer
-                splitContainer5.Panel2Collapsed = true;
+                SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
                 btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                UsrLogProviderSelection.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
-                UsrLogProviderSelection.PopulateLogProviders();
-                UsrLogProviderSelection.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
+                LogProviderSelectionControl.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
+                LogProviderSelectionControl.PopulateLogProviders();
+                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
                 //Enforce autosizing because the IDE overrides the control's autosize settings.
-                UsrLogProviderSelection.AutoSize = false;
+                LogProviderSelectionControl.AutoSize = false;
                 AutoSizeLogProviderSelection();
             }
             catch (Exception ex)
@@ -216,11 +216,11 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
-                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
+                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
-                ISourceAdapter logProvider = UsrLogProviderSelection.GetSelectedSourceAdapter(lastTrailTime);
+                ISourceAdapter logProvider = LogProviderSelectionControl.GetSelectedSourceAdapter(lastTrailTime);
 
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
@@ -249,13 +249,13 @@ namespace LogScraper
                 bool newLogEntriesReceived = false;
                 try
                 {
-                    UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Processing);
+                    LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Processing);
                     newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, logCollection, logLayout);
                 }
                 catch (Exception ex)
                 {
                     ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
-                    UserControlLogEntriesTextBox.Text = RawLogParser.JoinRawLogIntoString(rawLog);
+                    LogViewportControl.Text = RawLogParser.JoinRawLogIntoString(rawLog);
                     throw;
                 }
 
@@ -295,7 +295,7 @@ namespace LogScraper
             UpdateButtonStatus();
             lastTrailTime = null;
             HandleErrorMessages(string.Empty, true);
-            splitContainer5.Panel2Collapsed = true;
+            SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -306,7 +306,7 @@ namespace LogScraper
 
         private void UpdateTimeLineVisibility()
         {
-            splitContainer4.Panel1Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+            SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
         private void HandleErrorMessages(string message, bool isSucces)
@@ -334,7 +334,7 @@ namespace LogScraper
             }
             else
             {
-                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
+                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
@@ -343,11 +343,11 @@ namespace LogScraper
 
         private void UsrSearch_Search(SearchSettings searchSettings)
         {
-            UserControlSearch.Enabled = false;
+            SearchControl.Enabled = false;
             try
             {
-                ScintillaControlExtensions.SearchDirection searchDirection = searchSettings.Direction == UserControlSearch.SearchDirection.Forward ? ScintillaControlExtensions.SearchDirection.Forward : ScintillaControlExtensions.SearchDirection.Backward;
-                bool found = UserControlLogEntriesTextBox.TrySearch(searchSettings.SearchText, searchSettings.WholeWord, searchSettings.CaseSensitive, searchSettings.WrapAround, searchDirection);
+                ScintillaControlExtensions.SearchDirection searchDirection = searchSettings.Direction == SearchControl.SearchDirection.Forward ? ScintillaControlExtensions.SearchDirection.Forward : ScintillaControlExtensions.SearchDirection.Backward;
+                bool found = LogViewportControl.TrySearch(searchSettings.SearchText, searchSettings.WholeWord, searchSettings.CaseSensitive, searchSettings.WrapAround, searchDirection);
             }
             catch (Exception ex)
             {
@@ -356,7 +356,7 @@ namespace LogScraper
             }
             finally
             {
-                UserControlSearch.Enabled = true;
+                SearchControl.Enabled = true;
             }
         }
 
@@ -372,12 +372,12 @@ namespace LogScraper
         {
             //TODO: Add worker status to AppState
             bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
-            bool sourceIsValid = UsrLogProviderSelection.IsSourceValid;
+            bool sourceIsValid = LogProviderSelectionControl.IsSourceValid;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
             if (!downloadingInProgress)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                UsrLogProviderSelection.UpdateStatus(LogProviderSelectionControl.StatusType.Finished);
+                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Finished);
             }
 
             BtnRecord.Visible = !downloadingInProgress;
@@ -387,8 +387,8 @@ namespace LogScraper
             BtnStop.Visible = downloadingInProgress;
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
-            UsrLogProviderSelection.Enabled = !downloadingInProgress;
-            UsrLogProviderSelection.SetEnabled(!downloadingInProgress);
+            LogProviderSelectionControl.Enabled = !downloadingInProgress;
+            LogProviderSelectionControl.SetEnabled(!downloadingInProgress);
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
@@ -490,13 +490,13 @@ namespace LogScraper
                     UpdateTimeLineVisibility();
                 }
 
-                if (logLayoutsChanged) UsrLogProviderSelection.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
+                if (logLayoutsChanged) LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
 
                 if (kubernetesChanged || runtimeChanged)
                 {
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        UsrLogProviderSelection.UpdateProviderConfig();
+                        LogProviderSelectionControl.UpdateProviderConfig();
                         LogAppState.Instance.Reset(keepFilters: false);
                     }
                 }
@@ -516,7 +516,7 @@ namespace LogScraper
             }
             if (keyData == (Keys.Control | Keys.F))
             {
-                UserControlSearch.Focus();
+                SearchControl.Focus();
                 return true;
             }
             if (keyData == (Keys.Control | Keys.S))

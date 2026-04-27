@@ -14,7 +14,7 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.LogProviders
 {
-    public partial class UserControlRuntimeLogProvider : UserControl, ILogProviderUserControl
+    public partial class RuntimeProviderControl : UserControl, ILogProviderUserControl
     {
         private class HtmlLink : IEquatable<HtmlLink>
         {
@@ -80,7 +80,7 @@ namespace LogScraper.Controls.LogProviders
             UriChanged?.Invoke(this, uri);
         }
 
-        public UserControlRuntimeLogProvider()
+        public RuntimeProviderControl()
         {
             InitializeComponent();
         }

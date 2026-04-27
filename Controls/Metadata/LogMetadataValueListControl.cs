@@ -17,7 +17,7 @@ namespace LogScraper.Controls.Metadata
     /// Manages checked state, filter mode, counts, owner draw, and mouse interaction.
     /// Sizing (height) is controlled externally by the parent UserControlLogMetadataFilter.
     /// </summary>
-    public partial class LogMetadataValueList : UserControl
+    public partial class LogMetadataValueListControl : UserControl
     {
         #region Events
 
@@ -56,7 +56,7 @@ namespace LogScraper.Controls.Metadata
 
         #region Constructor
 
-        public LogMetadataValueList()
+        public LogMetadataValueListControl()
         {
             InitializeComponent();
             ListViewItems.Columns.Add("Description", -2);

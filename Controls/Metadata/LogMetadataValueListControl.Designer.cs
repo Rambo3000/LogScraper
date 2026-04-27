@@ -2,7 +2,7 @@
 
 namespace LogScraper.Controls.Metadata
 {
-    partial class LogMetadataValueList
+    partial class LogMetadataValueListControl
     {
         private System.ComponentModel.IContainer components = null;
 

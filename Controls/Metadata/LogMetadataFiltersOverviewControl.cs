@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
@@ -16,18 +15,18 @@ namespace LogScraper.Controls.Metadata
     /// A user control that provides an overview of metadata filters for log entries.
     /// Allows updating, resetting, and managing metadata filters.
     /// </summary>
-    public partial class UserControlMetadataFilterOverview : UserControl
+    public partial class LogMetadataFiltersOverviewControl : UserControl
     {
         // Dictionary to store per-property filter controls for quick access.
-        private readonly Dictionary<LogMetadataProperty, UserControlLogMetadataFilter> filterControls = [];
+        private readonly Dictionary<LogMetadataProperty, LogMetadataFilterControl> filterControls = [];
 
         // Ordered list of filter controls, used for reflowing positions after collapse/expand.
-        private readonly List<UserControlLogMetadataFilter> orderedFilterControls = [];
+        private readonly List<LogMetadataFilterControl> orderedFilterControls = [];
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserControlMetadataFilterOverview"/> class.
+        /// Initializes a new instance of the <see cref="LogMetadataFiltersOverviewControl"/> class.
         /// </summary>
-        public UserControlMetadataFilterOverview()
+        public LogMetadataFiltersOverviewControl()
         {
             InitializeComponent();
         }
@@ -93,16 +92,16 @@ namespace LogScraper.Controls.Metadata
 
             LblExplenation.Visible = logLayout.LogMetadataProperties.Count == 0;
 
-            UserControlLogMetadataFilter previousControl = null;
+            LogMetadataFilterControl previousControl = null;
 
             foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
             {
                 if (!logCollection.MetadataValues.TryGetValue(property, out List<LogMetadataValue> allValues))
                     continue;
 
-                if (!filterControls.TryGetValue(property, out UserControlLogMetadataFilter control))
+                if (!filterControls.TryGetValue(property, out LogMetadataFilterControl control))
                 {
-                    control = new UserControlLogMetadataFilter(property.Description)
+                    control = new LogMetadataFilterControl(property.Description)
                     {
                         Width = ClientSize.Width
                     };
@@ -140,7 +139,7 @@ namespace LogScraper.Controls.Metadata
 
             foreach (LogMetadataFilterStats propertyStats in stats)
             {
-                if (filterControls.TryGetValue(propertyStats.Property, out UserControlLogMetadataFilter control))
+                if (filterControls.TryGetValue(propertyStats.Property, out LogMetadataFilterControl control))
                     control.UpdateCounts(propertyStats);
             }
 
@@ -155,7 +154,7 @@ namespace LogScraper.Controls.Metadata
         {
             this.SuspendDrawing();
 
-            foreach (UserControlLogMetadataFilter control in filterControls.Values)
+            foreach (LogMetadataFilterControl control in filterControls.Values)
                 control.UpdateCountsToZero();
 
             this.ResumeDrawing();
@@ -169,7 +168,7 @@ namespace LogScraper.Controls.Metadata
         {
             List<LogMetadataFilter> filters = [];
 
-            foreach (UserControlLogMetadataFilter control in filterControls.Values)
+            foreach (LogMetadataFilterControl control in filterControls.Values)
             {
                 LogMetadataFilter filter = control.GetCurrentFilter();
                 if (filter.ActiveValues.Count > 0)
@@ -188,14 +187,14 @@ namespace LogScraper.Controls.Metadata
 
             foreach (Control control in Controls)
             {
-                if (control is UserControlLogMetadataFilter filterControl)
+                if (control is LogMetadataFilterControl filterControl)
                 {
                     filterControl.FilterChanged -= OnFilterChanged;
                     filterControl.CollapseChanged -= OnCollapseChanged;
                 }
             }
 
-            foreach (UserControlLogMetadataFilter control in orderedFilterControls)
+            foreach (LogMetadataFilterControl control in orderedFilterControls)
                 Controls.Remove(control);
 
             filterControls.Clear();
@@ -212,7 +211,7 @@ namespace LogScraper.Controls.Metadata
         /// </summary>
         public void RemoveFilter(LogMetadataProperty property, LogMetadataValue specificValue)
         {
-            if (!filterControls.TryGetValue(property, out UserControlLogMetadataFilter control)) return;
+            if (!filterControls.TryGetValue(property, out LogMetadataFilterControl control)) return;
             if (specificValue != null)
                 control.DeselectValue(specificValue);
             else
@@ -229,7 +228,7 @@ namespace LogScraper.Controls.Metadata
 
             foreach (Control control in Controls)
             {
-                if (control is UserControlLogMetadataFilter filterControl)
+                if (control is LogMetadataFilterControl filterControl)
                     filterControl.ResetFilters();
             }
 
@@ -253,8 +252,8 @@ namespace LogScraper.Controls.Metadata
             Point previousScrollPosition = AutoScrollPosition;
             AutoScrollPosition = Point.Empty;
 
-            UserControlLogMetadataFilter previousControl = null;
-            foreach (UserControlLogMetadataFilter control in orderedFilterControls)
+            LogMetadataFilterControl previousControl = null;
+            foreach (LogMetadataFilterControl control in orderedFilterControls)
             {
                 if (previousControl != null)
                     control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);

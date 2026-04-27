@@ -2,10 +2,10 @@ using System.Windows.Forms;
 
 namespace LogScraper.Controls.Metadata
 {
-    partial class UserControlLogMetadataFilter
+    partial class LogMetadataFilterControl
     {
         private System.ComponentModel.IContainer components = null;
-        private LogMetadataValueList ValueList;
+        private LogMetadataValueListControl ValueList;
 
         protected override void Dispose(bool disposing)
         {
@@ -21,7 +21,7 @@ namespace LogScraper.Controls.Metadata
         private void InitializeComponent()
         {
             PnlHeader = new DoubleBufferedPanel();
-            ValueList = new LogMetadataValueList();
+            ValueList = new LogMetadataValueListControl();
             LblIncludeExclude = new Label();
             SuspendLayout();
             // 

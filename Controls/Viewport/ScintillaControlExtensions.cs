@@ -7,7 +7,7 @@ using LogScraper.Log.Content;
 using LogScraper.Utilities.IndexDictionary;
 using ScintillaNET;
 
-namespace LogScraper.Controls.LogEntriesTextbox
+namespace LogScraper.Controls.Viewport
 {
     public static class ScintillaControlExtensions
     {

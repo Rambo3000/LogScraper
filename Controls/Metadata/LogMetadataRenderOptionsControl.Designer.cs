@@ -2,7 +2,7 @@
 
 namespace LogScraper.Controls.Metadata
 {
-    partial class MetadataFormattingControl
+    partial class LogMetadataRenderOptionsControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace LogScraper.Controls.Metadata
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MetadataFormattingControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogMetadataRenderOptionsControl));
             splitButton1 = new SplitButton();
             ContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
             ItemShowOriginalMetadata = new System.Windows.Forms.ToolStripMenuItem();

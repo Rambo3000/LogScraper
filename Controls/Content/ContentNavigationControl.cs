@@ -15,14 +15,14 @@ using LogScraper.Log;
 
 namespace LogScraper.Controls.Content
 {
-    internal partial class UserControlLogContentFilter : UserControl
+    internal partial class ContentNavigationControl : UserControl
     {
         #region Private objects and initialization
         private const string DefaulSearchtText = "Filter...";
 
         private bool showTree = false;
 
-        public UserControlLogContentFilter()
+        public ContentNavigationControl()
         {
             InitializeComponent();
             txtSearch.PlaceholderText = DefaulSearchtText;

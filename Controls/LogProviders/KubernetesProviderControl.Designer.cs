@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Controls.LogProviders
 {
-    partial class UserControlKubernetesLogProvider
+    partial class KubernetesProviderControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlKubernetesLogProvider));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KubernetesProviderControl));
             cboKubernetesPod = new System.Windows.Forms.ComboBox();
             cboKubernetesNamespace = new System.Windows.Forms.ComboBox();
             cboKubernetesCluster = new System.Windows.Forms.ComboBox();

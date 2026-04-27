@@ -1,6 +1,6 @@
-﻿namespace LogScraper.Controls.LogEntriesTextbox
+﻿namespace LogScraper.Controls.Viewport
 {
-    partial class UserControlLogEntriesTextBox
+    partial class LogViewportControl
     {
         /// <summary> 
         /// Required designer variable.

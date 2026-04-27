@@ -6,9 +6,9 @@ using LogScraper.Log.Metadata;
 
 namespace LogScraper.Controls.Metadata
 {
-    public partial class MetadataFormattingControl : UserControl
+    public partial class LogMetadataRenderOptionsControl : UserControl
     {
-        public MetadataFormattingControl()
+        public LogMetadataRenderOptionsControl()
         {
             InitializeComponent();
             ItemShowOriginalMetadata.CheckedChanged += ItemShowOriginalMetadata_CheckedChanged;

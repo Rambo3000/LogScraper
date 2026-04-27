@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Controls.Metadata
 {
-    partial class UserControlMetadataFilterOverview
+    partial class LogMetadataFiltersOverviewControl
     {
         /// <summary> 
         /// Required designer variable.

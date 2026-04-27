@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Controls.LogProviders
 {
-    partial class UserControlFileLogProvider
+    partial class FileProviderControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlFileLogProvider));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileProviderControl));
             btnBrowse = new System.Windows.Forms.Button();
             PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
             PctWarning = new System.Windows.Forms.PictureBox();

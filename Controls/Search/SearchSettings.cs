@@ -15,7 +15,7 @@ namespace LogScraper.Controls.Search
         /// The direction for Next/Previous navigation. Not included in equality comparison —
         /// direction alone does not constitute a meaningful change to the result set.
         /// </summary>
-        public UserControlSearch.SearchDirection Direction { get; set; }
+        public SearchControl.SearchDirection Direction { get; set; }
 
         /// <summary>
         /// Whether navigation should wrap around when reaching the end or beginning of the log.
