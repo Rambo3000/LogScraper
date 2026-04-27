@@ -144,7 +144,7 @@ namespace LogScraper.Log.FlowTree
                 var top = stack.Pop();
 
                 // Use EqualsValue to compare keys for matching begin/end.
-                if (top.Key.EqualsValue(endValue))
+                if (top.Key.Equals(endValue))
                 {
                     // Found the matching begin node; set its end and stop searching.
                     top.Node.End = entry;

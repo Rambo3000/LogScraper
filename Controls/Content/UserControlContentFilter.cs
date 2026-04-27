@@ -5,25 +5,20 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.Log;
-using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
-using LogScraper.Log.Rendering;
 using LogScraper.Utilities;
-using System.ComponentModel;
 using LogScraper.Controls.Generic;
-using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Content;
+using LogScraper.Log;
 
-namespace LogScraper.Content
+namespace LogScraper.Controls.Content
 {
     internal partial class UserControlLogContentFilter : UserControl
     {
         #region Private objects and initialization
         private const string DefaulSearchtText = "Filter...";
-
-        private List<LogContentProperty> LogContentPropertiesError = [];
 
         private bool showTree = false;
 
@@ -33,93 +28,48 @@ namespace LogScraper.Content
             txtSearch.PlaceholderText = DefaulSearchtText;
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void UserControlLogContentFilter_Load(object sender, EventArgs e)
         {
-            base.OnLoad(e);
-            if (DesignMode) return;
-            LogAppState.Instance.Range.Changed += OnLogRangeChanged;
-            LogAppState.Instance.MetadataFilterResult.Changed += OnMetadataFilterResultChanged;
-            LogAppState.Instance.ResetRequested += OnResetRequested;
-        }
-
-        private void OnLogRangeChanged(object sender, EventArgs e)
-        {
-            UpdateDisplayedLogEntries();
-        }
-
-        private void OnMetadataFilterResultChanged(object sender, EventArgs e)
-        {
-            UpdateDisplayedLogEntries();
-        }
-
-        private void OnResetRequested(object sender, ResetEventArgs e)
-        {
-            if (e.KeepFilters)
-                ResetFilters();
-            else
-                Reset();
+            LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout();
+            LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => UpdateDisplayedLogEntries();
+            LogAppState.Instance.ResetRequested += (s, e) => Reset();
         }
 
         #endregion
 
         #region Update log layout
-        public void UpdateLogLayout(LogLayout logLayout)
+        //TODO: REQUIRED remove
+        private void UpdateLogLayout()
         {
+            LogLayout logLayout = LogAppState.Instance.Layout.Value;
             LstLogContent.ItemHeight = LstLogContent.Font.Height;
 
             CboLogContentType.Items.Clear();
             if (logLayout == null || logLayout.LogContentProperties == null || logLayout.LogContentProperties.Count == 0) return;
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties.Where(item => item.IsNavigationEnabled)]);
-            LogContentPropertiesError = [];
-            foreach (LogContentProperty logContentProperty in logLayout.LogContentProperties)
-            {
-                if (logContentProperty.IsErrorProperty)
-                {
-                    LogContentPropertiesError.Add(logContentProperty);
-                    break;
-                }
-            }
 
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
         }
         #endregion
 
-        #region Private class LogEntryDisplayObject
-        private class LogEntryDisplayObject
-        {
-            public int Index { get; set; }
-            public LogEntry OriginalLogEntry { get; set; }
-            public LogContentValue ContentValue { get; set; }
-            public LogFlowTreeNode FlowTreeNode { get; set; }
-            public override string ToString()
-            { return ContentValue != null ? ContentValue.Value : string.Empty; }
-        }
-        #endregion
-
         #region Update the log entries in the listbox
-
-        public void UpdateLogEntries(LogMetadataFilterResult logMetadataFilterResult)
-        {
-            UpdateDisplayedLogEntries();
-        }
 
         private void UpdateDisplayedLogEntries()
         {
-            LogMetadataFilterResult logMetadataFilterResult = LogAppState.Instance.MetadataFilterResult.Value;
-            if (logMetadataFilterResult == null || logMetadataFilterResult.LogEntries == null)
+            List<LogEntry> logEntries = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries ?? null;
+            LogContentProperty logContentProperty = SelectedLogContentProperty;
+            if (logEntries == null || logContentProperty == null)
             {
                 LstLogContent.Items.Clear();
                 return;
             }
 
-            LogContentProperty logContentProperty = SelectedLogContentProperty;
-            if (logContentProperty == null) return;
-            List<LogEntryDisplayObject> logEntryDisplayObjects = CreateLogEntryDisplayObjects(logContentProperty, LogRenderer.GetLogEntriesRange(logMetadataFilterResult.LogEntries, LogAppState.Instance.Range.Value));
+            List<LogContentDisplayItem> logContentDisplayItems = CreateLogEntryDisplayObjects(logContentProperty, logEntries);
 
-            UpdateDisplayedLogEntriesUsingNewLogEntries(logEntryDisplayObjects);
+            UpdateDisplayedLogEntriesUsingNewLogEntries(logContentDisplayItems);
         }
 
-        private List<LogEntryDisplayObject> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
+        private List<LogContentDisplayItem> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
         {
             if (logContentProperty == null) return null;
 
@@ -129,14 +79,10 @@ namespace LogScraper.Content
             bool showErrors = ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters;
             bool filterEnabled = !string.IsNullOrEmpty(filter);
 
-            List<LogEntryDisplayObject> logEntryDisplayObjects = [];
-            int index = 0;
+            List<LogContentDisplayItem> logContentDisplayItems = [];
 
             foreach (LogEntry logEntry in logEntries)
             {
-                //Track the order to be able to show the correct disabled (grayed out) lines when setting the top and bottom values
-                index++;
-
                 if (logEntry.LogContentProperties == null) continue;
 
                 // Try to get the content for the selected log content property
@@ -146,12 +92,10 @@ namespace LogScraper.Content
                 {
                     if (!showErrors || !logEntry.IsErrorLogEntry) continue;
 
-                    foreach (LogContentProperty logContentPropertyError in LogContentPropertiesError)
+                    //If the log entry has an error content property, get the content value and continue using this value
+                    if (LogAppState.Instance.FilterResultWithRange.Value.ErrorMask[logEntry.Index])
                     {
-                        //If the log entry has an error content property, get the content value and continue using this value
-                        //We are only interested in the formatted time description of the error content, so we can show the log entry in the correct order in the list
-                        // but the actual value is not relevant as it will be shown as "ERROR"
-                        if (logEntry.LogContentProperties.TryGetValue(logContentPropertyError, out contentValue)) break;
+                        contentValue = new("ERROR");
                     }
                 }
 
@@ -164,28 +108,22 @@ namespace LogScraper.Content
                 LogFlowTreeNode flowtreeNode = null;
                 logFlowTree?.LogEntryDictionary?.TryGetValue(logEntry, out flowtreeNode);
 
-                logEntryDisplayObjects.Add(new LogEntryDisplayObject
-                {
-                    Index = index,
-                    OriginalLogEntry = logEntry,
-                    ContentValue = contentValue,
-                    FlowTreeNode = flowtreeNode
-                });
+                logContentDisplayItems.Add(new LogContentDisplayItem(logEntry.TimeStamp.ToString("HH:mm:ss"), logEntry, contentValue, flowtreeNode));
             }
-            return logEntryDisplayObjects;
+            return logContentDisplayItems;
         }
 
-        private void UpdateDisplayedLogEntriesUsingNewLogEntries(List<LogEntryDisplayObject> newLogEntries)
+        private void UpdateDisplayedLogEntriesUsingNewLogEntries(List<LogContentDisplayItem> newLogEntries)
         {
             int currentCount = LstLogContent.Items.Count;
             int newCount = newLogEntries.Count;
             int compareCount = Math.Min(currentCount, newCount);
             bool startMatches = true;
 
+            //Check if all items up to the count of the smaller list match
             for (int i = 0; i < compareCount; i++)
             {
-                //TODO: REQUIRED Fix newLogEntries[i].ContentValue != null, this goes haywire on error entries
-                if (newLogEntries[i].ContentValue != null && !newLogEntries[i].ContentValue.Equals(((LogEntryDisplayObject)LstLogContent.Items[i]).ContentValue))
+                if (!newLogEntries[i].Equals((LogContentDisplayItem)LstLogContent.Items[i]))
                 {
                     startMatches = false;
                     break;
@@ -204,10 +142,9 @@ namespace LogScraper.Content
                 int index = 0;
                 foreach (var item in LstLogContent.Items)
                 {
-                    if (item is not LogEntryDisplayObject logEntryDisplayObject) continue;
+                    if (item is not LogContentDisplayItem logContentDisplayItem) continue;
                     // Use the first item in the Linq expression as cases have been found where more than one log entry matches
-                    logEntryDisplayObject.FlowTreeNode = newLogEntries.Where(entry => entry.OriginalLogEntry.Equals(logEntryDisplayObject.OriginalLogEntry)).First().FlowTreeNode;
-                    logEntryDisplayObject.Index = index;
+                    logContentDisplayItem.FlowTreeNode = newLogEntries.Where(entry => entry.LogEntry.Equals(logContentDisplayItem.LogEntry)).First().FlowTreeNode;
                     index++;
                 }
                 if (showTree) LstLogContent.Invalidate();
@@ -221,10 +158,10 @@ namespace LogScraper.Content
             FullyRedrawList(newLogEntries);
         }
 
-        private void FullyRedrawList(List<LogEntryDisplayObject> newLogEntries)
+        private void FullyRedrawList(List<LogContentDisplayItem> newLogEntries)
         {
             // Store the currently selected log entry
-            LogEntryDisplayObject selectedLogEntry = (LogEntryDisplayObject)LstLogContent.SelectedItem;
+            LogContentDisplayItem selectedLogEntry = (LogContentDisplayItem)LstLogContent.SelectedItem;
             // Store the current top index of the list
             int topIndex = LstLogContent.TopIndex;
 
@@ -245,14 +182,14 @@ namespace LogScraper.Content
 
             bool selectedEntryFound = false;
             // Iterate through the new log entries and select the previously selected log entry if it exists
-            foreach (LogEntryDisplayObject logEntryDisplayObject in newLogEntries)
+            foreach (LogContentDisplayItem logContentDisplayItem in newLogEntries)
             {
-                if (logEntryDisplayObject.OriginalLogEntry == selectedLogEntry.OriginalLogEntry)
+                if (logContentDisplayItem.LogEntry == selectedLogEntry.LogEntry)
                 {
                     try
                     {
                         ignoreSelectedItemChanged = true;
-                        LstLogContent.SelectedItem = logEntryDisplayObject;
+                        LstLogContent.SelectedItem = logContentDisplayItem;
                         selectedEntryFound = true;
                     }
                     finally
@@ -283,7 +220,7 @@ namespace LogScraper.Content
 
         public LogEntry SelectedLogEntry
         {
-            get => SelectedLogEntryDisplayObject?.OriginalLogEntry;
+            get => SelectedLogEntryDisplayObject?.LogEntry;
         }
 
         public LogContentValue SelectedContentValue
@@ -291,17 +228,17 @@ namespace LogScraper.Content
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return ((LogEntryDisplayObject)LstLogContent.SelectedItem).ContentValue;
+                return ((LogContentDisplayItem)LstLogContent.SelectedItem).ContentValue;
             }
         }
 
 
-        private LogEntryDisplayObject SelectedLogEntryDisplayObject
+        private LogContentDisplayItem SelectedLogEntryDisplayObject
         {
             get
             {
                 if (LstLogContent.SelectedItem == null) return null;
-                return (LogEntryDisplayObject)LstLogContent.SelectedItem;
+                return (LogContentDisplayItem)LstLogContent.SelectedItem;
             }
         }
 
@@ -316,8 +253,9 @@ namespace LogScraper.Content
 
         public void Reset()
         {
+            if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
             ClearSelectedLogEntry();
-            LogContentPropertiesError = [];
+            ResetFilters();
         }
         #endregion
 
@@ -329,22 +267,22 @@ namespace LogScraper.Content
             e.DrawBackground();
 
             // Fetch the item
-            if (LstLogContent.Items[e.Index] is not LogEntryDisplayObject item || item.ContentValue == null) return;
+            if (LstLogContent.Items[e.Index] is not LogContentDisplayItem item || item.ContentValue == null) return;
 
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
 
             //Disable being out of scope for now
-            //bool isOutOfScope = IslogEntryDisplayObjectOutOfScope(item);
+            //bool isOutOfScope = IslogContentDisplayItemOutOfScope(item);
             bool isOutOfScope = false;
 
             if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
             else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
             else g.FillRectangle(SystemBrushes.Control, e.Bounds);
 
-            if (item.OriginalLogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
+            if (item.LogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
             {
-                e.Graphics.DrawString(item.ContentValue.TimeDescription + " ERROR", LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
+                e.Graphics.DrawString(item.TimeStamp + " ERROR", LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
                 e.DrawFocusRectangle();
                 return;
             }
@@ -354,7 +292,7 @@ namespace LogScraper.Content
             else
             {
                 string value = item.ContentValue.Value?.Length > 128 ? item.ContentValue.Value[0..127] : item.ContentValue.Value ?? string.Empty;
-                string truncatedValue = TruncateTextToFit(item.ContentValue.TimeDescription + " " + value, g, e.Bounds.Width);
+                string truncatedValue = TruncateTextToFit(item.TimeStamp + " " + value, g, e.Bounds.Width);
                 e.Graphics.DrawString(truncatedValue, LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
             }
 
@@ -365,7 +303,7 @@ namespace LogScraper.Content
 
         private int TimeDescriptionFixedWidth = -1;
 
-        private void DrawFlowTreeNode(DrawItemEventArgs e, LogEntryDisplayObject item, Graphics g, bool isSelected, bool isOutOfScope)
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogContentDisplayItem item, Graphics g, bool isSelected, bool isOutOfScope)
         {
             // Indentation
             const int indentPerLevel = 10;
@@ -413,7 +351,7 @@ namespace LogScraper.Content
             Brush textBrush = DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope);
 
             // Draw TimeDescription
-            g.DrawString(item.ContentValue.TimeDescription, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
+            g.DrawString(item.TimeStamp, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
 
             // Truncate description if it doesn’t fit
 
@@ -443,36 +381,17 @@ namespace LogScraper.Content
             return truncatedText;
         }
 
-        private static Brush DetermineTextColorBasedOnLogEntryPosition(LogEntryDisplayObject logEntryDisplayObject, bool isSelected, bool isOutOfScope)
+        private static Brush DetermineTextColorBasedOnLogEntryPosition(LogContentDisplayItem logContentDisplayItem, bool isSelected, bool isOutOfScope)
         {
             if (isOutOfScope) return isSelected ? Brushes.Gray : LogScraperBrushes.GrayLogEntriesOutOfScope;
-            return logEntryDisplayObject.OriginalLogEntry.IsErrorLogEntry ? Brushes.DarkRed : SystemBrushes.ControlText;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="LogEntryDisplayObject"/> is outside the currently selected
-        /// range.
-        /// </summary>
-        /// <remarks>A <see cref="LogEntryDisplayObject"/> is considered out of scope if its <c>Index</c>
-        /// is less than the  <c>Index</c> of the selected begin entry display object, or greater than the <c>Index</c>
-        /// of the selected  end entry display object. If either the selected begin or end entry display object is
-        /// <c>null</c>, the  corresponding boundary is considered unbounded.</remarks>
-        /// <param name="logEntryDisplayObject">The <see cref="LogEntryDisplayObject"/> to evaluate. Must not be <c>null</c>.</param>
-        /// <returns><see langword="true"/> if the <paramref name="logEntryDisplayObject"/> is outside the range defined by  the
-        /// selected begin and end entry display objects; otherwise, <see langword="false"/>.</returns>
-        private static bool IslogEntryDisplayObjectOutOfScope(LogEntryDisplayObject logEntryDisplayObject)
-        {
-            if (logEntryDisplayObject == null) return true;
-
-            return (LogAppState.Instance.Range.Value?.Begin != null && logEntryDisplayObject.Index < LogAppState.Instance.Range.Value.Begin.Index) ||
-                   (LogAppState.Instance.Range.Value?.End != null && logEntryDisplayObject.Index > LogAppState.Instance.Range.Value.End.Index);
+            return logContentDisplayItem.LogEntry.IsErrorLogEntry ? Brushes.DarkRed : SystemBrushes.ControlText;
         }
         #endregion
 
         #region Search
         private string lastSearch = string.Empty;
 
-        private void PerformSearch(bool force = false)
+        private void PerformSearch()
         {
             string searchString = txtSearch.Text.Trim();
             if (searchString != lastSearch)
@@ -584,5 +503,6 @@ namespace LogScraper.Content
             showTree = !showTree;
             UpdateButtons();
         }
+
     }
 }

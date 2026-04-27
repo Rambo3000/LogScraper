@@ -1,5 +1,5 @@
-﻿using LogScraper.Content;
-using LogScraper.Controls;
+﻿using LogScraper.Controls;
+using LogScraper.Controls.Content;
 using LogScraper.Controls.Generic;
 using LogScraper.Controls.LogEntriesTextbox;
 using LogScraper.Controls.Metadata;

@@ -18,11 +18,9 @@ namespace LogScraper.Controls
             Processing,
             Finished
         }
-        public event EventHandler SourceSelectionChanged;
         public event EventHandler<(string message, bool isSuccess)> StatusUpdate;
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
-        public event EventHandler LogProviderChanged;
         public event EventHandler CollapseStateChanged;
 
         private bool _isPinned = false;
@@ -88,7 +86,7 @@ namespace LogScraper.Controls
 
         private void HandleSourceSelectionChanged(object sender, EventArgs e)
         {
-            SourceSelectionChanged?.Invoke(this, e);
+            LogAppState.Instance.Reset(keepFilters: false);
         }
 
         private void HandleStatusUpdate(string message, bool isSuccess)
@@ -232,7 +230,7 @@ namespace LogScraper.Controls
             }
 
             UpdateProviderDescription();
-            LogProviderChanged?.Invoke(this, EventArgs.Empty);
+            LogAppState.Instance.Reset(keepFilters: false);
         }
 
         private void CboLogLayout_SelectedIndexChanged(object sender, EventArgs e)

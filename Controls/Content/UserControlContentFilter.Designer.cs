@@ -1,7 +1,7 @@
 ﻿using LogScraper.Controls.Generic;
 using LogScraper.Utilities;
 
-namespace LogScraper.Content
+namespace LogScraper.Controls.Content
 {
     partial class UserControlLogContentFilter
     {
@@ -123,6 +123,7 @@ namespace LogScraper.Content
             Controls.Add(PnlUsedForCorrectScaling);
             Name = "UserControlLogContentFilter";
             Size = new System.Drawing.Size(243, 272);
+            Load += UserControlLogContentFilter_Load;
             PnlUsedForCorrectScaling.ResumeLayout(false);
             ResumeLayout(false);
         }

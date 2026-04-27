@@ -25,6 +25,10 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
+    //TODO: REQUIRED move bookmarks to LogAppState
+    //TODO: REQUIRED move viewportSelectedLogEntry to LogAppState
+    //TODO: search list use collapsed splitcontainer by default
+    //TODO: reduce flickering on filter overview control
     //TODO: highlighting of visible log entry (range) in navigation filters
     //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
@@ -47,11 +51,9 @@ namespace LogScraper
 
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
 
-            UsrLogProviderSelection.SourceSelectionChanged += HandleLogProviderSourceSelectionChanged;
             UsrLogProviderSelection.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
             UsrLogProviderSelection.UriChanged += UsrRuntime_UriChanged;
             UsrLogProviderSelection.IsSourceValidChanged += HandleIsSourceValidChanged;
-            UsrLogProviderSelection.LogProviderChanged += UsrLogProviderSelection_LogProviderChanged;
             UsrLogProviderSelection.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
             UserControlContentFilter.SelectedItemChanged += HandleLogContentFilterSelectedItemChanged;
@@ -330,8 +332,6 @@ namespace LogScraper
         {
             if (!e.KeepFilters)
             {
-                //TODOL: REUIQRED what is this about?
-                UserControlContentFilter.UpdateLogLayout(LogAppState.Instance.Layout.Value);
                 TxtErrorMessage.Text = string.Empty;
                 TxtErrorMessage.Visible = false;
             }
@@ -367,12 +367,6 @@ namespace LogScraper
         private void HandleLogContentFilterSelectedItemChanged(object sender, EventArgs e)
         {
             UserControlLogEntriesTextBox.SelectedLogEntry = UserControlContentFilter.SelectedLogEntry;
-        }
-
-        private void HandleLogProviderSourceSelectionChanged(object sender, EventArgs e)
-        {
-            //TODO: REQUIRED fix
-            LogAppState.Instance.Reset(keepFilters: false);
         }
 
         private void HandleIsSourceValidChanged(object sender, bool e)
@@ -552,22 +546,12 @@ namespace LogScraper
                     if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
                         UsrLogProviderSelection.UpdateProviderConfig();
-                        UsrLogProviderSelection_LogProviderChanged(null, null);
+                        LogAppState.Instance.Reset(keepFilters: false);
                     }
                 }
             }
         }
 
-        #endregion
-
-        #region Dropdowns log providers and layout
-
-        private void UsrLogProviderSelection_LogProviderChanged(object sender, EventArgs e)
-        {
-            // This is now handled by the LogProviderSelectionControl
-            // Just reset the log display
-            LogAppState.Instance.Reset(keepFilters: false);
-        }
         #endregion
 
         #region Form key shortcuts

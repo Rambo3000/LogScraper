@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
@@ -146,7 +145,7 @@ namespace LogScraper.Log.Processing
                     int startPosition = logContentProperty.IsErrorProperty ? logEntry.StartIndexMetadata : logEntry.StartIndexContent;
                     if (!TryExtractValue(logEntry.Entry, filterCriteria, false, startPosition, out string value))                        continue;
 
-                    logEntry.LogContentProperties[logContentProperty] = new LogContentValue(value.Trim(), logEntry.TimeStamp.ToString("HH:mm:ss"));
+                    logEntry.LogContentProperties[logContentProperty] = new LogContentValue(value.Trim());
                     if (logContentProperty.IsErrorProperty) logEntry.IsErrorLogEntry = true;
                     break;
                 }
