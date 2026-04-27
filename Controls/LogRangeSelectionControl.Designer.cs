@@ -2,7 +2,7 @@
 
 namespace LogScraper.Controls
 {
-    partial class LogViewportControl
+    partial class LogRangeSelectionControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace LogScraper.Controls
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogViewportControl));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogRangeSelectionControl));
             BtnReset = new Button();
             ChkBegin = new CheckBox();
             ChkEnd = new CheckBox();

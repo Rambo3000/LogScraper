@@ -56,7 +56,7 @@ namespace LogScraper
             TxtErrorMessage = new System.Windows.Forms.TextBox();
             UserControlLogEntriesTextBox = new UserControlLogEntriesTextBox();
             flowTreeControl1 = new FlowTreeControl();
-            LogViewport = new LogViewportControl();
+            LogRangeSelectionControl = new LogRangeSelectionControl();
             MetadataFormatingControl = new MetadataFormattingControl();
             LogPostProcessing = new LogPostProcessingControl();
             errorListControl = new ErrorListControl();
@@ -259,7 +259,7 @@ namespace LogScraper
             splitContainer5.Panel1.Controls.Add(UserControlSearch);
             splitContainer5.Panel1.Controls.Add(PnlFiltersAndLogEntriesTextBox);
             splitContainer5.Panel1.Controls.Add(flowTreeControl1);
-            splitContainer5.Panel1.Controls.Add(LogViewport);
+            splitContainer5.Panel1.Controls.Add(LogRangeSelectionControl);
             splitContainer5.Panel1.Controls.Add(MetadataFormatingControl);
             splitContainer5.Panel1.Controls.Add(btnOpenWithEditor);
             splitContainer5.Panel1.Controls.Add(BtnSave);
@@ -341,10 +341,10 @@ namespace LogScraper
             // 
             // LogViewport
             // 
-            LogViewport.Location = new System.Drawing.Point(102, 0);
-            LogViewport.Name = "LogViewport";
-            LogViewport.Size = new System.Drawing.Size(73, 25);
-            LogViewport.TabIndex = 40;
+            LogRangeSelectionControl.Location = new System.Drawing.Point(102, 0);
+            LogRangeSelectionControl.Name = "LogViewport";
+            LogRangeSelectionControl.Size = new System.Drawing.Size(73, 25);
+            LogRangeSelectionControl.TabIndex = 40;
             // 
             // MetadataFormatingControl
             // 
@@ -550,7 +550,7 @@ namespace LogScraper
         private LogTimeLineControl LogTimeLineControl;
         public System.Windows.Forms.Button BtnSave;
         private BookMarksControl BookMarksControl;
-        private LogViewportControl LogViewport;
+        private LogRangeSelectionControl LogRangeSelectionControl;
         private LogPostProcessingControl LogPostProcessing;
         private System.Windows.Forms.Panel PnlFiltersAndLogEntriesTextBox;
         private System.Windows.Forms.TextBox TxtErrorMessage;

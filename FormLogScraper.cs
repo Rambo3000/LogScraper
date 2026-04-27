@@ -95,7 +95,7 @@ namespace LogScraper
             UsrMetadataFilterOverview.ResetFilters();
             UserControlContentFilter.ResetFilters();
             LogAppState.Instance.Range.ForceSet(LogRange.Full);
-            LogViewport.Reset();
+            LogRangeSelectionControl.Reset();
         }
 
         private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, EventArgs e)
@@ -167,9 +167,9 @@ namespace LogScraper
         private void ActiveFilterOverviewControl_RangeRemoved(object sender, RangeRemovedEventArgs e)
         {
             if (e.Variant == LogRangeChipVariant.Begin)
-                LogViewport.ClearBegin();
+                LogRangeSelectionControl.ClearBegin();
             else
-                LogViewport.ClearEnd();
+                LogRangeSelectionControl.ClearEnd();
         }
 
         private bool _repositioningTextBox;
@@ -203,7 +203,7 @@ namespace LogScraper
         {
             UsrMetadataFilterOverview.SelectedLogEntry = e;
             BookMarksControl.UpdateSelectedLogEntry(e);
-            LogViewport.SelectedLogEntry = e;
+            LogRangeSelectionControl.SelectedLogEntry = e;
         }
 
         private void UserControlLogEntriesTextBox_VisibleRangeChanged(object sender, UserControlLogEntriesTextBox.VisibleRangeChangedEventArgs e)

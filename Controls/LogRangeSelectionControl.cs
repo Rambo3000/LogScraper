@@ -7,7 +7,7 @@ using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
 {
-    public partial class LogViewportControl : UserControl
+    public partial class LogRangeSelectionControl : UserControl
     {
         private LogEntry selectedLogEntry;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -31,7 +31,7 @@ namespace LogScraper.Controls
             }
         }
 
-        public LogViewportControl()
+        public LogRangeSelectionControl()
         {
             InitializeComponent();
             UpdateButtons();
