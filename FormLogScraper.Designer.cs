@@ -43,12 +43,12 @@ namespace LogScraper
             BtnStop = new System.Windows.Forms.Button();
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
-            BtnSave = new System.Windows.Forms.Button();
             LogProviderSelectionControl = new LogProviderSelectionControl();
             SplitContainerViewportAndNavigation = new SplitContainerWithGrip();
             SplitContainerTimeLineAndViewport = new SplitContainerWithGrip();
             LogTimeLineControl = new LogTimeLineControl();
             SplitContainerViewportAndSearchResultList = new SplitContainerWithGrip();
+            SaveLogControl = new SaveLogControl();
             BookMarksControl = new BookMarksControl();
             SearchControl = new SearchControl();
             PnlFiltersAndLogEntriesTextBox = new System.Windows.Forms.Panel();
@@ -169,19 +169,6 @@ namespace LogScraper
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 
-            // BtnSave
-            // 
-            BtnSave.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
-            BtnSave.Location = new System.Drawing.Point(607, 0);
-            BtnSave.Name = "BtnSave";
-            BtnSave.Size = new System.Drawing.Size(25, 25);
-            BtnSave.TabIndex = 26;
-            BtnSave.TabStop = false;
-            ToolTip.SetToolTip(BtnSave, "Opslaan als...");
-            BtnSave.UseVisualStyleBackColor = true;
-            BtnSave.Click += BtnSave_Click;
-            // 
             // LogProviderSelectionControl
             // 
             LogProviderSelectionControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -255,6 +242,7 @@ namespace LogScraper
             // 
             // SplitContainerViewportAndSearchResultList.Panel1
             // 
+            SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(SaveLogControl);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(BookMarksControl);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(SearchControl);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(PnlFiltersAndLogEntriesTextBox);
@@ -262,7 +250,6 @@ namespace LogScraper
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(LogRangeSelectionControl);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(LogMetadataRenderOptionsControl);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(btnOpenWithEditor);
-            SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(BtnSave);
             SplitContainerViewportAndSearchResultList.Panel1.Controls.Add(LogPostProcessingControl);
             // 
             // SplitContainerViewportAndSearchResultList.Panel2
@@ -274,6 +261,14 @@ namespace LogScraper
             SplitContainerViewportAndSearchResultList.SplitterWidth = 8;
             SplitContainerViewportAndSearchResultList.TabIndex = 44;
             SplitContainerViewportAndSearchResultList.TextSplitter = "";
+            // 
+            // SaveLogControl
+            // 
+            SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            SaveLogControl.Location = new System.Drawing.Point(607, 0);
+            SaveLogControl.Name = "SaveLogControl";
+            SaveLogControl.Size = new System.Drawing.Size(25, 25);
+            SaveLogControl.TabIndex = 44;
             // 
             // BookMarksControl
             // 
@@ -552,7 +547,6 @@ namespace LogScraper
         private System.Windows.Forms.ToolTip ToolTip;
         private LogViewportControl LogViewportControl;
         private LogTimeLineControl LogTimeLineControl;
-        private System.Windows.Forms.Button BtnSave;
         private BookMarksControl BookMarksControl;
         private LogRangeSelectionControl LogRangeSelectionControl;
         private LogPostProcessingControl LogPostProcessingControl;
@@ -564,5 +558,6 @@ namespace LogScraper
         private LogProviderSelectionControl LogProviderSelectionControl;
         private Controls.FilterOverview.ActiveFilterOverviewControl ActiveFilterOverviewControl;
         private ErrorListControl ErrorListControl;
+        private SaveLogControl SaveLogControl;
     }
 }

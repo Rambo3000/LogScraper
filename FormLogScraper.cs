@@ -414,58 +414,6 @@ namespace LogScraper
             LogAppState.Instance.Reset(keepFilters: false);
         }
 
-        private void BtnSave_Click(object sender, EventArgs e)
-        {
-            LogMetadataFilterResult metadataFilterResult = LogAppState.Instance.MetadataFilterResult.Value;
-            if (metadataFilterResult == null || metadataFilterResult.LogEntries == null || metadataFilterResult.LogEntries.Count == 0) return;
-
-            LogRenderSettings logRenderSettings = new()
-            {
-
-                LogLayout = LogAppState.Instance.Layout.Value,
-                ShowOriginalMetadata = true
-            };
-
-            List<LogEntry> logEntriesToRender = LogAppState.Instance.FilterResultWithRange.Value.LogEntries;
-            string renderedLog = LogRenderer.RenderLogEntriesAsString(logEntriesToRender, logRenderSettings, null, null, null);
-
-            if (renderedLog != null)
-            {
-                using SaveFileDialog saveFileDialog = new()
-                {
-                    Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                    DefaultExt = "log",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    FileName = $"Log from {logEntriesToRender[0].TimeStamp:yyyyMMdd_HHmmss} to {logEntriesToRender[^1].TimeStamp:yyyyMMdd_HHmmss}.log",
-                    AddExtension = true
-                };
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    try
-                    {
-                        File.WriteAllText(saveFileDialog.FileName, renderedLog);
-
-                        ProcessStartInfo processStartInfo = new()
-                        {
-                            FileName = "explorer.exe",
-                            Arguments = $"/select,\"{saveFileDialog.FileName}\"",
-                            UseShellExecute = true
-                        };
-
-                        Process.Start(processStartInfo);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Fout bij opslaan van log: " + ex.Message, "Opslaan mislukt", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ex.LogStackTraceToFile("Fout bij opslaan van log.");
-                    }
-                }
-
-            }
-        }
-
         public void BtnOpenWithEditor_Click(object sender, EventArgs e) =>
             LogExportWorkerManager.OpenFileInExternalEditor();
 
