@@ -54,6 +54,7 @@ namespace LogScraper.Controls
             CancelPostProcessing();
             JsonProcessingIsApplicable = false;
             XmlProcessingIsApplicable = false;
+            LogAppState.Instance.RenderProcessorKinds.Set(VisibleProcessorKinds);
             UpdateControls();
         }
         #endregion
@@ -117,20 +118,6 @@ namespace LogScraper.Controls
 
         #region Control event handlers and enabled state
 
-        private void BtnJson_Click(object sender, EventArgs e)
-        {
-            JsonProcessingIsApplicable = true;
-            UpdateControls();
-            StartPostProcessing();
-        }
-
-        private void BtnXml_Click(object sender, EventArgs e)
-        {
-            XmlProcessingIsApplicable = true;
-            UpdateControls();
-            StartPostProcessing();
-        }
-
         private void CancelPostProcessing()
         {
             if (postProcessCancellationSource == null) return;
@@ -141,11 +128,41 @@ namespace LogScraper.Controls
 
         private void UpdateControls()
         {
-            BtnJson.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
-            BtnXml.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
-            BtnJson.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 2 : 0;
-            BtnXml.ImageIndex = IsProcessing && XmlProcessingIsApplicable ? 2 : 1;
+            bool processingInProgress = IsProcessing;
+            BtnPrettyPrint.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !processingInProgress;
+            PrettyPrintJSONToolStripMenuItem.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
+            PrettyPrintXMLToolStripMenuItem.Enabled = LogAppState.Instance.LogCollectionIsAvailable && !IsProcessing;
+            BtnPrettyPrint.ImageIndex = IsProcessing && JsonProcessingIsApplicable ? 1 : 0;
+            RemoveToolStripMenuItem.Enabled = !IsProcessing && (JsonProcessingIsApplicable || XmlProcessingIsApplicable);
         }
         #endregion
+
+        private void PrettyPrintJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            JsonProcessingIsApplicable = true;
+            UpdateControls();
+            StartPostProcessing();
+
+        }
+
+        private void PrettyPrintXMLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            XmlProcessingIsApplicable = true;
+            UpdateControls();
+            StartPostProcessing();
+        }
+
+        private void RemoveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
+
+        private void BtnPrettyPrint_Click(object sender, EventArgs e)
+        {
+            JsonProcessingIsApplicable = true;
+            XmlProcessingIsApplicable = true;
+            UpdateControls();
+            StartPostProcessing();
+        }
     }
 }

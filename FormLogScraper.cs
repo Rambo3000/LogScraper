@@ -25,6 +25,10 @@ namespace LogScraper
     //TODO: REQUIRED move record buttons to seperate control
     //TODO: REQUIRED compact form can be lose connection to the main form
     //TODO: REQUIRED move configuration changed status to AppState
+    
+    //TODO: Fix: treeview button should be enable as long as there is a loglayout selected
+    //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
+
     //TODO: search list use collapsed splitcontainer by default
     //TODO: reduce flickering on filter overview control
     //TODO: highlighting of visible log entry range and selected entry in navigation filters

@@ -279,7 +279,7 @@ namespace LogScraper
             // 
             // SearchControl
             // 
-            SearchControl.Location = new System.Drawing.Point(328, 1);
+            SearchControl.Location = new System.Drawing.Point(319, 1);
             SearchControl.Name = "SearchControl";
             SearchControl.Size = new System.Drawing.Size(215, 25);
             SearchControl.TabIndex = 33;
@@ -354,7 +354,7 @@ namespace LogScraper
             // 
             LogPostProcessingControl.Location = new System.Drawing.Point(273, 0);
             LogPostProcessingControl.Name = "LogPostProcessingControl";
-            LogPostProcessingControl.Size = new System.Drawing.Size(49, 25);
+            LogPostProcessingControl.Size = new System.Drawing.Size(40, 25);
             LogPostProcessingControl.TabIndex = 41;
             // 
             // ErrorListControl
