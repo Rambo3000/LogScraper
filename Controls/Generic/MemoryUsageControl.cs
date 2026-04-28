@@ -8,7 +8,7 @@ namespace LogScraper.Controls.Generic
     /// A user control that displays the current memory usage of the application.
     /// Updates the memory usage value every second using a timer.
     /// </summary>
-    public partial class UserControlMemoryUsage : UserControl
+    public partial class MemoryUsageControl : UserControl
     {
         // Timer to periodically update the memory usage display.
         private readonly Timer timerMemoryUsage = new();
@@ -16,12 +16,12 @@ namespace LogScraper.Controls.Generic
         /// <summary>
         /// Initializes the user control and sets up the memory usage tooltip.
         /// </summary>
-        public UserControlMemoryUsage()
+        public MemoryUsageControl()
         {
             InitializeComponent();
             UpdateMemoryUsage(null, null);
             // Set a tooltip for the memory usage label to provide additional context to the user.
-            new ToolTip().SetToolTip(LblMemoryUsageValue, "Geheugengebruik");
+            new ToolTip().SetToolTip(LblMemoryUsageValue, "");
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace LogScraper.Controls.Generic
         private void UpdateMemoryUsage(object sender, EventArgs e)
         {
             // Get the current process's memory usage in megabytes and display it in the label.
-            LblMemoryUsageValue.Text = (Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).ToString() + " MB";
+            LblMemoryUsageValue.Text = $"Geheugengebruik: {(Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024))} MB";
         }
 
         /// <summary>

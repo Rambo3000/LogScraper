@@ -31,6 +31,8 @@
             lblVersion = new System.Windows.Forms.Label();
             LblAuthor = new System.Windows.Forms.Label();
             GrpAbout = new System.Windows.Forms.GroupBox();
+            MemoryUsageControl = new LogScraper.Controls.Generic.MemoryUsageControl();
+            LblOpenExecutableFolder = new System.Windows.Forms.LinkLabel();
             LinkComponents = new System.Windows.Forms.LinkLabel();
             LblDisclaimer = new System.Windows.Forms.Label();
             LblRuntime = new System.Windows.Forms.Label();
@@ -62,6 +64,7 @@
             // 
             // GrpAbout
             // 
+            GrpAbout.Controls.Add(MemoryUsageControl);
             GrpAbout.Controls.Add(LblOpenExecutableFolder);
             GrpAbout.Controls.Add(LinkComponents);
             GrpAbout.Controls.Add(LblDisclaimer);
@@ -80,6 +83,25 @@
             GrpAbout.TabIndex = 3;
             GrpAbout.TabStop = false;
             GrpAbout.Text = "Over LogScraper";
+            // 
+            // MemoryUsageControl
+            // 
+            MemoryUsageControl.Location = new System.Drawing.Point(515, 402);
+            MemoryUsageControl.AutoSize = false;
+            MemoryUsageControl.Name = "MemoryUsageControl";
+            MemoryUsageControl.Size = new System.Drawing.Size(205, 17);
+            MemoryUsageControl.TabIndex = 44;
+            // 
+            // LblOpenExecutableFolder
+            // 
+            LblOpenExecutableFolder.AutoSize = true;
+            LblOpenExecutableFolder.Location = new System.Drawing.Point(8, 118);
+            LblOpenExecutableFolder.Name = "LblOpenExecutableFolder";
+            LblOpenExecutableFolder.Size = new System.Drawing.Size(141, 15);
+            LblOpenExecutableFolder.TabIndex = 43;
+            LblOpenExecutableFolder.TabStop = true;
+            LblOpenExecutableFolder.Text = "Open de LogScraper map";
+            LblOpenExecutableFolder.LinkClicked += LblOpenExecutableFolder_LinkClicked;
             // 
             // LinkComponents
             // 
@@ -185,5 +207,6 @@
         private System.Windows.Forms.Label LblDisclaimer;
         private System.Windows.Forms.LinkLabel LinkComponents;
         private System.Windows.Forms.LinkLabel LblOpenExecutableFolder;
+        private Generic.MemoryUsageControl MemoryUsageControl;
     }
 }

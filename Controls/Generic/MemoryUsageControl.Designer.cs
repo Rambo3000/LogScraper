@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Controls.Generic
 {
-    partial class UserControlMemoryUsage
+    partial class MemoryUsageControl
     {
         /// <summary> 
         /// Required designer variable.

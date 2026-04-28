@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -12,7 +11,6 @@ using LogScraper.Controls.Viewport;
 using LogScraper.Controls.Search;
 using LogScraper.Export;
 using LogScraper.Log;
-using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
@@ -26,6 +24,7 @@ using LogScraper.Utilities.Extensions;
 namespace LogScraper
 {
     //TODO: REQUIRED move bookmarks to LogAppState
+    //TODO: REQUIRED move configuration changed status to AppState
     //TODO: search list use collapsed splitcontainer by default
     //TODO: reduce flickering on filter overview control
     //TODO: highlighting of visible log entry range and selected entry in navigation filters
@@ -76,6 +75,31 @@ namespace LogScraper
 
             UpdateTimeLineVisibility();
             SetDynamicToolTips();
+        }
+        private void FormLogScraper_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                //Collapse the bottom panel here, so it is still shown in the designer
+                SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
+                btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
+
+                LogProviderSelectionControl.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
+                LogProviderSelectionControl.PopulateLogProviders();
+                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
+                //Enforce autosizing because the IDE overrides the control's autosize settings.
+                LogProviderSelectionControl.AutoSize = false;
+
+                AutoSizeLogProviderSelection();
+            }
+            catch (Exception ex)
+            {
+                ex.LogStackTraceToFile();
+                MessageBox.Show(ex.Message);
+            }
+
+            RepositionLogEntriesTextBox();
+            GitHubUpdateChecker.CheckForUpdateInSeperateThread();
         }
 
         private void ActiveFilterOverviewControl_Reset(object sender, EventArgs e)
@@ -180,29 +204,6 @@ namespace LogScraper
             LogExportWorkerManager.WriteToFile(LogViewportControl.Text);
         }
 
-        private void FormLogScraper_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                //Collapse the bottom panel here, so it is still shown in the designer
-                SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
-                btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                LogProviderSelectionControl.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
-                LogProviderSelectionControl.PopulateLogProviders();
-                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
-                //Enforce autosizing because the IDE overrides the control's autosize settings.
-                LogProviderSelectionControl.AutoSize = false;
-                AutoSizeLogProviderSelection();
-            }
-            catch (Exception ex)
-            {
-                ex.LogStackTraceToFile();
-                MessageBox.Show(ex.Message);
-            }
-
-            RepositionLogEntriesTextBox();
-            GitHubUpdateChecker.CheckForUpdateInSeperateThread();
-        }
         #endregion
 
         #region Initiate getting raw log and processing of raw log

@@ -42,11 +42,7 @@ namespace LogScraper.Controls.Configuration
 
         private void LinkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = e.Link.LinkData.ToString(),
-                UseShellExecute = true
-            });
+            Process.Start(new ProcessStartInfo { FileName = e.Link.LinkData.ToString(), UseShellExecute = true });
         }
 
         private async void BtnUpdate_Click(object sender, EventArgs e)
@@ -67,6 +63,13 @@ namespace LogScraper.Controls.Configuration
             CenterControl(LinkGitHub);
             CenterControl(LblOpenExecutableFolder);
             CenterControl(BtnUpdate);
+            PositionMemoryUsageControl();
+        }
+        private void PositionMemoryUsageControl()
+        {
+            // Manually position the memory usage, since it doesnt want to behave normally
+            MemoryUsageControl.Top = GrpAbout.ClientSize.Height - MemoryUsageControl.Height - 2;
+            MemoryUsageControl.Left = GrpAbout.ClientSize.Width - MemoryUsageControl.Width - 2;
         }
         private void CenterControl(Control control)
         {
