@@ -27,6 +27,8 @@ namespace LogScraper.Log.LogAppState
             Range.Changed += (s, e) => UpdateFilterResultWithRange();
             MetadataFilterResult.Changed += (s, e) => UpdateFilterResultWithRange();
 
+            // Combine the various render-related settings into a single LogRenderSettings object
+            Layout.Changed += (s, e) => UpdateRenderSettings();
             RenderOriginalMetadata.Changed += (s, e) => UpdateRenderSettings();
             RenderSeperateMetadataProperties.Changed += (s, e) => UpdateRenderSettings();
             RenderProcessorKinds.Changed += (s, e) => UpdateRenderSettings();
@@ -100,6 +102,11 @@ namespace LogScraper.Log.LogAppState
         public StateSlice<LogRange> ViewportVisibleRange { get; } = new();
 
         /// <summary>
+        /// The list of user-created bookmarks (log entries marked as important by the user for easy reference).
+        /// </summary>
+        public StateSlice<SortedList<int, LogEntry>> Bookmarks { get; } = new();
+
+        /// <summary>
         /// Raised when a reset is requested.
         /// Subscribe to this event in controls or forms to perform their own cleanup.
         /// </summary>
@@ -134,8 +141,8 @@ namespace LogScraper.Log.LogAppState
 
             _resetInProgress = false;
 
-
             UpdateMetadataFilterResult();
+            UpdateRenderSettings();
 
             ResetRequested?.Invoke(this, new ResetEventArgs(keepFilters));
         }
@@ -145,6 +152,8 @@ namespace LogScraper.Log.LogAppState
         /// </summary>
         private void UpdateRenderSettings()
         {
+            if (_resetInProgress) return;
+
             LogRenderSettings logRenderSettings = new()
             {
                 LogLayout = Layout.Value,

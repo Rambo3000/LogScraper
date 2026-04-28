@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
-using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls
 {
     public partial class BookMarksControl : UserControl
     {
-        public event EventHandler BookmarksChanged;
-
         private readonly SortedList<int, LogEntry> _bookmarks = [];
         private LogEntry _selectedLogEntry;
         private List<LogEntry> _filteredBookmarks = [];
@@ -53,8 +49,6 @@ namespace LogScraper.Controls
             RebuildFilteredBookmarks();
             UpdateButtons();
         }
-
-        public IEnumerable<LogEntry> Bookmarks => _bookmarks.Values;
 
         public void UpdateSelectedLogEntry()
         {
@@ -134,8 +128,8 @@ namespace LogScraper.Controls
 
         private void OnBookmarksChanged()
         {
-            BookmarksChanged?.Invoke(this, EventArgs.Empty);
+            // Force set because normal set doesn't trigger after the first set, beacuse of the default equality comparer
+            LogAppState.Instance.Bookmarks.ForceSet(_bookmarks);
         }
-
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
@@ -55,8 +53,6 @@ namespace LogScraper
             LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
             LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
-
-            BookMarksControl.BookmarksChanged += BookMarksControl_BookmarksChanged;
 
             ActiveFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
             ActiveFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
@@ -190,12 +186,6 @@ namespace LogScraper
                 PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
             }
             finally { _repositioningTextBox = false; }
-        }
-
-        private void BookMarksControl_BookmarksChanged(object sender, EventArgs e)
-        {
-            LogViewportControl.UpdateBookMarks(BookMarksControl.Bookmarks);
-            LogTimeLineControl.SetBookmarks([.. BookMarksControl.Bookmarks]);
         }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)

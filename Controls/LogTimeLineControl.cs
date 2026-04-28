@@ -32,7 +32,7 @@ namespace LogScraper.Controls
         private List<LogEntry> errorLogEntriesOutOfRange = [];
 
         // Cached bookmarks
-        private List<LogEntry> allBookmarkLogEntries = [];
+        private IEnumerable<LogEntry> allBookmarkLogEntries = [];
         private List<LogEntry> bookmarkLogEntriesInRange = [];
         private List<LogEntry> bookmarkLogEntriesOutOfRange = [];
         private List<LogEntry> bookmarkLogEntriesNotAvailable = [];
@@ -130,6 +130,7 @@ namespace LogScraper.Controls
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             LogAppState.Instance.ViewportVisibleRange.Changed += (s, e) => SetViewportRange();
+            LogAppState.Instance.Bookmarks.Changed += (s, e) => UpdateBookmarks();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -182,9 +183,9 @@ namespace LogScraper.Controls
         }
 
         /// <summary>Updates the bookmark entries displayed in the timeline.</summary>
-        public void SetBookmarks(List<LogEntry> bookmarks)
+        public void UpdateBookmarks()
         {
-            allBookmarkLogEntries = bookmarks ?? [];
+            allBookmarkLogEntries = LogAppState.Instance.Bookmarks.Value?.Values;
             RebuildFilteredBookmarkMarkers();
             this.Invalidate();
         }
@@ -1098,7 +1099,6 @@ namespace LogScraper.Controls
             buckets.Clear();
             sortedBucketKeys.Clear();
             errorLogEntriesInRange.Clear();
-            allBookmarkLogEntries.Clear();
             bookmarkLogEntriesInRange.Clear();
 
             fullSpanMinimum = default;

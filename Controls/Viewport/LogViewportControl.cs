@@ -41,6 +41,7 @@ namespace LogScraper.Controls.Viewport
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => ScrollToAndSelectLogEntry();
+            LogAppState.Instance.Bookmarks.Changed += (s, e) => UpdateBookMarks();
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -271,9 +272,9 @@ namespace LogScraper.Controls.Viewport
         }
         #endregion
 
-        public void UpdateBookMarks(IEnumerable<LogEntry> logEntries)
+        private void UpdateBookMarks()
         {
-            _bookmarks = logEntries;
+            _bookmarks = LogAppState.Instance.Bookmarks.Value?.Values;
             ApplyBookmarks();
         }
 
