@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using LogScraper.Log.LogAppState;
 using LogScraper.Sources.Adapters;
 using LogScraper.Utilities.Extensions;
 
@@ -16,11 +17,6 @@ namespace LogScraper.Sources.Workers
     /// </remarks>
     internal class SourceProcessingWorker
     {
-        /// <summary>
-        /// Event triggered to notify listeners of status updates, such as errors or success messages.
-        /// </summary>
-        public event Action<string, bool> StatusUpdate;
-
         /// <summary>
         /// Event triggered when log data has been successfully downloaded.
         /// </summary>
@@ -98,7 +94,7 @@ namespace LogScraper.Sources.Workers
         /// <param name="isSucces">Indicates whether the operation was successful.</param>
         protected virtual void OnExceptionOccurred(string message, bool isSucces)
         {
-            StatusUpdate?.Invoke(message, isSucces);
+            LogAppState.Instance.StatusMessage.Set((message, isSucces));
         }
 
         /// <summary>

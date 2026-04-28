@@ -18,9 +18,7 @@ namespace LogScraper.Controls
             Processing,
             Finished
         }
-        public event EventHandler<(string message, bool isSuccess)> StatusUpdate;
         public event EventHandler<string> UriChanged;
-        public event EventHandler<bool> IsSourceValidChanged;
         public event EventHandler CollapseStateChanged;
 
         private bool _isPinned = false;
@@ -89,9 +87,9 @@ namespace LogScraper.Controls
             LogAppState.Instance.Reset(keepFilters: false);
         }
 
-        private void HandleStatusUpdate(string message, bool isSuccess)
+        private void HandleStatusUpdate(string message, bool isSucces)
         {
-            StatusUpdate?.Invoke(this, (message, isSuccess));
+            LogAppState.Instance.StatusMessage.Set((message, isSucces));
         }
 
         private void HandleUriChanged(object sender, string e)
@@ -102,7 +100,7 @@ namespace LogScraper.Controls
 
         private void HandleIsSourceValidChanged(object sender, bool e)
         {
-            IsSourceValidChanged?.Invoke(this, e);
+            LogAppState.Instance.IsSourceValid.Set(e);
 
             // Force expand if source becomes invalid
             if (!e && _isCollapsed)

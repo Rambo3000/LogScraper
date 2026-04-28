@@ -5,6 +5,7 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
+using LogScraper.Sources.Workers;
 
 namespace LogScraper.Log.LogAppState
 {
@@ -107,6 +108,26 @@ namespace LogScraper.Log.LogAppState
         public StateSlice<SortedList<int, LogEntry>> Bookmarks { get; } = new();
 
         /// <summary>
+        /// The timestamp of the last fetched log entry, used for incremental (trail) fetching.
+        /// </summary>
+        public StateSlice<DateTime?> LastTrailTime { get; } = new();
+
+        /// <summary>
+        /// Whether a source processing worker is currently active.
+        /// </summary>
+        public StateSlice<bool> IsSourceProcessingActive { get; } = new();
+
+        /// <summary>
+        /// Whether the currently selected log source is valid and ready to fetch from.
+        /// </summary>
+        public StateSlice<bool> IsSourceValid { get; } = new();
+
+        /// <summary>
+        /// The current status message and whether it represents a success or an error.
+        /// </summary>
+        public StateSlice<(string Message, bool IsSuccess)> StatusMessage { get; } = new();
+
+        /// <summary>
         /// Raised when a reset is requested.
         /// Subscribe to this event in controls or forms to perform their own cleanup.
         /// </summary>
@@ -138,6 +159,8 @@ namespace LogScraper.Log.LogAppState
 
             ViewportSelectedLogEntry.ForceSet(null);
             ViewportVisibleRange.ForceSet(null);
+            LastTrailTime.ForceSet(null);
+            StatusMessage.ForceSet((string.Empty, true));
 
             _resetInProgress = false;
 
@@ -145,6 +168,9 @@ namespace LogScraper.Log.LogAppState
             UpdateRenderSettings();
 
             ResetRequested?.Invoke(this, new ResetEventArgs(keepFilters));
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         /// <summary>

@@ -21,7 +21,9 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: REQUIRED move bookmarks to LogAppState
+    //TODO: REQUIRED move processingStatus to logappstate
+    //TODO: REQUIRED move record buttons to seperate control
+    //TODO: REQUIRED compact form can be lose connection to the main form
     //TODO: REQUIRED move configuration changed status to AppState
     //TODO: search list use collapsed splitcontainer by default
     //TODO: reduce flickering on filter overview control
@@ -43,14 +45,14 @@ namespace LogScraper
 
             FormCompactView.Instance.SetFormLogScraper(this);
 
-            SourceProcessingManager.Instance.QueueLengthUpdate += HandleLogProviderManagerQueueUpdate;
-
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
 
-            LogProviderSelectionControl.StatusUpdate += (s, e) => HandleErrorMessages(e.message, e.isSuccess);
             LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
-            LogProviderSelectionControl.IsSourceValidChanged += HandleIsSourceValidChanged;
             LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
+
+            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
+            LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
+            LogAppState.Instance.StatusMessage.Changed += (s, e) => HandleErrorMessages();
 
             LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
@@ -198,8 +200,6 @@ namespace LogScraper
 
         #region Initiate getting raw log and processing of raw log
 
-        private DateTime? lastTrailTime = null;
-
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
         {
             if (LogAppState.Instance.Layout.Value == null) return;
@@ -211,11 +211,10 @@ namespace LogScraper
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
-                ISourceAdapter logProvider = LogProviderSelectionControl.GetSelectedSourceAdapter(lastTrailTime);
+                ISourceAdapter logProvider = LogProviderSelectionControl.GetSelectedSourceAdapter(LogAppState.Instance.LastTrailTime.Value);
 
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
-                sourceProcessingWorker.StatusUpdate += HandleErrorMessages;
                 sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
                 SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
             }
@@ -255,10 +254,9 @@ namespace LogScraper
                     LogEntryClassifier.Classify(logLayout, logCollection);
                     LogAppState.Instance.LogCollection.ForceSet(logCollection);
                 }
-
-                HandleErrorMessages(string.Empty, true);
+                LogAppState.Instance.StatusMessage.Set((string.Empty, true));
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
-                lastTrailTime = updatedLastTrailTime;
+                LogAppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
             }
             catch (Exception ex)
             {
@@ -266,10 +264,10 @@ namespace LogScraper
             }
         }
 
-        private void ShowException(Exception ex)
+        private static void ShowException(Exception ex)
         {
             ex.LogStackTraceToFile();
-            HandleErrorMessages(ex.Message, false);
+            LogAppState.Instance.StatusMessage.Set((ex.Message, false));
         }
         #endregion
 
@@ -283,12 +281,8 @@ namespace LogScraper
                 TxtErrorMessage.Visible = false;
             }
 
-            UpdateButtonStatus();
-            lastTrailTime = null;
-            HandleErrorMessages(string.Empty, true);
             SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            UpdateButtonStatus();
         }
 
         #endregion
@@ -300,20 +294,10 @@ namespace LogScraper
             SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
         }
 
-        private void HandleErrorMessages(string message, bool isSucces)
+        private void HandleErrorMessages()
         {
-            TxtErrorMessage.Text = message;
-            TxtErrorMessage.Visible = !isSucces;
-        }
-
-        private void HandleLogProviderManagerQueueUpdate()
-        {
-            UpdateButtonStatus();
-        }
-
-        private void HandleIsSourceValidChanged(object sender, bool e)
-        {
-            UpdateButtonStatus();
+            TxtErrorMessage.Text = LogAppState.Instance.StatusMessage.Value.Message;
+            TxtErrorMessage.Visible = !LogAppState.Instance.StatusMessage.Value.IsSuccess;
         }
 
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
@@ -361,9 +345,8 @@ namespace LogScraper
 
         private void UpdateButtonStatus()
         {
-            //TODO: Add worker status to AppState
-            bool downloadingInProgress = SourceProcessingManager.Instance.IsWorkerActive;
-            bool sourceIsValid = LogProviderSelectionControl.IsSourceValid;
+            bool downloadingInProgress = LogAppState.Instance.IsSourceProcessingActive.Value;
+            bool sourceIsValid = LogAppState.Instance.IsSourceValid.Value;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
             if (!downloadingInProgress)
             {

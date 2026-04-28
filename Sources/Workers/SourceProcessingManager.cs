@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using LogScraper.Log.LogAppState;
 using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Sources.Workers
@@ -45,11 +46,6 @@ namespace LogScraper.Sources.Workers
 
         // Indicates whether the queue is currently being processed.
         private bool isProcessingQueue = false;
-
-        /// <summary>
-        /// Event triggered to notify listeners of the current queue length.
-        /// </summary>
-        public event Action QueueLengthUpdate;
 
         // Cancellation token source for the currently active worker.
         private CancellationTokenSource currentWorkercancellationTokenSource;
@@ -127,8 +123,7 @@ namespace LogScraper.Sources.Workers
         /// </summary>
         protected virtual void OnQueueLengthUpdate()
         {
-            // Raise the event on the UI thread.
-            QueueLengthUpdate?.Invoke();
+            LogAppState.Instance.IsSourceProcessingActive.Set(IsWorkerActive);
         }
 
         /// <summary>
