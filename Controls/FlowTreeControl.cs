@@ -18,7 +18,6 @@ namespace LogScraper.Controls
 
         private void FlowTreeControl_Load(object sender, EventArgs e)
         {
-            LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateControls();
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             ItemShowTree.Click += ItemShowTree_Click;
@@ -60,7 +59,7 @@ namespace LogScraper.Controls
             if (updateShowTreeInProgress) return;
 
             BtnTreeView.ImageIndex = showTree ? 1 : 0;
-            BtnTreeView.Enabled = LogAppState.Instance.LogCollectionIsAvailable;
+            BtnTreeView.Enabled = LogAppState.Instance.Layout.Value != null;
             updateShowTreeInProgress = true;
 
             if (CboContentProperties.Items.Count == 0)
