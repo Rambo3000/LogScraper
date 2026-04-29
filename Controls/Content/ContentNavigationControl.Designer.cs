@@ -33,7 +33,7 @@ namespace LogScraper.Controls.Content
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContentNavigationControl));
-            LstLogContent = new System.Windows.Forms.ListBox();
+            LstLogContent = new DoubleBufferedListBox();
             CboLogContentType = new System.Windows.Forms.ComboBox();
             txtSearch = new ClearableTextBoxControl();
             toolTip = new System.Windows.Forms.ToolTip(components);
@@ -129,7 +129,7 @@ namespace LogScraper.Controls.Content
 
         #endregion
 
-        private System.Windows.Forms.ListBox LstLogContent;
+        private DoubleBufferedListBox LstLogContent;
         private System.Windows.Forms.ComboBox CboLogContentType;
         private ClearableTextBoxControl txtSearch;
         private System.Windows.Forms.ToolTip toolTip;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -12,12 +12,16 @@ using LogScraper.Controls.Generic;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Content;
 using LogScraper.Log;
+using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Content
 {
     internal partial class ContentNavigationControl : UserControl
     {
         #region Private objects and initialization
+        private const int ViewportAccentBarWidth = 3;
+        private const int ViewportAccentBarPadding = 0;
+
         private const string DefaulSearchtText = "Filter...";
 
         private bool showTree = false;
@@ -33,6 +37,120 @@ namespace LogScraper.Controls.Content
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout();
             LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => UpdateDisplayedLogEntries();
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
+            LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => OnViewportSelectedLogEntryChanged();
+            LogAppState.Instance.ViewportVisibleRange.Changed += (s, e) => OnViewportVisibleRangeChanged();
+            _rangeDebounceTimer.Tick += RangeDebounceTimer_Tick;
+        }
+
+        #endregion
+
+        #region Viewport state tracking
+
+        private LogEntry _viewportSelectedLogEntry;
+        // Indices into LstLogContent.Items for the viewport range highlight
+        private HashSet<int> _viewportRangeIndices = [];
+        private int _viewportRangeBeforeIndex = -1;
+        private int _viewportRangeAfterIndex = -1;
+
+        private readonly System.Windows.Forms.Timer _rangeDebounceTimer = new() { Interval = 10 };
+
+        private void OnViewportSelectedLogEntryChanged()
+        {
+            LogEntry newEntry = LogAppState.Instance.ViewportSelectedLogEntry.Value;
+            if (newEntry == _viewportSelectedLogEntry) return;
+
+            LogEntry previous = _viewportSelectedLogEntry;
+            _viewportSelectedLogEntry = newEntry;
+
+            // Invalidate only the rows that changed underline state
+            List<int> dirtyIndices = [];
+            for (int i = 0; i < LstLogContent.Items.Count; i++)
+            {
+                if (LstLogContent.Items[i] is not LogContentDisplayItem item) continue;
+                if (item.LogEntry == previous || item.LogEntry == newEntry)
+                    dirtyIndices.Add(i);
+            }
+            LstLogContent.InvalidateItems(dirtyIndices);
+        }
+
+        private void OnViewportVisibleRangeChanged()
+        {
+            // Restart the debounce timer on every scroll event so the redraw
+            // only happens once the user pauses, preventing flicker during fast scrolling.
+            _rangeDebounceTimer.Stop();
+            _rangeDebounceTimer.Start();
+        }
+
+        private void RangeDebounceTimer_Tick(object sender, EventArgs e)
+        {
+            _rangeDebounceTimer.Stop();
+
+            HashSet<int> previousRangeIndices = _viewportRangeIndices;
+            int previousBefore = _viewportRangeBeforeIndex;
+            int previousAfter = _viewportRangeAfterIndex;
+
+            ComputeViewportRangeIndices();
+
+            if (_viewportRangeIndices.SetEquals(previousRangeIndices)
+                && _viewportRangeBeforeIndex == previousBefore
+                && _viewportRangeAfterIndex == previousAfter) return;
+
+            // Invalidate only rows that entered or left the range / boundary
+            HashSet<int> dirtyIndices = new(previousRangeIndices);
+            dirtyIndices.SymmetricExceptWith(_viewportRangeIndices);
+            if (previousBefore >= 0) dirtyIndices.Add(previousBefore);
+            if (previousAfter >= 0) dirtyIndices.Add(previousAfter);
+            if (_viewportRangeBeforeIndex >= 0) dirtyIndices.Add(_viewportRangeBeforeIndex);
+            if (_viewportRangeAfterIndex >= 0) dirtyIndices.Add(_viewportRangeAfterIndex);
+            LstLogContent.InvalidateItems(dirtyIndices);
+        }
+
+        private void ComputeViewportRangeIndices()
+        {
+            _viewportRangeIndices = [];
+            _viewportRangeBeforeIndex = -1;
+            _viewportRangeAfterIndex = -1;
+
+            LogRange range = LogAppState.Instance.ViewportVisibleRange.Value;
+            if (range == null) return;
+
+            int beginIndex = range.Begin?.Index ?? int.MinValue;
+            int endIndex = range.End?.Index ?? int.MaxValue;
+
+            int lastBeforeIdx = -1;
+            int firstAfterIdx = -1;
+
+            for (int i = 0; i < LstLogContent.Items.Count; i++)
+            {
+                if (LstLogContent.Items[i] is not LogContentDisplayItem item) continue;
+                int idx = item.LogEntry.Index;
+
+                if (idx >= beginIndex && idx <= endIndex)
+                {
+                    _viewportRangeIndices.Add(i);
+                }
+                else if (idx < beginIndex)
+                {
+                    lastBeforeIdx = i;
+                }
+                else if (idx > endIndex && firstAfterIdx == -1)
+                {
+                    firstAfterIdx = i;
+                }
+            }
+
+            if (_viewportRangeIndices.Count == 0)
+            {
+                // No items in range — highlight the nearest before and after as boundary
+                _viewportRangeBeforeIndex = lastBeforeIdx;
+                _viewportRangeAfterIndex = firstAfterIdx;
+            }
+            else
+            {
+                // Items are in range — always show boundary items for a consistent experience
+                _viewportRangeBeforeIndex = lastBeforeIdx;
+                _viewportRangeAfterIndex = firstAfterIdx;
+            }
         }
 
         #endregion
@@ -150,6 +268,7 @@ namespace LogScraper.Controls.Content
 
                 LstLogContent.Items.AddRange([.. newLogEntries.Skip(currentCount)]);
                 LstLogContent.ResumeDrawing();
+                ComputeViewportRangeIndices();
                 return;
             }
 
@@ -175,7 +294,9 @@ namespace LogScraper.Controls.Content
             // If no log entry was previously selected, resume drawing and return
             if (selectedLogEntry == null)
             {
+                ComputeViewportRangeIndices();
                 LstLogContent.ResumeDrawing();
+                LstLogContent.ClearEmptyArea();
                 return;
             }
 
@@ -196,12 +317,14 @@ namespace LogScraper.Controls.Content
                     break;
                 }
             }
+            ComputeViewportRangeIndices();
 
             LstLogContent.ResumeDrawing();
+            LstLogContent.ClearEmptyArea();
         }
         #endregion
 
-        #region Public methods and properties
+        #region Public methods
 
         public LogEntry SelectedLogEntry
         {
@@ -245,54 +368,108 @@ namespace LogScraper.Controls.Content
         #endregion
 
         #region Draw listbox items
+
         private void LstLogContent_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index < 0) return;
-
-            e.DrawBackground();
 
             // Fetch the item
             if (LstLogContent.Items[e.Index] is not LogContentDisplayItem item || item.ContentValue == null) return;
 
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            bool isViewportSelected = item.LogEntry == _viewportSelectedLogEntry;
+            bool isInRange = _viewportRangeIndices.Contains(e.Index);
+            bool isBoundary = e.Index == _viewportRangeBeforeIndex || e.Index == _viewportRangeAfterIndex;
 
             //Disable being out of scope for now
             //bool isOutOfScope = IslogContentDisplayItemOutOfScope(item);
             bool isOutOfScope = false;
 
-            if (isOutOfScope && isSelected) g.FillRectangle(Brushes.LightGray, e.Bounds);
-            else if (isSelected) g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
-            else g.FillRectangle(SystemBrushes.Control, e.Bounds);
+            // Determine background
+            if (isOutOfScope && isSelected)
+                g.FillRectangle(Brushes.LightGray, e.Bounds);
+            else if (isSelected)
+                g.FillRectangle(LogScraperBrushes.BlueSelectedLogline, e.Bounds);
+            else
+                g.FillRectangle(SystemBrushes.Control, e.Bounds);
 
+            // Draw left accent bar for viewport range
+            if (isInRange || isBoundary)
+            {
+                Rectangle accentRect = new(e.Bounds.Left, e.Bounds.Top, ViewportAccentBarWidth, e.Bounds.Height);
+                if (isInRange)
+                {
+                    g.FillRectangle(LogScraperBrushes.ViewportRangeAccent, accentRect);
+                }
+                else
+                {
+                    bool isBefore = e.Index == _viewportRangeBeforeIndex;
+                    var (beforeBrush, afterBrush) = GetBoundaryBrushes(accentRect);
+                    g.FillRectangle(isBefore ? beforeBrush : afterBrush, accentRect);
+                }
+            }
             if (item.LogEntry.IsErrorLogEntry && !SelectedLogContentProperty.IsErrorProperty)
             {
-                e.Graphics.DrawString(item.TimeStamp + " ERROR", LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
+                DrawItemText(g, e, item, item.TimeStamp + " ERROR", isSelected, isOutOfScope, isViewportSelected);
                 e.DrawFocusRectangle();
                 return;
             }
 
             if (item.FlowTreeNode != null && showTree)
-                DrawFlowTreeNode(e, item, g, isSelected, isOutOfScope);
+                DrawFlowTreeNode(e, item, g, isSelected, isOutOfScope, isViewportSelected);
             else
             {
                 string value = item.ContentValue.Value?.Length > 128 ? item.ContentValue.Value[0..127] : item.ContentValue.Value ?? string.Empty;
                 string truncatedValue = TruncateTextToFit(item.TimeStamp + " " + value, g, e.Bounds.Width);
-                e.Graphics.DrawString(truncatedValue, LstLogContent.Font, DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope), e.Bounds);
+                DrawItemText(g, e, item, truncatedValue, isSelected, isOutOfScope, isViewportSelected);
             }
 
             e.DrawFocusRectangle();
+        }
+
+        private void DrawItemText(Graphics g, DrawItemEventArgs e, LogContentDisplayItem item, string text, bool isSelected, bool isOutOfScope, bool isViewportSelected)
+        {
+            Color textColor = DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope);
+            Font font = isViewportSelected ? UnderlineFont : LstLogContent.Font;
+            int textLeft = e.Bounds.Left + ViewportAccentBarWidth + ViewportAccentBarPadding;
+            Rectangle textBounds = new(textLeft, e.Bounds.Top, e.Bounds.Right - textLeft, e.Bounds.Height);
+            TextRenderer.DrawText(g, text, font, textBounds, textColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+        }
+
+        private Font _underlineFont;
+        private Font UnderlineFont => _underlineFont ??= new Font(LstLogContent.Font, FontStyle.Underline);
+
+        private LinearGradientBrush _boundaryBeforeBrush;
+        private LinearGradientBrush _boundaryAfterBrush;
+        private int _cachedBoundaryBrushItemHeight = -1;
+        private int _cachedBoundaryBrushItemTop = -1;
+
+        private (LinearGradientBrush before, LinearGradientBrush after) GetBoundaryBrushes(Rectangle accentRect)
+        {
+            if (_cachedBoundaryBrushItemHeight != accentRect.Height || _cachedBoundaryBrushItemTop != accentRect.Top)
+            {
+                _boundaryBeforeBrush?.Dispose();
+                _boundaryAfterBrush?.Dispose();
+                Color accentColor = ((SolidBrush)LogScraperBrushes.ViewportRangeAccent).Color;
+                Color controlColor = SystemColors.Control;
+                _boundaryBeforeBrush = new LinearGradientBrush(accentRect, controlColor, accentColor, LinearGradientMode.Vertical);
+                _boundaryAfterBrush = new LinearGradientBrush(accentRect, accentColor, controlColor, LinearGradientMode.Vertical);
+                _cachedBoundaryBrushItemHeight = accentRect.Height;
+                _cachedBoundaryBrushItemTop = accentRect.Top;
+            }
+            return (_boundaryBeforeBrush, _boundaryAfterBrush);
         }
 
         private static readonly Pen PenForDrawingLines = new(Color.Gray) { DashStyle = DashStyle.Dot };
 
         private int TimeDescriptionFixedWidth = -1;
 
-        private void DrawFlowTreeNode(DrawItemEventArgs e, LogContentDisplayItem item, Graphics g, bool isSelected, bool isOutOfScope)
+        private void DrawFlowTreeNode(DrawItemEventArgs e, LogContentDisplayItem item, Graphics g, bool isSelected, bool isOutOfScope, bool isViewportSelected)
         {
             // Indentation
             const int indentPerLevel = 10;
-            int timeX = e.Bounds.Left;
+            int timeX = e.Bounds.Left + ViewportAccentBarWidth + ViewportAccentBarPadding;
 
             if (TimeDescriptionFixedWidth == -1)
             {
@@ -332,11 +509,13 @@ namespace LogScraper.Controls.Content
                 g.DrawLine(PenForDrawingLines, lineStartX, lineY, textX, lineY);
             }
 
-            // Prepare fonts and brushes
-            Brush textBrush = DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope);
+            // Prepare color and font
+            Color textColor = DetermineTextColorBasedOnLogEntryPosition(item, isSelected, isOutOfScope);
+            Font font = isViewportSelected ? UnderlineFont : LstLogContent.Font;
 
             // Draw TimeDescription
-            g.DrawString(item.TimeStamp, LstLogContent.Font, textBrush, timeX, e.Bounds.Top);
+            Rectangle timeBounds = new(timeX, e.Bounds.Top, TimeDescriptionFixedWidth, e.Bounds.Height);
+            TextRenderer.DrawText(g, item.TimeStamp, font, timeBounds, textColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
 
             // Truncate description if it doesn’t fit
 
@@ -344,7 +523,8 @@ namespace LogScraper.Controls.Content
             string truncatedValue = TruncateTextToFit(value, g, e.Bounds.Right - textX);
 
             // Draw text
-            g.DrawString(truncatedValue, LstLogContent.Font, textBrush, textX, e.Bounds.Top);
+            Rectangle valueBounds = new(textX, e.Bounds.Top, e.Bounds.Right - textX, e.Bounds.Height);
+            TextRenderer.DrawText(g, truncatedValue, font, valueBounds, textColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
         }
 
         private string TruncateTextToFit(string text, Graphics graphics, int maxWidth)
@@ -366,10 +546,10 @@ namespace LogScraper.Controls.Content
             return truncatedText;
         }
 
-        private static Brush DetermineTextColorBasedOnLogEntryPosition(LogContentDisplayItem logContentDisplayItem, bool isSelected, bool isOutOfScope)
+        private static Color DetermineTextColorBasedOnLogEntryPosition(LogContentDisplayItem logContentDisplayItem, bool isSelected, bool isOutOfScope)
         {
-            if (isOutOfScope) return isSelected ? Brushes.Gray : LogScraperBrushes.GrayLogEntriesOutOfScope;
-            return logContentDisplayItem.LogEntry.IsErrorLogEntry ? Brushes.DarkRed : SystemBrushes.ControlText;
+            if (isOutOfScope) return isSelected ? Color.Gray : Color.FromArgb(200, 200, 200);
+            return logContentDisplayItem.LogEntry.IsErrorLogEntry ? Color.DarkRed : SystemColors.ControlText;
         }
         #endregion
 
