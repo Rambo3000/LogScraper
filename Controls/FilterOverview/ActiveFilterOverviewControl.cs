@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
@@ -137,7 +137,6 @@ namespace LogScraper.Controls.FilterOverview
 
             _errorEntriesCollectionCount = LogAppState.Instance.LogCollection.Value?.ErrorMask?.CountSetBits() ?? 0;
             _errorEntriesFilterResultWithRangeCount = LogAppState.Instance.FilterResultWithRange.Value?.ErrorMask?.CountSetBits() ?? 0;
-            SyncErrorChip();
             RecalculateLayout();
         }
 
@@ -431,13 +430,20 @@ namespace LogScraper.Controls.FilterOverview
         private bool IsAnyFilterActive() =>
             (_metadataFilters?.Count > 0) || (_logRange?.Begin != null) || (_logRange?.End != null);
 
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, bool wParam, int lParam);
+        private const int WM_SETREDRAW = 11;
+
         private void RecalculateLayout()
         {
             if (_inLayout) return;
             _inLayout = true;
             try
             {
+                SendMessage(FlowLayoutFilterChips.Handle, WM_SETREDRAW, false, 0);
                 SuspendLayout();
+                FlowLayoutFilterChips.SuspendLayout();
+                SyncErrorChip();
 
                 int labelY = (ChipHeight - LblCount.Height) / 2;
                 LblCount.Location = new Point(Width - LblCount.Width, labelY);
@@ -467,7 +473,10 @@ namespace LogScraper.Controls.FilterOverview
                 FlowLayoutFilterChips.Height = flowHeight;
                 Height = flowHeight;
 
+                FlowLayoutFilterChips.ResumeLayout(true);
                 ResumeLayout(true);
+                SendMessage(FlowLayoutFilterChips.Handle, WM_SETREDRAW, true, 0);
+                FlowLayoutFilterChips.Refresh();
             }
             finally
             {
