@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Windows.Forms;
 
 namespace LogScraper.Controls.Generic
@@ -204,7 +205,7 @@ namespace LogScraper.Controls.Generic
 
         #region Collapse / Expand
 
-        private void Collapse()
+        public void Collapse()
         {
             int totalSize = Orientation == Orientation.Vertical ? ClientSize.Width : ClientSize.Height;
             _savedSplitterRatio = totalSize > 0 ? (double)SplitterDistance / totalSize : 0.5;
@@ -230,7 +231,7 @@ namespace LogScraper.Controls.Generic
             Invalidate();
         }
 
-        private void Expand()
+        public void Expand()
         {
             _isCollapsed = false;
 
@@ -338,28 +339,36 @@ namespace LogScraper.Controls.Generic
 
         private void DrawCollapsedBarText(Graphics graphics, Rectangle barRect)
         {
-            using Font font = new(Font.FontFamily, 8f, FontStyle.Regular);
+            using Font font = new(Font.FontFamily, 8f, FontStyle.Regular, GraphicsUnit.Point);
 
             Color textColor = _isPressedCollapsedBar
                 ? Color.White
                 : SystemColors.ControlDarkDark;
-            using SolidBrush textBrush = new(textColor);
 
             if (Orientation == Orientation.Vertical)
             {
-                int textStartY = _triangleHitRect.Bottom + 6;
+                // TextRenderer cannot handle transformed canvases, so keep DrawString for the rotated vertical case.
+                TextRenderingHint prevHint = graphics.TextRenderingHint;
+                graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+
+                int textStartY = _triangleHitRect.Bottom;
                 float cx = barRect.X + barRect.Width / 2f;
 
+                using SolidBrush textBrush = new(textColor);
                 graphics.TranslateTransform(cx, textStartY);
                 graphics.RotateTransform(90f);
                 graphics.DrawString(_textSplitter, font, textBrush, 0f, -font.Height / 2f);
                 graphics.ResetTransform();
+
+                graphics.TextRenderingHint = prevHint;
             }
             else
             {
-                int textStartX = _triangleHitRect.Right + 6;
-                float cy = barRect.Y + barRect.Height / 2f;
-                graphics.DrawString(_textSplitter, font, textBrush, textStartX, cy - font.Height / 2f);
+                int textStartX = _triangleHitRect.Right;
+                Size textSize = TextRenderer.MeasureText(_textSplitter, font);
+                int textY = barRect.Y + (barRect.Height - textSize.Height) / 2;
+                TextRenderer.DrawText(graphics, _textSplitter, font, new Point(textStartX, textY), textColor,
+                    TextFormatFlags.Default);
             }
         }
 

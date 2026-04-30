@@ -234,7 +234,7 @@ namespace LogScraper
             // 
             // SplitContainerViewportAndSearchResultList
             // 
-            SplitContainerViewportAndSearchResultList.CollapseablePanel = CollapsePanel.None;
+            SplitContainerViewportAndSearchResultList.CollapseablePanel = CollapsePanel.Panel2;
             SplitContainerViewportAndSearchResultList.Dock = System.Windows.Forms.DockStyle.Fill;
             SplitContainerViewportAndSearchResultList.Location = new System.Drawing.Point(0, 0);
             SplitContainerViewportAndSearchResultList.Name = "SplitContainerViewportAndSearchResultList";

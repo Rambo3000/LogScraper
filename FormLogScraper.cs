@@ -27,10 +27,6 @@ namespace LogScraper
     //TODO: move configuration changed status to AppState
     
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
-
-    //TODO: search list use collapsed splitcontainer by default
-
-    //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 
     //TODO: color additional log lines?
@@ -115,6 +111,8 @@ namespace LogScraper
             ErrorListControl.ShowEntries();
             ErrorListControl.Visible = true;
             SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
+            SplitContainerViewportAndSearchResultList.TextSplitter = "Errors";
+            SplitContainerViewportAndSearchResultList.Expand();
         }
 
         private void UsrLogProviderSelection_CollapseStateChanged(object sender, EventArgs e)
@@ -154,6 +152,8 @@ namespace LogScraper
                 ErrorListControl.Visible = false;
                 SearchResultListControl.Visible = true;
                 SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
+                SplitContainerViewportAndSearchResultList.TextSplitter = $"Zoekresultaten ({settings.SearchText})";
+                SplitContainerViewportAndSearchResultList.Expand();
             }
             if (SearchResultListControl.Visible) SearchResultListControl.UpdateSearchResults(settings);
         }
