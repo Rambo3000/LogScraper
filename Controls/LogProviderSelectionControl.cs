@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Processing;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 
@@ -12,12 +13,6 @@ namespace LogScraper.Controls
 {
     public partial class LogProviderSelectionControl : UserControl
     {
-        public enum StatusType
-        {
-            Retrieving,
-            Processing,
-            Finished
-        }
         public event EventHandler<string> UriChanged;
         public event EventHandler CollapseStateChanged;
 
@@ -44,20 +39,26 @@ namespace LogScraper.Controls
             }
         }
 
-        public void UpdateStatus(StatusType status)
+        private void UpdateProcessingStatus()
         {
-            if (status == StatusType.Retrieving)
+            ProcessingStatus status = LogAppState.Instance.ProcessingStatus.Value;
+            if (status == ProcessingStatus.Retrieving)
             {
                 LblStatusIcon.ImageIndex = 0;
                 toolTip1.SetToolTip(LblStatusIcon, "Data ontvangen...");
             }
-            else if (status == StatusType.Processing)
+            else if (status == ProcessingStatus.Processing)
             {
                 LblStatusIcon.ImageIndex = 1;
                 toolTip1.SetToolTip(LblStatusIcon, "Data verwerken...");
             }
+            else if (status == ProcessingStatus.Waiting)
+            {
+                LblStatusIcon.ImageIndex = 2;
+                toolTip1.SetToolTip(LblStatusIcon, "Wachten...");
+            }
 
-                LblStatusIcon.Visible = status != StatusType.Finished;
+            LblStatusIcon.Visible = status != ProcessingStatus.Idle;
 
             //Force UI update to reflect status change immediately
             Application.DoEvents();
@@ -74,6 +75,7 @@ namespace LogScraper.Controls
         private void LogProviderSelectionControl_Load(object sender, EventArgs e)
         {
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
+            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
             AttachEventHandlers();
         }
 

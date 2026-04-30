@@ -21,8 +21,8 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: move processingStatus to logappstate
     //TODO: record buttons to seperate control
+
     //TODO: compact form can be lose connection to the main form
     //TODO: move configuration changed status to AppState
     
@@ -208,7 +208,7 @@ namespace LogScraper
             {
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
-                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
+                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
@@ -230,7 +230,7 @@ namespace LogScraper
             }
         }
 
-        private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime)
+        private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime, bool isContinuous)
         {
             try
             {
@@ -240,7 +240,7 @@ namespace LogScraper
                 bool newLogEntriesReceived = false;
                 try
                 {
-                    LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Processing);
+                    LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Processing);
                     newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, logCollection, logLayout);
                 }
                 catch (Exception ex)
@@ -258,6 +258,7 @@ namespace LogScraper
                 LogAppState.Instance.StatusMessage.Set((string.Empty, true));
                 FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 LogAppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
+                if (isContinuous) LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Waiting);
             }
             catch (Exception ex)
             {
@@ -310,7 +311,7 @@ namespace LogScraper
             }
             else
             {
-                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Retrieving);
+                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
@@ -346,27 +347,30 @@ namespace LogScraper
 
         private void UpdateButtonStatus()
         {
-            bool downloadingInProgress = LogAppState.Instance.IsSourceProcessingActive.Value;
+            bool isSourceProcessingActive = LogAppState.Instance.IsSourceProcessingActive.Value;
             bool sourceIsValid = LogAppState.Instance.IsSourceValid.Value;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
-            if (!downloadingInProgress)
+            if (!isSourceProcessingActive)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                LogProviderSelectionControl.UpdateStatus(LogProviderSelectionControl.StatusType.Finished);
+                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Idle);
             }
 
-            BtnRecord.Visible = !downloadingInProgress;
-            BtnRecord.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
-            BtnRecordWithTimer.Enabled = !downloadingInProgress && sourceIsValid && layoutSelected;
+            BtnRecord.Visible = !isSourceProcessingActive;
+            BtnRecord.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
+            BtnRecordWithTimer.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
             BtnFormRecord.Enabled = sourceIsValid && layoutSelected;
-            BtnStop.Visible = downloadingInProgress;
-            BtnStop.Enabled = downloadingInProgress;
-            BtnConfig.Enabled = !downloadingInProgress;
+            BtnStop.Visible = isSourceProcessingActive;
+            BtnStop.Enabled = isSourceProcessingActive;
+            BtnConfig.Enabled = !isSourceProcessingActive;
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
 
-        public void BtnRecord_Click(object sender, EventArgs e) => FetchRawLogAsync();
+        public void BtnRecord_Click(object sender, EventArgs e)
+        {
+            FetchRawLogAsync();
+        }
 
         public void BtnRecordWithTimer_Click(object sender, EventArgs e) =>
             FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);

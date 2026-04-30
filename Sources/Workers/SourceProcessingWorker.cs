@@ -20,7 +20,7 @@ namespace LogScraper.Sources.Workers
         /// <summary>
         /// Event triggered when log data has been successfully downloaded.
         /// </summary>
-        public event Action<string[], DateTime?> DownloadCompleted;
+        public event Action<string[], DateTime?, bool> DownloadCompleted;
 
         /// <summary>
         /// Event triggered to notify listeners of progress updates during the worker's execution.
@@ -36,13 +36,14 @@ namespace LogScraper.Sources.Workers
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         public async Task DoWorkAsync(ISourceAdapter sourceAdapter, int intervalInSeconds, int durationInSeconds, CancellationToken cancellationToken)
         {
+            bool isContinuous = durationInSeconds != -1;
             try
             {
-                if (durationInSeconds == -1)
+                if (!isContinuous)
                 {
                     // Perform a single log retrieval if duration is -1.
                     OnProgressUpdate(0, durationInSeconds);
-                    await GetLogFromSourceAdapter(sourceAdapter);
+                    await GetLogFromSourceAdapter(sourceAdapter, isContinuous);
                 }
                 else
                 {
@@ -53,7 +54,7 @@ namespace LogScraper.Sources.Workers
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
-                        await GetLogFromSourceAdapter(sourceAdapter);
+                        await GetLogFromSourceAdapter(sourceAdapter, isContinuous);
 
                         // Wait for the specified interval before the next retrieval.
                         await Task.Delay(intervalInSeconds * 1000, CancellationToken.None);
@@ -75,7 +76,7 @@ namespace LogScraper.Sources.Workers
         /// Retrieves log data from the source adapter and raises the <see cref="DownloadCompleted"/> event.
         /// </summary>
         /// <param name="sourceAdapter">The source adapter to retrieve log data from.</param>
-        private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter)
+        private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter, bool isContinuous)
         {
             // Retrieve the raw log data as a string.
             string rawLog = await sourceAdapter.GetLogAsync();
@@ -84,7 +85,7 @@ namespace LogScraper.Sources.Workers
             string[] rawLogArray = rawLog.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None);
 
             // Notify listeners that the log data has been downloaded.
-            OnDownloadCompleted(rawLogArray, sourceAdapter.GetLastTrailTime());
+            OnDownloadCompleted(rawLogArray, sourceAdapter.GetLastTrailTime(), isContinuous);
         }
 
         /// <summary>
@@ -102,9 +103,9 @@ namespace LogScraper.Sources.Workers
         /// </summary>
         /// <param name="rawLog">The downloaded log data as an array of lines.</param>
         /// <param name="lastTrailTime">The timestamp of the last log trail, if applicable.</param>
-        protected virtual void OnDownloadCompleted(string[] rawLog, DateTime? lastTrailTime)
+        protected virtual void OnDownloadCompleted(string[] rawLog, DateTime? lastTrailTime, bool isContinuous)
         {
-            DownloadCompleted?.Invoke(rawLog, lastTrailTime);
+            DownloadCompleted?.Invoke(rawLog, lastTrailTime, isContinuous);
         }
 
         /// <summary>

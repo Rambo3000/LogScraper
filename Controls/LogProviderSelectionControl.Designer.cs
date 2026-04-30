@@ -198,6 +198,7 @@ namespace LogScraper.Controls
             imageListStatus.TransparentColor = System.Drawing.Color.Transparent;
             imageListStatus.Images.SetKeyName(0, "download 16x16.png");
             imageListStatus.Images.SetKeyName(1, "cogs-custom 16x16.png");
+            imageListStatus.Images.SetKeyName(2, "sleep 16x16.png");
             // 
             // PnlLogProviders
             // 

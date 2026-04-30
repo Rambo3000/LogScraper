@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
+using LogScraper.Log.Processing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
-using LogScraper.Sources.Workers;
 
 namespace LogScraper.Log.LogAppState
 {
@@ -116,6 +116,11 @@ namespace LogScraper.Log.LogAppState
         /// Whether a source processing worker is currently active.
         /// </summary>
         public StateSlice<bool> IsSourceProcessingActive { get; } = new();
+
+        /// <summary>
+        /// The current processing status of the log source, used to display appropriate messages or indicators in the UI.
+        /// </summary>
+        public StateSlice<ProcessingStatus> ProcessingStatus { get; } = new();
 
         /// <summary>
         /// Whether the currently selected log source is valid and ready to fetch from.
