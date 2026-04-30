@@ -93,27 +93,27 @@ namespace LogScraper.Controls
             cboLogLayout.TabIndex = 30;
             cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
-            // usrKubernetes
+            // KubernetesProviderControl
             // 
             KubernetesProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
             KubernetesProviderControl.Location = new System.Drawing.Point(0, 0);
-            KubernetesProviderControl.Name = "usrKubernetes";
+            KubernetesProviderControl.Name = "KubernetesProviderControl";
             KubernetesProviderControl.Size = new System.Drawing.Size(184, 119);
             KubernetesProviderControl.TabIndex = 8;
             // 
-            // usrRuntime
+            // RuntimeProviderControl
             // 
             RuntimeProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
             RuntimeProviderControl.Location = new System.Drawing.Point(0, 0);
-            RuntimeProviderControl.Name = "usrRuntime";
+            RuntimeProviderControl.Name = "RuntimeProviderControl";
             RuntimeProviderControl.Size = new System.Drawing.Size(184, 119);
             RuntimeProviderControl.TabIndex = 0;
             // 
-            // usrFileLogProvider
+            // FileProviderControl
             // 
             FileProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
             FileProviderControl.Location = new System.Drawing.Point(0, 0);
-            FileProviderControl.Name = "usrFileLogProvider";
+            FileProviderControl.Name = "FileProviderControl";
             FileProviderControl.Size = new System.Drawing.Size(184, 119);
             FileProviderControl.TabIndex = 3;
             // 
@@ -246,6 +246,7 @@ namespace LogScraper.Controls
             Controls.Add(lblProviderDescription);
             Name = "LogProviderSelectionControl";
             Size = new System.Drawing.Size(184, 207);
+            Load += LogProviderSelectionControl_Load;
             PnlLogProviders.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();

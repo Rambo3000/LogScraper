@@ -45,11 +45,19 @@ namespace LogScraper.Controls
         }
 
         public void UpdateStatus(StatusType status)
-        { 
-            if (status == StatusType.Retrieving) LblStatusIcon.ImageIndex = 0;
-            else if (status == StatusType.Processing) LblStatusIcon.ImageIndex = 1;
+        {
+            if (status == StatusType.Retrieving)
+            {
+                LblStatusIcon.ImageIndex = 0;
+                toolTip1.SetToolTip(LblStatusIcon, "Data ontvangen...");
+            }
+            else if (status == StatusType.Processing)
+            {
+                LblStatusIcon.ImageIndex = 1;
+                toolTip1.SetToolTip(LblStatusIcon, "Data verwerken...");
+            }
 
-            LblStatusIcon.Visible = status != StatusType.Finished;
+                LblStatusIcon.Visible = status != StatusType.Finished;
 
             //Force UI update to reflect status change immediately
             Application.DoEvents();
@@ -58,10 +66,15 @@ namespace LogScraper.Controls
         public LogProviderSelectionControl()
         {
             InitializeComponent();
-            AttachEventHandlers();
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
             ExpandedHeight = Height;
+        }
+
+        private void LogProviderSelectionControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
+            AttachEventHandlers();
         }
 
         private void AttachEventHandlers()
@@ -259,8 +272,9 @@ namespace LogScraper.Controls
             }
         }
 
-        public void SetEnabled(bool enabled)
+        public void SetEnabled()
         {
+            bool enabled = !LogAppState.Instance.IsSourceProcessingActive.Value;
             cboLogProvider.Enabled = enabled;
             cboLogLayout.Enabled = enabled;
             PnlLogProviders.Enabled = enabled;

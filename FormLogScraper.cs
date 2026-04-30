@@ -27,7 +27,6 @@ namespace LogScraper
     //TODO: move configuration changed status to AppState
     
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
-    //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 
     //TODO: color additional log lines?
     //TODO: Add key shortcuts like F3/shift F3
@@ -363,8 +362,6 @@ namespace LogScraper
             BtnStop.Visible = downloadingInProgress;
             BtnStop.Enabled = downloadingInProgress;
             BtnConfig.Enabled = !downloadingInProgress;
-            LogProviderSelectionControl.Enabled = !downloadingInProgress;
-            LogProviderSelectionControl.SetEnabled(!downloadingInProgress);
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
