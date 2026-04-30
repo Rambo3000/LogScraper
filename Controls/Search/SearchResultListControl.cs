@@ -209,7 +209,7 @@ namespace LogScraper.Controls.Search
                 return results;
             }
 
-            LogRenderSettings renderSettings = searchSettings.LogRenderSettings;
+            LogRenderSettings renderSettings = LogAppState.Instance.RenderSettings.Value;
 
             for (int i = 0; i < entries.Count; i++)
             {

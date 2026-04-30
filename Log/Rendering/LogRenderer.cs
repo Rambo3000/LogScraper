@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using LogScraper.Log.Content;
+using LogScraper.Log.Filtering;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Metadata;
 using LogScraper.LogPostProcessors;
@@ -118,16 +119,21 @@ namespace LogScraper.Log.Rendering
         /// <param name="logRenderSettings">The settings that determine how each log entry is formatted. Cannot be null.</param>
         /// <param name="logContentPropertyForFlowTree">The log content property used to build the flow tree structure. Can be null.</param>
         /// <param name="logFlowTree">The list of log flow tree nodes representing the hierarchical structure of log entries. Can be null.</param>
-        /// <param name="logPostProcessorKinds">The list of log post-processor kinds to consider when calculating visual line spans.</param>
         /// <returns>A string containing all log entries formatted according to the specified settings.</returns>
-        public static string RenderLogEntriesAsString(List<LogEntry> logEntries, LogRenderSettings logRenderSettings, LogContentProperty logContentPropertyForFlowTree, LogFlowTree logFlowTree, List<LogPostProcessorKind> logPostProcessorKinds)
+        public static string RenderLogEntriesAsString(LogFilterResultWithRange filterResultWithRange, LogRenderSettings logRenderSettings)
         {
-            bool showTree = logFlowTree != null && logFlowTree.LogEntryDictionary != null && logContentPropertyForFlowTree != null;
+            List<LogEntry> logEntries = filterResultWithRange.LogEntries;
+            LogContentProperty logContentPropertyForFlowTree  = logRenderSettings.LogFlowTreeRenderSettings?.LogContentProperty;
+
+            bool showTree = logRenderSettings?.LogFlowTreeRenderSettings?.ShowTree ?? false && logContentPropertyForFlowTree != null;
+            LogFlowTree logFlowTree = showTree ? filterResultWithRange.MetadataFilterResult.LogFlowTrees[logContentPropertyForFlowTree] : null;
+            showTree = showTree && logFlowTree != null && logFlowTree.LogEntryDictionary != null;
 
             // Pre-size the builder with a rough estimate to avoid internal reallocs on large logs.
             StringBuilder stringBuilder = new(logEntries.Count * 120);
 
             // Set the log post processor kinds to null if the list is empty to avoid unnecessary processing
+            List<LogPostProcessorKind> logPostProcessorKinds = logRenderSettings.LogPostProcessorKinds;
             if (logPostProcessorKinds != null && logPostProcessorKinds.Count == 0) logPostProcessorKinds = null;
 
             // Check if the flow tree content item is available

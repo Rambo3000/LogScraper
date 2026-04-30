@@ -171,7 +171,6 @@ namespace LogScraper.Controls.Content
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
         private System.Windows.Forms.Button BtnShowTree;
-        private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Button BtnAutoScroll;
         private System.Windows.Forms.ImageList ImageListTreeView;
         private System.Windows.Forms.ImageList ImageListAutoScroll;

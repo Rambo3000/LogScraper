@@ -116,15 +116,8 @@ namespace LogScraper.Controls.Viewport
             // Do this before updateing the text to preserve scroll position
             LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.FirstVisibleLine, _logEntriesRenderMapCache, out LogEntryRenderPosition preRenderTopLogEntryRenderPosition);
 
-            // Optional flow tree visualization based on the selected content property
-            LogFlowTree logFlowTree = null;
-            if (_logRenderSettings.LogFlowTreeRenderSettings != null && _logRenderSettings.LogFlowTreeRenderSettings.ShowTree && _logRenderSettings.LogFlowTreeRenderSettings.LogContentProperty != null)
-            {
-                logFlowTree = _logFilterResultWithRange.MetadataFilterResult.LogFlowTrees[_logRenderSettings.LogFlowTreeRenderSettings.LogContentProperty];
-            }
-
             // Render all visible log entries into a single text representation
-            Text = LogRenderer.RenderLogEntriesAsString(visibleLogEntries, _logRenderSettings, _logRenderSettings.LogFlowTreeRenderSettings.LogContentProperty, logFlowTree, _logRenderSettings.LogPostProcessorKinds);
+            Text = LogRenderer.RenderLogEntriesAsString(_logFilterResultWithRange, _logRenderSettings);
 
             // Build a render map that calculates the visual line index for each log entry based on the rendered text and active post-processors
             LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(visibleLogEntries, _logRenderSettings.LogPostProcessorKinds, sourceLogCollection.LogEntries.Count);

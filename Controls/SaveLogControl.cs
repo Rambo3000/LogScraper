@@ -25,16 +25,15 @@ namespace LogScraper.Controls
 
             LogRenderSettings logRenderSettings = new()
             {
-
                 LogLayout = LogAppState.Instance.Layout.Value,
                 ShowOriginalMetadata = true
             };
 
-            List<LogEntry> logEntriesToRender = LogAppState.Instance.FilterResultWithRange.Value.LogEntries;
-            string renderedLog = LogRenderer.RenderLogEntriesAsString(logEntriesToRender, logRenderSettings, null, null, null);
+            string renderedLog = LogRenderer.RenderLogEntriesAsString(LogAppState.Instance.FilterResultWithRange.Value, logRenderSettings);
 
             if (renderedLog != null)
             {
+                List<LogEntry> logEntriesToRender = LogAppState.Instance.FilterResultWithRange.Value.LogEntries;
                 using SaveFileDialog saveFileDialog = new()
                 {
                     Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",

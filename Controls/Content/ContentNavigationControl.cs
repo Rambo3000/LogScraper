@@ -16,10 +16,11 @@ using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Content
 {
+    //TODO: fix issue where last item in the list is showing up double because the background is not reset
     internal partial class ContentNavigationControl : UserControl
     {
         #region Private objects and initialization
-        private const int ViewportAccentBarWidth = 3;
+        private const int ViewportAccentBarWidth = 2;
         private const int ViewportAccentBarPadding = -2;
 
         private const string DefaulSearchtText = "Filter...";
@@ -99,7 +100,7 @@ namespace LogScraper.Controls.Content
                 && _endRangeBarIndex == previousAfter) return;
 
             // Invalidate only rows that entered or left the range / boundary
-            HashSet<int> dirtyIndices = new(previousRangeIndices);
+            HashSet<int> dirtyIndices = [.. previousRangeIndices];
             dirtyIndices.SymmetricExceptWith(_rangeBarIndices);
             if (previousBefore >= 0) dirtyIndices.Add(previousBefore);
             if (previousAfter >= 0) dirtyIndices.Add(previousAfter);
