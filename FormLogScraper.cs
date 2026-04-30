@@ -29,7 +29,7 @@ namespace LogScraper
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
 
     //TODO: search list use collapsed splitcontainer by default
-    //TODO: highlighting of visible log entry range and selected entry in navigation filters
+
     //TODO: navigatie sync optie met log
     //TODO: log provider selection enable/disable aanpassen zodat je m wel kunt openklappen
 

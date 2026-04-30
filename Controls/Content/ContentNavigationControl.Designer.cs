@@ -38,7 +38,10 @@ namespace LogScraper.Controls.Content
             txtSearch = new ClearableTextBoxControl();
             toolTip = new System.Windows.Forms.ToolTip(components);
             BtnShowTree = new System.Windows.Forms.Button();
-            imageList1 = new System.Windows.Forms.ImageList(components);
+            ImageListTreeView = new System.Windows.Forms.ImageList(components);
+            BtnAutoScroll = new System.Windows.Forms.Button();
+            ImageListAutoScroll = new System.Windows.Forms.ImageList(components);
+            BtnJumpToLogPosition = new System.Windows.Forms.Button();
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
             PnlUsedForCorrectScaling.SuspendLayout();
             SuspendLayout();
@@ -63,9 +66,10 @@ namespace LogScraper.Controls.Content
             CboLogContentType.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             CboLogContentType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboLogContentType.FormattingEnabled = true;
-            CboLogContentType.Location = new System.Drawing.Point(3, 0);
+            CboLogContentType.ItemHeight = 15;
+            CboLogContentType.Location = new System.Drawing.Point(87, 0);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(213, 23);
+            CboLogContentType.Size = new System.Drawing.Size(156, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
@@ -82,10 +86,9 @@ namespace LogScraper.Controls.Content
             // 
             // BtnShowTree
             // 
-            BtnShowTree.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             BtnShowTree.ImageIndex = 0;
-            BtnShowTree.ImageList = imageList1;
-            BtnShowTree.Location = new System.Drawing.Point(218, 0);
+            BtnShowTree.ImageList = ImageListTreeView;
+            BtnShowTree.Location = new System.Drawing.Point(56, 0);
             BtnShowTree.Name = "BtnShowTree";
             BtnShowTree.Size = new System.Drawing.Size(25, 25);
             BtnShowTree.TabIndex = 8;
@@ -93,16 +96,49 @@ namespace LogScraper.Controls.Content
             BtnShowTree.UseVisualStyleBackColor = true;
             BtnShowTree.Click += BtnShowTree_Click;
             // 
-            // imageList1
+            // ImageListTreeView
             // 
-            imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-            imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            imageList1.Images.SetKeyName(0, "log entries tree custommade 16x16.png");
-            imageList1.Images.SetKeyName(1, "log entries tree hide custommade 16x16.png");
+            ImageListTreeView.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            ImageListTreeView.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("ImageListTreeView.ImageStream");
+            ImageListTreeView.TransparentColor = System.Drawing.Color.Transparent;
+            ImageListTreeView.Images.SetKeyName(0, "log entries tree custommade 16x16.png");
+            ImageListTreeView.Images.SetKeyName(1, "log entries tree hide custommade 16x16.png");
+            // 
+            // BtnAutoScroll
+            // 
+            BtnAutoScroll.ImageIndex = 0;
+            BtnAutoScroll.ImageList = ImageListAutoScroll;
+            BtnAutoScroll.Location = new System.Drawing.Point(25, 0);
+            BtnAutoScroll.Name = "BtnAutoScroll";
+            BtnAutoScroll.Size = new System.Drawing.Size(25, 25);
+            BtnAutoScroll.TabIndex = 9;
+            toolTip.SetToolTip(BtnAutoScroll, "Volg logweergave automatisch");
+            BtnAutoScroll.UseVisualStyleBackColor = true;
+            BtnAutoScroll.Click += BtnAutoScroll_Click;
+            // 
+            // ImageListAutoScroll
+            // 
+            ImageListAutoScroll.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            ImageListAutoScroll.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("ImageListAutoScroll.ImageStream");
+            ImageListAutoScroll.TransparentColor = System.Drawing.Color.Transparent;
+            ImageListAutoScroll.Images.SetKeyName(0, "arrow-up-down  with A 16x16.png");
+            ImageListAutoScroll.Images.SetKeyName(1, "arrow-up-down  with A 16x16 - Copy.png");
+            // 
+            // BtnJumpToLogPosition
+            // 
+            BtnJumpToLogPosition.Image = (System.Drawing.Image)resources.GetObject("BtnJumpToLogPosition.Image");
+            BtnJumpToLogPosition.Location = new System.Drawing.Point(0, 0);
+            BtnJumpToLogPosition.Name = "BtnJumpToLogPosition";
+            BtnJumpToLogPosition.Size = new System.Drawing.Size(25, 25);
+            BtnJumpToLogPosition.TabIndex = 10;
+            toolTip.SetToolTip(BtnJumpToLogPosition, "Spring naar huidige logweergave");
+            BtnJumpToLogPosition.UseVisualStyleBackColor = true;
+            BtnJumpToLogPosition.Click += BtnJumpToLogPosition_Click;
             // 
             // PnlUsedForCorrectScaling
             // 
+            PnlUsedForCorrectScaling.Controls.Add(BtnJumpToLogPosition);
+            PnlUsedForCorrectScaling.Controls.Add(BtnAutoScroll);
             PnlUsedForCorrectScaling.Controls.Add(BtnShowTree);
             PnlUsedForCorrectScaling.Controls.Add(CboLogContentType);
             PnlUsedForCorrectScaling.Controls.Add(LstLogContent);
@@ -113,14 +149,14 @@ namespace LogScraper.Controls.Content
             PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
             PnlUsedForCorrectScaling.TabIndex = 23;
             // 
-            // UserControlLogContentFilter
+            // ContentNavigationControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(PnlUsedForCorrectScaling);
-            Name = "UserControlLogContentFilter";
+            Name = "ContentNavigationControl";
             Size = new System.Drawing.Size(243, 272);
             Load += UserControlLogContentFilter_Load;
             PnlUsedForCorrectScaling.ResumeLayout(false);
@@ -136,5 +172,9 @@ namespace LogScraper.Controls.Content
         private System.Windows.Forms.Panel PnlUsedForCorrectScaling;
         private System.Windows.Forms.Button BtnShowTree;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.Button BtnAutoScroll;
+        private System.Windows.Forms.ImageList ImageListTreeView;
+        private System.Windows.Forms.ImageList ImageListAutoScroll;
+        private System.Windows.Forms.Button BtnJumpToLogPosition;
     }
 }

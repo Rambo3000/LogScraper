@@ -20,7 +20,7 @@ namespace LogScraper.Controls.Content
     {
         #region Private objects and initialization
         private const int ViewportAccentBarWidth = 3;
-        private const int ViewportAccentBarPadding = 0;
+        private const int ViewportAccentBarPadding = -2;
 
         private const string DefaulSearchtText = "Filter...";
 
@@ -48,11 +48,12 @@ namespace LogScraper.Controls.Content
 
         private LogEntry _viewportSelectedLogEntry;
         // Indices into LstLogContent.Items for the viewport range highlight
-        private HashSet<int> _viewportRangeIndices = [];
-        private int _viewportRangeBeforeIndex = -1;
-        private int _viewportRangeAfterIndex = -1;
+        private HashSet<int> _rangeBarIndices = [];
+        private int _startRangeBarIndex = -1;
+        private int _endRangeBarIndex = -1;
 
-        private readonly System.Windows.Forms.Timer _rangeDebounceTimer = new() { Interval = 10 };
+        private readonly Timer _rangeDebounceTimer = new() { Interval = 10 };
+        private bool _autoScrollEnabled = false;
 
         private void OnViewportSelectedLogEntryChanged()
         {
@@ -85,31 +86,74 @@ namespace LogScraper.Controls.Content
         {
             _rangeDebounceTimer.Stop();
 
-            HashSet<int> previousRangeIndices = _viewportRangeIndices;
-            int previousBefore = _viewportRangeBeforeIndex;
-            int previousAfter = _viewportRangeAfterIndex;
+            HashSet<int> previousRangeIndices = _rangeBarIndices;
+            int previousBefore = _startRangeBarIndex;
+            int previousAfter = _endRangeBarIndex;
 
             ComputeViewportRangeIndices();
 
-            if (_viewportRangeIndices.SetEquals(previousRangeIndices)
-                && _viewportRangeBeforeIndex == previousBefore
-                && _viewportRangeAfterIndex == previousAfter) return;
+            ApplyAutoScroll();
+
+            if (_rangeBarIndices.SetEquals(previousRangeIndices)
+                && _startRangeBarIndex == previousBefore
+                && _endRangeBarIndex == previousAfter) return;
 
             // Invalidate only rows that entered or left the range / boundary
             HashSet<int> dirtyIndices = new(previousRangeIndices);
-            dirtyIndices.SymmetricExceptWith(_viewportRangeIndices);
+            dirtyIndices.SymmetricExceptWith(_rangeBarIndices);
             if (previousBefore >= 0) dirtyIndices.Add(previousBefore);
             if (previousAfter >= 0) dirtyIndices.Add(previousAfter);
-            if (_viewportRangeBeforeIndex >= 0) dirtyIndices.Add(_viewportRangeBeforeIndex);
-            if (_viewportRangeAfterIndex >= 0) dirtyIndices.Add(_viewportRangeAfterIndex);
+            if (_startRangeBarIndex >= 0) dirtyIndices.Add(_startRangeBarIndex);
+            if (_endRangeBarIndex >= 0) dirtyIndices.Add(_endRangeBarIndex);
             LstLogContent.InvalidateItems(dirtyIndices);
+        }
+
+        private void ApplyAutoScroll(bool scrollToCenter = false, bool force = false)
+        {
+            if (!_autoScrollEnabled && !force) return;
+            if (LstLogContent.Items.Count == 0) return;
+
+            int firstVisible = LstLogContent.TopIndex;
+            int visibleCount = (int)Math.Floor((double)LstLogContent.Height / LstLogContent.ItemHeight);
+            int lastVisible = Math.Min(firstVisible + visibleCount, LstLogContent.Items.Count - 1);
+
+            // Use the range boundaries, but ensure they are within the list bounds to avoid issues when the range is outside of the currently loaded items
+            int startIndex = _startRangeBarIndex == -1 ? 0 : _startRangeBarIndex;
+            int endIndex = _endRangeBarIndex == -1 ? LstLogContent.Items.Count - 1 : _endRangeBarIndex;
+
+            if (scrollToCenter)
+            {
+                LstLogContent.TopIndex = Math.Max(0, endIndex - (visibleCount / 2) - 1);
+                return;
+            }
+
+
+            // Both boundaries are above the visible area — scrolled up, follow the before boundary
+            if (startIndex < firstVisible && endIndex < firstVisible)
+            {
+                LstLogContent.TopIndex = startIndex;
+            }
+            // Both boundaries are below the visible area — scrolled down, follow the after boundary
+            else if (startIndex > lastVisible && endIndex > lastVisible)
+            {
+                LstLogContent.TopIndex = endIndex - visibleCount + 1;
+            }
+            // Normal case: scroll to whichever boundary is out of view
+            else if (startIndex < firstVisible)
+            {
+                LstLogContent.TopIndex = startIndex;
+            }
+            else if (endIndex > lastVisible)
+            {
+                LstLogContent.TopIndex = endIndex - visibleCount + 1;
+            }
         }
 
         private void ComputeViewportRangeIndices()
         {
-            _viewportRangeIndices = [];
-            _viewportRangeBeforeIndex = -1;
-            _viewportRangeAfterIndex = -1;
+            _rangeBarIndices = [];
+            _startRangeBarIndex = -1;
+            _endRangeBarIndex = -1;
 
             LogRange range = LogAppState.Instance.ViewportVisibleRange.Value;
             if (range == null) return;
@@ -117,40 +161,55 @@ namespace LogScraper.Controls.Content
             int beginIndex = range.Begin?.Index ?? int.MinValue;
             int endIndex = range.End?.Index ?? int.MaxValue;
 
+            int itemCount = LstLogContent.Items.Count;
+
+            // Binary search for the first item with LogEntry.Index >= beginIndex
+            int low = 0, high = itemCount - 1, startScanIdx = itemCount;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                if (LstLogContent.Items[mid] is LogContentDisplayItem midItem && midItem.LogEntry.Index >= beginIndex)
+                {
+                    startScanIdx = mid;
+                    high = mid - 1;
+                }
+                else
+                {
+                    low = mid + 1;
+                }
+            }
+
+            // The last item strictly before the range is one position before the scan start
             int lastBeforeIdx = -1;
+            for (int i = startScanIdx - 1; i >= 0; i--)
+            {
+                if (LstLogContent.Items[i] is LogContentDisplayItem prevItem && prevItem.LogEntry.Index < beginIndex)
+                {
+                    lastBeforeIdx = i;
+                    break;
+                }
+            }
+
             int firstAfterIdx = -1;
 
-            for (int i = 0; i < LstLogContent.Items.Count; i++)
+            for (int i = startScanIdx; i < itemCount; i++)
             {
                 if (LstLogContent.Items[i] is not LogContentDisplayItem item) continue;
                 int idx = item.LogEntry.Index;
 
-                if (idx >= beginIndex && idx <= endIndex)
+                if (idx <= endIndex)
                 {
-                    _viewportRangeIndices.Add(i);
+                    _rangeBarIndices.Add(i);
                 }
-                else if (idx < beginIndex)
-                {
-                    lastBeforeIdx = i;
-                }
-                else if (idx > endIndex && firstAfterIdx == -1)
+                else
                 {
                     firstAfterIdx = i;
+                    break;
                 }
             }
 
-            if (_viewportRangeIndices.Count == 0)
-            {
-                // No items in range — highlight the nearest before and after as boundary
-                _viewportRangeBeforeIndex = lastBeforeIdx;
-                _viewportRangeAfterIndex = firstAfterIdx;
-            }
-            else
-            {
-                // Items are in range — always show boundary items for a consistent experience
-                _viewportRangeBeforeIndex = lastBeforeIdx;
-                _viewportRangeAfterIndex = firstAfterIdx;
-            }
+            _startRangeBarIndex = lastBeforeIdx;
+            _endRangeBarIndex = firstAfterIdx;
         }
 
         #endregion
@@ -166,6 +225,7 @@ namespace LogScraper.Controls.Content
             CboLogContentType.Items.AddRange([.. logLayout.LogContentProperties.Where(item => item.IsNavigationEnabled)]);
 
             if (CboLogContentType.Items.Count > 0) CboLogContentType.SelectedIndex = 0;
+            UpdateButtons();
         }
         #endregion
 
@@ -178,12 +238,14 @@ namespace LogScraper.Controls.Content
             if (logEntries == null || logContentProperty == null)
             {
                 LstLogContent.Items.Clear();
+                UpdateButtons();
                 return;
             }
 
             List<LogContentDisplayItem> logContentDisplayItems = CreateLogEntryDisplayObjects(logContentProperty, logEntries);
 
             UpdateDisplayedLogEntriesUsingNewLogEntries(logContentDisplayItems);
+            UpdateButtons();
         }
 
         private List<LogContentDisplayItem> CreateLogEntryDisplayObjects(LogContentProperty logContentProperty, List<LogEntry> logEntries)
@@ -268,6 +330,7 @@ namespace LogScraper.Controls.Content
 
                 LstLogContent.Items.AddRange([.. newLogEntries.Skip(currentCount)]);
                 LstLogContent.ResumeDrawing();
+                LstLogContent.ClearEmptyArea();
                 ComputeViewportRangeIndices();
                 return;
             }
@@ -379,8 +442,8 @@ namespace LogScraper.Controls.Content
             Graphics g = e.Graphics;
             bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
             bool isViewportSelected = item.LogEntry == _viewportSelectedLogEntry;
-            bool isInRange = _viewportRangeIndices.Contains(e.Index);
-            bool isBoundary = e.Index == _viewportRangeBeforeIndex || e.Index == _viewportRangeAfterIndex;
+            bool isInRange = _rangeBarIndices.Contains(e.Index);
+            bool isBoundary = e.Index == _startRangeBarIndex || e.Index == _endRangeBarIndex;
 
             //Disable being out of scope for now
             //bool isOutOfScope = IslogContentDisplayItemOutOfScope(item);
@@ -404,7 +467,7 @@ namespace LogScraper.Controls.Content
                 }
                 else
                 {
-                    bool isBefore = e.Index == _viewportRangeBeforeIndex;
+                    bool isBefore = e.Index == _startRangeBarIndex;
                     var (beforeBrush, afterBrush) = GetBoundaryBrushes(accentRect);
                     g.FillRectangle(isBefore ? beforeBrush : afterBrush, accentRect);
                 }
@@ -606,26 +669,14 @@ namespace LogScraper.Controls.Content
             }
         }
 
-        private bool updateShowTreeInProgress = false;
-
         private void UpdateButtons()
         {
-            if (updateShowTreeInProgress) return;
-            updateShowTreeInProgress = true;
+            BtnAutoScroll.ImageIndex = _autoScrollEnabled ? 1 : 0;
+            BtnJumpToLogPosition.Enabled = LstLogContent.Items.Count > 1;
 
-            if (SelectedLogContentProperty == null || !SelectedLogContentProperty.IsBeginFlowTreeFilter)
-            {
-                BtnShowTree.Enabled = false;
-                updateShowTreeInProgress = false;
-                return;
-            }
+            BtnShowTree.Enabled = SelectedLogContentProperty?.IsBeginFlowTreeFilter ?? false;
 
             BtnShowTree.ImageIndex = showTree ? 1 : 0;
-            BtnShowTree.Enabled = true;
-            LstLogContent.SuspendDrawing();
-            LstLogContent.Invalidate();
-            LstLogContent.ResumeDrawing();
-            updateShowTreeInProgress = false;
         }
 
         public void ResetFilters()
@@ -638,7 +689,22 @@ namespace LogScraper.Controls.Content
         {
             showTree = !showTree;
             UpdateButtons();
+
+            LstLogContent.SuspendDrawing();
+            LstLogContent.Invalidate();
+            LstLogContent.ResumeDrawing();
         }
 
+        private void BtnAutoScroll_Click(object sender, EventArgs e)
+        {
+            _autoScrollEnabled = !_autoScrollEnabled;
+            ApplyAutoScroll(true);
+            UpdateButtons();
+        }
+
+        private void BtnJumpToLogPosition_Click(object sender, EventArgs e)
+        {
+            ApplyAutoScroll(true, true);
+        }
     }
 }

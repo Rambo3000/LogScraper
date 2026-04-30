@@ -268,7 +268,7 @@ namespace LogScraper.Controls.Viewport
 
             if (!LogEntryVisualIndexCalculator.TryGetRenderPosition(bottomVisibleLine, _logEntriesRenderMapCache, out LogEntryRenderPosition bottomPosition)) return;
 
-            LogAppState.Instance.ViewportVisibleRange.Set(new LogRange() { Begin = topPosition.LogEntry, End = bottomPosition.LogEntry });
+            LogAppState.Instance.ViewportVisibleRange.ForceSet(new LogRange() { Begin = topPosition.LogEntry, End = bottomPosition.LogEntry });
         }
         #endregion
 
