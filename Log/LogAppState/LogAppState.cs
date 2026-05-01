@@ -134,6 +134,12 @@ namespace LogScraper.Log.LogAppState
         public StateSlice<(string Message, bool IsSuccess)> StatusMessage { get; } = new();
 
         /// <summary>
+        /// Raw log text to display in the viewport when parsing fails.
+        /// Set to a non-null value when the log cannot be parsed; cleared on a successful parse.
+        /// </summary>
+        public StateSlice<string> RawLogFallback { get; } = new();
+
+        /// <summary>
         /// Provides an <see cref="ISourceAdapter"/> for the currently selected log source.
         /// Set by <see cref="Controls.LogProviderSelectionControl"/> when it loads.
         /// Consumed by any control that needs to start a fetch (e.g. <see cref="Controls.LogRecordingControl"/>).
@@ -174,6 +180,7 @@ namespace LogScraper.Log.LogAppState
             ViewportVisibleRange.ForceSet(null);
             LastTrailTime.ForceSet(null);
             StatusMessage.ForceSet((string.Empty, true));
+            RawLogFallback.ForceSet(null);
 
             _resetInProgress = false;
 

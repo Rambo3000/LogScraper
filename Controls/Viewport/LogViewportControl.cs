@@ -6,7 +6,6 @@ using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
-using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
@@ -42,6 +41,7 @@ namespace LogScraper.Controls.Viewport
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => ScrollToAndSelectLogEntry();
             LogAppState.Instance.Bookmarks.Changed += (s, e) => UpdateBookMarks();
+            LogAppState.Instance.RawLogFallback.Changed += OnRawLogFallbackChanged;
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -53,6 +53,15 @@ namespace LogScraper.Controls.Viewport
         {
             _logRenderSettings = LogAppState.Instance.RenderSettings.Value;
             RenderLogEntries();
+        }
+
+        private void OnRawLogFallbackChanged(object sender, EventArgs e)
+        {
+            string rawText = LogAppState.Instance.RawLogFallback.Value;
+            if (rawText != null)
+            {
+                Text = rawText;
+            }
         }
 
         #endregion

@@ -93,15 +93,15 @@ namespace LogScraper.Controls
                 catch (Exception ex)
                 {
                     ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
-
-                    // TODO: REQUIRED have a contraption in place for showing the raw log
-                    //LogViewportControl.Text = RawLogParser.JoinRawLogIntoString(rawLog);
-                    throw;
+                    LogAppState.Instance.RawLogFallback.Set(RawLogParser.JoinRawLogIntoString(rawLog));
+                    ShowException(ex);
+                    return;
                 }
 
                 if (newLogEntriesReceived)
                 {
                     LogEntryClassifier.Classify(logLayout, logCollection);
+                    LogAppState.Instance.RawLogFallback.Set(null);
                     LogAppState.Instance.LogCollection.ForceSet(logCollection);
                 }
                 LogAppState.Instance.StatusMessage.Set((string.Empty, true));
