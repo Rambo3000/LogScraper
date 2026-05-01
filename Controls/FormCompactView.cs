@@ -66,7 +66,7 @@ namespace LogScraper.Controls
 
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnRecord_Click(sender, e);
+            LogScraperForm.LogRecordingControl.BtnRecord_Click(sender, e);
         }
         public void ShowForm()
         {
@@ -80,19 +80,19 @@ namespace LogScraper.Controls
         }
         public void HideForm()
         {
-            LogScraperForm.BtnStop_Click(this, EventArgs.Empty);
+            LogScraperForm.LogRecordingControl.BtnStop_Click(this, EventArgs.Empty);
             Hide();
             LogScraperForm.WindowState = FormWindowState.Normal;
         }
 
         private void BtnRecordWithTimer_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnRecordWithTimer_Click(sender, e);
+            LogScraperForm.LogRecordingControl.BtnRecordWithTimer_Click(sender, e);
         }
 
         private void BtnStop_Click(object sender, System.EventArgs e)
         {
-            LogScraperForm.BtnStop_Click(sender, e);
+            LogScraperForm.LogRecordingControl.BtnStop_Click(sender, e);
             UpdateButtonsFromMainWindow();
         }
 
@@ -114,13 +114,13 @@ namespace LogScraper.Controls
 
         public void UpdateButtonsFromMainWindow()
         {
-            BtnRecord.Enabled = LogScraperForm.BtnRecord.Enabled;
-            BtnRecord.Visible = LogScraperForm.BtnRecord.Visible;
-            btnStop.Visible = LogScraperForm.BtnStop.Visible;
-            btnStop.Enabled = LogScraperForm.BtnStop.Enabled;
-            BtnRecordWithTimer.Text = LogScraperForm.BtnRecordWithTimer.Text;
-            BtnRecordWithTimer.Image = LogScraperForm.BtnRecordWithTimer.Image;
-            BtnRecordWithTimer.Enabled = LogScraperForm.BtnRecordWithTimer.Enabled;
+            BtnRecord.Enabled = LogScraperForm.LogRecordingControl.BtnRecord.Enabled;
+            BtnRecord.Visible = LogScraperForm.LogRecordingControl.BtnRecord.Visible;
+            btnStop.Visible = LogScraperForm.LogRecordingControl.BtnStop.Visible;
+            btnStop.Enabled = LogScraperForm.LogRecordingControl.BtnStop.Enabled;
+            BtnRecordWithTimer.Text = LogScraperForm.LogRecordingControl.BtnRecordWithTimer.Text;
+            BtnRecordWithTimer.Image = LogScraperForm.LogRecordingControl.BtnRecordWithTimer.Image;
+            BtnRecordWithTimer.Enabled = LogScraperForm.LogRecordingControl.BtnRecordWithTimer.Enabled;
             btnErase.Enabled = LogScraperForm.BtnErase.Enabled;
         }
 

@@ -8,14 +8,8 @@ using LogScraper.Controls.FilterOverview;
 using LogScraper.Controls.Search;
 using LogScraper.Controls.Viewport;
 using LogScraper.Export;
-using LogScraper.Log;
-using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
-using LogScraper.Log.Processing;
-using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Log.Rendering;
-using LogScraper.Sources.Adapters;
-using LogScraper.Sources.Workers;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
@@ -69,7 +63,6 @@ namespace LogScraper
             ErrorListControl.Close += (s, e) => HideBottomPanel();
 
             UpdateTimeLineVisibility();
-            SetDynamicToolTips();
         }
         private void FormLogScraper_Load(object sender, EventArgs e)
         {
@@ -127,7 +120,7 @@ namespace LogScraper
             // Suspend layout to avoid flickering
             SplitContainerSourceControlAndMetadata.SuspendLayout();
             SplitContainerSourceControlAndMetadata.Panel1.SuspendLayout();
-            SplitContainerSourceControlAndMetadata.SplitterDistance = (LogProviderSelectionControl.IsCollapsed ? LogProviderSelectionControl.CollapsedHeight : LogProviderSelectionControl.ExpandedHeight) + 3 + BtnRecord.Bottom;
+            SplitContainerSourceControlAndMetadata.SplitterDistance = (LogProviderSelectionControl.IsCollapsed ? LogProviderSelectionControl.CollapsedHeight : LogProviderSelectionControl.ExpandedHeight) + 3 + LogRecordingControl.Bottom;
             SplitContainerSourceControlAndMetadata.Panel1.ResumeLayout(true);
             SplitContainerSourceControlAndMetadata.ResumeLayout(true);
         }
@@ -199,80 +192,6 @@ namespace LogScraper
 
         #endregion
 
-        #region Initiate getting raw log and processing of raw log
-
-        private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
-        {
-            if (LogAppState.Instance.Layout.Value == null) return;
-            try
-            {
-                BtnRecord.Enabled = false;
-                BtnRecordWithTimer.Enabled = false;
-                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
-                Application.DoEvents();
-
-                ISourceAdapter logProvider = LogProviderSelectionControl.GetSelectedSourceAdapter(LogAppState.Instance.LastTrailTime.Value);
-
-                SourceProcessingWorker sourceProcessingWorker = new();
-                sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
-                sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
-                SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, logProvider, intervalInSeconds, durationInSeconds);
-            }
-            catch (Exception ex)
-            {
-                ShowException(ex);
-                UpdateButtonStatus();
-            }
-            finally
-            {
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
-            }
-        }
-
-        private void ProcessRawLog(string[] rawLog, DateTime? updatedLastTrailTime, bool isContinuous)
-        {
-            try
-            {
-                LogLayout logLayout = LogAppState.Instance.Layout.Value;
-                LogCollection logCollection = LogAppState.Instance.LogCollection.Value ?? new();
-
-                bool newLogEntriesReceived = false;
-                try
-                {
-                    LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Processing);
-                    newLogEntriesReceived = RawLogParser.TryParseAndAppendLogEntries(rawLog, logCollection, logLayout);
-                }
-                catch (Exception ex)
-                {
-                    ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
-                    LogViewportControl.Text = RawLogParser.JoinRawLogIntoString(rawLog);
-                    throw;
-                }
-
-                if (newLogEntriesReceived)
-                {
-                    LogEntryClassifier.Classify(logLayout, logCollection);
-                    LogAppState.Instance.LogCollection.ForceSet(logCollection);
-                }
-                LogAppState.Instance.StatusMessage.Set((string.Empty, true));
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
-                LogAppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
-                if (isContinuous) LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Waiting);
-            }
-            catch (Exception ex)
-            {
-                ShowException(ex);
-            }
-        }
-
-        private static void ShowException(Exception ex)
-        {
-            ex.LogStackTraceToFile();
-            LogAppState.Instance.StatusMessage.Set((ex.Message, false));
-        }
-        #endregion
-
         #region Erase and reset
 
         private void LogAppState_ResetRequested(object sender, ResetEventArgs e)
@@ -302,21 +221,6 @@ namespace LogScraper
             TxtErrorMessage.Visible = !LogAppState.Instance.StatusMessage.Value.IsSuccess;
         }
 
-        private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
-        {
-            if (totalDurationInSeconds == -1)
-            {
-                BtnRecordWithTimer.Text = string.Empty;
-                BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            }
-            else
-            {
-                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
-                TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
-                BtnRecordWithTimer.Image = null;
-                BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
-            }
-        }
 
         private void UsrSearch_Search(SearchSettings searchSettings)
         {
@@ -337,48 +241,19 @@ namespace LogScraper
             }
         }
 
-        private void SetDynamicToolTips()
-        {
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
-        }
         #endregion
 
         #region Buttons
-
         private void UpdateButtonStatus()
         {
             bool isSourceProcessingActive = LogAppState.Instance.IsSourceProcessingActive.Value;
             bool sourceIsValid = LogAppState.Instance.IsSourceValid.Value;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
-            if (!isSourceProcessingActive)
-            {
-                HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Idle);
-            }
 
-            BtnRecord.Visible = !isSourceProcessingActive;
-            BtnRecord.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
-            BtnRecordWithTimer.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
             BtnFormRecord.Enabled = sourceIsValid && layoutSelected;
-            BtnStop.Visible = isSourceProcessingActive;
-            BtnStop.Enabled = isSourceProcessingActive;
             BtnConfig.Enabled = !isSourceProcessingActive;
 
             FormCompactView.Instance.UpdateButtonsFromMainWindow();
-        }
-
-        public void BtnRecord_Click(object sender, EventArgs e)
-        {
-            FetchRawLogAsync();
-        }
-
-        public void BtnRecordWithTimer_Click(object sender, EventArgs e) =>
-            FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
-
-        public void BtnStop_Click(object sender, EventArgs e)
-        {
-            BtnStop.Enabled = false;
-            SourceProcessingManager.Instance.CancelAllWorkers();
         }
 
         public void BtnErase_Click(object sender, EventArgs e)
@@ -396,7 +271,8 @@ namespace LogScraper
 
         private void BtnCompactView_Click(object sender, EventArgs e)
         {
-            if (!SourceProcessingManager.Instance.IsWorkerActive) BtnRecordWithTimer_Click(sender, e);
+            //TODO: REQUIRED start processing automatically when opening compact view
+            //if (!SourceProcessingManager.Instance.IsWorkerActive) BtnRecordWithTimer_Click(sender, e);
             FormCompactView.Instance.ShowForm();
         }
 
@@ -410,7 +286,8 @@ namespace LogScraper
 
                 if (genericConfigChanged)
                 {
-                    SetDynamicToolTips();
+                    //TODO: (after updating config changes to AppState) update tooltip based on config in LogAppState
+                    //SetDynamicToolTips();
                     btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
                     UpdateTimeLineVisibility();
                 }
@@ -444,14 +321,16 @@ namespace LogScraper
                 SearchControl.Focus();
                 return true;
             }
-            if (keyData == (Keys.Control | Keys.S))
-            {
-                if (SourceProcessingManager.Instance.IsWorkerActive)
-                    BtnStop_Click(this, EventArgs.Empty);
-                else
-                    BtnRecordWithTimer_Click(this, EventArgs.Empty);
-                return true;
-            }
+
+            // TODO: Refactor key shortcuts
+            //if (keyData == (Keys.Control | Keys.S))
+            //{
+            //    if (SourceProcessingManager.Instance.IsWorkerActive)
+            //        BtnStop_Click(this, EventArgs.Empty);
+            //    else
+            //        BtnRecordWithTimer_Click(this, EventArgs.Empty);
+            //    return true;
+            //}
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion

@@ -37,11 +37,8 @@ namespace LogScraper
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
-            BtnRecord = new System.Windows.Forms.Button();
             BtnConfig = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
-            BtnStop = new System.Windows.Forms.Button();
-            BtnRecordWithTimer = new System.Windows.Forms.Button();
             btnOpenWithEditor = new System.Windows.Forms.Button();
             LogProviderSelectionControl = new LogProviderSelectionControl();
             SplitContainerViewportAndNavigation = new SplitContainerWithGrip();
@@ -68,6 +65,7 @@ namespace LogScraper
             SplitContainerSourceControlAndMetadata = new System.Windows.Forms.SplitContainer();
             BtnReset = new System.Windows.Forms.Button();
             BtnErase = new System.Windows.Forms.Button();
+            LogRecordingControl = new LogRecordingControl();
             ToolTip = new System.Windows.Forms.ToolTip(components);
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndNavigation).BeginInit();
             SplitContainerViewportAndNavigation.Panel1.SuspendLayout();
@@ -92,19 +90,6 @@ namespace LogScraper
             SplitContainerSourceControlAndMetadata.Panel2.SuspendLayout();
             SplitContainerSourceControlAndMetadata.SuspendLayout();
             SuspendLayout();
-            // 
-            // BtnRecord
-            // 
-            BtnRecord.Enabled = false;
-            BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
-            BtnRecord.Location = new System.Drawing.Point(7, 3);
-            BtnRecord.Name = "BtnRecord";
-            BtnRecord.Size = new System.Drawing.Size(40, 40);
-            BtnRecord.TabIndex = 0;
-            BtnRecord.TabStop = false;
-            ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
-            BtnRecord.UseVisualStyleBackColor = true;
-            BtnRecord.Click += BtnRecord_Click;
             // 
             // BtnConfig
             // 
@@ -131,30 +116,6 @@ namespace LogScraper
             ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-R]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
-            // 
-            // BtnStop
-            // 
-            BtnStop.Image = (System.Drawing.Image)resources.GetObject("BtnStop.Image");
-            BtnStop.Location = new System.Drawing.Point(7, 3);
-            BtnStop.Name = "BtnStop";
-            BtnStop.Size = new System.Drawing.Size(40, 40);
-            BtnStop.TabIndex = 17;
-            BtnStop.TabStop = false;
-            ToolTip.SetToolTip(BtnStop, "Stop [CTRL-S]");
-            BtnStop.UseVisualStyleBackColor = true;
-            BtnStop.Click += BtnStop_Click;
-            // 
-            // BtnRecordWithTimer
-            // 
-            BtnRecordWithTimer.Enabled = false;
-            BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            BtnRecordWithTimer.Location = new System.Drawing.Point(46, 3);
-            BtnRecordWithTimer.Name = "BtnRecordWithTimer";
-            BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
-            BtnRecordWithTimer.TabIndex = 16;
-            BtnRecordWithTimer.TabStop = false;
-            BtnRecordWithTimer.UseVisualStyleBackColor = true;
-            BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
             // btnOpenWithEditor
             // 
@@ -442,11 +403,9 @@ namespace LogScraper
             SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnReset);
             SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnErase);
             SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(LogProviderSelectionControl);
-            SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnRecord);
+            SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(LogRecordingControl);
             SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnConfig);
-            SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnRecordWithTimer);
             SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnFormRecord);
-            SplitContainerSourceControlAndMetadata.Panel1.Controls.Add(BtnStop);
             // 
             // SplitContainerSourceControlAndMetadata.Panel2
             // 
@@ -480,6 +439,13 @@ namespace LogScraper
             ToolTip.SetToolTip(BtnErase, "Wis het log (filters behouden)");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
+            // 
+            // LogRecordingControl
+            // 
+            LogRecordingControl.Location = new System.Drawing.Point(7, 3);
+            LogRecordingControl.Name = "LogRecordingControl";
+            LogRecordingControl.Size = new System.Drawing.Size(79, 40);
+            LogRecordingControl.TabIndex = 50;
             // 
             // ToolTip
             // 
@@ -525,11 +491,6 @@ namespace LogScraper
         }
 
         #endregion
-
-        //Make these controls public so that they can be accessed from the mini controls form
-        public System.Windows.Forms.Button BtnRecord;
-        public System.Windows.Forms.Button BtnRecordWithTimer;
-        public System.Windows.Forms.Button BtnStop;
         public System.Windows.Forms.Button BtnErase;
         private System.Windows.Forms.Button BtnReset;
         private System.Windows.Forms.Button btnOpenWithEditor;
@@ -556,6 +517,7 @@ namespace LogScraper
         private FlowTreeControl FlowTreeControl;
         private SearchResultListControl SearchResultListControl;
         private LogProviderSelectionControl LogProviderSelectionControl;
+        public LogRecordingControl LogRecordingControl;
         private Controls.FilterOverview.ActiveFilterOverviewControl ActiveFilterOverviewControl;
         private ErrorListControl ErrorListControl;
         private SaveLogControl SaveLogControl;

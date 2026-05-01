@@ -6,6 +6,7 @@ using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogPostProcessors;
+using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Log.LogAppState
 {
@@ -131,6 +132,13 @@ namespace LogScraper.Log.LogAppState
         /// The current status message and whether it represents a success or an error.
         /// </summary>
         public StateSlice<(string Message, bool IsSuccess)> StatusMessage { get; } = new();
+
+        /// <summary>
+        /// Provides an <see cref="ISourceAdapter"/> for the currently selected log source.
+        /// Set by <see cref="Controls.LogProviderSelectionControl"/> when it loads.
+        /// Consumed by any control that needs to start a fetch (e.g. <see cref="Controls.LogRecordingControl"/>).
+        /// </summary>
+        public Func<DateTime?, ISourceAdapter> SourceAdapterProvider { get; set; }
 
         /// <summary>
         /// Raised when a reset is requested.

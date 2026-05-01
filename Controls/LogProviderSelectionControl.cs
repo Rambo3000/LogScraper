@@ -76,6 +76,7 @@ namespace LogScraper.Controls
         {
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
             LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
+            LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
             AttachEventHandlers();
         }
 
