@@ -21,12 +21,37 @@ namespace LogScraper.Controls
         }
         private void LogRecordingControl_Load(object sender, EventArgs e)
         {
+            if (DesignMode) return;
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
+            SourceProcessingManager.Instance.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
             SetDynamicToolTips();
+            UpdateButtonStatus();
         }
         #endregion
 
+        #region Public methods
+
+        public void Stop()
+        {
+            BtnStop.Enabled = false;
+            SourceProcessingManager.Instance.CancelAllWorkers();
+        }
+
+        public void Start(bool timerEnabled)
+        {
+            if (LogAppState.Instance.IsSourceProcessingActive.Value) return;
+
+            if (timerEnabled)
+            {
+                FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
+            }
+            else
+            {
+                FetchRawLogAsync();
+            }
+        }
+        #endregion
 
         #region Retrieval and processing of log
         private void FetchRawLogAsync(int intervalInSeconds = -1, int durationInSeconds = -1)
@@ -37,24 +62,18 @@ namespace LogScraper.Controls
                 BtnRecord.Enabled = false;
                 BtnRecordWithTimer.Enabled = false;
                 LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 Application.DoEvents();
 
                 ISourceAdapter sourceAdatapter = LogAppState.Instance.SourceAdapterProvider(LogAppState.Instance.LastTrailTime.Value);
 
                 SourceProcessingWorker sourceProcessingWorker = new();
                 sourceProcessingWorker.DownloadCompleted += ProcessRawLog;
-                sourceProcessingWorker.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
                 SourceProcessingManager.Instance.AddWorker(sourceProcessingWorker, sourceAdatapter, intervalInSeconds, durationInSeconds);
             }
             catch (Exception ex)
             {
                 ShowException(ex);
                 UpdateButtonStatus();
-            }
-            finally
-            {
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
             }
         }
 
@@ -86,7 +105,6 @@ namespace LogScraper.Controls
                     LogAppState.Instance.LogCollection.ForceSet(logCollection);
                 }
                 LogAppState.Instance.StatusMessage.Set((string.Empty, true));
-                FormCompactView.Instance.UpdateButtonsFromMainWindow();
                 LogAppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
                 if (isContinuous) LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Waiting);
             }
@@ -136,22 +154,21 @@ namespace LogScraper.Controls
             BtnRecordWithTimer.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
             BtnStop.Visible = isSourceProcessingActive;
             BtnStop.Enabled = isSourceProcessingActive;
-
-            FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
 
         public void BtnRecord_Click(object sender, EventArgs e)
         {
-            FetchRawLogAsync();
+            Start(false);
         }
 
-        public void BtnRecordWithTimer_Click(object sender, EventArgs e) =>
-            FetchRawLogAsync(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
+        public void BtnRecordWithTimer_Click(object sender, EventArgs e)
+        {
+            Start(true);
+        }
 
         public void BtnStop_Click(object sender, EventArgs e)
         {
-            BtnStop.Enabled = false;
-            SourceProcessingManager.Instance.CancelAllWorkers();
+            Stop();
         }
 
         private void SetDynamicToolTips()

@@ -15,9 +15,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: record buttons to seperate control
-
-    //TODO: compact form can be lose connection to the main form
     //TODO: move configuration changed status to AppState, also change the questioning when configuration has changed
 
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
@@ -34,16 +31,15 @@ namespace LogScraper
             CultureInfo culture = new("nl");
             Thread.CurrentThread.CurrentUICulture = culture;
 
-            FormCompactView.Instance.SetFormLogScraper(this);
-
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
-
-            LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
-            LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
-
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.StatusMessage.Changed += (s, e) => HandleErrorMessages();
+
+            FormCompactView.Instance.ReturnToMainFormRequested += (s, e) => WindowState = FormWindowState.Normal;
+
+            LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
+            LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
 
             LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
@@ -252,8 +248,6 @@ namespace LogScraper
 
             BtnFormRecord.Enabled = sourceIsValid && layoutSelected;
             BtnConfig.Enabled = !isSourceProcessingActive;
-
-            FormCompactView.Instance.UpdateButtonsFromMainWindow();
         }
 
         public void BtnErase_Click(object sender, EventArgs e)
@@ -271,8 +265,7 @@ namespace LogScraper
 
         private void BtnCompactView_Click(object sender, EventArgs e)
         {
-            //TODO: REQUIRED start processing automatically when opening compact view
-            //if (!SourceProcessingManager.Instance.IsWorkerActive) BtnRecordWithTimer_Click(sender, e);
+            WindowState = FormWindowState.Minimized;
             FormCompactView.Instance.ShowForm();
         }
 

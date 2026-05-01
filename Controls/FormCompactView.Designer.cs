@@ -30,37 +30,13 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCompactView));
-            BtnRecord = new System.Windows.Forms.Button();
-            BtnRecordWithTimer = new System.Windows.Forms.Button();
             LblCount = new System.Windows.Forms.Label();
-            btnStop = new System.Windows.Forms.Button();
             btnErase = new System.Windows.Forms.Button();
             btnBack = new System.Windows.Forms.Button();
             ToolTip = new System.Windows.Forms.ToolTip(components);
             LblErrorCount = new System.Windows.Forms.Label();
+            LogRecordingControl = new LogRecordingControl();
             SuspendLayout();
-            // 
-            // BtnRecord
-            // 
-            BtnRecord.Image = (System.Drawing.Image)resources.GetObject("BtnRecord.Image");
-            BtnRecord.Location = new System.Drawing.Point(6, 5);
-            BtnRecord.Name = "BtnRecord";
-            BtnRecord.Size = new System.Drawing.Size(40, 40);
-            BtnRecord.TabIndex = 0;
-            ToolTip.SetToolTip(BtnRecord, "Lees log eenmalig uit");
-            BtnRecord.UseVisualStyleBackColor = true;
-            BtnRecord.Click += BtnRecord_Click;
-            // 
-            // BtnRecordWithTimer
-            // 
-            BtnRecordWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnRecordWithTimer.Image");
-            BtnRecordWithTimer.Location = new System.Drawing.Point(45, 5);
-            BtnRecordWithTimer.Name = "BtnRecordWithTimer";
-            BtnRecordWithTimer.Size = new System.Drawing.Size(40, 40);
-            BtnRecordWithTimer.TabIndex = 1;
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees uit voor meerdere minuten [CTRL-S]");
-            BtnRecordWithTimer.UseVisualStyleBackColor = true;
-            BtnRecordWithTimer.Click += BtnRecordWithTimer_Click;
             // 
             // LblCount
             // 
@@ -73,19 +49,6 @@
             LblCount.Text = "12.345 / 123.456";
             LblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             ToolTip.SetToolTip(LblCount, "Zichtbare logregels / Totaal aantal logregels");
-            LblCount.Click += LblCount_Click;
-            // 
-            // btnStop
-            // 
-            btnStop.Image = (System.Drawing.Image)resources.GetObject("btnStop.Image");
-            btnStop.Location = new System.Drawing.Point(6, 5);
-            btnStop.Name = "btnStop";
-            btnStop.Size = new System.Drawing.Size(40, 40);
-            btnStop.TabIndex = 10;
-            ToolTip.SetToolTip(btnStop, "Stop [CTRL-S]");
-            btnStop.UseVisualStyleBackColor = true;
-            btnStop.Visible = false;
-            btnStop.Click += BtnStop_Click;
             // 
             // btnErase
             // 
@@ -120,18 +83,23 @@
             LblErrorCount.Text = "0 errors";
             LblErrorCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // LogRecordingControl
+            // 
+            LogRecordingControl.Location = new System.Drawing.Point(6, 5);
+            LogRecordingControl.Name = "LogRecordingControl";
+            LogRecordingControl.Size = new System.Drawing.Size(79, 40);
+            LogRecordingControl.TabIndex = 15;
+            // 
             // FormCompactView
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(166, 86);
+            Controls.Add(LogRecordingControl);
             Controls.Add(btnBack);
             Controls.Add(LblErrorCount);
             Controls.Add(btnErase);
             Controls.Add(LblCount);
-            Controls.Add(BtnRecord);
-            Controls.Add(btnStop);
-            Controls.Add(BtnRecordWithTimer);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -145,17 +113,14 @@
         }
 
         #endregion
-
-        public System.Windows.Forms.Button BtnRecord;
-        public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Label LblCount;
         public System.Windows.Forms.Label lblLogEntriesTotalCount;
-        public System.Windows.Forms.Button btnStop;
         public System.Windows.Forms.Button btnErase;
         public System.Windows.Forms.Label lblError;
         public System.Windows.Forms.Button btnBack;
         public System.Windows.Forms.Button btnOpenWithEditor;
         private System.Windows.Forms.ToolTip ToolTip;
         public System.Windows.Forms.Label LblErrorCount;
+        private LogRecordingControl LogRecordingControl;
     }
 }
