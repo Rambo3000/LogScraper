@@ -46,7 +46,7 @@ namespace LogScraper.Controls
                 ? "Totaal aantal logregels"
                 : "Zichtbare logregels / Totaal aantal logregels");
 
-            int errorCount = LogAppState.Instance.FilterResultWithRange.Value.ErrorMask.CountSetBits();
+            int errorCount = LogAppState.Instance.FilterResultWithRange.Value?.ErrorMask?.CountSetBits() ?? 0;
             bool hasError = errorCount > 0;
             LblErrorCount.Text = $"{errorCount:N0} error" + (errorCount > 1 ? "s" : "");
             LblErrorCount.ForeColor = hasError ? System.Drawing.Color.DarkRed : System.Drawing.Color.DimGray;
