@@ -114,40 +114,44 @@ namespace LogScraper.Controls.Content
             if (!_autoScrollEnabled && !force) return;
             if (LstLogContent.Items.Count == 0) return;
 
-            int firstVisible = LstLogContent.TopIndex;
+            //int firstVisible = LstLogContent.TopIndex;
             int visibleCount = (int)Math.Floor((double)LstLogContent.Height / LstLogContent.ItemHeight);
-            int lastVisible = Math.Min(firstVisible + visibleCount, LstLogContent.Items.Count - 1);
+            //int lastVisible = Math.Min(firstVisible + visibleCount, LstLogContent.Items.Count - 1);
 
             // Use the range boundaries, but ensure they are within the list bounds to avoid issues when the range is outside of the currently loaded items
-            int startIndex = _startRangeBarIndex == -1 ? 0 : _startRangeBarIndex;
+            //int startIndex = _startRangeBarIndex == -1 ? 0 : _startRangeBarIndex;
             int endIndex = _endRangeBarIndex == -1 ? LstLogContent.Items.Count - 1 : _endRangeBarIndex;
 
-            if (scrollToCenter)
-            {
-                LstLogContent.TopIndex = Math.Max(0, endIndex - (visibleCount / 2) - 1);
-                return;
-            }
+            LstLogContent.TopIndex = Math.Max(0, endIndex - (visibleCount / 2) - 1);
+            return;
 
+            // Logic below scrolls differently and let the view be more stable on small changes, keep it here as backup for now
 
-            // Both boundaries are above the visible area — scrolled up, follow the before boundary
-            if (startIndex < firstVisible && endIndex < firstVisible)
-            {
-                LstLogContent.TopIndex = startIndex;
-            }
-            // Both boundaries are below the visible area — scrolled down, follow the after boundary
-            else if (startIndex > lastVisible && endIndex > lastVisible)
-            {
-                LstLogContent.TopIndex = endIndex - visibleCount + 1;
-            }
-            // Normal case: scroll to whichever boundary is out of view
-            else if (startIndex < firstVisible)
-            {
-                LstLogContent.TopIndex = startIndex;
-            }
-            else if (endIndex > lastVisible)
-            {
-                LstLogContent.TopIndex = endIndex - visibleCount + 1;
-            }
+            //if (scrollToCenter)
+            //{
+            //    LstLogContent.TopIndex = Math.Max(0, endIndex - (visibleCount / 2) - 1);
+            //    return;
+            //}
+
+            //// Both boundaries are above the visible area — scrolled up, follow the before boundary
+            //if (startIndex < firstVisible && endIndex < firstVisible)
+            //{
+            //    LstLogContent.TopIndex = startIndex;
+            //}
+            //// Both boundaries are below the visible area — scrolled down, follow the after boundary
+            //else if (startIndex > lastVisible && endIndex > lastVisible)
+            //{
+            //    LstLogContent.TopIndex = endIndex - visibleCount + 1;
+            //}
+            //// Normal case: scroll to whichever boundary is out of view
+            //else if (startIndex < firstVisible)
+            //{
+            //    LstLogContent.TopIndex = startIndex;
+            //}
+            //else if (endIndex > lastVisible)
+            //{
+            //    LstLogContent.TopIndex = endIndex - visibleCount + 1;
+            //}
         }
 
         private void ComputeViewportRangeIndices()

@@ -5,8 +5,8 @@ using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Controls;
 using LogScraper.Controls.FilterOverview;
-using LogScraper.Controls.Viewport;
 using LogScraper.Controls.Search;
+using LogScraper.Controls.Viewport;
 using LogScraper.Export;
 using LogScraper.Log;
 using LogScraper.Log.Layout;
@@ -24,8 +24,8 @@ namespace LogScraper
     //TODO: record buttons to seperate control
 
     //TODO: compact form can be lose connection to the main form
-    //TODO: move configuration changed status to AppState
-    
+    //TODO: move configuration changed status to AppState, also change the questioning when configuration has changed
+
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
 
     //TODO: color additional log lines?
