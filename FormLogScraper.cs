@@ -107,8 +107,8 @@ namespace LogScraper
         private void ActiveFilterOverviewControl_ErrorChipClicked(object sender, EventArgs e)
         {
             SearchResultListControl.Visible = false;
-            ErrorListControl.ShowEntries();
             ErrorListControl.Visible = true;
+            ErrorListControl.ShowEntries(true);
             SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
             SplitContainerViewportAndSearchResultList.TextSplitter = "Errors";
             SplitContainerViewportAndSearchResultList.Expand();

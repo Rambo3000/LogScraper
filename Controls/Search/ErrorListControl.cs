@@ -21,6 +21,10 @@ namespace LogScraper.Controls.Search
         {
             InitializeComponent();
         }
+        private void ErrorListControl_Load(object sender, EventArgs e)
+        {
+            LogAppState.Instance.FilterResultWithRange.Changed += (s,e) => ShowEntries();
+        }
 
         #endregion
 
@@ -32,9 +36,11 @@ namespace LogScraper.Controls.Search
 
         #region Public interface
 
-        public void ShowEntries()
+        public void ShowEntries(bool force = false)
         {
-            List<LogEntry> entries = LogAppState.Instance.FilterResultWithRange.Value.ErrorLogEntries;
+            if (!force && !Visible) return;
+
+            List<LogEntry> entries = LogAppState.Instance.FilterResultWithRange.Value?.ErrorLogEntries ?? [];
             LogRenderSettings renderSettings = LogAppState.Instance.RenderSettings.Value;
 
             LstEntries.Items.Clear();
