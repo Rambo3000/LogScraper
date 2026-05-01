@@ -654,6 +654,7 @@ namespace LogScraper.Controls.Content
             LstLogContent.Items.Clear();
             UpdateDisplayedLogEntries();
             UpdateButtons();
+            ApplyAutoScroll(true, true);
         }
 
         private void BtnReset_Click(object sender, EventArgs e)
