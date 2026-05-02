@@ -39,7 +39,7 @@ namespace LogScraper.Log.Filtering
         /// <param name="allLogEntries">The list of all log entries.</param>
         /// <param name="filters">The list of metadata filters to apply.</param>
         /// <returns>The filtered list of log entries.</returns>
-        private static List<LogEntry> FilterLogEntries(List<LogEntry> allLogEntries, List<LogMetadataFilter> filters, out BitArray filteredLogEntriesMask)
+        private static List<LogEntry> FilterLogEntries(IReadOnlyList<LogEntry> allLogEntries, List<LogMetadataFilter> filters, out BitArray filteredLogEntriesMask)
         {
             if (allLogEntries == null)
             {
@@ -49,7 +49,7 @@ namespace LogScraper.Log.Filtering
             if (filters == null || filters.Count == 0)
             {
                 filteredLogEntriesMask = new BitArray(allLogEntries.Count, true);
-                return allLogEntries;
+                return (List<LogEntry>)allLogEntries;
             }
 
             List<LogMetadataFilter> activeFilters = [.. filters.Where(f => f.ActiveValues.Count > 0)];

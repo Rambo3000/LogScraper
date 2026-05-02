@@ -43,7 +43,7 @@ namespace LogScraper.Sources.Workers
                 {
                     // Perform a single log retrieval if duration is -1.
                     OnProgressUpdate(0, durationInSeconds);
-                    await GetLogFromSourceAdapter(sourceAdapter, isContinuous);
+                    await GetLogFromSourceAdapter(sourceAdapter, isContinuous).ConfigureAwait(false);
                 }
                 else
                 {
@@ -54,10 +54,10 @@ namespace LogScraper.Sources.Workers
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
-                        await GetLogFromSourceAdapter(sourceAdapter, isContinuous);
+                        await GetLogFromSourceAdapter(sourceAdapter, isContinuous).ConfigureAwait(false);
 
                         // Wait for the specified interval before the next retrieval.
-                        await Task.Delay(intervalInSeconds * 1000, CancellationToken.None);
+                        await Task.Delay(intervalInSeconds * 1000, CancellationToken.None).ConfigureAwait(false);
 
                         // Update progress based on elapsed time.
                         OnProgressUpdate(Convert.ToInt32(stopwatch.ElapsedMilliseconds / 1000), durationInSeconds);
@@ -79,7 +79,7 @@ namespace LogScraper.Sources.Workers
         private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter, bool isContinuous)
         {
             // Retrieve the raw log data as a string.
-            string rawLog = await sourceAdapter.GetLogAsync();
+            string rawLog = await sourceAdapter.GetLogAsync().ConfigureAwait(false);
 
             // Split the raw log data into an array of lines.
             string[] rawLogArray = rawLog.Split([Environment.NewLine, "\n", "\r"], StringSplitOptions.None);

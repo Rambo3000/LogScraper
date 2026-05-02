@@ -46,7 +46,7 @@
             LblCount.Name = "LblCount";
             LblCount.Size = new System.Drawing.Size(163, 15);
             LblCount.TabIndex = 8;
-            LblCount.Text = "12.345 / 123.456";
+            LblCount.Text = "-";
             LblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             ToolTip.SetToolTip(LblCount, "Zichtbare logregels / Totaal aantal logregels");
             // 

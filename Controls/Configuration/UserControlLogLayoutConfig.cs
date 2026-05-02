@@ -524,10 +524,11 @@ namespace LogScraper.Controls.Configuration
                     throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
                 }
 
-                RawLogParser.TryParseAndAppendLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout);
+                RawLogParser.TryParseNewLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout, out List<LogEntry> newEntries);
                 logLayout.LogContentProperties.AssignIndexes();
                 logLayout.LogMetadataProperties.AssignIndexes();
-                LogEntryClassifier.Classify(logLayout, logCollection);
+                LogEntryClassifier.Classify(logLayout, logCollection, newEntries, out var contentPropertyMask, out var errorMask);
+                logCollection.CommitParsedEntries(newEntries, contentPropertyMask, errorMask);
 
                 string information = string.Empty;
                 LogEntry logEntry = logCollection.LogEntries[0];

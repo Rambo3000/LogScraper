@@ -90,13 +90,13 @@ namespace LogScraper.Sources.Workers
             isProcessingQueue = true;
 
             // Dequeue the next worker and process it.
-                var (worker, sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource) = workerQueue.Dequeue();
-                currentWorkercancellationTokenSource = cancellationTokenSource;
+            var (worker, sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource) = workerQueue.Dequeue();
+            currentWorkercancellationTokenSource = cancellationTokenSource;
 
-                worker.ProgressUpdate += (elapsed, total) => ProgressUpdate?.Invoke(elapsed, total);
+            worker.ProgressUpdate += (elapsed, total) => ProgressUpdate?.Invoke(elapsed, total);
 
-                // Execute the worker's task asynchronously.
-            await worker.DoWorkAsync(sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource.Token);
+            // Execute the worker's task asynchronously.
+            await worker.DoWorkAsync(sourceAdapter, intervalInSeconds, durationInSeconds, cancellationTokenSource.Token).ConfigureAwait(false);
 
             // Clear the current worker's cancellation token source after completion.
             currentWorkercancellationTokenSource = null;

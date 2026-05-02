@@ -11,12 +11,15 @@ namespace LogScraper.Log.Processing
         /// Builds or incrementally updates a dictionary mapping each content property to a BitArray
         /// indicating which log entries (by index) have that property.
         /// When an <paramref name="initialDictionairy"/> is provided, existing BitArrays are expanded
-        /// and only the entries beyond the original length are evaluated.
+        /// and only the entries starting at <paramref name="offset"/> are evaluated.
         /// </summary>
-        public static IndexDictionary<LogContentProperty, BitArray> Build(List<LogEntry> logEntries, List<LogContentProperty> contentProperties, IndexDictionary<LogContentProperty, BitArray> initialDictionairy = null)
+        /// <param name="newEntries">The new log entries to evaluate.</param>
+        /// <param name="contentProperties">The content properties to build masks for.</param>
+        /// <param name="initialDictionairy">Optional existing masks to extend; new bits are appended after their current length.</param>
+        /// <param name="offset">The absolute index of the first entry in <paramref name="newEntries"/> within the full collection. Defaults to 0.</param>
+        public static IndexDictionary<LogContentProperty, BitArray> Build(List<LogEntry> newEntries, List<LogContentProperty> contentProperties, IndexDictionary<LogContentProperty, BitArray> initialDictionairy = null, int offset = 0)
         {
-            int totalCount = logEntries.Count;
-            int startIndex = 0;
+            int totalCount = offset + newEntries.Count;
             IndexDictionary<LogContentProperty, BitArray> result = new(contentProperties.Count);
 
             if (initialDictionairy != null)
@@ -30,7 +33,6 @@ namespace LogScraper.Log.Processing
                         for (int i = 0; i < existing.Length; i++)
                             expanded[i] = existing[i];
                         result[property] = expanded;
-                        startIndex = existing.Length;
                     }
                     else
                     {
@@ -44,15 +46,16 @@ namespace LogScraper.Log.Processing
                     result[property] = new BitArray(totalCount);
             }
 
-            for (int i = startIndex; i < totalCount; i++)
+            for (int i = 0; i < newEntries.Count; i++)
             {
-                LogEntry entry = logEntries[i];
+                LogEntry entry = newEntries[i];
                 if (entry.LogContentProperties == null) continue;
 
+                int bitIndex = offset + i;
                 foreach (LogContentProperty property in contentProperties)
                 {
                     if (entry.LogContentProperties.ContainsKey(property))
-                        result[property][i] = true;
+                        result[property][bitIndex] = true;
                 }
             }
 

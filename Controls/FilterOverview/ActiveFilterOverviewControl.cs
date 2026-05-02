@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
@@ -127,15 +128,15 @@ namespace LogScraper.Controls.FilterOverview
         /// </summary>
         private void SetCounts()
         {
-            int visible = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries?.Count ?? 0;
-            int total = LogAppState.Instance.LogCollection.Value?.LogEntries?.Count ?? 0;
+            int resultsWithRangeCount = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries?.Count ?? 0;
+            int totalCount = LogAppState.Instance.LogCollection.Value?.TotalCount ?? 0;
 
-            LblCount.Text = visible == total ? $"{total:N0}" : $"{visible:N0} / {total:N0}";
-            _toolTip.SetToolTip(LblCount, visible == total
+            LblCount.Text = resultsWithRangeCount == totalCount ? $"{totalCount:N0}" : $"{resultsWithRangeCount:N0} / {totalCount:N0}";
+            _toolTip.SetToolTip(LblCount, resultsWithRangeCount == totalCount
                 ? "Totaal aantal logregels"
                 : "Zichtbare logregels / Totaal aantal logregels");
 
-            _errorEntriesCollectionCount = LogAppState.Instance.LogCollection.Value?.ErrorMask?.CountSetBits() ?? 0;
+            _errorEntriesCollectionCount = LogAppState.Instance.LogCollection.Value?.ErrorCount ?? 0;
             _errorEntriesFilterResultWithRangeCount = LogAppState.Instance.FilterResultWithRange.Value?.ErrorMask?.CountSetBits() ?? 0;
             RecalculateLayout();
         }

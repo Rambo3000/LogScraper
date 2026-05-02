@@ -88,41 +88,49 @@ namespace LogScraper.Controls.Metadata
 
             if (logLayout == null || logCollection == null) return;
 
+            // Skip if a write is in progress; LogCollection.Changed will retrigger after the write completes.
+            if (!logCollection.TryAcquireReadAccess()) return;
+
             this.SuspendDrawing();
 
-            LblExplenation.Visible = logLayout.LogMetadataProperties.Count == 0;
-
-            LogMetadataFilterControl previousControl = null;
-
-            foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
+            try
             {
-                if (!logCollection.MetadataValues.TryGetValue(property, out List<LogMetadataValue> allValues))
-                    continue;
+                LblExplenation.Visible = logLayout.LogMetadataProperties.Count == 0;
 
-                if (!filterControls.TryGetValue(property, out LogMetadataFilterControl control))
+                LogMetadataFilterControl previousControl = null;
+
+                foreach (LogMetadataProperty property in logLayout.LogMetadataProperties)
                 {
-                    control = new LogMetadataFilterControl(property.Description)
+                    if (!logCollection.MetadataValues.TryGetValue(property, out List<LogMetadataValue> allValues))
+                        continue;
+
+                    if (!filterControls.TryGetValue(property, out LogMetadataFilterControl control))
                     {
-                        Width = ClientSize.Width
-                    };
-                    control.FilterChanged += OnFilterChanged;
-                    control.CollapseChanged += OnCollapseChanged;
-                    Controls.Add(control);
-                    filterControls[property] = control;
-                    orderedFilterControls.Add(control);
+                        control = new LogMetadataFilterControl(property.Description)
+                        {
+                            Width = ClientSize.Width
+                        };
+                        control.FilterChanged += OnFilterChanged;
+                        control.CollapseChanged += OnCollapseChanged;
+                        Controls.Add(control);
+                        filterControls[property] = control;
+                        orderedFilterControls.Add(control);
+                    }
+
+                    control.UpdateListView(property, allValues);
+
+                    if (previousControl != null)
+                        control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);
+
+                    previousControl = control;
                 }
-
-                control.UpdateListView(property, allValues);
-
-                if (previousControl != null)
-                    control.Top = previousControl.Bottom + (previousControl.Collapsed ? 3 : 15);
-
-                previousControl = control;
             }
-
-            UpdateFilterControlsCount();
-
-            this.ResumeDrawing();
+            finally
+            {
+                logCollection.ReleaseReadAccess();
+                UpdateFilterControlsCount();
+                this.ResumeDrawing();
+            }
         }
 
         /// <summary>

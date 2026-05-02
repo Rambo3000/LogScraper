@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LogScraper.Log.Content;
@@ -16,59 +18,56 @@ namespace LogScraper.Log.Processing
     internal static class LogEntryClassifier
     {
         /// <summary>
-        /// Classifies metadata and content properties for all log entries in the collection.
-        /// Skips entries that have already been classified, allowing safe incremental calls.
+        /// Classifies metadata and content properties for the given new entries and builds updated masks
+        /// covering the full collection (existing + new).
+        /// Does not touch the LogCollection — the caller commits via <see cref="LogCollection.CommitParsedEntries"/>.
         /// </summary>
-        /// <remarks>
-        /// Uses a two-phase approach: parallel extraction of raw strings, followed by
-        /// sequential interning of shared LogMetadataValue instances via the LogCollection pool.
-        /// </remarks>
         /// <param name="logLayout">The layout defining extraction rules for metadata and content properties.</param>
-        /// <param name="logCollection">The collection of log entries to classify.</param>
-        public static void Classify(LogLayout logLayout, LogCollection logCollection)
+        /// <param name="logCollection">Used read-only to access the value pool and existing masks for incremental mask building.</param>
+        /// <param name="newEntries">The newly parsed entries to classify (not yet in the collection).</param>
+        /// <param name="contentPropertyMask">The updated content property mask covering all entries (existing + new).</param>
+        /// <param name="errorMask">The updated error mask covering all entries (existing + new).</param>
+        public static void Classify(LogLayout logLayout, LogCollection logCollection, List<LogEntry> newEntries, out IndexDictionary<LogContentProperty, BitArray> contentPropertyMask, out BitArray errorMask)
         {
-            if (logCollection == null) return;
-
             // Just-in-time compile the regex parser if needed.
             if (logLayout.RemoveMetaDataCriteria != null && logLayout.RemoveMetaDataCriteria.IsRegex && logLayout.RemoveMetaDataCriteria.RegexCompiled == null)
                 logLayout.RemoveMetaDataCriteria.RegexCompiled = new Regex(logLayout.RemoveMetaDataCriteria.AfterPhrase, RegexOptions.Compiled);
 
             int logMetadataPropertyCount = logLayout.LogMetadataProperties?.Count ?? 0;
 
-            // Create a 2D array to hold raw metadata values for each property and log entry during parallel processing.
-            string[][] rawMetadata = new string[logCollection.LogEntries.Count][];
+            // Create a 2D array to hold raw metadata values for each new entry during parallel processing.
+            string[][] rawMetadata = new string[newEntries.Count][];
 
-            // Extract raw string values and classify content properties.
-            Parallel.For(0, logCollection.LogEntries.Count, i =>
+            // Extract raw string values and classify content properties on the new entries only.
+            Parallel.For(0, newEntries.Count, i =>
             {
-                LogEntry logEntry = logCollection.LogEntries[i];
-
-                // Skip entries already classified, which happens on incremental loads.
-                if (logEntry.Metadata != null) return;
+                LogEntry logEntry = newEntries[i];
 
                 SetContentStartPosition(logEntry, logLayout);
-                ExtractRawMetadataValues(logEntry, logLayout, logMetadataPropertyCount, rawMetadata);
+                ExtractRawMetadataValues(logEntry, logLayout, logMetadataPropertyCount, rawMetadata, i);
 
                 logEntry.Metadata = new IndexDictionary<LogMetadataProperty, LogMetadataValue>(logMetadataPropertyCount);
 
                 TryClassifyContentProperties(logEntry, logLayout);
             });
 
-            // Make mask dictionary per content property type
-            logCollection.ContentPropertyMask = LogContentMaskBuilder.Build(logCollection.LogEntries, logLayout.LogContentProperties, logCollection.ContentPropertyMask);
-            logCollection.ErrorMask = LogContentMaskBuilder.BuildErrorMask(logLayout.LogContentProperties, logCollection.ContentPropertyMask, logCollection.LogEntries.Count);
+            // Build updated masks covering all entries (existing + new).
+            // Pass existing masks so the builder can extend them incrementally.
+            int existingCount = logCollection.LogEntries.Count;
+            contentPropertyMask = LogContentMaskBuilder.Build(newEntries, logLayout.LogContentProperties, logCollection.ContentPropertyMask, existingCount);
+            errorMask = LogContentMaskBuilder.BuildErrorMask(logLayout.LogContentProperties, contentPropertyMask, existingCount + newEntries.Count);
 
-            // Intern raw strings into shared LogMetadataValue instances.
-            InternRawMetadata(logCollection, rawMetadata, logLayout, logMetadataPropertyCount);
+            // Intern raw strings into shared LogMetadataValue instances via the collection's value pool.
+            InternRawMetadata(newEntries, rawMetadata, logLayout, logMetadataPropertyCount, logCollection);
         }
 
         /// <summary>
         /// Interns raw extracted metadata strings into shared LogMetadataValue instances
         /// and assigns them to each log entry's Metadata dictionary.
         /// </summary>
-        private static void InternRawMetadata(LogCollection logCollection, string[][] rawMetadata, LogLayout logLayout, int logMetadataPropertyCount)
+        private static void InternRawMetadata(List<LogEntry> entries, string[][] rawMetadata, LogLayout logLayout, int logMetadataPropertyCount, LogCollection logCollection)
         {
-            for (int i = 0; i < logCollection.LogEntries.Count; i++)
+            for (int i = 0; i < entries.Count; i++)
             {
                 if (rawMetadata[i] == null) continue;
 
@@ -77,7 +76,7 @@ namespace LogScraper.Log.Processing
                     if (rawMetadata[i][j] == null) continue;
 
                     LogMetadataProperty logMetadataProperty = logLayout.LogMetadataProperties[j];
-                    logCollection.LogEntries[i].Metadata[logMetadataProperty] = logCollection.GetSharedLogMetadataValueObject(logMetadataProperty, rawMetadata[i][j]);
+                    entries[i].Metadata[logMetadataProperty] = logCollection.GetSharedLogMetadataValueObject(logMetadataProperty, rawMetadata[i][j]);
                 }
             }
         }
@@ -113,8 +112,9 @@ namespace LogScraper.Log.Processing
         /// <summary>
         /// Extracts raw metadata string values from a log entry and stores them in the rawMetadata array.
         /// The row for this entry is lazily allocated only when at least one value is found.
+        /// Uses <paramref name="localIndex"/> (position within newEntries) as the row index.
         /// </summary>
-        private static void ExtractRawMetadataValues(LogEntry logEntry, LogLayout logLayout, int logMetadataPropertyCount, string[][] rawMetadata)
+        private static void ExtractRawMetadataValues(LogEntry logEntry, LogLayout logLayout, int logMetadataPropertyCount, string[][] rawMetadata, int localIndex)
         {
             if (logLayout.LogMetadataProperties == null) return;
 
@@ -122,9 +122,9 @@ namespace LogScraper.Log.Processing
             {
                 if (!TryExtractValue(logEntry.Entry, logMetadataProperty.Criteria, true, logEntry.StartIndexMetadata, out string propertyValue)) continue;
 
-                if (rawMetadata[logEntry.Index] == null) rawMetadata[logEntry.Index] = new string[logMetadataPropertyCount];
+                if (rawMetadata[localIndex] == null) rawMetadata[localIndex] = new string[logMetadataPropertyCount];
 
-                rawMetadata[logEntry.Index][logMetadataProperty.Index] = propertyValue;
+                rawMetadata[localIndex][logMetadataProperty.Index] = propertyValue;
             }
         }
 
@@ -143,7 +143,7 @@ namespace LogScraper.Log.Processing
                 foreach (FilterCriteria filterCriteria in logContentProperty.Criterias)
                 {
                     int startPosition = logContentProperty.IsErrorProperty ? logEntry.StartIndexMetadata : logEntry.StartIndexContent;
-                    if (!TryExtractValue(logEntry.Entry, filterCriteria, false, startPosition, out string value))                        continue;
+                    if (!TryExtractValue(logEntry.Entry, filterCriteria, false, startPosition, out string value)) continue;
 
                     logEntry.LogContentProperties[logContentProperty] = new LogContentValue(value.Trim());
                     if (logContentProperty.IsErrorProperty) logEntry.IsErrorLogEntry = true;

@@ -40,7 +40,8 @@ namespace LogScraper.Controls
         private void SetCounts()
         {
             int visible = LogAppState.Instance.FilterResultWithRange.Value?.LogEntries?.Count ?? 0;
-            int total = LogAppState.Instance.LogCollection.Value?.LogEntries?.Count ?? 0;
+            int total = LogAppState.Instance.LogCollection.Value?.TotalCount ?? 0;
+
             LblCount.Text = visible == total ? $"{total:N0}" : $"{visible:N0} / {total:N0}";
             ToolTip.SetToolTip(LblCount, visible == total
                 ? "Totaal aantal logregels"

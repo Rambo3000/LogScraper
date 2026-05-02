@@ -96,25 +96,32 @@ namespace LogScraper.LogPostProcessors
             bool wasCanceled = false;
             try
             {
-                foreach (var kvp in processors)
+                // Block until any active write (parsing/classification) completes, then hold a read lock
+                // for the duration to prevent the list from being modified during iteration.
+                logCollection.AcquireReadAccess();
+                try
                 {
-                    LogPostProcessorKind kind = kvp.Key;
+                    foreach (var kvp in processors)
+                    {
+                        LogPostProcessorKind kind = kvp.Key;
 
-                    Interlocked.Exchange(ref anyItemProcessed[(int)kind], false);
+                        Interlocked.Exchange(ref anyItemProcessed[(int)kind], false);
 
-                    // skip unrequested processor
-                    if (!processorKinds.Contains(kind)) continue;
+                        if (!processorKinds.Contains(kind)) continue;
 
-                    ILogPostProcessor processor = kvp.Value;
+                        ILogPostProcessor processor = kvp.Value;
 
-                    ProcessRange(startIndex, endIndex, processor, kind, cancellationToken);
-
+                        ProcessRange(startIndex, endIndex, processor, kind, cancellationToken);
+                    }
+                }
+                finally
+                {
+                    logCollection.ReleaseReadAccess();
                 }
             }
             catch (OperationCanceledException)
             {
                 wasCanceled = true;
-                // canceled, just exit silently
             }
             catch (Exception ex)
             {
@@ -122,7 +129,6 @@ namespace LogScraper.LogPostProcessors
             }
             finally
             {
-                // release the run lock
                 Volatile.Write(ref isRunning, 0);
                 bool[] hasChanges = new bool[Enum.GetValues<LogPostProcessorKind>().Length];
 

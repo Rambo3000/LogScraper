@@ -26,6 +26,10 @@ namespace LogScraper
         #region Form Initialization
         public FormLogScraper()
         {
+            // Capture the UI SynchronizationContext before any background work can start,
+            // so StateSlice marshals Changed events back to this thread automatically.
+            StateSlice.SetSynchronizationContext();
+
             InitializeComponent();
 
             CultureInfo culture = new("nl");
