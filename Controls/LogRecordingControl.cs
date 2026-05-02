@@ -42,7 +42,7 @@ namespace LogScraper.Controls
             Application.DoEvents();
 
             if (timerEnabled)
-                LogProcessingService.StartFetching(1, ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes * 60);
+                LogProcessingService.StartFetching(1, ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes * 60);
             else
                 LogProcessingService.StartFetching();
         }
@@ -106,7 +106,7 @@ namespace LogScraper.Controls
 
         private void SetDynamicToolTips()
         {
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigurationManager.GenericConfig.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
         }
         #endregion
     }

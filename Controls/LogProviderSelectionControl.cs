@@ -129,27 +129,27 @@ namespace LogScraper.Controls
         {
             cboLogProvider.Items.Clear();
 
-            if (ConfigurationManager.LogProvidersConfig.FileConfig != null)
+            if (ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig != null)
             {
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.FileConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.File)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig;
+                cboLogProvider.Items.Add(ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig);
+                if (ConfigAppState.Instance.GenericConfig.Value.LogProviderTypeDefault == LogProviderType.File)
+                    cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig;
             }
 
-            if (ConfigurationManager.LogProvidersConfig.RuntimeConfig != null)
+            if (ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig != null)
             {
-                RuntimeProviderControl.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Runtime)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
+                RuntimeProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.Instances);
+                cboLogProvider.Items.Add(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig);
+                if (ConfigAppState.Instance.GenericConfig.Value.LogProviderTypeDefault == LogProviderType.Runtime)
+                    cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig;
             }
 
-            if (ConfigurationManager.LogProvidersConfig.KubernetesConfig != null)
+            if (ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig != null)
             {
-                KubernetesProviderControl.Update(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                cboLogProvider.Items.Add(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-                if (ConfigurationManager.GenericConfig.LogProviderTypeDefault == LogProviderType.Kubernetes)
-                    cboLogProvider.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
+                KubernetesProviderControl.Update(ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig);
+                cboLogProvider.Items.Add(ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig);
+                if (ConfigAppState.Instance.GenericConfig.Value.LogProviderTypeDefault == LogProviderType.Kubernetes)
+                    cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig;
             }
         }
 
@@ -168,13 +168,13 @@ namespace LogScraper.Controls
                         switch (logProviderConfig.LogProviderType)
                         {
                             case LogProviderType.Runtime:
-                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
+                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout;
                                 break;
                             case LogProviderType.Kubernetes:
-                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
+                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout;
                                 break;
                             case LogProviderType.File:
-                                cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
+                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout;
                                 break;
                         }
                     }
@@ -226,15 +226,15 @@ namespace LogScraper.Controls
             {
                 case LogProviderType.Runtime:
                     RuntimeProviderControl.UpdateUri();
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.RuntimeConfig.DefaultLogLayout;
+                    cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.Kubernetes:
                     KubernetesProviderControl.UpdateUri();
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.KubernetesConfig.DefaultLogLayout;
+                    cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.File:
                     FileProviderControl.UpdateUri();
-                    cboLogLayout.SelectedItem = ConfigurationManager.LogProvidersConfig.FileConfig.DefaultLogLayout;
+                    cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout;
                     break;
             }
 
@@ -263,7 +263,7 @@ namespace LogScraper.Controls
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
-                    RuntimeProviderControl.UpdateRuntimeInstances(ConfigurationManager.LogProvidersConfig.RuntimeConfig.Instances);
+                    RuntimeProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.Instances);
                     RuntimeProviderControl.UpdateUri();
                     break;
                 case LogProviderType.Kubernetes:

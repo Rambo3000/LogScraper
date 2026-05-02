@@ -260,7 +260,7 @@ namespace LogScraper.Controls.Content
             string filter = txtSearch.Text.Trim();
             if (filter == string.Empty) filter = null;
 
-            bool showErrors = ConfigurationManager.GenericConfig.ShowErrorLinesInBeginAndEndFilters;
+            bool showErrors = ConfigAppState.Instance.GenericConfig.Value.ShowErrorLinesInBeginAndEndFilters;
             bool filterEnabled = !string.IsNullOrEmpty(filter);
 
             List<LogContentDisplayItem> logContentDisplayItems = [];

@@ -42,7 +42,7 @@ namespace LogScraper.Utilities.Extensions
         {
             try
             {
-                if (!ConfigurationManager.GenericConfig.IsDebugModeEnabled) return;
+                if (!ConfigAppState.Instance.GenericConfig.Value.IsDebugModeEnabled) return;
 
                 // Get the full stack trace of the exception.
                 string fullStackTrace = ex.GetFullStackTrace();

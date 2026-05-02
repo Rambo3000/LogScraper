@@ -45,7 +45,7 @@ namespace LogScraper.Utilities
             string githubUser = "Rambo3000"; // GitHub username
             string githubRepo = "LogScraper"; // GitHub repository name
             string currentVersion = GetCurrentVersion(); // Get the current application version
-            (string latestVersion, string releaseUrl, bool isPrerelease) = await GetLatestGitHubReleaseAsync(githubUser, githubRepo, ConfigurationManager.GenericConfig.IncludeBetaUpdates);
+            (string latestVersion, string releaseUrl, bool isPrerelease) = await GetLatestGitHubReleaseAsync(githubUser, githubRepo, ConfigAppState.Instance.GenericConfig.Value.IncludeBetaUpdates);
 
             if (latestVersion == null)
             {

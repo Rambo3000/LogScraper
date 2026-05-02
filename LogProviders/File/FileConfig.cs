@@ -1,4 +1,6 @@
-﻿using LogScraper.Log.Layout;
+﻿using System;
+using LogScraper.Log.Layout;
+using LogScraper.Utilities.Extensions;
 using System.Text.Json.Serialization;
 
 namespace LogScraper.LogProviders.File
@@ -7,7 +9,7 @@ namespace LogScraper.LogProviders.File
     /// Represents the configuration for a file-based log provider.
     /// This class implements the <see cref="ILogProviderConfig"/> interface.
     /// </summary>
-    internal class FileConfig : ILogProviderConfig
+    internal class FileConfig : ILogProviderConfig, IEquatable<FileConfig>
     {
         /// <summary>
         /// Gets or sets the description of the default log layout for the file-based log provider.
@@ -38,6 +40,18 @@ namespace LogScraper.LogProviders.File
         public override string ToString()
         {
             return "Bestand";
+        }
+
+        public bool Equals(FileConfig other) => this.IsEqualByJsonComparison(other);
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as FileConfig);
+        }
+
+        public override int GetHashCode()
+        {
+             return DefaultLogLayoutDescription.GetHashCode();
         }
     }
 }

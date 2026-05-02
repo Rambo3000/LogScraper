@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LogScraper.Log.Layout;
+using LogScraper.Utilities.Extensions;
 using System.Text.Json.Serialization;
 
 namespace LogScraper.LogProviders.Kubernetes
@@ -8,7 +10,7 @@ namespace LogScraper.LogProviders.Kubernetes
     /// Represents the configuration for a Kubernetes log provider.
     /// This class implements the <see cref="ILogProviderConfig"/> interface.
     /// </summary>
-    public class KubernetesConfig : ILogProviderConfig
+    public class KubernetesConfig : ILogProviderConfig, IEquatable<KubernetesConfig>
     {
         /// <summary>
         /// Gets or sets the description of the default log layout for the Kubernetes log provider.
@@ -51,6 +53,18 @@ namespace LogScraper.LogProviders.Kubernetes
         public LogProviderType LogProviderType
         {
             get { return LogProviderType.Kubernetes; }
+        }
+
+        public bool Equals(KubernetesConfig other) => this.IsEqualByJsonComparison(other);
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as KubernetesConfig);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

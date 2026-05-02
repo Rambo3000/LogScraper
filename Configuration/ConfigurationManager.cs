@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
@@ -10,23 +9,15 @@ using LogScraper.LogTransformers;
 using LogScraper.Utilities.Extensions;
 using LogScraper.Utilities.IndexDictionary;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace LogScraper.Configuration
 {
     /// <summary>
-    /// Manages the application's configuration, including generic settings, log layouts, and log providers.
-    /// Provides functionality to load, save, and manage configurations in a thread-safe manner.
+    /// Handles file I/O and initialization for application configuration.
+    /// Live config values are held in <see cref="ConfigAppState"/>.
     /// </summary>
-    internal class ConfigurationManager
+    internal static class ConfigurationManager
     {
-        private static ConfigurationManager instance;
-        private static readonly Lock lockObject = new();
-
-        private GenericConfig genericConfig;
-        private LogLayoutsConfig logLayoutsConfig;
-        private readonly LogProvidersConfig logProvidersConfig;
-
         private static readonly JsonSerializerOptions jsonSerializerOptions = new()
         {
             WriteIndented = true,
@@ -36,19 +27,22 @@ namespace LogScraper.Configuration
         };
 
         /// <summary>
-        /// Private constructor to enforce the singleton pattern.
-        /// Loads configuration files and initializes default settings.
+        /// Loads all configuration from disk and initializes <see cref="ConfigAppState"/>.
+        /// Must be called once at application startup before anything reads config.
         /// </summary>
-        private ConfigurationManager()
+        public static void Initialize()
         {
-            // Load configuration from files
-            genericConfig = LoadFromFile<GenericConfig>("LogScraperConfig.json");
-            logLayoutsConfig = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
-            logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
+            GenericConfig genericConfig = LoadFromFile<GenericConfig>("LogScraperConfig.json");
+            LogLayoutsConfig logLayoutsConfig = LoadFromFile<LogLayoutsConfig>("LogScraperLogLayouts.json");
+            LogProvidersConfig logProvidersConfig = LoadFromFile<LogProvidersConfig>("LogScraperLogProviders.json");
 
             InitializeGenericConfig(genericConfig);
             InitializeLogLayoutsConfig(logLayoutsConfig);
             InitializeLogProvidersConfig(logProvidersConfig, logLayoutsConfig.layouts);
+
+            ConfigAppState.Instance.GenericConfig.Set(genericConfig);
+            ConfigAppState.Instance.LogLayoutsConfig.Set(logLayoutsConfig);
+            ConfigAppState.Instance.LogProvidersConfig.Set(logProvidersConfig);
         }
         /// <summary>
         /// Initializes the specified generic configuration object, enforcing limits on its automatic read time setting.
@@ -158,26 +152,11 @@ namespace LogScraper.Configuration
         }
 
         /// <summary>
-        /// Ensures the singleton instance is created if it doesn't already exist.
-        /// </summary>
-        private static void CreateInstanceIfNeeded()
-        {
-            if (instance == null)
-            {
-                lock (lockObject)
-                {
-                    instance ??= new();
-                }
-            }
-        }
-
-        /// <summary>
         /// Saves the log providers configuration to a file.
         /// </summary>
         public static void SaveLogProviders()
         {
-            CreateInstanceIfNeeded();
-            SaveToFile("LogScraperLogProviders.json", instance.logProvidersConfig);
+            SaveToFile("LogScraperLogProviders.json", ConfigAppState.Instance.LogProvidersConfig.Value);
         }
 
         /// <summary>
@@ -185,8 +164,7 @@ namespace LogScraper.Configuration
         /// </summary>
         public static void SaveLogLayout()
         {
-            CreateInstanceIfNeeded();
-            SaveToFile("LogScraperLogLayouts.json", instance.logLayoutsConfig);
+            SaveToFile("LogScraperLogLayouts.json", ConfigAppState.Instance.LogLayoutsConfig.Value);
         }
 
         /// <summary>
@@ -194,8 +172,7 @@ namespace LogScraper.Configuration
         /// </summary>
         public static void SaveGenericConfig()
         {
-            CreateInstanceIfNeeded();
-            SaveToFile("LogScraperConfig.json", instance.genericConfig);
+            SaveToFile("LogScraperConfig.json", ConfigAppState.Instance.GenericConfig.Value);
         }
 
         /// <summary>
@@ -266,70 +243,6 @@ namespace LogScraper.Configuration
             string jsonContent = File.ReadAllText(filePath, Encoding.UTF8);
 
             return JsonSerializer.Deserialize<T>(jsonContent, jsonSerializerOptions);
-        }
-
-        // Properties for accessing and modifying configurations
-
-        /// <summary>
-        /// Gets or sets the generic configuration for the application.
-        /// </summary>
-        public static GenericConfig GenericConfig
-        {
-            get
-            {
-                CreateInstanceIfNeeded();
-                return instance.genericConfig;
-            }
-            set
-            {
-                lock (lockObject)
-                {
-                    instance.genericConfig = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the log layouts configuration for the application.
-        /// </summary>
-        public static LogLayoutsConfig LogLayoutsConfig
-        {
-            get
-            {
-                CreateInstanceIfNeeded();
-                return instance.logLayoutsConfig;
-            }
-            set
-            {
-                lock (lockObject)
-                {
-                    instance.logLayoutsConfig = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the list of log layouts available in the configuration.
-        /// </summary>
-        public static List<LogLayout> LogLayouts
-        {
-            get
-            {
-                CreateInstanceIfNeeded();
-                return instance.logLayoutsConfig.layouts;
-            }
-        }
-
-        /// <summary>
-        /// Gets the log providers configuration for the application.
-        /// </summary>
-        public static LogProvidersConfig LogProvidersConfig
-        {
-            get
-            {
-                CreateInstanceIfNeeded();
-                return instance?.logProvidersConfig;
-            }
         }
 
         /// <summary>

@@ -5,6 +5,8 @@ using System.IO;
 using System.Text.Json;
 using System.Windows.Forms;
 using LogScraper.Log.Layout;
+using LogScraper.Log.LogAppState;
+using LogScraper.LogProviders;
 using LogScraper.LogProviders.File;
 using LogScraper.LogProviders.Kubernetes;
 using LogScraper.LogProviders.Runtime;
@@ -14,33 +16,24 @@ namespace LogScraper.Configuration
 {
     public partial class FormConfiguration : Form
     {
-        private readonly KubernetesConfig oldKubernetesConfig = ConfigurationManager.LogProvidersConfig.KubernetesConfig;
-        private readonly RuntimeConfig oldRuntimeConfig = ConfigurationManager.LogProvidersConfig.RuntimeConfig;
-        private readonly FileConfig oldFileConfig = ConfigurationManager.LogProvidersConfig.FileConfig;
-        private readonly GenericConfig oldGenericConfig = ConfigurationManager.GenericConfig;
-        private readonly LogLayoutsConfig logLayoutsConfig = ConfigurationManager.LogLayoutsConfig;
+        private readonly KubernetesConfig oldKubernetesConfig = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig;
+        private readonly RuntimeConfig oldRuntimeConfig = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig;
+        private readonly FileConfig oldFileConfig = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig;
+        private readonly GenericConfig oldGenericConfig = ConfigAppState.Instance.GenericConfig.Value;
+        private readonly LogLayoutsConfig logLayoutsConfig = ConfigAppState.Instance.LogLayoutsConfig.Value;
 
         public FormConfiguration()
         {
             InitializeComponent();
         }
 
-        public void GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out bool fileChanged)
-        {
-            genericConfigChanged = !oldGenericConfig.IsEqualByJsonComparison(ConfigurationManager.GenericConfig);
-            logLayoutsChanged = !logLayoutsConfig.IsEqualByJsonComparison(ConfigurationManager.LogLayoutsConfig);
-
-            kubernetesChanged = !oldKubernetesConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.KubernetesConfig);
-            runtimeChanged = !oldRuntimeConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.RuntimeConfig);
-            fileChanged = !oldFileConfig.IsEqualByJsonComparison(ConfigurationManager.LogProvidersConfig.FileConfig);
-        }
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
-            userControlKubernetesConfig.SetKubernetesConfig(ConfigurationManager.LogProvidersConfig.KubernetesConfig, ConfigurationManager.LogLayouts);
-            userControlRuntimeConfig.SetRuntimeConfig(ConfigurationManager.LogProvidersConfig.RuntimeConfig, ConfigurationManager.LogLayouts);
-            userControlFileConfig.SetFileConfig(ConfigurationManager.LogProvidersConfig.FileConfig, ConfigurationManager.LogLayouts);
-            userControlGenericConfig.SetGenericConfig(ConfigurationManager.GenericConfig);
-            userControlLogLayoutConfig.SetLogLayoutsConfig(ConfigurationManager.LogLayouts);
+            userControlKubernetesConfig.SetKubernetesConfig(ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
+            userControlRuntimeConfig.SetRuntimeConfig(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
+            userControlFileConfig.SetFileConfig(ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
+            userControlGenericConfig.SetGenericConfig(ConfigAppState.Instance.GenericConfig.Value);
+            userControlLogLayoutConfig.SetLogLayoutsConfig(ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
@@ -57,17 +50,40 @@ namespace LogScraper.Configuration
             if (!userControlGenericConfig.TryGetGenericConfig(out GenericConfig config)) return;
             if (!userControlLogLayoutConfig.TryGetLogLayoutsConfig(out LogLayoutsConfig logLayoutsConfig)) return;
 
-            ConfigurationManager.LogProvidersConfig.KubernetesConfig = kubernetesConfig;
-            ConfigurationManager.LogProvidersConfig.RuntimeConfig = runtimeConfig;
-            ConfigurationManager.LogProvidersConfig.FileConfig = fileConfig;
-            ConfigurationManager.LogLayoutsConfig = logLayoutsConfig;
-            ConfigurationManager.GenericConfig = config;
+            // Detect changes against the snapshots taken at form open, before writing to state
+            bool genericConfigChanged = !oldGenericConfig.Equals(config);
+            bool logLayoutsChanged = !this.logLayoutsConfig.Equals(logLayoutsConfig);
+            bool kubernetesChanged = !oldKubernetesConfig.Equals(kubernetesConfig);
+            bool runtimeChanged = !oldRuntimeConfig.Equals(runtimeConfig);
+            bool fileChanged = !oldFileConfig.Equals(fileConfig);
 
-            GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out bool fileChanged);
+            bool providerConfigChanged = kubernetesChanged || runtimeChanged || fileChanged;
+            if (providerConfigChanged || logLayoutsChanged)
+            {
+                if (MessageBox.Show("De instellingen zijn gewijzigd. De applicatie wordt gereset om deze toe te passen. Wilt u doorgaan?", "Instellingen gewijzigd", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    LogAppState.Instance.Reset(keepFilters: false);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (genericConfigChanged) ConfigAppState.Instance.GenericConfig.Set(config);
+            if (logLayoutsChanged) ConfigAppState.Instance.LogLayoutsConfig.Set(logLayoutsConfig);
+            if (providerConfigChanged)
+            {
+                LogProvidersConfig providersConfig = ConfigAppState.Instance.LogProvidersConfig.Value;
+                providersConfig.KubernetesConfig = kubernetesConfig;
+                providersConfig.RuntimeConfig = runtimeConfig;
+                providersConfig.FileConfig = fileConfig;
+                ConfigAppState.Instance.LogProvidersConfig.ForceSet(providersConfig);
+            }
 
             if (genericConfigChanged) ConfigurationManager.SaveGenericConfig();
             if (logLayoutsChanged) ConfigurationManager.SaveLogLayout();
-            if (kubernetesChanged || runtimeChanged || fileChanged) ConfigurationManager.SaveLogProviders();
+            if (providerConfigChanged) ConfigurationManager.SaveLogProviders();
 
             DialogResult = DialogResult.OK;
             Close();

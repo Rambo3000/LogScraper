@@ -232,8 +232,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                     httpAuthenticationSettings = selected.HttpAuthenticationSettings;
                 }
 
-                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null, false);
-
+                ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", TxtDescription.Text), ConfigAppState.Instance.GenericConfig.Value.HttpCLientTimeOUtSeconds, httpAuthenticationSettings, TrailType.None, null, false);
                 if (((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string errorMessage))
                 {
                     TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;

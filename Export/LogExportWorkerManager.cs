@@ -135,7 +135,7 @@ namespace LogScraper.Export
             try
             {
                 // Open the file in the configured external editor.
-                Process.Start(ConfigurationManager.GenericConfig.EditorFileName, "\"" + fileName + "\"");
+                Process.Start(ConfigAppState.Instance.GenericConfig.Value.EditorFileName, "\"" + fileName + "\"");
             }
             catch (Exception ex)
             {
@@ -152,7 +152,7 @@ namespace LogScraper.Export
         /// <param name="logExportSettings">The settings to use for exporting the log.</param>
         internal static void WriteToFile(string log)
         {
-            if (ConfigurationManager.GenericConfig.ExportToFile)
+            if (ConfigAppState.Instance.GenericConfig.Value.ExportToFile)
             {
                 // Create a new log exporter worker and add it to the manager.
                 LogExporterWorker logExporter = new(GetExportFileName());
@@ -167,7 +167,7 @@ namespace LogScraper.Export
         private static string GetExportFileName()
         {
             // Determine the file name based on whether the debugger is attached.
-            return Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigurationManager.GenericConfig.ExportFileName;
+            return Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigAppState.Instance.GenericConfig.Value.ExportFileName;
         }
     }
 }

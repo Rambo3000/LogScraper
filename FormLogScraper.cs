@@ -15,7 +15,7 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: move configuration changed status to AppState, also change the questioning when configuration has changed
+    //TODO: fix issue when no valid runtime is selected that you cannot record, the issource valid should be pushed better to the record buttons
 
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
 
@@ -39,6 +39,10 @@ namespace LogScraper
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.StatusMessage.Changed += (s, e) => HandleErrorMessages();
+
+            ConfigAppState.Instance.GenericConfig.Changed += (s, e) => ApplyGenericConfig();
+            //TODO: move to the control itself
+            ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => LogProviderSelectionControl.PopulateLogLayouts([.. ConfigAppState.Instance.LogLayoutsConfig.Value.layouts]);
 
             FormCompactView.Instance.ReturnToMainFormRequested += (s, e) => WindowState = FormWindowState.Normal;
 
@@ -70,11 +74,14 @@ namespace LogScraper
             {
                 //Collapse the bottom panel here, so it is still shown in the designer
                 SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
-                btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
+                btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
 
-                LogProviderSelectionControl.IsPinned = ConfigurationManager.GenericConfig.PinLogProvidersByDefault;
+                //TODO: move to the control itself
+                LogProviderSelectionControl.IsPinned = ConfigAppState.Instance.GenericConfig.Value.PinLogProvidersByDefault;
+                //TODO: move to the control itself
                 LogProviderSelectionControl.PopulateLogProviders();
-                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
+                //TODO: move to the control itself
+                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigAppState.Instance.LogLayoutsConfig.Value.layouts]);
                 //Enforce autosizing because the IDE overrides the control's autosize settings.
                 LogProviderSelectionControl.AutoSize = false;
 
@@ -210,9 +217,15 @@ namespace LogScraper
 
         #region User controls event handling
 
+        private void ApplyGenericConfig()
+        {
+            btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
+            SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigAppState.Instance.GenericConfig.Value.ShowTimelineByDefault;
+        }
+
         private void UpdateTimeLineVisibility()
         {
-            SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigurationManager.GenericConfig.ShowTimelineByDefault;
+            SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigAppState.Instance.GenericConfig.Value.ShowTimelineByDefault;
         }
 
         private void HandleErrorMessages()
@@ -276,29 +289,11 @@ namespace LogScraper
         private void BtnConfig_Click(object sender, EventArgs e)
         {
             using FormConfiguration form = new();
-
             if (form.ShowDialog(this) == DialogResult.OK)
             {
-                form.GetConfigurationChangedStatus(out bool genericConfigChanged, out bool logLayoutsChanged, out bool kubernetesChanged, out bool runtimeChanged, out _);
 
-                if (genericConfigChanged)
-                {
-                    //TODO: (after updating config changes to AppState) update tooltip based on config in LogAppState
-                    //SetDynamicToolTips();
-                    btnOpenWithEditor.Enabled = ConfigurationManager.GenericConfig.ExportToFile;
-                    UpdateTimeLineVisibility();
-                }
-
-                if (logLayoutsChanged) LogProviderSelectionControl.PopulateLogLayouts([.. ConfigurationManager.LogLayouts]);
-
-                if (kubernetesChanged || runtimeChanged)
-                {
-                    if (MessageBox.Show("De instellingen zijn gewijzigd. Wil je deze direct toepassen? Hierdoor wordt het log gereset", "Reset", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
-                    {
-                        LogProviderSelectionControl.UpdateProviderConfig();
-                        LogAppState.Instance.Reset(keepFilters: false);
-                    }
-                }
+                //TODO: move to control itself
+                LogProviderSelectionControl.UpdateProviderConfig();
             }
         }
 

@@ -77,7 +77,7 @@ namespace LogScraper.Controls.LogProviders
                 if (SelectedKubernetesCluster == null || SelectedKubernetesNamespace == null || SelectedKubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
                 url = KubernetesHelper.GetUrlForPodLog(SelectedKubernetesCluster, SelectedKubernetesNamespace, SelectedKubernetesPod);
             }
-            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", SelectedKubernetesCluster.ClusterId), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
+            return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", SelectedKubernetesCluster.ClusterId), ConfigAppState.Instance.GenericConfig.Value.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
         }
 
         private void PopulateKubernetesClusters()

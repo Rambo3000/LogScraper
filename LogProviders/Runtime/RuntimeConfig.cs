@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Layout;
+using LogScraper.LogProviders.Kubernetes;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Runtime
 {
@@ -8,7 +11,7 @@ namespace LogScraper.LogProviders.Runtime
     /// Represents the configuration for a runtime log provider.
     /// This class implements the <see cref="ILogProviderConfig"/> interface.
     /// </summary>
-    internal class RuntimeConfig : ILogProviderConfig
+    internal class RuntimeConfig : ILogProviderConfig, IEquatable<RuntimeConfig>
     {
         /// <summary>
         /// Gets or sets the description of the default log layout for the runtime log provider.
@@ -45,6 +48,17 @@ namespace LogScraper.LogProviders.Runtime
         public LogProviderType LogProviderType
         {
             get { return LogProviderType.Runtime; }
+        }
+
+        public bool Equals(RuntimeConfig other) => this.IsEqualByJsonComparison(other);
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as RuntimeConfig);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(DefaultLogLayoutDescription, Instances);
         }
     }
 }

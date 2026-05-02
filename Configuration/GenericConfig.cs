@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LogScraper.LogProviders;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Configuration
 {
@@ -9,7 +10,7 @@ namespace LogScraper.Configuration
     /// Represents the generic configuration settings for the application.
     /// Includes default log provider type, file export settings, and other general configurations.
     /// </summary>
-    internal class GenericConfig
+    internal class GenericConfig : IEquatable<GenericConfig>
     {
         /// <summary>
         /// Gets or sets the default log provider type for the application.
@@ -71,6 +72,18 @@ namespace LogScraper.Configuration
         /// Gets or sets a value indicating whether debug mode is enabled for the application.
         /// </summary>
         public bool IsDebugModeEnabled { get; set; } = false;
+
+        public bool Equals(GenericConfig other) => this.IsEqualByJsonComparison(other);
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as GenericConfig);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
 

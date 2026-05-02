@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using LogScraper.Configuration;
 
 namespace LogScraper
 {
@@ -11,6 +12,8 @@ namespace LogScraper
         [STAThread]
         static void Main()
         {
+            ConfigurationManager.Initialize();
+
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

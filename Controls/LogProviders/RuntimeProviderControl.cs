@@ -117,7 +117,7 @@ namespace LogScraper.Controls.LogProviders
             }
             else
             {
-                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", runtimeInstance.Description), ConfigurationManager.GenericConfig.HttpCLientTimeOUtSeconds, runtimeInstance.HttpAuthenticationSettings, TrailType.None, null, authenticate);
+                sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Runtime", runtimeInstance.Description), ConfigAppState.Instance.GenericConfig.Value.HttpCLientTimeOUtSeconds, runtimeInstance.HttpAuthenticationSettings, TrailType.None, null, authenticate);
             }
             return sourceAdapter;
         }
