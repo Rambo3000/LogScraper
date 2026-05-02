@@ -29,9 +29,6 @@ namespace LogScraper.Controls.Metadata
         public LogMetadataFiltersOverviewControl()
         {
             InitializeComponent();
-        }
-        private void UserControlMetadataFilterOverview_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.ResetRequested += OnResetRequested;
             LogAppState.Instance.LogCollection.Changed += (s, e) => UpdateFilterControls();
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateFilterControls();

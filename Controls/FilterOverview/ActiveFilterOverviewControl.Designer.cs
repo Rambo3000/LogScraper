@@ -77,7 +77,6 @@
             Controls.Add(FlowLayoutFilterChips);
             Name = "ActiveFilterOverviewControl";
             Size = new System.Drawing.Size(601, 20);
-            Load += ActiveFilterOverviewControl_Load;
             ResumeLayout(false);
             PerformLayout();
         }

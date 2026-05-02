@@ -158,7 +158,6 @@ namespace LogScraper.Controls.Content
             Controls.Add(PnlUsedForCorrectScaling);
             Name = "ContentNavigationControl";
             Size = new System.Drawing.Size(243, 272);
-            Load += UserControlLogContentFilter_Load;
             PnlUsedForCorrectScaling.ResumeLayout(false);
             ResumeLayout(false);
         }

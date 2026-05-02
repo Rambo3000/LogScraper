@@ -49,14 +49,10 @@ namespace LogScraper.Controls.Search
             ItemNext.Click += ItemNext_Click;
             ItemPrevious.Click += ItemPrevious_Click;
             ItemWholeWords.Click += ItemWholeWords_CheckedChanged;
-        }
-
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            if (DesignMode) return;
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
         }
+
+
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {

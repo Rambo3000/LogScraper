@@ -56,7 +56,6 @@ namespace LogScraper.Controls.Metadata
             Margin = new Padding(0);
             Name = "LogMetadataValueList";
             Size = new System.Drawing.Size(280, 232);
-            Load += LogMetadataValueList_Load;
             ResumeLayout(false);
         }
 

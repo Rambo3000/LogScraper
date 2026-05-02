@@ -41,8 +41,6 @@ namespace LogScraper
             LogAppState.Instance.StatusMessage.Changed += (s, e) => HandleErrorMessages();
 
             ConfigAppState.Instance.GenericConfig.Changed += (s, e) => ApplyGenericConfig();
-            //TODO: move to the control itself
-            ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => LogProviderSelectionControl.PopulateLogLayouts([.. ConfigAppState.Instance.LogLayoutsConfig.Value.layouts]);
 
             FormCompactView.Instance.ReturnToMainFormRequested += (s, e) => WindowState = FormWindowState.Normal;
 
@@ -76,12 +74,6 @@ namespace LogScraper
                 SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
                 btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
 
-                //TODO: move to the control itself
-                LogProviderSelectionControl.IsPinned = ConfigAppState.Instance.GenericConfig.Value.PinLogProvidersByDefault;
-                //TODO: move to the control itself
-                LogProviderSelectionControl.PopulateLogProviders();
-                //TODO: move to the control itself
-                LogProviderSelectionControl.PopulateLogLayouts([.. ConfigAppState.Instance.LogLayoutsConfig.Value.layouts]);
                 //Enforce autosizing because the IDE overrides the control's autosize settings.
                 LogProviderSelectionControl.AutoSize = false;
 
@@ -288,13 +280,7 @@ namespace LogScraper
 
         private void BtnConfig_Click(object sender, EventArgs e)
         {
-            using FormConfiguration form = new();
-            if (form.ShowDialog(this) == DialogResult.OK)
-            {
-
-                //TODO: move to control itself
-                LogProviderSelectionControl.UpdateProviderConfig();
-            }
+            new FormConfiguration().ShowDialog(this);
         }
 
         #endregion

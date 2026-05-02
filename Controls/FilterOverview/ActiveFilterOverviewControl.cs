@@ -64,9 +64,6 @@ namespace LogScraper.Controls.FilterOverview
         {
             InitializeComponent();
             LblCount.Text = string.Empty;
-        }
-        private void ActiveFilterOverviewControl_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.Range.Changed += OnLogRangeChanged;
             LogAppState.Instance.ResetRequested += OnResetRequested;
             LogAppState.Instance.MetadataFilters.Changed += (s, e) => SetMetadataFilters();

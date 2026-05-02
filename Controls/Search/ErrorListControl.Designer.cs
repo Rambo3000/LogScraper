@@ -90,7 +90,6 @@ namespace LogScraper.Controls.Search
             Controls.Add(LblCount);
             Controls.Add(BtnClose);
             Name = "ErrorListControl";
-            Load += ErrorListControl_Load;
             PnlForScalingIssues.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();

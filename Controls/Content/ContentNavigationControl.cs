@@ -31,10 +31,6 @@ namespace LogScraper.Controls.Content
         {
             InitializeComponent();
             txtSearch.PlaceholderText = DefaulSearchtText;
-        }
-
-        private void UserControlLogContentFilter_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout();
             LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => UpdateDisplayedLogEntries();
             LogAppState.Instance.ResetRequested += (s, e) => Reset();

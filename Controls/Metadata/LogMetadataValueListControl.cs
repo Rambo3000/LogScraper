@@ -61,9 +61,6 @@ namespace LogScraper.Controls.Metadata
             InitializeComponent();
             ListViewItems.Columns.Add("Description", -2);
             ListViewItems.Columns.Add("Count", 50, HorizontalAlignment.Right);
-        }
-        private void LogMetadataValueList_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedEntry();
         }
 

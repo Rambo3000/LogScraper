@@ -36,9 +36,6 @@ namespace LogScraper.Controls
         public BookMarksControl()
         {
             InitializeComponent();
-        }
-        private void BookMarksControl_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedLogEntry();
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRange;
             LogAppState.Instance.ResetRequested += (s, e) => Reset();

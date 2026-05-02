@@ -31,10 +31,6 @@ namespace LogScraper.Controls.Viewport
             InitializeComponent();
             TxtLogEntries.Initialize();
             TxtLogEntries.UseDefaultFont(this);
-        }
-
-        private void UserControlLogEntriesTextBox_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
             LogAppState.Instance.RenderSettings.Changed += OnRenderSettingsChanged;
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);

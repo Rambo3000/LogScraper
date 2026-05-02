@@ -70,17 +70,28 @@ namespace LogScraper.Controls
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
             ExpandedHeight = Height;
+
+            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
+            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
+            LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
+
+            ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => PopulateLogLayouts();
+            ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => UpdateProviderConfig();
+            ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => PopulateLogProviders();
         }
 
         private void LogProviderSelectionControl_Load(object sender, EventArgs e)
         {
-            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
-            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
-            LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
+
+            IsPinned = ConfigAppState.Instance.GenericConfig.Value.PinLogProvidersByDefault;
+            PopulateLogProviders();
+            PopulateLogLayouts();
+            //TODO: check what to do with UpdateProviderConfig, maybe remove? what does it do?
+            UpdateProviderConfig();
             AttachEventHandlers();
         }
 
-        private void AttachEventHandlers()
+        private void AttachEventHandlers()  
         {
             KubernetesProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
             KubernetesProviderControl.StatusUpdate += HandleStatusUpdate;
@@ -125,7 +136,7 @@ namespace LogScraper.Controls
             }
         }
 
-        public void PopulateLogProviders()
+        private void PopulateLogProviders()
         {
             cboLogProvider.Items.Clear();
 
@@ -153,8 +164,10 @@ namespace LogScraper.Controls
             }
         }
 
-        public void PopulateLogLayouts(List<LogLayout> logLayouts)
+        public void PopulateLogLayouts()
         {
+            List<LogLayout> logLayouts = ConfigAppState.Instance.LogLayoutsConfig.Value.layouts;
+
             cboLogLayout.Items.Clear();
             if (logLayouts != null)
             {
@@ -255,7 +268,7 @@ namespace LogScraper.Controls
             LogAppState.Instance.Reset(false);
         }
 
-        public void UpdateProviderConfig()
+        private void UpdateProviderConfig()
         {
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
             if (logProviderConfig == null) return;

@@ -20,9 +20,6 @@ namespace LogScraper.Controls.Search
         public ErrorListControl()
         {
             InitializeComponent();
-        }
-        private void ErrorListControl_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.FilterResultWithRange.Changed += (s,e) => ShowEntries();
         }
 
