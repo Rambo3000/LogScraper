@@ -49,7 +49,7 @@ namespace LogScraper.Controls.LogProviders
             PopulateKubernetesClusters();
         }
 
-        public void UpdateUri()
+        public void UpdateAfterProviderSelected()
         {
             string uri = string.Empty;
             if (SelectedKubernetesCluster != null) uri += $"{SelectedKubernetesCluster.Description}";
@@ -57,6 +57,7 @@ namespace LogScraper.Controls.LogProviders
             if (SelectedKubernetesPod != null) uri += $"/{SelectedKubernetesPod.Description}";
             if (SelectedKubernetesPod != null && previousTimeSpan != null) uri += $" [{((KubernetesTimespan)previousTimeSpan).ToReadableString()}]";
             UriChanged?.Invoke(this, uri);
+            IsSourceValidChanged?.Invoke(this, IsSourceValid);
         }
 
         public ISourceAdapter GetSourceAdapter()
@@ -226,21 +227,21 @@ namespace LogScraper.Controls.LogProviders
         private void CboKubernetesCluster_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesNamespaces();
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
 
         private void CboKubernetesNamespace_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateKubernetesPods();
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
 
         private void CboKubernetesPod_SelectedIndexChanged(object sender, EventArgs e)
         {
             OnSourceSelectionChanged(EventArgs.Empty);
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
 
@@ -262,7 +263,7 @@ namespace LogScraper.Controls.LogProviders
                 OnSourceSelectionChanged(EventArgs.Empty);
             }
             previousTimeSpan = newTimeSpan;
-            UpdateUri();
+            UpdateAfterProviderSelected();
         }
     }
 }

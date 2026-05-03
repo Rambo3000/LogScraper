@@ -46,8 +46,8 @@ namespace LogScraper.LogProviders
         public bool IsSourceValid { get; }
 
         /// <summary>
-        /// Updates the URI associated with the log provider and triggers the UriChanged event.
+        /// Updates the user control after a log provider has been selected.
         /// </summary>
-        public void UpdateUri();
+        public void UpdateAfterProviderSelected();
     }
 }

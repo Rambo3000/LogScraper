@@ -238,15 +238,15 @@ namespace LogScraper.Controls
             switch (logProviderConfig.LogProviderType)
             {
                 case LogProviderType.Runtime:
-                    RuntimeProviderControl.UpdateUri();
+                    RuntimeProviderControl.UpdateAfterProviderSelected();
                     cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.Kubernetes:
-                    KubernetesProviderControl.UpdateUri();
+                    KubernetesProviderControl.UpdateAfterProviderSelected();
                     cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.File:
-                    FileProviderControl.UpdateUri();
+                    FileProviderControl.UpdateAfterProviderSelected();
                     cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout;
                     break;
             }
@@ -277,13 +277,13 @@ namespace LogScraper.Controls
             {
                 case LogProviderType.Runtime:
                     RuntimeProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.Instances);
-                    RuntimeProviderControl.UpdateUri();
+                    RuntimeProviderControl.UpdateAfterProviderSelected();
                     break;
                 case LogProviderType.Kubernetes:
-                    KubernetesProviderControl.UpdateUri();
+                    KubernetesProviderControl.UpdateAfterProviderSelected();
                     break;
                 case LogProviderType.File:
-                    FileProviderControl.UpdateUri();
+                    FileProviderControl.UpdateAfterProviderSelected();
                     break;
             }
         }

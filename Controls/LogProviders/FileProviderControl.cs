@@ -50,10 +50,11 @@ namespace LogScraper.Controls.LogProviders
             StatusUpdate?.Invoke(message, isSuccess);
         }
 
-        public void UpdateUri()
+        public void UpdateAfterProviderSelected()
         {
             string uri = txtFilePath.Text;
 
+            IsSourceValidChanged?.Invoke(this, IsSourceValid);
             UriChanged?.Invoke(this, uri);
         }
 
@@ -71,7 +72,7 @@ namespace LogScraper.Controls.LogProviders
                 return;
             }
 
-            UpdateUri();
+            UpdateAfterProviderSelected();
             UpdateFileMetadataDisplay(selectedFilePath);
             OnStatusUpdate("OK", true);
         }

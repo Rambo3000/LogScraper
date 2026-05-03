@@ -70,7 +70,7 @@ namespace LogScraper.Controls.LogProviders
             }
         }
 
-        public void UpdateUri()
+        public void UpdateAfterProviderSelected()
         {
             string uri = string.Empty;
             if( SelectedRuntimeInstance != null ) uri += $" {SelectedRuntimeInstance.Description}";
@@ -78,6 +78,7 @@ namespace LogScraper.Controls.LogProviders
             if (SelectedFileLink != null) uri += $"/{SelectedFileLink.Name}";
 
             UriChanged?.Invoke(this, uri);
+            IsSourceValidChanged?.Invoke(this, IsSourceValid);
         }
 
         public RuntimeProviderControl()
@@ -195,7 +196,7 @@ namespace LogScraper.Controls.LogProviders
                 OnStatusUpdate(ex.Message, false);
                 ex.LogStackTraceToFile("Error selecting runtime instance");
             }
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
         private void PopulateFiles()
@@ -374,7 +375,7 @@ namespace LogScraper.Controls.LogProviders
                     ex.LogStackTraceToFile("Error selecting folder link");
                 }
             }
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
 
@@ -384,7 +385,7 @@ namespace LogScraper.Controls.LogProviders
             if (SelectedFileLink == null) return;
             txtUrl.Text = SelectedFileLink.Url;
             OnSourceSelectionChanged(EventArgs.Empty);
-            UpdateUri();
+            UpdateAfterProviderSelected();
             OnSourceValidChanged(IsSourceValid);
         }
 
