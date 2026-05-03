@@ -22,9 +22,9 @@ namespace LogScraper.Controls
             LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateButtonStatus();
             SourceProcessingManager.Instance.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
 
-            ToolTip.SetToolTip(BtnRecord, "Start ophalen log [F5]");
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Start automatisch ophalen log [CTRL-F5]");
-            ToolTip.SetToolTip(BtnStop, "Stop ophalen log [SHIFT-F5]");
+            ToolTip.SetToolTip(BtnRecord, "Start logophalen [F5]");
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Start automatisch log ophalen [CTRL-F5]");
+            ToolTip.SetToolTip(BtnStop, "Stop log ophalen [SHIFT-F5]");
 
             UpdateButtonStatus();
         }

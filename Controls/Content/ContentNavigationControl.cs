@@ -673,6 +673,8 @@ namespace LogScraper.Controls.Content
 
         private void UpdateButtons()
         {
+            LblExplenation.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
+
             BtnAutoScroll.ImageIndex = _autoScrollEnabled ? 1 : 0;
             BtnJumpToLogPosition.Enabled = LstLogContent.Items.Count > 1;
 

@@ -42,6 +42,8 @@ namespace LogScraper.Controls.Viewport
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
         {
+            LblExplenation.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
+            LblExplenation2.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
             _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
             RenderLogEntries();
         }

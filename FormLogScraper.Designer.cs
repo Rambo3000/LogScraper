@@ -58,7 +58,6 @@ namespace LogScraper
             LogPostProcessingControl = new LogPostProcessingControl();
             ErrorListControl = new ErrorListControl();
             SearchResultListControl = new SearchResultListControl();
-            groupBox6 = new System.Windows.Forms.GroupBox();
             ContentNavigationControl = new ContentNavigationControl();
             LogMetadataFiltersOverviewControl = new LogMetadataFiltersOverviewControl();
             SplitContainerMain = new SplitContainerWithGrip();
@@ -80,7 +79,6 @@ namespace LogScraper
             SplitContainerViewportAndSearchResultList.Panel2.SuspendLayout();
             SplitContainerViewportAndSearchResultList.SuspendLayout();
             PnlFiltersAndLogEntriesTextBox.SuspendLayout();
-            groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)SplitContainerMain).BeginInit();
             SplitContainerMain.Panel1.SuspendLayout();
             SplitContainerMain.Panel2.SuspendLayout();
@@ -140,7 +138,8 @@ namespace LogScraper
             // 
             // SplitContainerViewportAndNavigation.Panel2
             // 
-            SplitContainerViewportAndNavigation.Panel2.Controls.Add(groupBox6);
+            SplitContainerViewportAndNavigation.Panel2.Controls.Add(ContentNavigationControl);
+            SplitContainerViewportAndNavigation.Panel2.Padding = new System.Windows.Forms.Padding(0, 2, 1, 0);
             SplitContainerViewportAndNavigation.Size = new System.Drawing.Size(982, 610);
             SplitContainerViewportAndNavigation.SplitterDistance = 658;
             SplitContainerViewportAndNavigation.SplitterWidth = 8;
@@ -212,6 +211,7 @@ namespace LogScraper
             // 
             // OpenLogInTextEditor
             // 
+            OpenLogInTextEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             OpenLogInTextEditor.Location = new System.Drawing.Point(633, 0);
             OpenLogInTextEditor.Name = "OpenLogInTextEditor";
             OpenLogInTextEditor.Size = new System.Drawing.Size(25, 25);
@@ -325,25 +325,14 @@ namespace LogScraper
             SearchResultListControl.Size = new System.Drawing.Size(658, 104);
             SearchResultListControl.TabIndex = 26;
             // 
-            // groupBox6
-            // 
-            groupBox6.Controls.Add(ContentNavigationControl);
-            groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox6.Location = new System.Drawing.Point(0, 0);
-            groupBox6.Name = "groupBox6";
-            groupBox6.Size = new System.Drawing.Size(316, 610);
-            groupBox6.TabIndex = 1;
-            groupBox6.TabStop = false;
-            groupBox6.Text = "Navigeren";
-            // 
             // ContentNavigationControl
             // 
             ContentNavigationControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             ContentNavigationControl.BackColor = System.Drawing.SystemColors.Control;
             ContentNavigationControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            ContentNavigationControl.Location = new System.Drawing.Point(3, 19);
+            ContentNavigationControl.Location = new System.Drawing.Point(0, 2);
             ContentNavigationControl.Name = "ContentNavigationControl";
-            ContentNavigationControl.Size = new System.Drawing.Size(310, 588);
+            ContentNavigationControl.Size = new System.Drawing.Size(315, 608);
             ContentNavigationControl.TabIndex = 0;
             // 
             // LogMetadataFiltersOverviewControl
@@ -466,7 +455,6 @@ namespace LogScraper
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndSearchResultList).EndInit();
             SplitContainerViewportAndSearchResultList.ResumeLayout(false);
             PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
-            groupBox6.ResumeLayout(false);
             SplitContainerMain.Panel1.ResumeLayout(false);
             SplitContainerMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)SplitContainerMain).EndInit();
@@ -488,7 +476,6 @@ namespace LogScraper
         private SplitContainerWithGrip SplitContainerViewportAndSearchResultList;
         private SplitContainerWithGrip SplitContainerTimeLineAndViewport;
         private ContentNavigationControl ContentNavigationControl;
-        private System.Windows.Forms.GroupBox groupBox6;
         private SearchControl SearchControl;
         private System.Windows.Forms.Button BtnConfig;
         private LogMetadataFiltersOverviewControl LogMetadataFiltersOverviewControl;

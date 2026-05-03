@@ -33,18 +33,18 @@
             // 
             // LblExplenation
             // 
-            LblExplenation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblExplenation.Dock = System.Windows.Forms.DockStyle.Fill;
             LblExplenation.ForeColor = System.Drawing.SystemColors.ControlDark;
             LblExplenation.Location = new System.Drawing.Point(0, 0);
             LblExplenation.Margin = new System.Windows.Forms.Padding(0);
             LblExplenation.Name = "LblExplenation";
             LblExplenation.Padding = new System.Windows.Forms.Padding(5);
-            LblExplenation.Size = new System.Drawing.Size(150, 65);
+            LblExplenation.Size = new System.Drawing.Size(150, 150);
             LblExplenation.TabIndex = 0;
-            LblExplenation.Text = "Metadata filters";
-            LblExplenation.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            LblExplenation.Text = "Filter op metadata";
+            LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // UserControlMetadataFilterOverview
+            // LogMetadataFiltersOverviewControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -52,7 +52,7 @@
             BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(LblExplenation);
             Margin = new System.Windows.Forms.Padding(0);
-            Name = "UserControlMetadataFilterOverview";
+            Name = "LogMetadataFiltersOverviewControl";
             Resize += UserControlMetadataFilterOverview_Resize;
             ResumeLayout(false);
         }

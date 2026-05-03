@@ -43,6 +43,7 @@ namespace LogScraper.Controls.Content
             ImageListAutoScroll = new System.Windows.Forms.ImageList(components);
             BtnJumpToLogPosition = new System.Windows.Forms.Button();
             PnlUsedForCorrectScaling = new System.Windows.Forms.Panel();
+            LblExplenation = new System.Windows.Forms.Label();
             PnlUsedForCorrectScaling.SuspendLayout();
             SuspendLayout();
             // 
@@ -69,7 +70,7 @@ namespace LogScraper.Controls.Content
             CboLogContentType.ItemHeight = 15;
             CboLogContentType.Location = new System.Drawing.Point(87, 0);
             CboLogContentType.Name = "CboLogContentType";
-            CboLogContentType.Size = new System.Drawing.Size(156, 23);
+            CboLogContentType.Size = new System.Drawing.Size(153, 23);
             CboLogContentType.TabIndex = 1;
             CboLogContentType.SelectedIndexChanged += CboLogContentType_SelectedIndexChanged;
             // 
@@ -137,6 +138,7 @@ namespace LogScraper.Controls.Content
             // 
             // PnlUsedForCorrectScaling
             // 
+            PnlUsedForCorrectScaling.Controls.Add(LblExplenation);
             PnlUsedForCorrectScaling.Controls.Add(BtnJumpToLogPosition);
             PnlUsedForCorrectScaling.Controls.Add(BtnAutoScroll);
             PnlUsedForCorrectScaling.Controls.Add(BtnShowTree);
@@ -148,6 +150,19 @@ namespace LogScraper.Controls.Content
             PnlUsedForCorrectScaling.Name = "PnlUsedForCorrectScaling";
             PnlUsedForCorrectScaling.Size = new System.Drawing.Size(243, 272);
             PnlUsedForCorrectScaling.TabIndex = 23;
+            // 
+            // LblExplenation
+            // 
+            LblExplenation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblExplenation.ForeColor = System.Drawing.SystemColors.ControlDark;
+            LblExplenation.Location = new System.Drawing.Point(0, 53);
+            LblExplenation.Margin = new System.Windows.Forms.Padding(0);
+            LblExplenation.Name = "LblExplenation";
+            LblExplenation.Padding = new System.Windows.Forms.Padding(5);
+            LblExplenation.Size = new System.Drawing.Size(243, 219);
+            LblExplenation.TabIndex = 11;
+            LblExplenation.Text = "Navigeer door het log";
+            LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ContentNavigationControl
             // 
@@ -174,5 +189,6 @@ namespace LogScraper.Controls.Content
         private System.Windows.Forms.ImageList ImageListTreeView;
         private System.Windows.Forms.ImageList ImageListAutoScroll;
         private System.Windows.Forms.Button BtnJumpToLogPosition;
+        private System.Windows.Forms.Label LblExplenation;
     }
 }
