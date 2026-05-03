@@ -151,18 +151,6 @@
         TkSuQmCC
 </value>
   </data>
-  <data name="btnOpenWithEditor.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAA
-        bQAAAG0BjlwfygAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVDhPjdI/
-        SJZRFAbwX2gqSEQ0iIi7o+DU9FEtQugWtrgIguIkNBRRYyQ6OijioA0JJpKWgijioIggtTi1REtQFBKS
-        INgnV84Hr6+vfy48cDn3nuec8zxHuVyGJrxDK8bwAK/RjQE8R2f6m0c6I/iFI/zAIX7iAH+wj79x30FN
-        niA9NOAlGjGIFvSghEfoQhuWcT9PsJ9v6yJgBu1RoHSGAPfisQgPcSMItrCLTxg9JUB1iJc+FOEt7mIN
-        X1GHW/ie7eAJ+i7BVGiwiRdRcLjSQRWe4U0BhkLoJdTidrj2ITlyHYJ5fIzkpEOqfJqcFzE/Qj++YTEq
-        peRxLGR34TIR17GXSZ7AcXIlZ22hjR2xiZ/xFJMxylwhQXSQ5twOfMEGevEf73GzskjnCOLSHBuWMI1/
-        mMXjJHL8KST4nazJBe+gPhuL+GplhbMEr4IkjXIVVtK4WYITsaESntqNHO0AAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="BtnReset.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAUhJREFUOE9t

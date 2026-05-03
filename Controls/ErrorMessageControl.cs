@@ -24,7 +24,7 @@ namespace LogScraper.Controls
             Clear();
         }
 
-        public void Clear()
+        public static void Clear()
         {
             LogAppState.Instance.StatusMessage.Set((string.Empty, true));
         }

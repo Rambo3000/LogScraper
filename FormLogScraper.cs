@@ -15,8 +15,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
-
     //TODO: color additional log lines?
     //TODO: Add key shortcuts like F3/shift F3
     public partial class FormLogScraper : Form
@@ -37,7 +35,7 @@ namespace LogScraper
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
 
-            ConfigAppState.Instance.GenericConfig.Changed += (s, e) => ApplyGenericConfig();
+            ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdateTimeLineVisibility();
 
             FormCompactView.Instance.ReturnToMainFormRequested += (s, e) => WindowState = FormWindowState.Normal;
 
@@ -69,7 +67,6 @@ namespace LogScraper
             {
                 //Collapse the bottom panel here, so it is still shown in the designer
                 SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
-                btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
 
                 //Enforce autosizing because the IDE overrides the control's autosize settings.
                 LogProviderSelectionControl.AutoSize = false;
@@ -200,12 +197,6 @@ namespace LogScraper
 
         #region User controls event handling
 
-        private void ApplyGenericConfig()
-        {
-            btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
-            SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigAppState.Instance.GenericConfig.Value.ShowTimelineByDefault;
-        }
-
         private void UpdateTimeLineVisibility()
         {
             SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigAppState.Instance.GenericConfig.Value.ShowTimelineByDefault;
@@ -252,9 +243,6 @@ namespace LogScraper
         {
             LogAppState.Instance.Reset(keepFilters: false);
         }
-
-        public void BtnOpenWithEditor_Click(object sender, EventArgs e) =>
-            LogExportWorkerManager.OpenFileInExternalEditor();
 
         private void BtnCompactView_Click(object sender, EventArgs e)
         {
