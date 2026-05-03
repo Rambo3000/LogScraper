@@ -80,7 +80,7 @@ namespace LogScraper.Controls.Viewport
         private void UpdateLogLayout(LogLayout logLayout)
         {
             // Determine content properties with custom coloring
-            _contentPropertiesWithCustomColoring = [.. logLayout.LogContentProperties.Where(item => item.IsCustomStyleEnabled)];
+            _contentPropertiesWithCustomColoring = [.. logLayout?.LogContentProperties.Where(item => item.IsCustomStyleEnabled) ?? []];
             // Update the styles in the text box based on the new layout
             TxtLogEntries.UpdateStyles(_contentPropertiesWithCustomColoring);
         }
