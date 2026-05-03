@@ -152,7 +152,7 @@ namespace LogScraper.Controls.Viewport
             // Try to restore the log entry at the carot after the render, if it is still visible
             if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, _logEntriesRenderMapCache, out int selectedIndex))
             {
-                TxtLogEntries.ScrollToLine(selectedIndex);
+                TxtLogEntries.GotoPosition(TxtLogEntries.Lines[selectedIndex].Position);
                 TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
             }
 
