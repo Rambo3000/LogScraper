@@ -83,7 +83,6 @@ namespace LogScraper.Controls
             }
             else
             {
-                LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);

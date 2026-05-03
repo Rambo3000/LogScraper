@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Processing;
 using LogScraper.Sources.Adapters;
 using LogScraper.Utilities.Extensions;
 
@@ -50,18 +51,32 @@ namespace LogScraper.Sources.Workers
                     // Perform log retrievals at regular intervals for the specified duration.
                     OnProgressUpdate(0, durationInSeconds);
                     Stopwatch stopwatch = Stopwatch.StartNew();
+
+                    // Fire a progress update every second so the UI counts smoothly.
+                    using CancellationTokenSource timerCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    Task progressTickTask = Task.Run(async () =>
+                    {
+                        while (!timerCts.Token.IsCancellationRequested)
+                        {
+                            await Task.Delay(1000, timerCts.Token).ConfigureAwait(false);
+                            int elapsed = Convert.ToInt32(stopwatch.ElapsedMilliseconds / 1000);
+                            if (elapsed <= durationInSeconds)
+                                OnProgressUpdate(elapsed, durationInSeconds);
+                        }
+                    }, timerCts.Token);
+
                     while (stopwatch.ElapsedMilliseconds / 1000 < durationInSeconds)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) break;
 
                         await GetLogFromSourceAdapter(sourceAdapter, isContinuous).ConfigureAwait(false);
 
                         // Wait for the specified interval before the next retrieval.
                         await Task.Delay(intervalInSeconds * 1000, CancellationToken.None).ConfigureAwait(false);
-
-                        // Update progress based on elapsed time.
-                        OnProgressUpdate(Convert.ToInt32(stopwatch.ElapsedMilliseconds / 1000), durationInSeconds);
                     }
+
+                    await timerCts.CancelAsync().ConfigureAwait(false);
+                    try { await progressTickTask.ConfigureAwait(false); } catch (OperationCanceledException) { }
                 }
             }
             catch (Exception ex)
@@ -78,6 +93,8 @@ namespace LogScraper.Sources.Workers
         /// <param name="sourceAdapter">The source adapter to retrieve log data from.</param>
         private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter, bool isContinuous)
         {
+            LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
+
             // Retrieve the raw log data as a string.
             string rawLog = await sourceAdapter.GetLogAsync().ConfigureAwait(false);
 
