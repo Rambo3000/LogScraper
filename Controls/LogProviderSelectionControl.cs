@@ -78,6 +78,12 @@ namespace LogScraper.Controls
             ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => PopulateLogLayouts();
             ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => UpdateProviderConfig();
             ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => PopulateLogProviders();
+            ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdatedPinned();
+        }
+
+        private void UpdatedPinned()
+        {
+            IsPinned = ConfigAppState.Instance.GenericConfig.Value?.PinLogProvidersByDefault ?? false;
         }
 
         private void LogProviderSelectionControl_Load(object sender, EventArgs e)

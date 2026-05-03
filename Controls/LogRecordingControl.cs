@@ -19,6 +19,7 @@ namespace LogScraper.Controls
             if (DesignMode) return;
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
+            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateButtonStatus();
             SourceProcessingManager.Instance.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
             SetDynamicToolTips();
             UpdateButtonStatus();

@@ -267,27 +267,25 @@ namespace LogScraper.Controls.Configuration
             ChkPinLogProvidersByDefault.AutoSize = true;
             ChkPinLogProvidersByDefault.Location = new System.Drawing.Point(6, 128);
             ChkPinLogProvidersByDefault.Name = "ChkPinLogProvidersByDefault";
-            ChkPinLogProvidersByDefault.Size = new System.Drawing.Size(345, 19);
+            ChkPinLogProvidersByDefault.Size = new System.Drawing.Size(373, 19);
             ChkPinLogProvidersByDefault.TabIndex = 39;
-            ChkPinLogProvidersByDefault.Text = "Bronnen automatisch verbergen zodra deze geselecteerd zijn";
+            ChkPinLogProvidersByDefault.Text = "Bron instellingen automatisch verbergen zodra deze compleet zijn";
             ChkPinLogProvidersByDefault.UseVisualStyleBackColor = true;
             // 
             // pictureBox1
             // 
-            pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(826, 103);
+            pictureBox1.Location = new System.Drawing.Point(332, 103);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 37;
             pictureBox1.TabStop = false;
-            toolTip.SetToolTip(pictureBox1, "Toont bij resultaten van de filtering op inhoud (rechts in het scherm) een rode regel met de tijd en de tekst ERROR. Dit gebeurt onafhankelijk van het type waarop gefilterd wordt.");
+            toolTip.SetToolTip(pictureBox1, "Toont bij de navigatie (rechts in het scherm) een rode regel met de tijd en de tekst ERROR.");
             // 
             // pictureBox16
             // 
-            pictureBox16.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox16.Image = Properties.Resources.help;
-            pictureBox16.Location = new System.Drawing.Point(826, 79);
+            pictureBox16.Location = new System.Drawing.Point(293, 78);
             pictureBox16.Name = "pictureBox16";
             pictureBox16.Size = new System.Drawing.Size(16, 16);
             pictureBox16.TabIndex = 36;
@@ -299,9 +297,9 @@ namespace LogScraper.Controls.Configuration
             ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
             ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
             ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
-            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(380, 19);
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(320, 19);
             ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
-            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error regels altijd tussen de resultaten van de filters op inhoud";
+            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error logregels altijd tussen de navigatie resultaten";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
             // 
             // toolTip
