@@ -83,9 +83,8 @@ namespace LogScraper.Controls
             }
             else
             {
-                TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
-                BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
+                BtnRecordWithTimer.Text = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds).ToString("m\\:ss");
             }
         }
 
