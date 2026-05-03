@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LogScraper.Configuration;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Sources.Adapters;
@@ -18,6 +19,36 @@ namespace LogScraper.Log.Processing
     {
 
         #region Public pipeline control
+        public static bool CanStartFetching()
+        {
+            return !AppState.Instance.IsSourceProcessingActive.Value
+                && AppState.Instance.IsSourceValid.Value
+                && AppState.Instance.Layout.Value != null;
+        }
+
+        public static bool CanStopFetching()
+        {
+            return AppState.Instance.IsSourceProcessingActive.Value;
+        }
+
+        public static void StartSingleFetch()
+        {
+            if (!CanStartFetching()) return;
+            StartFetching();
+        }
+
+        public static void StartTimedFetch()
+        {
+            if (!CanStartFetching()) return;
+            StartFetching(1, ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes * 60);
+        }
+
+        public static void StopFetching()
+        {
+            if (!CanStopFetching()) return;
+            Stop();
+        }
+
         /// <summary>
         /// Creates a source worker, wires it to <see cref="HandleDownloadCompleted"/>,
         /// and hands it to <see cref="SourceProcessingManager"/>.

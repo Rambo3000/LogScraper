@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls.Search
 {
@@ -50,6 +51,11 @@ namespace LogScraper.Controls.Search
             ItemPrevious.Click += ItemPrevious_Click;
             ItemWholeWords.Click += ItemWholeWords_CheckedChanged;
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRangeChanged;
+
+            ShortcutManager.Register(this, AppShortcut.FocusSearch, FocusSearchInput);
+            ShortcutManager.Register(this, AppShortcut.SearchNext, SearchNext);
+            ShortcutManager.Register(this, AppShortcut.SearchPrevious, SearchPrevious);
+            ShortcutManager.Register(this, AppShortcut.SearchAll, SearchAll);
         }
 
 
@@ -100,6 +106,31 @@ namespace LogScraper.Controls.Search
         {
             logEntries = entries;
             lastFiredSearchSettings = null;
+        }
+
+        public void FocusSearchInput()
+        {
+            if (!Visible || !Enabled) return;
+            TxtSearch.Focus();
+        }
+
+        public void SearchNext()
+        {
+            if (!Enabled) return;
+            ItemNext_Click(this, EventArgs.Empty);
+        }
+
+        public void SearchPrevious()
+        {
+            if (!Enabled) return;
+            ItemPrevious_Click(this, EventArgs.Empty);
+        }
+
+        public void SearchAll()
+        {
+            if (!Enabled) return;
+            TxtSearch.Focus();
+            ItemAll_Click(this, EventArgs.Empty);
         }
 
         /// <summary>

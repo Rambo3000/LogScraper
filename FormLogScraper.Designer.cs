@@ -44,11 +44,12 @@ namespace LogScraper
             SplitContainerTimeLineAndViewport = new SplitContainerWithGrip();
             LogTimeLineControl = new LogTimeLineControl();
             SplitContainerViewportAndSearchResultList = new SplitContainerWithGrip();
+            OpenLogInTextEditor = new OpenLogInTextEditor();
             SaveLogControl = new SaveLogControl();
             BookMarksControl = new BookMarksControl();
             SearchControl = new SearchControl();
             PnlFiltersAndLogEntriesTextBox = new System.Windows.Forms.Panel();
-            this.ErrorMessageControl = new ErrorMessageControl();
+            ErrorMessageControl = new ErrorMessageControl();
             ActiveFilterOverviewControl = new LogScraper.Controls.FilterOverview.ActiveFilterOverviewControl();
             LogViewportControl = new LogViewportControl();
             FlowTreeControl = new FlowTreeControl();
@@ -66,7 +67,6 @@ namespace LogScraper
             BtnErase = new System.Windows.Forms.Button();
             LogRecordingControl = new LogRecordingControl();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            OpenLogInTextEditor = new OpenLogInTextEditor();
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndNavigation).BeginInit();
             SplitContainerViewportAndNavigation.Panel1.SuspendLayout();
             SplitContainerViewportAndNavigation.Panel2.SuspendLayout();
@@ -100,7 +100,7 @@ namespace LogScraper
             BtnConfig.TabIndex = 23;
             BtnConfig.TabStop = false;
             BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnConfig, "Instellingen");
+            ToolTip.SetToolTip(BtnConfig, "Instellingen [CTRL-,}");
             BtnConfig.UseVisualStyleBackColor = true;
             BtnConfig.Click += BtnConfig_Click;
             // 
@@ -113,7 +113,7 @@ namespace LogScraper
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TabStop = false;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-R]");
+            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-M]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
             // 
@@ -210,6 +210,13 @@ namespace LogScraper
             SplitContainerViewportAndSearchResultList.TabIndex = 44;
             SplitContainerViewportAndSearchResultList.TextSplitter = "";
             // 
+            // OpenLogInTextEditor
+            // 
+            OpenLogInTextEditor.Location = new System.Drawing.Point(633, 0);
+            OpenLogInTextEditor.Name = "OpenLogInTextEditor";
+            OpenLogInTextEditor.Size = new System.Drawing.Size(25, 25);
+            OpenLogInTextEditor.TabIndex = 45;
+            // 
             // SaveLogControl
             // 
             SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
@@ -235,7 +242,7 @@ namespace LogScraper
             // PnlFiltersAndLogEntriesTextBox
             // 
             PnlFiltersAndLogEntriesTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            PnlFiltersAndLogEntriesTextBox.Controls.Add(this.ErrorMessageControl);
+            PnlFiltersAndLogEntriesTextBox.Controls.Add(ErrorMessageControl);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(ActiveFilterOverviewControl);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(LogViewportControl);
             PnlFiltersAndLogEntriesTextBox.Location = new System.Drawing.Point(0, 28);
@@ -245,12 +252,12 @@ namespace LogScraper
             // 
             // ErrorMessageControl
             // 
-            this.ErrorMessageControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            this.ErrorMessageControl.Location = new System.Drawing.Point(102, 51);
-            this.ErrorMessageControl.Name = "ErrorMessageControl";
-            this.ErrorMessageControl.Size = new System.Drawing.Size(443, 67);
-            this.ErrorMessageControl.TabIndex = 40;
-            this.ErrorMessageControl.Visible = false;
+            ErrorMessageControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            ErrorMessageControl.Location = new System.Drawing.Point(102, 51);
+            ErrorMessageControl.Name = "ErrorMessageControl";
+            ErrorMessageControl.Size = new System.Drawing.Size(443, 67);
+            ErrorMessageControl.TabIndex = 40;
+            ErrorMessageControl.Visible = false;
             // 
             // ActiveFilterOverviewControl
             // 
@@ -405,7 +412,7 @@ namespace LogScraper
             BtnReset.TabIndex = 27;
             BtnReset.TabStop = false;
             BtnReset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnReset, "Reset");
+            ToolTip.SetToolTip(BtnReset, "Reset [CTRL-SHIFT-L]");
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
@@ -418,7 +425,7 @@ namespace LogScraper
             BtnErase.TabIndex = 26;
             BtnErase.TabStop = false;
             BtnErase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnErase, "Wis het log (filters behouden)");
+            ToolTip.SetToolTip(BtnErase, "Wis het log (filters behouden) [CTRL-L]");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
             // 
@@ -434,13 +441,6 @@ namespace LogScraper
             ToolTip.AutoPopDelay = 9999999;
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
-            // 
-            // OpenLogInTextEditor
-            // 
-            OpenLogInTextEditor.Location = new System.Drawing.Point(633, 0);
-            OpenLogInTextEditor.Name = "OpenLogInTextEditor";
-            OpenLogInTextEditor.Size = new System.Drawing.Size(25, 25);
-            OpenLogInTextEditor.TabIndex = 45;
             // 
             // FormLogScraper
             // 

@@ -48,7 +48,7 @@
             BtnBookMark.Name = "BtnBookMark";
             BtnBookMark.Size = new System.Drawing.Size(25, 25);
             BtnBookMark.TabIndex = 0;
-            toolTip1.SetToolTip(BtnBookMark, "Bookmark toevoegen");
+            toolTip1.SetToolTip(BtnBookMark, "Bookmark toevoegen/verwijderen [CTRL-B]");
             BtnBookMark.UseVisualStyleBackColor = true;
             BtnBookMark.Click += BtnBookMark_Click;
             // 
@@ -67,7 +67,7 @@
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 1;
-            toolTip1.SetToolTip(BtnReset, "Alle bookmarks verwijderen");
+            toolTip1.SetToolTip(BtnReset, "Alle bookmarks verwijderen [CTRL-SHIFT-B]");
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
@@ -79,7 +79,7 @@
             BtnPrevious.Name = "BtnPrevious";
             BtnPrevious.Size = new System.Drawing.Size(25, 25);
             BtnPrevious.TabIndex = 2;
-            toolTip1.SetToolTip(BtnPrevious, "Vorige bookmark");
+            toolTip1.SetToolTip(BtnPrevious, "Vorige bookmark [SHIFT-F2]");
             BtnPrevious.UseVisualStyleBackColor = true;
             BtnPrevious.Click += BtnPrevious_Click;
             // 
@@ -99,7 +99,7 @@
             BtnNext.Name = "BtnNext";
             BtnNext.Size = new System.Drawing.Size(25, 25);
             BtnNext.TabIndex = 3;
-            toolTip1.SetToolTip(BtnNext, "Volgende bookmark");
+            toolTip1.SetToolTip(BtnNext, "Volgende bookmark [F2]");
             BtnNext.UseVisualStyleBackColor = true;
             BtnNext.Click += BtnNext_Click;
             // 

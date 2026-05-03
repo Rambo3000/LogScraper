@@ -57,7 +57,7 @@
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(25, 25);
             btnErase.TabIndex = 11;
-            ToolTip.SetToolTip(btnErase, "Wis het log");
+            ToolTip.SetToolTip(btnErase, "Wis het log [CTRL-L]");
             btnErase.UseVisualStyleBackColor = true;
             btnErase.Click += BtnErase_Click;
             // 
@@ -68,7 +68,7 @@
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-R]");
+            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-M]");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 
@@ -108,7 +108,6 @@
             Text = " LogScraper";
             TopMost = true;
             FormClosing += FormMiniTop_FormClosing;
-            Load += FormCompactView_Load;
             ResumeLayout(false);
         }
 

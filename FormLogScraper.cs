@@ -9,6 +9,7 @@ using LogScraper.Controls.Search;
 using LogScraper.Controls.Viewport;
 using LogScraper.Export;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Processing;
 using LogScraper.Log.Rendering;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
@@ -16,7 +17,6 @@ using LogScraper.Utilities.Extensions;
 namespace LogScraper
 {
     //TODO: color additional log lines?
-    //TODO: Add key shortcuts like F3/shift F3
     public partial class FormLogScraper : Form
     {
         #region Form Initialization
@@ -55,9 +55,18 @@ namespace LogScraper
             SearchControl.Search += UsrSearch_Search;
             SearchControl.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
 
-            SearchResultListControl.Close += SearchResultListControl_Close;
-
+            SearchResultListControl.Close += (s,e) => HideBottomPanel();
             ErrorListControl.Close += (s, e) => HideBottomPanel();
+
+            ShortcutManager.Register(this, AppShortcut.StartRecording, LogProcessingService.StartSingleFetch);
+            ShortcutManager.Register(this, AppShortcut.StartTimedRecording, LogProcessingService.StartTimedFetch);
+            ShortcutManager.Register(this, AppShortcut.StopRecording, LogProcessingService.StopFetching);
+
+            ShortcutManager.Register(this, AppShortcut.ToggleCompactView, () => BtnCompactView_Click(this, EventArgs.Empty));
+            ShortcutManager.Register(this, AppShortcut.ClearLog, () => BtnErase_Click(this, EventArgs.Empty));
+            ShortcutManager.Register(this, AppShortcut.ResetApplication, () => BtnReset_Click(this, EventArgs.Empty));
+            ShortcutManager.Register(this, AppShortcut.OpenConfiguration, () => BtnConfig_Click(this, EventArgs.Empty));
+            ShortcutManager.Register(this, AppShortcut.CloseBottomPanel, HideBottomPanel);
 
             UpdateTimeLineVisibility();
         }
@@ -123,11 +132,6 @@ namespace LogScraper
             string title = "LogScraper";
             if (!string.IsNullOrWhiteSpace(e)) title += $" - {e}";
             Text = title;
-        }
-
-        private void SearchResultListControl_Close(object sender, EventArgs e)
-        {
-            HideBottomPanel();
         }
 
         private void SearchControl_SearchSettingsChanged(SearchSettings settings)
@@ -261,26 +265,9 @@ namespace LogScraper
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == (Keys.Control | Keys.R))
-            {
-                BtnCompactView_Click(this, EventArgs.Empty);
+            if (ShortcutManager.ProcessKey(this, keyData))
                 return true;
-            }
-            if (keyData == (Keys.Control | Keys.F))
-            {
-                SearchControl.Focus();
-                return true;
-            }
 
-            // TODO: Refactor key shortcuts
-            //if (keyData == (Keys.Control | Keys.S))
-            //{
-            //    if (SourceProcessingManager.Instance.IsWorkerActive)
-            //        BtnStop_Click(this, EventArgs.Empty);
-            //    else
-            //        BtnRecordWithTimer_Click(this, EventArgs.Empty);
-            //    return true;
-            //}
             return base.ProcessCmdKey(ref msg, keyData);
         }
         #endregion

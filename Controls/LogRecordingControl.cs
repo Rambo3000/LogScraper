@@ -21,7 +21,11 @@ namespace LogScraper.Controls
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateButtonStatus();
             SourceProcessingManager.Instance.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
-            SetDynamicToolTips();
+
+            ToolTip.SetToolTip(BtnRecord, "Start ophalen log [F5]");
+            ToolTip.SetToolTip(BtnRecordWithTimer, "Start automatisch ophalen log [CTRL-F5]");
+            ToolTip.SetToolTip(BtnStop, "Stop ophalen log [SHIFT-F5]");
+
             UpdateButtonStatus();
         }
         #endregion
@@ -31,21 +35,15 @@ namespace LogScraper.Controls
         public void Stop()
         {
             BtnStop.Enabled = false;
-            LogProcessingService.Stop();
+            LogProcessingService.StopFetching();
         }
 
         public void Start(bool timerEnabled)
         {
-            if (LogAppState.Instance.IsSourceProcessingActive.Value) return;
-
-            BtnRecord.Enabled = false;
-            BtnRecordWithTimer.Enabled = false;
-            Application.DoEvents();
-
             if (timerEnabled)
-                LogProcessingService.StartFetching(1, ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes * 60);
+                LogProcessingService.StartTimedFetch();
             else
-                LogProcessingService.StartFetching();
+                LogProcessingService.StartSingleFetch();
         }
         #endregion
 
@@ -101,11 +99,6 @@ namespace LogScraper.Controls
         public void BtnStop_Click(object sender, EventArgs e)
         {
             Stop();
-        }
-
-        private void SetDynamicToolTips()
-        {
-            ToolTip.SetToolTip(BtnRecordWithTimer, "Lees " + ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes.ToString() + " minuten [CTRL-S]");
         }
         #endregion
     }

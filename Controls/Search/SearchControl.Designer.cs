@@ -88,40 +88,40 @@ namespace LogScraper.Controls.Search
             contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemPrevious, ItemNext, ItemAll, toolStripSeparator1, ItemCaseSensitive, ItemWholeWords, ItemWrapAround });
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.ShowCheckMargin = true;
-            contextMenuStrip1.Size = new System.Drawing.Size(235, 142);
+            contextMenuStrip1.Size = new System.Drawing.Size(243, 164);
             // 
             // ItemPrevious
             // 
             ItemPrevious.Image = (System.Drawing.Image)resources.GetObject("ItemPrevious.Image");
             ItemPrevious.Name = "ItemPrevious";
-            ItemPrevious.Size = new System.Drawing.Size(234, 22);
-            ItemPrevious.Text = "Vorige zoeken";
+            ItemPrevious.Size = new System.Drawing.Size(242, 22);
+            ItemPrevious.Text = "Vorige zoeken [SHIFT-F3]";
             // 
             // ItemNext
             // 
             ItemNext.Image = (System.Drawing.Image)resources.GetObject("ItemNext.Image");
             ItemNext.Name = "ItemNext";
-            ItemNext.Size = new System.Drawing.Size(234, 22);
-            ItemNext.Text = "Volgende zoeken";
+            ItemNext.Size = new System.Drawing.Size(242, 22);
+            ItemNext.Text = "Volgende zoeken [F3]";
             // 
             // ItemAll
             // 
             ItemAll.Image = (System.Drawing.Image)resources.GetObject("ItemAll.Image");
             ItemAll.Name = "ItemAll";
-            ItemAll.Size = new System.Drawing.Size(234, 22);
-            ItemAll.Text = "Alle zoeken";
+            ItemAll.Size = new System.Drawing.Size(242, 22);
+            ItemAll.Text = "Alle zoeken [CTRL-SHIFT-F]";
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(231, 6);
+            toolStripSeparator1.Size = new System.Drawing.Size(239, 6);
             // 
             // ItemCaseSensitive
             // 
             ItemCaseSensitive.CheckOnClick = true;
             ItemCaseSensitive.Image = (System.Drawing.Image)resources.GetObject("ItemCaseSensitive.Image");
             ItemCaseSensitive.Name = "ItemCaseSensitive";
-            ItemCaseSensitive.Size = new System.Drawing.Size(234, 22);
+            ItemCaseSensitive.Size = new System.Drawing.Size(242, 22);
             ItemCaseSensitive.Text = "Hoofdletter gevoelig";
             // 
             // ItemWholeWords
@@ -129,7 +129,7 @@ namespace LogScraper.Controls.Search
             ItemWholeWords.CheckOnClick = true;
             ItemWholeWords.Image = (System.Drawing.Image)resources.GetObject("ItemWholeWords.Image");
             ItemWholeWords.Name = "ItemWholeWords";
-            ItemWholeWords.Size = new System.Drawing.Size(234, 22);
+            ItemWholeWords.Size = new System.Drawing.Size(242, 22);
             ItemWholeWords.Text = "Alleen hele woorden";
             // 
             // ItemWrapAround
@@ -140,7 +140,7 @@ namespace LogScraper.Controls.Search
             ItemWrapAround.Image = (System.Drawing.Image)resources.GetObject("ItemWrapAround.Image");
             ItemWrapAround.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             ItemWrapAround.Name = "ItemWrapAround";
-            ItemWrapAround.Size = new System.Drawing.Size(234, 22);
+            ItemWrapAround.Size = new System.Drawing.Size(242, 22);
             ItemWrapAround.Text = "Verder zoeken vanaf begin";
             // 
             // imageList1
@@ -152,12 +152,12 @@ namespace LogScraper.Controls.Search
             imageList1.Images.SetKeyName(1, "arrow left.png");
             imageList1.Images.SetKeyName(2, "magnify 16x16.png");
             // 
-            // UserControlSearch
+            // SearchControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForCorrectScaling);
-            Name = "UserControlSearch";
+            Name = "SearchControl";
             Size = new System.Drawing.Size(244, 25);
             PnlUsedForCorrectScaling.ResumeLayout(false);
             contextMenuStrip1.ResumeLayout(false);

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -39,6 +40,11 @@ namespace LogScraper.Controls
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedLogEntry();
             LogAppState.Instance.FilterResultWithRange.Changed += OnFilterResultWithRange;
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
+
+            ShortcutManager.Register(this, AppShortcut.ToggleBookmark, ToggleBookmark);
+            ShortcutManager.Register(this, AppShortcut.NextBookmark, GoToNextBookmark);
+            ShortcutManager.Register(this, AppShortcut.PreviousBookmark, GoToPreviousBookmark);
+            ShortcutManager.Register(this, AppShortcut.ClearBookmarks, Reset);
         }
 
         private void OnFilterResultWithRange(object sender, EventArgs e)
@@ -76,7 +82,7 @@ namespace LogScraper.Controls
             BtnReset.Enabled = _bookmarks.Count > 0;
         }
 
-        private void BtnBookMark_Click(object sender, EventArgs e)
+        public void ToggleBookmark()
         {
             if (_selectedLogEntry == null) return;
             if (!_bookmarks.Remove(_selectedLogEntry.Index))
@@ -86,7 +92,9 @@ namespace LogScraper.Controls
             UpdateButtons();
         }
 
-        private void BtnPrevious_Click(object sender, EventArgs e)
+        private void BtnBookMark_Click(object sender, EventArgs e) => ToggleBookmark();
+
+        public void GoToPreviousBookmark()
         {
             if (_filteredBookmarks.Count == 0) return;
             int anchor = _selectedLogEntry?.Index ?? int.MaxValue;
@@ -101,7 +109,9 @@ namespace LogScraper.Controls
             }
         }
 
-        private void BtnNext_Click(object sender, EventArgs e)
+        private void BtnPrevious_Click(object sender, EventArgs e) => GoToPreviousBookmark();
+
+        public void GoToNextBookmark()
         {
             if (_filteredBookmarks.Count == 0) return;
             int anchor = _selectedLogEntry?.Index ?? int.MinValue;
@@ -115,6 +125,8 @@ namespace LogScraper.Controls
                 }
             }
         }
+
+        private void BtnNext_Click(object sender, EventArgs e) => GoToNextBookmark();
 
         private void BtnReset_Click(object sender, EventArgs e) => Reset();
 

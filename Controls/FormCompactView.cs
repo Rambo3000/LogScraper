@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Processing;
+using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -28,10 +30,6 @@ namespace LogScraper.Controls
                 return instance;
             }
         }
-        private void FormCompactView_Load(object sender, EventArgs e)
-        {
-            LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => SetCounts();
-        }
 
         /// <summary>
         /// Updates the visible / total entry count shown at the top-right.
@@ -57,6 +55,15 @@ namespace LogScraper.Controls
         public FormCompactView()
         {
             InitializeComponent();
+
+            LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => SetCounts();
+
+            ShortcutManager.Register(this, AppShortcut.ToggleCompactView, HideForm);
+            ShortcutManager.Register(this, AppShortcut.StartRecording, LogProcessingService.StartSingleFetch);
+            ShortcutManager.Register(this, AppShortcut.StartTimedRecording, LogProcessingService.StartTimedFetch);
+            ShortcutManager.Register(this, AppShortcut.StopRecording, LogProcessingService.StopFetching);
+            ShortcutManager.Register(this, AppShortcut.ClearLog, () => LogAppState.Instance.Reset(keepFilters: true));
+            ShortcutManager.Register(this, AppShortcut.ResetApplication, () => LogAppState.Instance.Reset(keepFilters: false));
         }
 
         public void ShowForm()
@@ -87,6 +94,14 @@ namespace LogScraper.Controls
         {
             HideForm();
             e.Cancel = true;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (ShortcutManager.ProcessKey(this, keyData))
+                return true;
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }
