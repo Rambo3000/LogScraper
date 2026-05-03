@@ -14,15 +14,15 @@ namespace LogScraper.Controls
         public FlowTreeControl()
         {
             InitializeComponent();
-        }
-
-        private void FlowTreeControl_Load(object sender, EventArgs e)
-        {
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             ItemShowTree.Click += ItemShowTree_Click;
             ItemHideTree.Click += ItemHideTree_Click;
             CboContentProperties.SelectedIndexChanged += CboContentProperties_SelectedIndexChanged;
+        }
+
+        private void FlowTreeControl_Load(object sender, EventArgs e)
+        {
             UpdateControls();
         }
 
@@ -61,6 +61,7 @@ namespace LogScraper.Controls
             BtnTreeView.ImageIndex = showTree ? 1 : 0;
             BtnTreeView.Enabled = LogAppState.Instance.Layout.Value != null;
             updateShowTreeInProgress = true;
+            BtnTreeView.Enabled = CboContentProperties.Items.Count > 0;
 
             if (CboContentProperties.Items.Count == 0)
             {
