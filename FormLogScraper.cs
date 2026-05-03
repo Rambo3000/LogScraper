@@ -15,8 +15,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: fix issue when no valid runtime is selected that you cannot record, the issource valid should be pushed better to the record buttons
-
     //TODO: Fix keeping viewport logentry visible, doesnt work well with for example processing
 
     //TODO: color additional log lines?
@@ -38,7 +36,6 @@ namespace LogScraper
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
-            LogAppState.Instance.StatusMessage.Changed += (s, e) => HandleErrorMessages();
 
             ConfigAppState.Instance.GenericConfig.Changed += (s, e) => ApplyGenericConfig();
 
@@ -195,12 +192,6 @@ namespace LogScraper
 
         private void LogAppState_ResetRequested(object sender, ResetEventArgs e)
         {
-            if (!e.KeepFilters)
-            {
-                TxtErrorMessage.Text = string.Empty;
-                TxtErrorMessage.Visible = false;
-            }
-
             SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
             UpdateButtonStatus();
         }
@@ -219,13 +210,6 @@ namespace LogScraper
         {
             SplitContainerTimeLineAndViewport.Panel1Collapsed = !ConfigAppState.Instance.GenericConfig.Value.ShowTimelineByDefault;
         }
-
-        private void HandleErrorMessages()
-        {
-            TxtErrorMessage.Text = LogAppState.Instance.StatusMessage.Value.Message;
-            TxtErrorMessage.Visible = !LogAppState.Instance.StatusMessage.Value.IsSuccess;
-        }
-
 
         private void UsrSearch_Search(SearchSettings searchSettings)
         {

@@ -50,7 +50,6 @@ namespace LogScraper
             SearchControl = new SearchControl();
             PnlFiltersAndLogEntriesTextBox = new System.Windows.Forms.Panel();
             ActiveFilterOverviewControl = new LogScraper.Controls.FilterOverview.ActiveFilterOverviewControl();
-            TxtErrorMessage = new System.Windows.Forms.TextBox();
             LogViewportControl = new LogViewportControl();
             FlowTreeControl = new FlowTreeControl();
             LogRangeSelectionControl = new LogRangeSelectionControl();
@@ -67,6 +66,7 @@ namespace LogScraper
             BtnErase = new System.Windows.Forms.Button();
             LogRecordingControl = new LogRecordingControl();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            errorMessageControl1 = new ErrorMessageControl();
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndNavigation).BeginInit();
             SplitContainerViewportAndNavigation.Panel1.SuspendLayout();
             SplitContainerViewportAndNavigation.Panel2.SuspendLayout();
@@ -248,8 +248,8 @@ namespace LogScraper
             // PnlFiltersAndLogEntriesTextBox
             // 
             PnlFiltersAndLogEntriesTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlFiltersAndLogEntriesTextBox.Controls.Add(errorMessageControl1);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(ActiveFilterOverviewControl);
-            PnlFiltersAndLogEntriesTextBox.Controls.Add(TxtErrorMessage);
             PnlFiltersAndLogEntriesTextBox.Controls.Add(LogViewportControl);
             PnlFiltersAndLogEntriesTextBox.Location = new System.Drawing.Point(0, 28);
             PnlFiltersAndLogEntriesTextBox.Name = "PnlFiltersAndLogEntriesTextBox";
@@ -263,20 +263,6 @@ namespace LogScraper
             ActiveFilterOverviewControl.Name = "ActiveFilterOverviewControl";
             ActiveFilterOverviewControl.Size = new System.Drawing.Size(655, 18);
             ActiveFilterOverviewControl.TabIndex = 39;
-            // 
-            // TxtErrorMessage
-            // 
-            TxtErrorMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            TxtErrorMessage.BackColor = System.Drawing.SystemColors.Window;
-            TxtErrorMessage.ForeColor = System.Drawing.Color.DarkRed;
-            TxtErrorMessage.Location = new System.Drawing.Point(102, 34);
-            TxtErrorMessage.Multiline = true;
-            TxtErrorMessage.Name = "TxtErrorMessage";
-            TxtErrorMessage.ReadOnly = true;
-            TxtErrorMessage.Size = new System.Drawing.Size(473, 75);
-            TxtErrorMessage.TabIndex = 32;
-            TxtErrorMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            TxtErrorMessage.Visible = false;
             // 
             // LogViewportControl
             // 
@@ -453,6 +439,15 @@ namespace LogScraper
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
+            // errorMessageControl1
+            // 
+            errorMessageControl1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            errorMessageControl1.Location = new System.Drawing.Point(102, 51);
+            errorMessageControl1.Name = "errorMessageControl1";
+            errorMessageControl1.Size = new System.Drawing.Size(443, 67);
+            errorMessageControl1.TabIndex = 40;
+            errorMessageControl1.Visible = false;
+            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -477,7 +472,6 @@ namespace LogScraper
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndSearchResultList).EndInit();
             SplitContainerViewportAndSearchResultList.ResumeLayout(false);
             PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
-            PnlFiltersAndLogEntriesTextBox.PerformLayout();
             groupBox6.ResumeLayout(false);
             SplitContainerMain.Panel1.ResumeLayout(false);
             SplitContainerMain.Panel2.ResumeLayout(false);
@@ -512,7 +506,6 @@ namespace LogScraper
         private LogRangeSelectionControl LogRangeSelectionControl;
         private LogPostProcessingControl LogPostProcessingControl;
         private System.Windows.Forms.Panel PnlFiltersAndLogEntriesTextBox;
-        private System.Windows.Forms.TextBox TxtErrorMessage;
         private LogMetadataRenderOptionsControl LogMetadataRenderOptionsControl;
         private FlowTreeControl FlowTreeControl;
         private SearchResultListControl SearchResultListControl;
@@ -521,5 +514,6 @@ namespace LogScraper
         private Controls.FilterOverview.ActiveFilterOverviewControl ActiveFilterOverviewControl;
         private ErrorListControl ErrorListControl;
         private SaveLogControl SaveLogControl;
+        private ErrorMessageControl errorMessageControl1;
     }
 }
