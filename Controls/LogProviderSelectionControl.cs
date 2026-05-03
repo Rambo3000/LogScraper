@@ -41,24 +41,24 @@ namespace LogScraper.Controls
 
         private void UpdateProcessingStatus()
         {
-            ProcessingStatus status = LogAppState.Instance.ProcessingStatus.Value;
-            if (status == ProcessingStatus.Retrieving)
+            LogProcessingStatus status = LogAppState.Instance.ProcessingStatus.Value;
+            if (status == LogProcessingStatus.Retrieving)
             {
                 LblStatusIcon.ImageIndex = 0;
                 toolTip1.SetToolTip(LblStatusIcon, "Data ontvangen...");
             }
-            else if (status == ProcessingStatus.Processing)
+            else if (status == LogProcessingStatus.Processing)
             {
                 LblStatusIcon.ImageIndex = 1;
                 toolTip1.SetToolTip(LblStatusIcon, "Data verwerken...");
             }
-            else if (status == ProcessingStatus.Waiting)
+            else if (status == LogProcessingStatus.Waiting)
             {
                 LblStatusIcon.ImageIndex = 2;
                 toolTip1.SetToolTip(LblStatusIcon, "Wachten...");
             }
 
-            LblStatusIcon.Visible = status != ProcessingStatus.Idle;
+            LblStatusIcon.Visible = status != LogProcessingStatus.Idle;
 
             //Force UI update to reflect status change immediately
             Application.DoEvents();

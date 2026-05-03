@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the processing status of a log file.
     /// </summary>
-    public enum ProcessingStatus
+    public enum LogProcessingStatus
     {
         /// <summary>
         /// The log file is currently being retrieved from the source.

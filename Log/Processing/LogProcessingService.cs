@@ -29,7 +29,7 @@ namespace LogScraper.Log.Processing
             if (AppState.Instance.Layout.Value == null) return;
             try
             {
-                AppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
+                AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
 
                 if (AppState.Instance.SourceAdapterProvider == null) throw new InvalidOperationException("SourceAdapterProvider is not set in AppState.");
 
@@ -43,6 +43,7 @@ namespace LogScraper.Log.Processing
             {
                 ex.LogStackTraceToFile();
                 AppState.Instance.StatusMessage.Set((ex.Message, false));
+                AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Idle);
             }
         }
 
@@ -75,7 +76,7 @@ namespace LogScraper.Log.Processing
                 bool newLogEntriesReceived;
                 try
                 {
-                    AppState.Instance.ProcessingStatus.Set(ProcessingStatus.Processing);
+                    AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Processing);
 
                     newLogEntriesReceived = RawLogParser.TryParseNewLogEntries(rawLog, logCollection, logLayout, out List<LogEntry> newEntries);
 
@@ -103,7 +104,7 @@ namespace LogScraper.Log.Processing
 
                 AppState.Instance.StatusMessage.Set((string.Empty, true));
                 AppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
-                if (isContinuous) AppState.Instance.ProcessingStatus.Set(ProcessingStatus.Waiting);
+                if (isContinuous) AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Waiting);
             }
             catch (Exception ex)
             {

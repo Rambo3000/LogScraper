@@ -121,7 +121,7 @@ namespace LogScraper.Log.LogAppState
         /// <summary>
         /// The current processing status of the log source, used to display appropriate messages or indicators in the UI.
         /// </summary>
-        public StateSlice<ProcessingStatus> ProcessingStatus { get; } = new();
+        public StateSlice<LogProcessingStatus> ProcessingStatus { get; } = new();
 
         /// <summary>
         /// Whether the currently selected log source is valid and ready to fetch from.

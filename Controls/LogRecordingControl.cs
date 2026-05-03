@@ -57,7 +57,7 @@ namespace LogScraper.Controls
             if (!isSourceProcessingActive)
             {
                 HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Idle);
+                LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Idle);
             }
 
             BtnRecord.Visible = !isSourceProcessingActive;
@@ -82,7 +82,7 @@ namespace LogScraper.Controls
             }
             else
             {
-                LogAppState.Instance.ProcessingStatus.Set(ProcessingStatus.Retrieving);
+                LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
                 TimeSpan tijd = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds);
                 BtnRecordWithTimer.Image = null;
                 BtnRecordWithTimer.Text = string.Format("{0}:{1:D2}", (int)tijd.TotalMinutes, tijd.Seconds);
