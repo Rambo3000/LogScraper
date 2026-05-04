@@ -17,8 +17,9 @@ namespace LogScraper.Controls.FilterOverview
     {
         #region Fields, events, and constructor
         private const int ChipHeight = 18;
-        private const int ChipLineSpacing = 5;
-        private const int CountLabelLeftGap = 0;
+            private const int ChipLineSpacing = 5;
+            private const int CountLabelLeftGap = 0;
+            private const int ChipVerticalPadding = 3;
 
         /// <summary>
         /// Raised when the error chip is clicked.
@@ -443,7 +444,7 @@ namespace LogScraper.Controls.FilterOverview
                 FlowLayoutFilterChips.SuspendLayout();
                 SyncErrorChip();
 
-                int labelY = (ChipHeight - LblCount.Height) / 2;
+                int labelY = (ChipHeight - LblCount.Height) / 2 + 2;
                 LblCount.Location = new Point(Width - LblCount.Width, labelY);
 
                 LblReset.Visible = IsAnyFilterActive();
@@ -461,7 +462,7 @@ namespace LogScraper.Controls.FilterOverview
 
                 int flowWidth = Math.Max(20, rightEdge - CountLabelLeftGap);
 
-                FlowLayoutFilterChips.Location = new Point(0, 0);
+                FlowLayoutFilterChips.Location = new Point(0, ChipVerticalPadding);
                 FlowLayoutFilterChips.Width = flowWidth;
 
                 ApplyCollapseToFit(flowWidth);
@@ -469,7 +470,7 @@ namespace LogScraper.Controls.FilterOverview
                 int lines = CalculateRequiredLines(flowWidth);
                 int flowHeight = lines * ChipHeight + (lines - 1) * ChipLineSpacing;
                 FlowLayoutFilterChips.Height = flowHeight;
-                Height = flowHeight;
+                Height = flowHeight + 2 * ChipVerticalPadding;
 
                 FlowLayoutFilterChips.ResumeLayout(true);
                 ResumeLayout(true);

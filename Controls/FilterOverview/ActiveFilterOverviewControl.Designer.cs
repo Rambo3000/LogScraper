@@ -46,7 +46,7 @@
             // 
             LblCount.AutoSize = true;
             LblCount.ForeColor = System.Drawing.Color.DimGray;
-            LblCount.Location = new System.Drawing.Point(529, 0);
+            LblCount.Location = new System.Drawing.Point(529, 3);
             LblCount.Name = "LblCount";
             LblCount.Size = new System.Drawing.Size(69, 15);
             LblCount.TabIndex = 1;
@@ -59,7 +59,7 @@
             LblReset.DisabledLinkColor = System.Drawing.Color.DarkGray;
             LblReset.ForeColor = System.Drawing.Color.DarkGray;
             LblReset.LinkColor = System.Drawing.Color.DarkGray;
-            LblReset.Location = new System.Drawing.Point(553, -2);
+            LblReset.Location = new System.Drawing.Point(553, 1);
             LblReset.Name = "LblReset";
             LblReset.Size = new System.Drawing.Size(32, 15);
             LblReset.TabIndex = 2;

@@ -44,13 +44,11 @@ namespace LogScraper
 
             LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
-            ActiveFilterOverviewControl.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
+            ActiveFilterOverviewControl.SizeChanged += (s, e) => UpdateActiveFiltersSplitter();
             ActiveFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
             ActiveFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
             ActiveFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
             ActiveFilterOverviewControl.ResetAllFilters += ActiveFilterOverviewControl_Reset;
-
-            PnlFiltersAndLogEntriesTextBox.SizeChanged += (s, e) => RepositionLogEntriesTextBox();
 
             SearchControl.Search += UsrSearch_Search;
             SearchControl.SearchSettingsChanged += SearchControl_SearchSettingsChanged;
@@ -79,8 +77,11 @@ namespace LogScraper
 
                 //Enforce autosizing because the IDE overrides the control's autosize settings.
                 LogProviderSelectionControl.AutoSize = false;
+                SplitContainerActiveFiltersViewport.IsSplitterFixed = true;
+                SplitContainerActiveFiltersViewport.FixedPanel = FixedPanel.Panel1;
 
                 AutoSizeLogProviderSelection();
+                UpdateActiveFiltersSplitter();
             }
             catch (Exception ex)
             {
@@ -165,21 +166,15 @@ namespace LogScraper
                 LogRangeSelectionControl.ClearEnd();
         }
 
-        private bool _repositioningTextBox;
-        private void RepositionLogEntriesTextBox()
+        private void UpdateActiveFiltersSplitter()
         {
-            if (_repositioningTextBox) return;
-            _repositioningTextBox = true;
-            try
-            {
-                PnlFiltersAndLogEntriesTextBox.SuspendLayout();
-                ActiveFilterOverviewControl.Top = 2;
-                int top = ActiveFilterOverviewControl.Bottom + 5;
-                LogViewportControl.SetBounds(0, top, PnlFiltersAndLogEntriesTextBox.ClientSize.Width, Math.Max(0, PnlFiltersAndLogEntriesTextBox.ClientSize.Height - top));
-                PnlFiltersAndLogEntriesTextBox.ResumeLayout(false);
-            }
-            finally { _repositioningTextBox = false; }
+            int desired = ActiveFilterOverviewControl.Height;
+            if (desired < SplitContainerActiveFiltersViewport.Panel1MinSize) return;
+            if (SplitContainerActiveFiltersViewport.SplitterDistance == desired) return;
+            SplitContainerActiveFiltersViewport.SplitterDistance = desired;
         }
+
+        private void RepositionLogEntriesTextBox() { }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
         {
