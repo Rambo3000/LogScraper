@@ -27,13 +27,14 @@ namespace LogScraper.Log.Rendering
         /// <param name="contentPropertiesWithCustomColoring">The collection of log content properties for which custom coloring should be applied. Each property will be
         /// <param name="kinds">The list of log post-processor kinds to consider when calculating visual line indices.</param>
         /// evaluated for styling.</param>
+        /// <param name="includeAdditionalLines">If <see langword="true"/>, visual line indices for additional log lines belonging to each log entry are also included.</param>
         /// <returns>A dictionary mapping each specified log content property to a list of visual line indices representing the
         /// lines that should be styled for that property. If no entries are visible or no properties require styling,
         /// the dictionary will be empty.</returns>
         public static IndexDictionary<LogContentProperty, List<int>> GetVisualLineIndexesPerContentProperty(List<LogEntry> visibleLogEntries, List<LogContentProperty> contentPropertiesWithCustomColoring, LogEntriesRenderMap logEntriesRenderMap)
         {
             if (visibleLogEntries == null || contentPropertiesWithCustomColoring == null || contentPropertiesWithCustomColoring.Count == 0) return null;
-            
+
             IndexDictionary<LogContentProperty, List<int>> logEntriesToStylePerContentProperty = new(contentPropertiesWithCustomColoring[^1].Index + 1);
 
             foreach (LogContentProperty logContentProperty in contentPropertiesWithCustomColoring)
@@ -50,6 +51,15 @@ namespace LogScraper.Log.Rendering
                     if (!logEntry.LogContentProperties.ContainsKey(logContentProperty)) continue;
 
                     logEntriesIndexes.Add(logEntriesRenderMap.VisualLineIndexPerEntry[i]);
+
+                    if (logEntry.AdditionalLogEntries != null)
+                    {
+                        int mainLineIndex = logEntriesRenderMap.VisualLineIndexPerEntry[i];
+                        for (int j = 0; j < logEntry.AdditionalLogEntries.Count; j++)
+                        {
+                            logEntriesIndexes.Add(mainLineIndex + 1 + j);
+                        }
+                    }
                 }
             }
 
