@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using LogScraper.Configuration;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 using LogScraper.Sources.Workers;
@@ -24,6 +23,7 @@ namespace LogScraper.Controls
             ToolTip.SetToolTip(BtnRecord, "Start logophalen [F5]");
             ToolTip.SetToolTip(BtnRecordWithTimer, "Start automatisch log ophalen [CTRL-F5]");
             ToolTip.SetToolTip(BtnStop, "Stop log ophalen [SHIFT-F5]");
+            ToolTip.SetToolTip(BtnStopWithTimer, "Stop automatisch log ophalen [SHIFT-F5]");
 
             UpdateButtonStatus();
         }
