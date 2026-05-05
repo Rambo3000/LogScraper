@@ -132,14 +132,19 @@ namespace LogScraper.Controls.Viewport
             // Apply syntax highlighting based on the content properties with custom coloring, using the visual line indexes from the render map
             TxtLogEntries.StyleLines(_contentPropertiesWithCustomColoring, LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(visibleLogEntries, _contentPropertiesWithCustomColoring, postRenderLogEntriesRenderMap));
 
-            if (preRenderTopLogEntryRenderPosition != null)
+            // Try to restore the log entry at the carot after the render, if it is still visible
+            // Set this before the scrollposition, so it doesnt interfere
+            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, _logEntriesRenderMapCache, out int selectedIndex))
             {
-                // Restore scroll position based on the previously visible log entry
-                // This keeps the view stable when filters or visual spans change
-                if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(preRenderTopLogEntryRenderPosition, _logEntriesRenderMapCache, postRenderLogEntriesRenderMap, TxtLogEntries.LinesOnScreen, out int scrollToPosition))
-                {
-                    TxtLogEntries.FirstVisibleLine = scrollToPosition;
-                }
+                TxtLogEntries.GotoPosition(TxtLogEntries.Lines[selectedIndex].Position);
+                TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
+            }
+
+            // Restore scroll position based on the previously visible log entry
+            // This keeps the view stable when filters or visual spans change
+            if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(preRenderTopLogEntryRenderPosition, _logEntriesRenderMapCache, postRenderLogEntriesRenderMap, TxtLogEntries.LinesOnScreen, out int scrollToPosition))
+            {
+                TxtLogEntries.FirstVisibleLine = scrollToPosition;
             }
 
             // Update caches for the next render cycle
@@ -151,12 +156,6 @@ namespace LogScraper.Controls.Viewport
             //Raise the event that the visible range changed
             RaiseVisibleRangeChanged(true);
 
-            // Try to restore the log entry at the carot after the render, if it is still visible
-            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, _logEntriesRenderMapCache, out int selectedIndex))
-            {
-                TxtLogEntries.GotoPosition(TxtLogEntries.Lines[selectedIndex].Position);
-                TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
-            }
 
             // Resume drawing once the content and scroll position are fully restored
             this.ResumeDrawing();
