@@ -76,7 +76,7 @@ namespace LogScraper.Controls
             LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
 
             ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => PopulateLogLayouts();
-            ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => UpdateProviderConfig();
+            ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => UpdateSelectedLogProvider();
             ConfigAppState.Instance.LogProvidersConfig.Changed += (s, e) => PopulateLogProviders();
             ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdatedPinned();
         }
@@ -91,8 +91,7 @@ namespace LogScraper.Controls
             IsPinned = ConfigAppState.Instance.GenericConfig.Value.PinLogProvidersByDefault;
             PopulateLogProviders();
             PopulateLogLayouts();
-            //TODO: check what to do with UpdateProviderConfig, maybe remove? what does it do?
-            UpdateProviderConfig();
+            UpdateSelectedLogProvider();
             AttachEventHandlers();
         }
 
@@ -273,7 +272,7 @@ namespace LogScraper.Controls
             LogAppState.Instance.Reset(false);
         }
 
-        private void UpdateProviderConfig()
+        private void UpdateSelectedLogProvider()
         {
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
             if (logProviderConfig == null) return;
