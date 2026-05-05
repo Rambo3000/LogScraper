@@ -93,7 +93,7 @@ namespace LogScraper.Sources.Workers
         /// <param name="sourceAdapter">The source adapter to retrieve log data from.</param>
         private async Task GetLogFromSourceAdapter(ISourceAdapter sourceAdapter, bool isContinuous)
         {
-            LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
+            LogAppState.Instance.ProcessingState.Set(LogAppState.Instance.ProcessingState.Value.WithStatus(LogProcessingStatus.Retrieving));
 
             // Retrieve the raw log data as a string.
             string rawLog = await sourceAdapter.GetLogAsync().ConfigureAwait(false);

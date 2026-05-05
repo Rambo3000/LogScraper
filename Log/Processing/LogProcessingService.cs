@@ -21,25 +21,27 @@ namespace LogScraper.Log.Processing
         #region Public pipeline control
         public static bool CanStartFetching()
         {
-            return !AppState.Instance.IsSourceProcessingActive.Value
+            return !AppState.Instance.ProcessingState.Value.IsActive
                 && AppState.Instance.IsSourceValid.Value
                 && AppState.Instance.Layout.Value != null;
         }
 
         public static bool CanStopFetching()
         {
-            return AppState.Instance.IsSourceProcessingActive.Value;
+            return AppState.Instance.ProcessingState.Value.IsActive;
         }
 
         public static void StartSingleFetch()
         {
             if (!CanStartFetching()) return;
+            AppState.Instance.ProcessingState.Set(LogProcessingState.Active(false));
             StartFetching();
         }
 
         public static void StartTimedFetch()
         {
             if (!CanStartFetching()) return;
+            AppState.Instance.ProcessingState.Set(LogProcessingState.Active(true));
             StartFetching(1, ConfigAppState.Instance.GenericConfig.Value.AutomaticReadTimeMinutes * 60);
         }
 
@@ -60,8 +62,6 @@ namespace LogScraper.Log.Processing
             if (AppState.Instance.Layout.Value == null) return;
             try
             {
-                AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Retrieving);
-
                 if (AppState.Instance.SourceAdapterProvider == null) throw new InvalidOperationException("SourceAdapterProvider is not set in AppState.");
 
                 ISourceAdapter sourceAdapter = AppState.Instance.SourceAdapterProvider(AppState.Instance.LastTrailTime.Value);
@@ -74,7 +74,7 @@ namespace LogScraper.Log.Processing
             {
                 ex.LogStackTraceToFile();
                 AppState.Instance.StatusMessage.Set((ex.Message, false));
-                AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Idle);
+                AppState.Instance.ProcessingState.Set(LogProcessingState.Inactive);
             }
         }
 
@@ -83,6 +83,7 @@ namespace LogScraper.Log.Processing
         /// </summary>
         public static void Stop()
         {
+            AppState.Instance.ProcessingState.Set(LogProcessingState.Inactive);
             SourceProcessingManager.Instance.CancelAllWorkers();
         }
         #endregion
@@ -107,7 +108,7 @@ namespace LogScraper.Log.Processing
                 bool newLogEntriesReceived;
                 try
                 {
-                    AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Processing);
+                    AppState.Instance.ProcessingState.Set(AppState.Instance.ProcessingState.Value.WithStatus(LogProcessingStatus.Processing));
 
                     newLogEntriesReceived = RawLogParser.TryParseNewLogEntries(rawLog, logCollection, logLayout, out List<LogEntry> newEntries);
 
@@ -135,7 +136,7 @@ namespace LogScraper.Log.Processing
 
                 AppState.Instance.StatusMessage.Set((string.Empty, true));
                 AppState.Instance.LastTrailTime.Set(updatedLastTrailTime);
-                if (isContinuous) AppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Waiting);
+                if (isContinuous) AppState.Instance.ProcessingState.Set(AppState.Instance.ProcessingState.Value.WithStatus(LogProcessingStatus.Waiting));
             }
             catch (Exception ex)
             {

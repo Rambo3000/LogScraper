@@ -457,7 +457,7 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.Panel2.Controls.Add(LogProviderSelectionControl);
             SplitContainerSourceControlAndLogProviders.Panel2MinSize = 0;
             SplitContainerSourceControlAndLogProviders.Size = new System.Drawing.Size(230, 250);
-            SplitContainerSourceControlAndLogProviders.SplitterDistance = 44;
+            SplitContainerSourceControlAndLogProviders.SplitterDistance = 43;
             SplitContainerSourceControlAndLogProviders.SplitterWidth = 1;
             SplitContainerSourceControlAndLogProviders.TabIndex = 0;
             // 

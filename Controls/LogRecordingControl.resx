@@ -142,4 +142,11 @@
   <metadata name="ToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="BtnStopWithTimer.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAAoAAAAMCAYAAABbayygAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAAE9JREFUKFOtjlEOwCAIQ/vuf2gXATeTwt9MXlQoLQKWpIS6e0q4RSE8g5dB8n1A
+        i8mZmDyUsKcE4Xat4dH0UU4+duTr2GHN2d0KE1aY+Pk8TBVjvh2Ysw4AAAAASUVORK5CYII=
+</value>
+  </data>
 </root>

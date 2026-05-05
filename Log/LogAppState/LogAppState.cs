@@ -35,6 +35,8 @@ namespace LogScraper.Log.LogAppState
             RenderSeperateMetadataProperties.Changed += (s, e) => UpdateRenderSettings();
             RenderProcessorKinds.Changed += (s, e) => UpdateRenderSettings();
             RenderFlowTreeSettings.Changed += (s, e) => UpdateRenderSettings();
+
+            ProcessingState.ForceSet(LogProcessingState.Inactive);
         }
 
         /// <summary>
@@ -114,14 +116,9 @@ namespace LogScraper.Log.LogAppState
         public StateSlice<DateTime?> LastTrailTime { get; } = new();
 
         /// <summary>
-        /// Whether a source processing worker is currently active.
+        /// The combined state of the active data retrieval process (whether active, and whether it is a timed fetch).
         /// </summary>
-        public StateSlice<bool> IsSourceProcessingActive { get; } = new();
-
-        /// <summary>
-        /// The current processing status of the log source, used to display appropriate messages or indicators in the UI.
-        /// </summary>
-        public StateSlice<LogProcessingStatus> ProcessingStatus { get; } = new();
+        public StateSlice<LogProcessingState> ProcessingState { get; } = new();
 
         /// <summary>
         /// Whether the currently selected log source is valid and ready to fetch from.

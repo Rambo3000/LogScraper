@@ -32,7 +32,7 @@ namespace LogScraper
             Thread.CurrentThread.CurrentUICulture = culture;
 
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
-            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
+            LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
 
             ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdateTimeLineVisibility();
@@ -225,7 +225,7 @@ namespace LogScraper
         #region Buttons
         private void UpdateButtonStatus()
         {
-            bool isSourceProcessingActive = LogAppState.Instance.IsSourceProcessingActive.Value;
+            bool isSourceProcessingActive = LogAppState.Instance.ProcessingState.Value.IsActive;
             bool sourceIsValid = LogAppState.Instance.IsSourceValid.Value;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
 

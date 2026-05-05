@@ -17,9 +17,8 @@ namespace LogScraper.Controls
         private void LogRecordingControl_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
-            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => UpdateButtonStatus();
+            LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
-            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateButtonStatus();
             SourceProcessingManager.Instance.ProgressUpdate += HandleSourceProcessingWorkerProgressUpdate;
 
             ToolTip.SetToolTip(BtnRecord, "Start logophalen [F5]");
@@ -50,40 +49,33 @@ namespace LogScraper.Controls
         #region Buttons
         private void UpdateButtonStatus()
         {
-            bool isSourceProcessingActive = LogAppState.Instance.IsSourceProcessingActive.Value;
+            LogProcessingState fetch = LogAppState.Instance.ProcessingState.Value;
+
             bool sourceIsValid = LogAppState.Instance.IsSourceValid.Value;
             bool layoutSelected = LogAppState.Instance.Layout.Value != null;
-            if (!isSourceProcessingActive)
-            {
-                HandleSourceProcessingWorkerProgressUpdate(-1, -1);
-                LogAppState.Instance.ProcessingStatus.Set(LogProcessingStatus.Idle);
-            }
 
-            BtnRecord.Visible = !isSourceProcessingActive;
-            BtnRecord.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
-            BtnRecordWithTimer.Enabled = !isSourceProcessingActive && sourceIsValid && layoutSelected;
-            BtnStop.Visible = isSourceProcessingActive;
-            BtnStop.Enabled = isSourceProcessingActive;
+            BtnRecord.Visible = fetch.IsTimed || !fetch.IsActive;
+            BtnRecord.Enabled = !fetch.IsActive && sourceIsValid && layoutSelected;
+
+            BtnStop.Visible = !BtnRecord.Visible;
+            BtnStop.Enabled = fetch.IsActive;
+
+            BtnRecordWithTimer.Visible = !fetch.IsTimed || !fetch.IsActive;
+            BtnRecordWithTimer.Enabled = !fetch.IsActive && sourceIsValid && layoutSelected;
+
+            BtnStopWithTimer.Visible = !BtnRecordWithTimer.Visible;
+            BtnStopWithTimer.Enabled = fetch.IsActive;
         }
 
         private void HandleSourceProcessingWorkerProgressUpdate(int elapsedSeconds, int totalDurationInSeconds)
         {
             // Since this method is called from a non-UI thread, we need to check if we need to invoke it on the UI thread.
-            if (InvokeRequired) 
+            if (InvokeRequired)
             {
                 Invoke(new Action(() => HandleSourceProcessingWorkerProgressUpdate(elapsedSeconds, totalDurationInSeconds)));
                 return;
             }
-            if (totalDurationInSeconds == -1)
-            {
-                BtnRecordWithTimer.Text = string.Empty;
-                BtnRecordWithTimer.Image = Properties.Resources.timer_record_outline_24x24;
-            }
-            else
-            {
-                BtnRecordWithTimer.Image = null;
-                BtnRecordWithTimer.Text = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds).ToString("m\\:ss");
-            }
+            BtnStopWithTimer.Text = TimeSpan.FromSeconds(totalDurationInSeconds - elapsedSeconds).ToString("m\\:ss");
         }
 
         public void BtnRecord_Click(object sender, EventArgs e)

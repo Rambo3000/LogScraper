@@ -37,6 +37,7 @@ namespace LogScraper.Controls
             BtnRecordWithTimer = new System.Windows.Forms.Button();
             BtnStop = new System.Windows.Forms.Button();
             ToolTip = new System.Windows.Forms.ToolTip(components);
+            BtnStopWithTimer = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // BtnRecord
@@ -74,13 +75,30 @@ namespace LogScraper.Controls
             BtnStop.UseVisualStyleBackColor = true;
             BtnStop.Click += BtnStop_Click;
             // 
+            // BtnStopWithTimer
+            // 
+            BtnStopWithTimer.Image = (System.Drawing.Image)resources.GetObject("BtnStopWithTimer.Image");
+            BtnStopWithTimer.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+            BtnStopWithTimer.Location = new System.Drawing.Point(39, 0);
+            BtnStopWithTimer.Margin = new System.Windows.Forms.Padding(0);
+            BtnStopWithTimer.Name = "BtnStopWithTimer";
+            BtnStopWithTimer.Size = new System.Drawing.Size(40, 40);
+            BtnStopWithTimer.TabIndex = 20;
+            BtnStopWithTimer.TabStop = false;
+            BtnStopWithTimer.Text = "0:00";
+            BtnStopWithTimer.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            BtnStopWithTimer.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            BtnStopWithTimer.UseVisualStyleBackColor = true;
+            BtnStopWithTimer.Click += BtnStop_Click;
+            // 
             // LogRecordingControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(BtnRecord);
-            Controls.Add(BtnRecordWithTimer);
             Controls.Add(BtnStop);
+            Controls.Add(BtnStopWithTimer);
+            Controls.Add(BtnRecordWithTimer);
             Name = "LogRecordingControl";
             Size = new System.Drawing.Size(79, 40);
             Load += LogRecordingControl_Load;
@@ -93,5 +111,6 @@ namespace LogScraper.Controls
         public System.Windows.Forms.Button BtnRecordWithTimer;
         public System.Windows.Forms.Button BtnStop;
         private System.Windows.Forms.ToolTip ToolTip;
+        public System.Windows.Forms.Button BtnStopWithTimer;
     }
 }

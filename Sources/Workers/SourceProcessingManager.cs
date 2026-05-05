@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.Processing;
 using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Sources.Workers
@@ -125,7 +126,8 @@ namespace LogScraper.Sources.Workers
         /// </summary>
         protected virtual void OnQueueLengthUpdate()
         {
-            LogAppState.Instance.IsSourceProcessingActive.Set(IsWorkerActive);
+            if (!IsWorkerActive)
+                LogAppState.Instance.ProcessingState.Set(LogProcessingState.Inactive);
         }
 
         /// <summary>

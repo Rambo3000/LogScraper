@@ -35,7 +35,12 @@ namespace LogScraper.Controls
 
         private void UpdateProcessingStatus()
         {
-            LogProcessingStatus status = LogAppState.Instance.ProcessingStatus.Value;
+            bool enabled = !LogAppState.Instance.ProcessingState.Value.IsActive;
+            cboLogProvider.Enabled = enabled;
+            cboLogLayout.Enabled = enabled;
+            PnlLogProviders.Enabled = enabled;
+
+            LogProcessingStatus status = LogAppState.Instance.ProcessingState.Value?.Status ?? LogProcessingStatus.Idle;
             if (status == LogProcessingStatus.Retrieving)
             {
                 LblStatusIcon.ImageIndex = 0;
@@ -64,8 +69,7 @@ namespace LogScraper.Controls
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
 
-            LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
-            LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
+            LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateProcessingStatus();
             LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
 
             ConfigAppState.Instance.LogLayoutsConfig.Changed += (s, e) => PopulateLogLayouts();
@@ -284,14 +288,6 @@ namespace LogScraper.Controls
                     FileProviderControl.UpdateAfterProviderSelected();
                     break;
             }
-        }
-
-        public void SetEnabled()
-        {
-            bool enabled = !LogAppState.Instance.IsSourceProcessingActive.Value;
-            cboLogProvider.Enabled = enabled;
-            cboLogLayout.Enabled = enabled;
-            PnlLogProviders.Enabled = enabled;
         }
 
         public bool IsSourceValid
