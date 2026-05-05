@@ -23,6 +23,9 @@ namespace LogScraper.Controls.Generic
                 return;
             }
             base.WndProc(ref m);
+            // After each WM_PAINT, clear any empty area below the last item.
+            if (m.Msg == 0x000F)
+                ClearEmptyArea();
         }
 
         /// <summary>
@@ -31,7 +34,9 @@ namespace LogScraper.Controls.Generic
         public void ClearEmptyArea()
         {
             int lastItemBottom = Items.Count > 0 ? GetItemRectangle(Items.Count - 1).Bottom : 0;
-            if (lastItemBottom < ClientSize.Height)
+            // lastItemBottom <= 0 means the last item is scrolled above the visible area,
+            // so all visible rows are real items and there is nothing to clear.
+            if (lastItemBottom > 0 && lastItemBottom < ClientSize.Height)
             {
                 using Graphics g = CreateGraphics();
                 g.FillRectangle(SystemBrushes.Control,
