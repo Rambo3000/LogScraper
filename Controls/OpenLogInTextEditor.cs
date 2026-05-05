@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Export;
+using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls
@@ -14,6 +15,7 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdateButtons();
+            ShortcutManager.Register(this, AppShortcut.OpenLogInEditor, OpenFileInExternalEditor);
         }
 
         private void OpenLogInTextEditor_Load(object sender, EventArgs e)

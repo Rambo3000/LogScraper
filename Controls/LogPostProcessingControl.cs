@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Log.LogAppState;
 using LogScraper.LogPostProcessors;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -17,6 +18,7 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             UpdateControls();
+            ShortcutManager.Register(this, AppShortcut.PrettyPrint, () => BtnPrettyPrint_Click(this, EventArgs.Empty));
         }
         #endregion
 

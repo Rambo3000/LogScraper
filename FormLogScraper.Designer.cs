@@ -113,7 +113,7 @@ namespace LogScraper
             BtnConfig.TabIndex = 23;
             BtnConfig.TabStop = false;
             BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnConfig, "Instellingen [CTRL-,}");
+            ToolTip.SetToolTip(BtnConfig, "Instellingen [CTRL-,]");
             BtnConfig.UseVisualStyleBackColor = true;
             BtnConfig.Click += BtnConfig_Click;
             // 
@@ -126,7 +126,7 @@ namespace LogScraper
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TabStop = false;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-M]");
+            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-SHIFT-M]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
             // 

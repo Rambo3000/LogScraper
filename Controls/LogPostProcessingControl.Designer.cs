@@ -68,7 +68,7 @@
             BtnPrettyPrint.Name = "BtnPrettyPrint";
             BtnPrettyPrint.Size = new System.Drawing.Size(40, 25);
             BtnPrettyPrint.TabIndex = 0;
-            toolTip1.SetToolTip(BtnPrettyPrint, "Pretty print JSON en XML");
+            toolTip1.SetToolTip(BtnPrettyPrint, "Pretty print JSON en XML [CTRL-P]");
             BtnPrettyPrint.ButtonClick += BtnPrettyPrint_Click;
             // 
             // contextMenuStrip1

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveLogControl));
             BtnSave = new System.Windows.Forms.Button();
+            toolTip1 = new System.Windows.Forms.ToolTip();
             SuspendLayout();
             // 
             // BtnSave
@@ -40,8 +41,15 @@
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 27;
             BtnSave.TabStop = false;
+            toolTip1.SetToolTip(BtnSave, "Log opslaan [CTRL-S]");
             BtnSave.UseVisualStyleBackColor = true;
             BtnSave.Click += BtnSave_Click;
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 9999999;
+            toolTip1.InitialDelay = 500;
+            toolTip1.ReshowDelay = 100;
             // 
             // SaveLogControl
             // 
@@ -56,5 +64,6 @@
         #endregion
 
         private System.Windows.Forms.Button BtnSave;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

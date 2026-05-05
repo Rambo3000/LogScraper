@@ -121,5 +121,10 @@ namespace LogScraper.Controls.Generic
         {
             TxtTextBox.Clear();
         }
+
+        public void SelectAll()
+        {
+            TxtTextBox.SelectAll();
+        }
     }
 }

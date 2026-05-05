@@ -8,6 +8,7 @@ using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -69,6 +70,8 @@ namespace LogScraper.Controls
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
 
+            ShortcutManager.Register(this, AppShortcut.CollapseExpandProvider, () => ToggleCollapse());
+            ShortcutManager.Register(this, AppShortcut.CloseBottomPanel, () => { if (!_isCollapsed) CollapseProvider(); });
             LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateProcessingStatus();
             LogAppState.Instance.SourceAdapterProvider = GetSelectedSourceAdapter;
 
@@ -374,6 +377,10 @@ namespace LogScraper.Controls
 
         private void BtnCollapseExpand_Click(object sender, EventArgs e)
         {
+            ToggleCollapse();
+        }
+        private void ToggleCollapse()
+        {
             if (_isCollapsed)
                 ExpandProvider();
             else if (IsSourceValid)
@@ -382,7 +389,7 @@ namespace LogScraper.Controls
 
         private void LblProviderDescription_MouseClick(object sender, MouseEventArgs e)
         {
-            ExpandProvider();
+            ToggleCollapse();
         }
 
         private void LblProviderDescription_MouseEnter(object sender, EventArgs e)

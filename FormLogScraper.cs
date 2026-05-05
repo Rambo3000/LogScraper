@@ -66,6 +66,7 @@ namespace LogScraper
             ShortcutManager.Register(this, AppShortcut.ResetApplication, () => BtnReset_Click(this, EventArgs.Empty));
             ShortcutManager.Register(this, AppShortcut.OpenConfiguration, () => BtnConfig_Click(this, EventArgs.Empty));
             ShortcutManager.Register(this, AppShortcut.CloseBottomPanel, HideBottomPanel);
+            ShortcutManager.Register(this, AppShortcut.ToggleErrorsPanel, ToggleErrorsPanel);
 
             UpdateTimeLineVisibility();
         }
@@ -151,6 +152,16 @@ namespace LogScraper
         private void HideBottomPanel()
         {
             SplitContainerViewportAndSearchResultList.Panel2Collapsed = true;
+        }
+
+        private void ToggleErrorsPanel()
+        {
+            if (!SplitContainerViewportAndSearchResultList.Panel2Collapsed && ErrorListControl.Visible)
+            {
+                HideBottomPanel();
+                return;
+            }
+            ActiveFilterOverviewControl_ErrorChipClicked(this, EventArgs.Empty);
         }
 
         private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)

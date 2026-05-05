@@ -45,7 +45,7 @@ namespace LogScraper.Controls
             BtnReset.Name = "BtnReset";
             BtnReset.Size = new System.Drawing.Size(25, 25);
             BtnReset.TabIndex = 3;
-            toolTip1.SetToolTip(BtnReset, "Toon alle logregels");
+            toolTip1.SetToolTip(BtnReset, "Toon alle logregels [CTRL-DOWN]");
             BtnReset.UseVisualStyleBackColor = true;
             BtnReset.Click += BtnReset_Click;
             // 
@@ -57,7 +57,7 @@ namespace LogScraper.Controls
             ChkBegin.Name = "ChkBegin";
             ChkBegin.Size = new System.Drawing.Size(25, 25);
             ChkBegin.TabIndex = 4;
-            toolTip1.SetToolTip(ChkBegin, "Toon alleen logregels vanaf de geselecteerde regel");
+            toolTip1.SetToolTip(ChkBegin, "Toon alleen logregels vanaf de geselecteerde regel [CTRL-LEFT]");
             ChkBegin.UseVisualStyleBackColor = true;
             ChkBegin.CheckedChanged += ChkBegin_CheckedChanged;
             // 
@@ -69,7 +69,7 @@ namespace LogScraper.Controls
             ChkEnd.Name = "ChkEnd";
             ChkEnd.Size = new System.Drawing.Size(25, 25);
             ChkEnd.TabIndex = 5;
-            toolTip1.SetToolTip(ChkEnd, "Toon alleen logregels tot en met de geselecteerde regel");
+            toolTip1.SetToolTip(ChkEnd, "Toon alleen logregels tot en met de geselecteerde regel [CTRL-RIGHT]");
             ChkEnd.UseVisualStyleBackColor = true;
             ChkEnd.CheckedChanged += ChkEnd_CheckedChanged;
             // 

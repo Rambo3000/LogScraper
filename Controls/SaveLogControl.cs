@@ -7,6 +7,7 @@ using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls
@@ -16,6 +17,7 @@ namespace LogScraper.Controls
         public SaveLogControl()
         {
             InitializeComponent();
+            ShortcutManager.Register(this, AppShortcut.SaveLog, () => BtnSave_Click(this, EventArgs.Empty));
         }
 
         private void BtnSave_Click(object sender, EventArgs e)

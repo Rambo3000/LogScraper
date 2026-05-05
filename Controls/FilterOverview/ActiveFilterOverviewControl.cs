@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.FilterOverview
@@ -69,6 +69,7 @@ namespace LogScraper.Controls.FilterOverview
             LogAppState.Instance.ResetRequested += OnResetRequested;
             LogAppState.Instance.MetadataFilters.Changed += (s, e) => SetMetadataFilters();
             LogAppState.Instance.FilterResultWithRange.Changed += (s, e) => SetCounts();
+            ShortcutManager.Register(this, AppShortcut.ResetAllFilters, () => LblReset_LinkClicked(this, null));
         }
 
         private void OnLogRangeChanged(object sender, EventArgs e)

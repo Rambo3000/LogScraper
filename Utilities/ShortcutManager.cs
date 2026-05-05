@@ -26,6 +26,17 @@ namespace LogScraper.Utilities
         ResetApplication,
         OpenConfiguration,
         CloseBottomPanel,
+        SaveLog,
+        OpenLogInEditor,
+        CollapseExpandProvider,
+        ToggleFlowTree,
+        SetRangeBegin,
+        SetRangeEnd,
+        ClearRange,
+        ToggleErrorsPanel,
+        ResetAllFilters,
+        ToggleMetadata,
+        PrettyPrint,
     }
 
     /// <summary>
@@ -58,8 +69,19 @@ namespace LogScraper.Utilities
             { Keys.Control | Keys.L, AppShortcut.ClearLog },
             { Keys.Control | Keys.Shift | Keys.L, AppShortcut.ResetApplication },
             { Keys.Control | Keys.Oemcomma, AppShortcut.OpenConfiguration },
-            { Keys.Control | Keys.M, AppShortcut.ToggleCompactView },
+            { Keys.Control | Keys.Shift | Keys.M, AppShortcut.ToggleCompactView },
             { Keys.Escape, AppShortcut.CloseBottomPanel },
+            { Keys.Control | Keys.S, AppShortcut.SaveLog },
+            { Keys.Control | Keys.E, AppShortcut.OpenLogInEditor },
+            { Keys.Control | Keys.Shift | Keys.P, AppShortcut.CollapseExpandProvider },
+            { Keys.Control | Keys.T, AppShortcut.ToggleFlowTree },
+            { Keys.Control | Keys.Left, AppShortcut.SetRangeBegin },
+            { Keys.Control | Keys.Right, AppShortcut.SetRangeEnd },
+            { Keys.Control | Keys.Down, AppShortcut.ClearRange },
+            { Keys.Control | Keys.Shift | Keys.E, AppShortcut.ToggleErrorsPanel },
+            { Keys.Control | Keys.R, AppShortcut.ResetAllFilters },
+            { Keys.Control | Keys.M, AppShortcut.ToggleMetadata },
+            { Keys.Control | Keys.P, AppShortcut.PrettyPrint },
         };
 
         private static readonly Dictionary<AppShortcut, List<ShortcutHandlerRegistration>> _handlers = new();

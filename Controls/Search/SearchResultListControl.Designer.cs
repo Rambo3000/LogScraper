@@ -33,6 +33,7 @@
             PnlForWIndowsScaling = new System.Windows.Forms.Panel();
             BtnClose = new System.Windows.Forms.Button();
             LblResultCount = new System.Windows.Forms.Label();
+            toolTip1 = new System.Windows.Forms.ToolTip();
             PnlForWIndowsScaling.SuspendLayout();
             SuspendLayout();
             // 
@@ -65,6 +66,7 @@
             BtnClose.Name = "BtnClose";
             BtnClose.Size = new System.Drawing.Size(20, 22);
             BtnClose.TabIndex = 2;
+            toolTip1.SetToolTip(BtnClose, "Sluiten [ESC]");
             BtnClose.UseVisualStyleBackColor = true;
             BtnClose.Click += BtnClose_Click;
             // 
@@ -97,5 +99,6 @@
         private System.Windows.Forms.Panel PnlForWIndowsScaling;
         private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.Label LblResultCount;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

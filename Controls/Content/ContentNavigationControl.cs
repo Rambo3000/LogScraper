@@ -16,7 +16,6 @@ using LogScraper.Log.Rendering;
 
 namespace LogScraper.Controls.Content
 {
-    //TODO: fix issue where last item in the list is showing up double because the background is not reset
     internal partial class ContentNavigationControl : UserControl
     {
         #region Private objects and initialization

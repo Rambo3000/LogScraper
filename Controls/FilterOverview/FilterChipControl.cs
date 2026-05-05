@@ -373,8 +373,8 @@ namespace LogScraper.Controls.FilterOverview
         private string BuildErrorTooltip()
         {
             if (_errorCount == _totalErrorCount)
-                return $"Totaal aantal fouten: {_totalErrorCount}";
-            return $"Zichtbare fouten: {_errorCount}\nTotaal aantal fouten: {_totalErrorCount}";
+                return $"Totaal aantal fouten: {_totalErrorCount}\n[CTRL-SHIFT-E]";
+            return $"Zichtbare fouten: {_errorCount}\nTotaal aantal fouten: {_totalErrorCount}\n[CTRL-SHIFT-E]";
         }
 
         private string BuildCollapsedTooltip()

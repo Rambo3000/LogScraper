@@ -56,6 +56,8 @@ namespace LogScraper.Controls.Search
             ShortcutManager.Register(this, AppShortcut.SearchNext, SearchNext);
             ShortcutManager.Register(this, AppShortcut.SearchPrevious, SearchPrevious);
             ShortcutManager.Register(this, AppShortcut.SearchAll, SearchAll);
+
+            ToolTip.SetToolTip(splitButton1, "Zoeken [CTRL-F / F3]");
         }
 
 
@@ -112,6 +114,7 @@ namespace LogScraper.Controls.Search
         {
             if (!Visible || !Enabled) return;
             TxtSearch.Focus();
+            TxtSearch.SelectAll();
         }
 
         public void SearchNext()

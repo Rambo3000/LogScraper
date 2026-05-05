@@ -54,7 +54,7 @@ namespace LogScraper.Controls
             BtnTreeView.Size = new System.Drawing.Size(40, 25);
             BtnTreeView.TabIndex = 4;
             BtnTreeView.Tag = "";
-            toolTip1.SetToolTip(BtnTreeView, "Hierarchische weergave");
+            toolTip1.SetToolTip(BtnTreeView, "Hierarchische weergave aan/uit [CTRL-T]");
             BtnTreeView.ButtonClick += BtnTreeView_Click;
             // 
             // ContextMenuStrip1

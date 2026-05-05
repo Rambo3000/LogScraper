@@ -1,9 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 using LogScraper.Log;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -23,6 +23,9 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             UpdateButtons();
+            ShortcutManager.Register(this, AppShortcut.SetRangeBegin, () => { if (ChkBegin.Enabled) ChkBegin_CheckedChanged(this, EventArgs.Empty); });
+            ShortcutManager.Register(this, AppShortcut.SetRangeEnd, () => { if (ChkEnd.Enabled) ChkEnd_CheckedChanged(this, EventArgs.Empty); });
+            ShortcutManager.Register(this, AppShortcut.ClearRange, () => { if (BtnReset.Enabled) BtnReset_Click(this, EventArgs.Empty); });
         }
         private void LogRangeSelectionControl_Load(object sender, EventArgs e)
         {

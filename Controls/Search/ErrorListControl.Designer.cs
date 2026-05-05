@@ -37,6 +37,7 @@ namespace LogScraper.Controls.Search
             LblCount = new Label();
             PnlForScalingIssues = new Panel();
             LstEntries = new ListBox();
+            toolTip1 = new System.Windows.Forms.ToolTip();
             PnlForScalingIssues.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,6 +49,7 @@ namespace LogScraper.Controls.Search
             BtnClose.Name = "BtnClose";
             BtnClose.Size = new Size(20, 20);
             BtnClose.TabIndex = 0;
+            toolTip1.SetToolTip(BtnClose, "Sluiten [ESC]");
             BtnClose.UseVisualStyleBackColor = true;
             BtnClose.Click += BtnClose_Click;
             // 
@@ -98,6 +100,7 @@ namespace LogScraper.Controls.Search
         #endregion
         private Button BtnClose;
         private Label LblCount;
+        private System.Windows.Forms.ToolTip toolTip1;
         private Panel PnlForScalingIssues;
         private ListBox LstEntries;
     }

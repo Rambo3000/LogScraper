@@ -54,7 +54,7 @@ namespace LogScraper.Controls.Metadata
             splitButton1.Size = new System.Drawing.Size(40, 25);
             splitButton1.TabIndex = 4;
             splitButton1.Tag = "";
-            toolTip1.SetToolTip(splitButton1, "Metadata tonen/verbergen");
+            toolTip1.SetToolTip(splitButton1, "Metadata tonen/verbergen [CTRL-M]");
             splitButton1.ButtonClick += SplitButton1_Click;
             // 
             // ContextMenuStrip1

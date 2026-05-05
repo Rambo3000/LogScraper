@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Metadata;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls.Metadata
 {
@@ -15,6 +16,7 @@ namespace LogScraper.Controls.Metadata
             ItemHideAllMetadata.Click += ItemHideAllMetadata_CheckedChanged;
             UpdateButtons();
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogMetadataProperties(LogAppState.Instance.Layout.Value?.LogMetadataProperties ?? []);
+            ShortcutManager.Register(this, AppShortcut.ToggleMetadata, () => SplitButton1_Click(this, EventArgs.Empty));
         }
 
 

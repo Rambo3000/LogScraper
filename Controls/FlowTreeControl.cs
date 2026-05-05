@@ -6,6 +6,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -19,6 +20,7 @@ namespace LogScraper.Controls
             ItemShowTree.Click += ItemShowTree_Click;
             ItemHideTree.Click += ItemHideTree_Click;
             CboContentProperties.SelectedIndexChanged += CboContentProperties_SelectedIndexChanged;
+            ShortcutManager.Register(this, AppShortcut.ToggleFlowTree, () => BtnTreeView_Click(this, EventArgs.Empty));
         }
 
         private void FlowTreeControl_Load(object sender, EventArgs e)

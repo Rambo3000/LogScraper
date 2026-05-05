@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenLogInTextEditor));
             btnOpenWithEditor = new System.Windows.Forms.Button();
+            toolTip1 = new System.Windows.Forms.ToolTip();
             SuspendLayout();
             // 
             // btnOpenWithEditor
@@ -40,8 +41,15 @@
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 12;
             btnOpenWithEditor.TabStop = false;
+            toolTip1.SetToolTip(btnOpenWithEditor, "Log openen in editor [CTRL-E]");
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 9999999;
+            toolTip1.InitialDelay = 500;
+            toolTip1.ReshowDelay = 100;
             // 
             // OpenLogInTextEditor
             // 
@@ -57,5 +65,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnOpenWithEditor;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

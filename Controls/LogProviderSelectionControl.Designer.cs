@@ -148,6 +148,7 @@ namespace LogScraper.Controls
             btnPin.Name = "btnPin";
             btnPin.Size = new System.Drawing.Size(24, 24);
             btnPin.TabIndex = 27;
+            toolTip1.SetToolTip(btnPin, "Logbron altijd zichtbaar houden");
             btnPin.UseVisualStyleBackColor = true;
             btnPin.Click += BtnPin_Click;
             // 
@@ -178,6 +179,7 @@ namespace LogScraper.Controls
             BtnCollapseExpand.Name = "BtnCollapseExpand";
             BtnCollapseExpand.Size = new System.Drawing.Size(24, 24);
             BtnCollapseExpand.TabIndex = 28;
+            toolTip1.SetToolTip(BtnCollapseExpand, "Logbron in-/uitklappen [CTRL-SHIFT-P]");
             BtnCollapseExpand.UseVisualStyleBackColor = true;
             BtnCollapseExpand.Click += BtnCollapseExpand_Click;
             // 
