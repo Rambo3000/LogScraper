@@ -202,7 +202,7 @@ namespace LogScraper.Controls
             // 
             // PnlLogProviders
             // 
-            PnlLogProviders.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            PnlLogProviders.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             PnlLogProviders.Controls.Add(PnlSeparator2);
             PnlLogProviders.Controls.Add(KubernetesProviderControl);
             PnlLogProviders.Controls.Add(FileProviderControl);

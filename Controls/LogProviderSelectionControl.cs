@@ -30,14 +30,8 @@ namespace LogScraper.Controls
             }
         }
         public bool IsCollapsed => _isCollapsed;
-        public int ExpandedHeight { get; private set; }
-        public int CollapsedHeight
-        {
-            get
-            {
-                return BtnCollapseExpand.Bottom;
-            }
-        }
+        public int ExpandedHeight => PnlLogProviders.Bottom;
+        public int CollapsedHeight => BtnCollapseExpand.Bottom;
 
         private void UpdateProcessingStatus()
         {
@@ -69,7 +63,6 @@ namespace LogScraper.Controls
             InitializeComponent();
             this.Leave += LogProviderSelectionControl_Leave;
             this.Resize += LogProviderSelectionControl_Resize;
-            ExpandedHeight = Height;
 
             LogAppState.Instance.IsSourceProcessingActive.Changed += (s, e) => SetEnabled();
             LogAppState.Instance.ProcessingStatus.Changed += (s, e) => UpdateProcessingStatus();
@@ -88,7 +81,6 @@ namespace LogScraper.Controls
 
         private void LogProviderSelectionControl_Load(object sender, EventArgs e)
         {
-
             IsPinned = ConfigAppState.Instance.GenericConfig.Value.PinLogProvidersByDefault;
             PopulateLogProviders();
             PopulateLogLayouts();
@@ -327,9 +319,7 @@ namespace LogScraper.Controls
             btnPin.Visible = false;
             _isCollapsed = true;
             UpdateProviderDescription();
-            AutoSize = false;
             Height = CollapsedHeight;
-
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -343,8 +333,6 @@ namespace LogScraper.Controls
             BtnCollapseExpand.ImageIndex = 0;
             btnPin.Visible = true;
             _isCollapsed = false;
-
-            AutoSize = false;
             Height = ExpandedHeight;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
         }

@@ -41,6 +41,7 @@ namespace LogScraper
 
             LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
             LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
+            LogProviderSelectionControl.SizeChanged += (s, e) => AutoSizeLogProviderSelection();
 
             LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
@@ -117,13 +118,12 @@ namespace LogScraper
 
         private void AutoSizeLogProviderSelection()
         {
-            // Force the control to recalculate its size
-            LogProviderSelectionControl.PerformLayout();
+            int buttonsHeight = SplitContainerSourceControlAndLogProviders.SplitterDistance
+                + SplitContainerSourceControlAndLogProviders.SplitterWidth;
 
-            // Suspend layout to avoid flickering
             SplitContainerSourceControlAndMetadata.SuspendLayout();
             SplitContainerSourceControlAndMetadata.Panel1.SuspendLayout();
-            SplitContainerSourceControlAndMetadata.SplitterDistance = (LogProviderSelectionControl.IsCollapsed ? LogProviderSelectionControl.CollapsedHeight : LogProviderSelectionControl.ExpandedHeight) + 3 + LogRecordingControl.Bottom;
+            SplitContainerSourceControlAndMetadata.SplitterDistance = LogProviderSelectionControl.Height + buttonsHeight;
             SplitContainerSourceControlAndMetadata.Panel1.ResumeLayout(true);
             SplitContainerSourceControlAndMetadata.ResumeLayout(true);
         }
