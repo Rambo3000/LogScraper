@@ -342,7 +342,7 @@ namespace LogScraper.Controls
 
             string layoutText = layout?.Description ?? "Unknown";
 
-            lblProviderDescription.Text = $"{config} - {layoutText}";
+            lblProviderDescription.Text = $"{layoutText} - {config}";
         }
 
         private void TogglePinButton()

@@ -16,7 +16,6 @@ using LogScraper.Utilities.Extensions;
 
 namespace LogScraper
 {
-    //TODO: color additional log lines?
     public partial class FormLogScraper : Form
     {
         #region Form Initialization

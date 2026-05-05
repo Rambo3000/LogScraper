@@ -56,7 +56,7 @@ namespace LogScraper.Controls
             // lblLogProvider
             // 
             lblLogProvider.AutoSize = true;
-            lblLogProvider.Location = new System.Drawing.Point(3, 29);
+            lblLogProvider.Location = new System.Drawing.Point(3, 58);
             lblLogProvider.Name = "lblLogProvider";
             lblLogProvider.Size = new System.Drawing.Size(32, 15);
             lblLogProvider.TabIndex = 21;
@@ -67,7 +67,7 @@ namespace LogScraper.Controls
             cboLogProvider.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogProvider.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogProvider.FormattingEnabled = true;
-            cboLogProvider.Location = new System.Drawing.Point(52, 26);
+            cboLogProvider.Location = new System.Drawing.Point(52, 55);
             cboLogProvider.Name = "cboLogProvider";
             cboLogProvider.Size = new System.Drawing.Size(101, 23);
             cboLogProvider.TabIndex = 18;
@@ -76,7 +76,7 @@ namespace LogScraper.Controls
             // lblLogLayout
             // 
             lblLogLayout.AutoSize = true;
-            lblLogLayout.Location = new System.Drawing.Point(3, 55);
+            lblLogLayout.Location = new System.Drawing.Point(3, 31);
             lblLogLayout.Name = "lblLogLayout";
             lblLogLayout.Size = new System.Drawing.Size(43, 15);
             lblLogLayout.TabIndex = 29;
@@ -87,7 +87,7 @@ namespace LogScraper.Controls
             cboLogLayout.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             cboLogLayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cboLogLayout.FormattingEnabled = true;
-            cboLogLayout.Location = new System.Drawing.Point(52, 52);
+            cboLogLayout.Location = new System.Drawing.Point(52, 28);
             cboLogLayout.Name = "cboLogLayout";
             cboLogLayout.Size = new System.Drawing.Size(101, 23);
             cboLogLayout.TabIndex = 30;
