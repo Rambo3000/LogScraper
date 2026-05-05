@@ -9,10 +9,11 @@
     <Company>Robert de Volder</Company>
     <Copyright>Copyright (C) 2025 Robert de Volder</Copyright>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.2.10</FileVersion>
-    <Version>3.2.10</Version>
+    <FileVersion>4.0.0</FileVersion>
+    <Version>4.0.0</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <InformationalVersion>4.0.0-alpha.1</InformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>False</Optimize>
