@@ -160,13 +160,14 @@ Write-Host "----- Building installer -----"
 if (!$test.IsPresent) {
     $innoSetup = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
     if (!(Test-Path $innoSetup)) { throw "Inno Setup not found at: $innoSetup" }
-    & $innoSetup "/DMyAppVersion=`"$displayVersion`"" "/DMyAppBaseVersion=`"$newVersion`"" ".\Utilities\Installer\Settings.iss"
+    & $innoSetup "/DMyAppVersion=`"$displayVersion`"" "/DMyAppBaseVersion=$newVersion" ".\Utilities\Installer\Settings.iss"
     if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE" }
 }
 
 Write-Host "----- Cleaning up -----"
 Remove-Item ".\bin\Release\" -Recurse -Force
 
+Write-Host "----- Committing -----"
 # Create a git tag for the published version so GitHub releases stay in sync
 if (!$test.IsPresent) {
     $tag = "v$displayVersion"

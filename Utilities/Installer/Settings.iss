@@ -6,7 +6,7 @@ AppName=LogScraper
 ; AppVersion is provided by the Inno preprocessor (see your PS build script / ISCC /DMyAppVersion=...)
 AppVersion={#MyAppVersion}
 VersionInfoVersion={#MyAppBaseVersion}
-VersionInfoProductVersion={#MyAppVersion}
+VersionInfoProductVersion={#MyAppBaseVersion}
 ; stable AppId -- keep the same GUID between releases so upgrade works correctly
 AppId={{7f3a9e2b-4c1a-4f5b-9e2a-123456789abc}}
 DefaultDirName={localappdata}\LogScraper
