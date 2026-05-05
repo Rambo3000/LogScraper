@@ -45,9 +45,10 @@ namespace LogScraper
             LogTimeLineControl = new LogTimeLineControl();
             SplitContainerViewportAndSearchResultList = new SplitContainerWithGrip();
             SplitContainerViewportButtonsAndViewport = new System.Windows.Forms.SplitContainer();
+            PnlSaveAndExternalEditor = new System.Windows.Forms.Panel();
+            SaveLogControl = new SaveLogControl();
             OpenLogInTextEditor = new OpenLogInTextEditor();
             BookMarksControl = new BookMarksControl();
-            SaveLogControl = new SaveLogControl();
             FlowTreeControl = new FlowTreeControl();
             LogMetadataRenderOptionsControl = new LogMetadataRenderOptionsControl();
             LogRangeSelectionControl = new LogRangeSelectionControl();
@@ -68,7 +69,6 @@ namespace LogScraper
             LogRecordingControl = new LogRecordingControl();
             BtnErase = new System.Windows.Forms.Button();
             ToolTip = new System.Windows.Forms.ToolTip(components);
-            PnlSaveAndExternalEditor = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportAndNavigation).BeginInit();
             SplitContainerViewportAndNavigation.Panel1.SuspendLayout();
             SplitContainerViewportAndNavigation.Panel2.SuspendLayout();
@@ -85,6 +85,7 @@ namespace LogScraper
             SplitContainerViewportButtonsAndViewport.Panel1.SuspendLayout();
             SplitContainerViewportButtonsAndViewport.Panel2.SuspendLayout();
             SplitContainerViewportButtonsAndViewport.SuspendLayout();
+            PnlSaveAndExternalEditor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)SplitContainerActiveFiltersViewport).BeginInit();
             SplitContainerActiveFiltersViewport.Panel1.SuspendLayout();
             SplitContainerActiveFiltersViewport.Panel2.SuspendLayout();
@@ -101,7 +102,6 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.Panel1.SuspendLayout();
             SplitContainerSourceControlAndLogProviders.Panel2.SuspendLayout();
             SplitContainerSourceControlAndLogProviders.SuspendLayout();
-            PnlSaveAndExternalEditor.SuspendLayout();
             SuspendLayout();
             // 
             // BtnConfig
@@ -126,7 +126,7 @@ namespace LogScraper
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TabStop = false;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-SHIFT-M]");
+            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-W]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
             // 
@@ -244,6 +244,24 @@ namespace LogScraper
             SplitContainerViewportButtonsAndViewport.SplitterWidth = 1;
             SplitContainerViewportButtonsAndViewport.TabIndex = 0;
             // 
+            // PnlSaveAndExternalEditor
+            // 
+            PnlSaveAndExternalEditor.Controls.Add(SaveLogControl);
+            PnlSaveAndExternalEditor.Controls.Add(OpenLogInTextEditor);
+            PnlSaveAndExternalEditor.Dock = System.Windows.Forms.DockStyle.Right;
+            PnlSaveAndExternalEditor.Location = new System.Drawing.Point(608, 0);
+            PnlSaveAndExternalEditor.Name = "PnlSaveAndExternalEditor";
+            PnlSaveAndExternalEditor.Size = new System.Drawing.Size(50, 25);
+            PnlSaveAndExternalEditor.TabIndex = 46;
+            // 
+            // SaveLogControl
+            // 
+            SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            SaveLogControl.Location = new System.Drawing.Point(0, 0);
+            SaveLogControl.Name = "SaveLogControl";
+            SaveLogControl.Size = new System.Drawing.Size(25, 25);
+            SaveLogControl.TabIndex = 44;
+            // 
             // OpenLogInTextEditor
             // 
             OpenLogInTextEditor.Location = new System.Drawing.Point(25, 0);
@@ -257,14 +275,6 @@ namespace LogScraper
             BookMarksControl.Name = "BookMarksControl";
             BookMarksControl.Size = new System.Drawing.Size(97, 25);
             BookMarksControl.TabIndex = 11;
-            // 
-            // SaveLogControl
-            // 
-            SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            SaveLogControl.Location = new System.Drawing.Point(0, 0);
-            SaveLogControl.Name = "SaveLogControl";
-            SaveLogControl.Size = new System.Drawing.Size(25, 25);
-            SaveLogControl.TabIndex = 44;
             // 
             // FlowTreeControl
             // 
@@ -500,16 +510,6 @@ namespace LogScraper
             ToolTip.InitialDelay = 250;
             ToolTip.ReshowDelay = 100;
             // 
-            // PnlSaveAndExternalEditor
-            // 
-            PnlSaveAndExternalEditor.Controls.Add(SaveLogControl);
-            PnlSaveAndExternalEditor.Controls.Add(OpenLogInTextEditor);
-            PnlSaveAndExternalEditor.Dock = System.Windows.Forms.DockStyle.Right;
-            PnlSaveAndExternalEditor.Location = new System.Drawing.Point(608, 0);
-            PnlSaveAndExternalEditor.Name = "PnlSaveAndExternalEditor";
-            PnlSaveAndExternalEditor.Size = new System.Drawing.Size(50, 25);
-            PnlSaveAndExternalEditor.TabIndex = 46;
-            // 
             // FormLogScraper
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -537,6 +537,7 @@ namespace LogScraper
             SplitContainerViewportButtonsAndViewport.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)SplitContainerViewportButtonsAndViewport).EndInit();
             SplitContainerViewportButtonsAndViewport.ResumeLayout(false);
+            PnlSaveAndExternalEditor.ResumeLayout(false);
             SplitContainerActiveFiltersViewport.Panel1.ResumeLayout(false);
             SplitContainerActiveFiltersViewport.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)SplitContainerActiveFiltersViewport).EndInit();
@@ -553,7 +554,6 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)SplitContainerSourceControlAndLogProviders).EndInit();
             SplitContainerSourceControlAndLogProviders.ResumeLayout(false);
-            PnlSaveAndExternalEditor.ResumeLayout(false);
             ResumeLayout(false);
         }
 

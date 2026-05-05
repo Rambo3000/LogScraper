@@ -68,7 +68,7 @@
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-M]");
+            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-W]");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 

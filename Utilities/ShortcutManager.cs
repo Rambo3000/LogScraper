@@ -69,7 +69,7 @@ namespace LogScraper.Utilities
             { Keys.Control | Keys.L, AppShortcut.ClearLog },
             { Keys.Control | Keys.Shift | Keys.L, AppShortcut.ResetApplication },
             { Keys.Control | Keys.Oemcomma, AppShortcut.OpenConfiguration },
-            { Keys.Control | Keys.Shift | Keys.M, AppShortcut.ToggleCompactView },
+            { Keys.Control | Keys.W, AppShortcut.ToggleCompactView },
             { Keys.Escape, AppShortcut.CloseBottomPanel },
             { Keys.Control | Keys.S, AppShortcut.SaveLog },
             { Keys.Control | Keys.E, AppShortcut.OpenLogInEditor },
