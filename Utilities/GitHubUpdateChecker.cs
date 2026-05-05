@@ -143,24 +143,66 @@ namespace LogScraper.Utilities
 
         /// <summary>
         /// Determines whether the latest version is newer than the current version.
+        /// Handles semver pre-release labels (e.g. 4.0.0-alpha.1): a stable release is
+        /// always considered newer than a pre-release of the same base version.
         /// </summary>
         /// <param name="latest">The latest version string.</param>
         /// <param name="current">The current version string.</param>
         /// <returns>True if the latest version is newer; otherwise, false.</returns>
         private static bool IsNewerVersion(string latest, string current)
         {
-            string cleanLatest = StripSemVerMetadata(latest); // Remove metadata from the version string
+            string cleanLatest = StripSemVerMetadata(latest);
             string cleanCurrent = StripSemVerMetadata(current);
 
-            bool parsedLatest = Version.TryParse(cleanLatest, out Version latestVersion);
-            bool parsedCurrent = Version.TryParse(cleanCurrent, out Version currentVersion);
+            (Version baseLatest, string preLatest, int preNumLatest) = ParseSemVer(cleanLatest);
+            (Version baseCurrent, string preCurrent, int preNumCurrent) = ParseSemVer(cleanCurrent);
 
-            if (parsedLatest && parsedCurrent)
+            if (baseLatest == null || baseCurrent == null) return false;
+
+            if (baseLatest != baseCurrent) return baseLatest > baseCurrent;
+
+            // Same base version: stable beats any pre-release; otherwise compare pre-release numbers.
+            bool latestIsStable = string.IsNullOrEmpty(preLatest);
+            bool currentIsStable = string.IsNullOrEmpty(preCurrent);
+
+            if (latestIsStable && !currentIsStable) return true;  // stable update available for pre-release user
+            if (!latestIsStable && currentIsStable) return false;  // pre-release is never newer than stable
+            if (latestIsStable && currentIsStable) return false;   // identical stable versions
+
+            // Both pre-release: compare label alphabetically (beta > alpha), then number
+            int labelCompare = string.Compare(preLatest, preCurrent, StringComparison.OrdinalIgnoreCase);
+            if (labelCompare != 0) return labelCompare > 0;
+            return preNumLatest > preNumCurrent;
+        }
+
+        /// <summary>
+        /// Parses a cleaned semver string (no metadata, no leading 'v') into its base version,
+        /// pre-release label, and pre-release number (e.g. "4.0.0-alpha.2" → 4.0.0, "alpha", 2).
+        /// </summary>
+        private static (Version BaseVersion, string PrereleaseLabel, int PrereleaseNumber) ParseSemVer(string version)
+        {
+            string baseStr = version;
+            string label = "";
+            int number = 0;
+
+            int dashIndex = version.IndexOf('-');
+            if (dashIndex >= 0)
             {
-                return latestVersion > currentVersion; // Compare the parsed versions
+                baseStr = version[..dashIndex];
+                string prerelease = version[(dashIndex + 1)..];
+                int dotIndex = prerelease.LastIndexOf('.');
+                if (dotIndex >= 0 && int.TryParse(prerelease[(dotIndex + 1)..], out int n))
+                {
+                    label = prerelease[..dotIndex];
+                    number = n;
+                }
+                else
+                {
+                    label = prerelease;
+                }
             }
 
-            return false; // Return false if parsing fails
+            return Version.TryParse(baseStr, out Version v) ? (v, label, number) : (null, null, 0);
         }
 
         /// <summary>

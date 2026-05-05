@@ -16,7 +16,17 @@ namespace LogScraper.Controls.Configuration
             string version = Application.ProductVersion;
             if (version.Contains('+')) version = version[..version.IndexOf('+')];
 
-            lblVersion.Text = "v" + version;
+            int dashIndex = version.IndexOf('-');
+            if (dashIndex >= 0)
+            {
+                string baseVersion = version[..dashIndex];
+                string prereleaseLabel = version[(dashIndex + 1)..];
+                lblVersion.Text = $"v{baseVersion} ({prereleaseLabel})";
+            }
+            else
+            {
+                lblVersion.Text = "v" + version;
+            }
 
             LinkComponents.Links.Clear();
             LinkComponents.Links.Add(23, 13, "https://scintilla.org");
