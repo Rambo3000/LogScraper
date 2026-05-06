@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -42,10 +43,18 @@ namespace LogScraper.Controls
                 _       => Color.FromArgb(120, 90, 170)
             };
 
-            ToolTip.SetToolTip(this, $"Pre-release versie: {label} versie {number} ({fullVersion})");
+            ToolTip.SetToolTip(this, $"Pre-release versie: {fullVersion}");
 
+            Width = GetPreferredWidth();
             Visible = true;
             Invalidate();
+        }
+
+        private int GetPreferredWidth()
+        {
+            using Font font = new("Segoe UI", 7F, FontStyle.Bold);
+            SizeF textSize = TextRenderer.MeasureText(_badgeText, font);
+            return (int)Math.Ceiling(textSize.Width) + 10;
         }
 
         protected override void OnPaint(PaintEventArgs e)

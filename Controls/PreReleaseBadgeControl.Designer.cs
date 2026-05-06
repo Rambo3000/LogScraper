@@ -21,12 +21,12 @@ namespace LogScraper.Controls
             // 
             // PreReleaseBadgeControl
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            MaximumSize = new System.Drawing.Size(55, 25);
-            MinimumSize = new System.Drawing.Size(55, 25);
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            MinimumSize = new System.Drawing.Size(15, 15);
             Name = "PreReleaseBadgeControl";
-            Size = new System.Drawing.Size(55, 25);
+            Size = new System.Drawing.Size(60, 25);
             ResumeLayout(false);
         }
 
