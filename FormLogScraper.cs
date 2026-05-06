@@ -92,6 +92,13 @@ namespace LogScraper
 
             RepositionLogEntriesTextBox();
             GitHubUpdateChecker.CheckForUpdateInSeperateThread();
+
+            if (PreReleaseBadgeControl.Visible)
+            {
+                int badgeRight = PreReleaseBadgeControl.Left + PreReleaseBadgeControl.Width + 4;
+                if (SplitContainerMain.SplitterDistance < badgeRight)
+                    SplitContainerMain.SplitterDistance = badgeRight;
+            }
         }
 
         private void ActiveFilterOverviewControl_Reset(object sender, EventArgs e)

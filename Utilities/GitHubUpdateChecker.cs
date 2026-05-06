@@ -221,6 +221,19 @@ namespace LogScraper.Utilities
         }
 
         /// <summary>
+        /// Returns the pre-release label and number of the currently running version,
+        /// or (null, 0) when the current version is a stable release.
+        /// </summary>
+        public static (string Label, int Number, string FullVersion) GetCurrentPreReleaseInfo()
+        {
+            string version = GetCurrentVersion();
+            string clean = StripSemVerMetadata(version);
+            (_, string label, int number) = ParseSemVer(clean);
+            if (string.IsNullOrEmpty(label)) return (null, 0, version);
+            return (label, number, version);
+        }
+
+        /// <summary>
         /// Opens the GitHub release page for the specified release Url in the default web browser.
         /// </summary>
         /// <param name="releaseUrl">The URL of the GitHub release page.</param>

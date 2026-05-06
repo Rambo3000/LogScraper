@@ -39,6 +39,7 @@ namespace LogScraper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             BtnConfig = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
+            PreReleaseBadgeControl = new LogScraper.Controls.PreReleaseBadgeControl();
             LogProviderSelectionControl = new LogProviderSelectionControl();
             SplitContainerViewportAndNavigation = new SplitContainerWithGrip();
             SplitContainerTimeLineAndViewport = new SplitContainerWithGrip();
@@ -460,6 +461,7 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.Panel1.Controls.Add(BtnErase);
             SplitContainerSourceControlAndLogProviders.Panel1.Controls.Add(BtnConfig);
             SplitContainerSourceControlAndLogProviders.Panel1.Controls.Add(BtnFormRecord);
+            SplitContainerSourceControlAndLogProviders.Panel1.Controls.Add(PreReleaseBadgeControl);
             SplitContainerSourceControlAndLogProviders.Panel1MinSize = 0;
             // 
             // SplitContainerSourceControlAndLogProviders.Panel2
@@ -470,6 +472,13 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.SplitterDistance = 43;
             SplitContainerSourceControlAndLogProviders.SplitterWidth = 1;
             SplitContainerSourceControlAndLogProviders.TabIndex = 0;
+            // 
+            // PreReleaseBadgeControl
+            // 
+            PreReleaseBadgeControl.Location = new System.Drawing.Point(203, 3);
+            PreReleaseBadgeControl.Name = "PreReleaseBadgeControl";
+            PreReleaseBadgeControl.Size = new System.Drawing.Size(55, 25);
+            PreReleaseBadgeControl.TabIndex = 51;
             // 
             // BtnReset
             // 
@@ -581,6 +590,7 @@ namespace LogScraper
         private SearchResultListControl SearchResultListControl;
         private LogProviderSelectionControl LogProviderSelectionControl;
         public LogRecordingControl LogRecordingControl;
+        private LogScraper.Controls.PreReleaseBadgeControl PreReleaseBadgeControl;
         private Controls.FilterOverview.ActiveFilterOverviewControl ActiveFilterOverviewControl;
         private ErrorListControl ErrorListControl;
         private SaveLogControl SaveLogControl;
