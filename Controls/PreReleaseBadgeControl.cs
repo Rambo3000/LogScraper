@@ -33,7 +33,7 @@ namespace LogScraper.Controls
                 return;
             }
 
-            string labelLower = "beta"; // label.ToLowerInvariant();
+            string labelLower =  label.ToLowerInvariant();
             _badgeText = number > 0 ? $"{label.ToUpperInvariant()} v{number}" : label.ToUpperInvariant();
             _badgeColor = labelLower switch
             {
