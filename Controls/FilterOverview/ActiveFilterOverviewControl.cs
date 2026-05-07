@@ -32,11 +32,6 @@ namespace LogScraper.Controls.FilterOverview
         public event EventHandler<FilterRemovedEventArgs> FilterRemoved;
 
         /// <summary>
-        /// Raised when a log-range chip's remove button is clicked.
-        /// </summary>
-        public event EventHandler<RangeRemovedEventArgs> RangeRemoved;
-
-        /// <summary>
         /// Raised when the "Reset filters" link is clicked. Indicates all filters should be cleared.
         /// </summary>
         public event EventHandler ResetAllFilters;
@@ -610,12 +605,12 @@ namespace LogScraper.Controls.FilterOverview
 
         private void OnRangeBeginChipClicked(object sender, EventArgs e)
         {
-            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs(LogRangeChipVariant.Begin));
+            LogAppState.Instance.Range.Set(new LogRange { Begin = null, End = _logRange?.End });
         }
 
         private void OnRangeEndChipClicked(object sender, EventArgs e)
         {
-            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs(LogRangeChipVariant.End));
+            LogAppState.Instance.Range.Set(new LogRange { Begin = _logRange?.Begin, End = null });
         }
 
         /// <summary>

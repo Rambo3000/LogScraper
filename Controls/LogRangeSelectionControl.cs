@@ -31,11 +31,34 @@ namespace LogScraper.Controls
         {
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => UpdateSelectedLogEntry();
             LogAppState.Instance.ResetRequested += (ss, ee) => Reset();
+            LogAppState.Instance.Range.Changed += (s, e) => ApplyExternalRange();
         }
 
         private void UpdateSelectedLogEntry()
         {
             _selectedLogEntry = LogAppState.Instance.ViewportSelectedLogEntry.Value;
+            UpdateButtons();
+        }
+
+        /// <summary>
+        /// Syncs the control state when the range is changed externally (e.g. by dragging the timeline).
+        /// Skips the update if the new range is already equal to the current internal state to avoid loops.
+        /// </summary>
+        private void ApplyExternalRange()
+        {
+            LogRange externalRange = LogAppState.Instance.Range.Value;
+
+            // Avoid re-applying our own ForceSet calls
+            if (externalRange?.Equals(_range) == true) return;
+
+            UpdateCheckboxes = true;
+
+            _range = externalRange ?? new LogRange();
+            ChkBegin.Checked = _range.Begin != null;
+            ChkEnd.Checked = _range.End != null;
+
+            UpdateCheckboxes = false;
+
             UpdateButtons();
         }
 
@@ -50,32 +73,6 @@ namespace LogScraper.Controls
 
             _range = new LogRange();
             UpdateButtons();
-        }
-
-        public void ClearBegin()
-        {
-            if (_range.Begin == null) return;
-
-            UpdateCheckboxes = true;
-            ChkBegin.Checked = false;
-            UpdateCheckboxes = false;
-
-            _range.Begin = null;
-            UpdateButtons();
-            RaiseRangeChanged();
-        }
-
-        public void ClearEnd()
-        {
-            if (_range.End == null) return;
-
-            UpdateCheckboxes = true;
-            ChkEnd.Checked = false;
-            UpdateCheckboxes = false;
-
-            _range.End = null;
-            UpdateButtons();
-            RaiseRangeChanged();
         }
 
         public void UpdateButtons()

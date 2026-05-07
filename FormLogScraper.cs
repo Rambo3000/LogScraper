@@ -46,7 +46,6 @@ namespace LogScraper
 
             ActiveFilterOverviewControl.SizeChanged += (s, e) => UpdateActiveFiltersSplitter();
             ActiveFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
-            ActiveFilterOverviewControl.RangeRemoved += ActiveFilterOverviewControl_RangeRemoved;
             ActiveFilterOverviewControl.ErrorChipClicked += ActiveFilterOverviewControl_ErrorChipClicked;
             ActiveFilterOverviewControl.ResetAllFilters += ActiveFilterOverviewControl_Reset;
 
@@ -173,14 +172,6 @@ namespace LogScraper
         private void ActiveFilterOverviewControl_FilterRemoved(object sender, FilterRemovedEventArgs e)
         {
             LogMetadataFiltersOverviewControl.RemoveFilter(e.Property, e.SingleValue);
-        }
-
-        private void ActiveFilterOverviewControl_RangeRemoved(object sender, RangeRemovedEventArgs e)
-        {
-            if (e.Variant == LogRangeChipVariant.Begin)
-                LogRangeSelectionControl.ClearBegin();
-            else
-                LogRangeSelectionControl.ClearEnd();
         }
 
         private void UpdateActiveFiltersSplitter()

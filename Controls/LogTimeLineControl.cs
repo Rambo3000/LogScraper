@@ -44,8 +44,9 @@ namespace LogScraper.Controls
         // Log range
         private LogRange _logRange;
 
-        // Zoom state: when true the histogram spans the full collection; when false it clips to the range
-        private bool _showFullTimeline = true;
+        // Zoom window: when default the histogram spans the full collection; otherwise clips to this window
+        private DateTime _zoomMin;
+        private DateTime _zoomMax;
 
         // Bucketing
         private readonly Dictionary<DateTime, List<LogEntry>> buckets = [];
@@ -69,6 +70,12 @@ namespace LogScraper.Controls
         private Rectangle zoomInButtonRect = Rectangle.Empty;
         private Rectangle zoomOutButtonRect = Rectangle.Empty;
 
+        // Drag-to-select range state
+        private bool _isDragging;
+        private int _dragStartX = -1;
+        private int _dragCurrentX = -1;
+        private const int DRAG_THRESHOLD = 5;
+
         // Constants
         private const double SCALE_POWER = 0.4;
         private const int MINIMUM_BUCKET_COUNT = 256;
@@ -80,12 +87,16 @@ namespace LogScraper.Controls
         private const int ZOOM_BUTTON_MARGIN = 2;
         private const int ZOOM_BUTTON_SPACING = 3;
         private const int ZOOM_STRIP_WIDTH = ZOOM_BUTTON_SIZE + ZOOM_BUTTON_MARGIN * 2;
+        private const int ZOOM_POSITION_BAR_HEIGHT = 3;
+        private static readonly TimeSpan MIN_ZOOM_SPAN = TimeSpan.FromMilliseconds(10);
 
         // Colors
         private static readonly Color BAR_COLOR = Color.LightGray;
         private static readonly Color BAR_HOVER_COLOR = Color.FromArgb(100, 160, 210);
         private static readonly Color VISIBLE_RANGE_COLOR = Color.FromArgb(80, 100, 160, 210);
         private static readonly Color VISIBLE_RANGE_BORDER_COLOR = Color.FromArgb(150, 100, 160, 210);
+        private static readonly Color VISIBLE_RANGE_COLOR_DIMMED = Color.FromArgb(30, 100, 160, 210);
+        private static readonly Color VISIBLE_RANGE_BORDER_COLOR_DIMMED = Color.FromArgb(60, 100, 160, 210);
         private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
         private static readonly Color ERROR_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 160, 40, 40);
@@ -100,6 +111,10 @@ namespace LogScraper.Controls
         private static readonly Color ZOOM_BUTTON_INACTIVE_BACKGROUND_COLOR = Color.FromArgb(235, 237, 240);
         private static readonly Color ZOOM_BUTTON_INACTIVE_SYMBOL_COLOR = Color.FromArgb(180, 190, 200);
         private static readonly Color ZOOM_BUTTON_INACTIVE_BORDER_COLOR = Color.FromArgb(210, 215, 220);
+        private static readonly Color ZOOM_POSITION_BAR_TRACK_COLOR = Color.FromArgb(210, 215, 220);
+        private static readonly Color ZOOM_POSITION_BAR_THUMB_COLOR = Color.FromArgb(100, 160, 210);
+        private static readonly Color DRAG_SELECTION_FILL_COLOR = Color.FromArgb(60, 210, 175, 110);
+        private static readonly Color DRAG_SELECTION_BORDER_COLOR = Color.FromArgb(180, 210, 175, 110);
 
         // Tooltip
         private readonly ToolTip toolTip = new();
@@ -120,9 +135,12 @@ namespace LogScraper.Controls
             this.Cursor = Cursors.Default;
 
             this.Paint += OnPaint;
+            this.MouseDown += OnMouseDown;
             this.MouseClick += OnMouseClick;
             this.MouseMove += OnMouseMove;
             this.MouseLeave += OnMouseLeave;
+            this.MouseWheel += OnMouseWheel;
+            this.MouseUp += OnMouseUp;
             this.Resize += (s, e) => { RebuildBuckets(); this.Invalidate(); };
         }
         private void LogTimeLineControl_Load(object sender, EventArgs e)
@@ -208,14 +226,7 @@ namespace LogScraper.Controls
         /// </summary>
         private void SetDisplayedEntries()
         {
-            if (_showFullTimeline)
-            {
-                displayedLogEntries = filteredLogEntries;
-            }
-            else
-            {
-                displayedLogEntries = filteredLogEntriesInRange;
-            }
+            displayedLogEntries = filteredLogEntries;
         }
         private void RebuildErrorLogEntries()
         {
@@ -223,7 +234,7 @@ namespace LogScraper.Controls
             errorLogEntriesOutOfRange = [];
 
             // Draw out-of-range error markers first (faded, behind in-range ones)
-            if (_logRange?.IsBeginOrEndSet == true && _showFullTimeline)
+            if (_logRange?.IsBeginOrEndSet == true && IsAtMaxZoom())
             {
                 HashSet<int> inRangeIndices = [.. errorLogEntriesInRange.Select(entry => entry.Index)];
 
@@ -260,7 +271,7 @@ namespace LogScraper.Controls
             bookmarkLogEntriesInRange = [.. bookMarkAvailable.Where(entry => entry.Index >= rangeBegin && entry.Index <= rangeEnd)];
             bookmarkLogEntriesOutOfRange = [];
 
-            if (_logRange?.IsBeginOrEndSet == true && _showFullTimeline)
+            if (_logRange?.IsBeginOrEndSet == true && IsAtMaxZoom())
             {
                 bookmarkLogEntriesOutOfRange = [.. bookMarkAvailable.Where(entry => entry.Index < rangeBegin || entry.Index > rangeEnd)];
             }
@@ -279,9 +290,12 @@ namespace LogScraper.Controls
             buckets.Clear();
             sortedBucketKeys.Clear();
 
-            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
-
-            if (_showFullTimeline && fullSpanMinimum != default)
+            if (_zoomMin != default)
+            {
+                minimumTimestamp = _zoomMin;
+                maximumTimestamp = _zoomMax;
+            }
+            else if (fullSpanMinimum != default)
             {
                 minimumTimestamp = fullSpanMinimum;
                 maximumTimestamp = fullSpanMaximum;
@@ -400,13 +414,8 @@ namespace LogScraper.Controls
 
         #region Layout Helpers
 
-        /// <summary>Returns the drawable histogram width, excluding the zoom strip when a range is constrained.</summary>
-        private int GetHistogramWidth()
-        {
-            return _logRange?.IsBeginOrEndSet == true
-                ? Math.Max(0, this.Width - ZOOM_STRIP_WIDTH)
-                : this.Width;
-        }
+        /// <summary>Returns the drawable histogram width, excluding the zoom strip (always shown).</summary>
+        private int GetHistogramWidth() => Math.Max(0, this.Width - ZOOM_STRIP_WIDTH);
         /// <summary>
         /// Returns the x position for an out-of-range marker, projected onto the histogram width
         /// using the full collection span. Returns -1 if position cannot be determined.
@@ -488,13 +497,6 @@ namespace LogScraper.Controls
         /// <summary>Recalculates the zoom button rects. Called at paint time so they track control height.</summary>
         private void RecalculateZoomButtonRects()
         {
-            if (_logRange?.IsBeginOrEndSet != true)
-            {
-                zoomInButtonRect = Rectangle.Empty;
-                zoomOutButtonRect = Rectangle.Empty;
-                return;
-            }
-
             int stripLeft = this.Width - ZOOM_STRIP_WIDTH;
             int centerX = stripLeft + (ZOOM_STRIP_WIDTH / 2) - (ZOOM_BUTTON_SIZE / 2);
             int totalButtonsHeight = ZOOM_BUTTON_SIZE * 2 + ZOOM_BUTTON_SPACING;
@@ -512,18 +514,14 @@ namespace LogScraper.Controls
         {
             Graphics graphics = e.Graphics;
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             graphics.Clear(this.BackColor);
 
             if (this.Width <= 0 || this.Height <= 0)
                 return;
 
-            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
-
-            if (rangeIsConstrained)
-            {
-                RecalculateZoomButtonRects();
-                DrawZoomStrip(graphics);
-            }
+            RecalculateZoomButtonRects();
+            DrawZoomStrip(graphics);
 
             if (minimumTimestamp == default && maximumTimestamp == default)
                 return;
@@ -540,9 +538,11 @@ namespace LogScraper.Controls
             DrawBookmarkMarkers(graphics, histogramWidth, drawableHeight);
             DrawOnScreenRangeIndicator(graphics, histogramWidth, drawableHeight);
             DrawTimeTickMarks(graphics, histogramWidth);
+            DrawDragSelectionOverlay(graphics, histogramWidth, drawableHeight);
 
             graphics.ResetClip();
 
+            DrawZoomPositionBar(graphics, histogramWidth);
             DrawActiveTooltip(graphics, histogramWidth, drawableHeight);
         }
 
@@ -558,34 +558,89 @@ namespace LogScraper.Controls
             using (SolidBrush backgroundBrush = new(ZOOM_STRIP_BACKGROUND_COLOR))
                 graphics.FillRectangle(backgroundBrush, stripLeft, 0, ZOOM_STRIP_WIDTH, this.Height);
 
+            using (Pen dividerPen = new(ZOOM_BUTTON_INACTIVE_BORDER_COLOR, 1))
+                graphics.DrawLine(dividerPen, stripLeft, 0, stripLeft, this.Height);
+
             DrawZoomButton(graphics, zoomInButtonRect, isZoomIn: true,
                 hovered: hoveredZoomButton == ZoomButton.ZoomIn,
-                active: !_showFullTimeline);
+                active: !IsAtMinZoom());
 
             DrawZoomButton(graphics, zoomOutButtonRect, isZoomIn: false,
                 hovered: hoveredZoomButton == ZoomButton.ZoomOut,
-                active: _showFullTimeline);
+                active: !IsAtMaxZoom());
         }
 
         /// <summary>
-        /// Dims everything outside the log range. Only drawn in full-timeline mode
-        /// so the user can see where the range sits within the full span.
+        /// Draws a 3-px bar at the bottom of the histogram that shows which portion of the
+        /// full log span is currently visible in the zoom window.
+        /// When fully zoomed out the thumb covers the entire track.
+        /// </summary>
+        private void DrawZoomPositionBar(Graphics graphics, int histogramWidth)
+        {
+            if (IsAtMaxZoom()) return;
+
+            int barY = this.Height - ZOOM_POSITION_BAR_HEIGHT;
+
+            // Track (full width)
+            using (SolidBrush trackBrush = new(ZOOM_POSITION_BAR_TRACK_COLOR))
+                graphics.FillRectangle(trackBrush, 0, barY, histogramWidth, ZOOM_POSITION_BAR_HEIGHT);
+
+            // Thumb: fraction of the full span covered by the current zoom window
+            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            double fullSeconds = (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
+            float thumbStart = (float)((viewMin - fullSpanMinimum).TotalSeconds / fullSeconds * histogramWidth);
+            float thumbEnd = (float)((viewMax - fullSpanMinimum).TotalSeconds / fullSeconds * histogramWidth);
+            thumbStart = Math.Clamp(thumbStart, 0, histogramWidth);
+            thumbEnd = Math.Clamp(thumbEnd, 0, histogramWidth);
+            float thumbWidth = Math.Max(2, thumbEnd - thumbStart);
+
+            using SolidBrush thumbBrush = new(ZOOM_POSITION_BAR_THUMB_COLOR);
+            graphics.FillRectangle(thumbBrush, thumbStart, barY, thumbWidth, ZOOM_POSITION_BAR_HEIGHT);
+        }
+
+        /// <summary>Draws the amber drag-selection highlight while the user is dragging.</summary>
+        private void DrawDragSelectionOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
+        {
+            if (!_isDragging || _dragStartX < 0 || _dragCurrentX < 0)
+                return;
+
+            int x1 = Math.Clamp(Math.Min(_dragStartX, _dragCurrentX), 0, histogramWidth);
+            int x2 = Math.Clamp(Math.Max(_dragStartX, _dragCurrentX), 0, histogramWidth);
+            int w = x2 - x1;
+            if (w <= 0) return;
+
+            using (SolidBrush fillBrush = new(DRAG_SELECTION_FILL_COLOR))
+                graphics.FillRectangle(fillBrush, x1, 0, w, drawableHeight);
+
+            using Pen borderPen = new(DRAG_SELECTION_BORDER_COLOR, 1);
+            graphics.DrawLine(borderPen, x1, 0, x1, drawableHeight);
+            graphics.DrawLine(borderPen, x2, 0, x2, drawableHeight);
+        }
+
+        /// <summary>
+        /// Dims everything outside the log range.
+        /// Projects range boundaries against the current zoom window so the overlay
+        /// stays correct whether viewing the full span or a zoomed-in window.
         /// </summary>
         private void DrawRangeOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (!(_logRange?.IsBeginOrEndSet == true && _showFullTimeline)) return;
+            if (_logRange == null || !_logRange.IsBeginOrEndSet) return;
 
-            if (fullSpanMaximum == fullSpanMinimum)
+            if (minimumTimestamp == maximumTimestamp)
                 return;
 
-            double totalSeconds = (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
+            double totalSeconds = (maximumTimestamp - minimumTimestamp).TotalSeconds;
 
             float rangeStartX = _logRange.Begin != null
-                ? (float)((_logRange.Begin.TimeStamp - fullSpanMinimum).TotalSeconds / totalSeconds * histogramWidth)
+                ? (float)((_logRange.Begin.TimeStamp - minimumTimestamp).TotalSeconds / totalSeconds * histogramWidth)
                 : 0;
             float rangeEndX = _logRange.End != null
-                ? (float)((_logRange.End.TimeStamp - fullSpanMinimum).TotalSeconds / totalSeconds * histogramWidth)
+                ? (float)((_logRange.End.TimeStamp - minimumTimestamp).TotalSeconds / totalSeconds * histogramWidth)
                 : histogramWidth;
+
+            rangeStartX = Math.Clamp(rangeStartX, 0, histogramWidth);
+            rangeEndX = Math.Clamp(rangeEndX, 0, histogramWidth);
 
             using SolidBrush dimBrush = new(Color.FromArgb(60, 0, 0, 0));
 
@@ -705,10 +760,14 @@ namespace LogScraper.Controls
 
             if (width <= 0) return;
 
-            using (SolidBrush fillBrush = new(VISIBLE_RANGE_COLOR))
+            bool dimmed = IsAtMaxZoom();
+            Color fillColor = dimmed ? VISIBLE_RANGE_COLOR_DIMMED : VISIBLE_RANGE_COLOR;
+            Color borderColor = dimmed ? VISIBLE_RANGE_BORDER_COLOR_DIMMED : VISIBLE_RANGE_BORDER_COLOR;
+
+            using (SolidBrush fillBrush = new(fillColor))
                 graphics.FillRectangle(fillBrush, startX, 0, width, drawableHeight);
 
-            using Pen borderPen = new(VISIBLE_RANGE_BORDER_COLOR, 2);
+            using Pen borderPen = new(borderColor, 2);
             graphics.DrawLine(borderPen, startX, 0, startX, drawableHeight);
             graphics.DrawLine(borderPen, endX, 0, endX, drawableHeight);
         }
@@ -846,8 +905,8 @@ namespace LogScraper.Controls
             Color backgroundColor = !active
                 ? ZOOM_BUTTON_INACTIVE_BACKGROUND_COLOR
                 : hovered ? ZOOM_BUTTON_HOVER_BACKGROUND_COLOR : ZOOM_BUTTON_BACKGROUND_COLOR;
-            Color borderColor = active ? ZOOM_BUTTON_INACTIVE_BORDER_COLOR : ZOOM_BUTTON_BORDER_COLOR;
-            Color symbolColor = active ? ZOOM_BUTTON_INACTIVE_SYMBOL_COLOR : ZOOM_BUTTON_SYMBOL_COLOR;
+            Color borderColor = !active ? ZOOM_BUTTON_INACTIVE_BORDER_COLOR : ZOOM_BUTTON_BORDER_COLOR;
+            Color symbolColor = !active ? ZOOM_BUTTON_INACTIVE_SYMBOL_COLOR : ZOOM_BUTTON_SYMBOL_COLOR;
 
             using (GraphicsPath path = CreateRoundedRectPath(bounds, 4))
             {
@@ -895,24 +954,35 @@ namespace LogScraper.Controls
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            bool rangeIsConstrained = _logRange?.IsBeginOrEndSet == true;
-
-            // Zoom button hover — checked first, takes priority over histogram
-            if (rangeIsConstrained)
+            // Update drag state when left button is held
+            if (_dragStartX >= 0 && e.Button == MouseButtons.Left)
             {
-                ZoomButton newZoomHover = HitTestZoomButton(e.X, e.Y);
-                if (newZoomHover != hoveredZoomButton)
-                {
-                    hoveredZoomButton = newZoomHover;
-                    UpdateZoomButtonTooltip(newZoomHover);
-                    this.Invalidate();
-                }
+                int dx = Math.Abs(e.X - _dragStartX);
+                if (!_isDragging && dx >= DRAG_THRESHOLD)
+                    _isDragging = true;
 
-                if (newZoomHover != ZoomButton.None)
+                if (_isDragging)
                 {
-                    SetCursor(Cursors.Hand);
+                    _dragCurrentX = e.X;
+                    SetCursor(Cursors.SizeWE);
+                    this.Invalidate();
                     return;
                 }
+            }
+
+            // Zoom button hover — checked first, takes priority over histogram
+            ZoomButton newZoomHover = HitTestZoomButton(e.X, e.Y);
+            if (newZoomHover != hoveredZoomButton)
+            {
+                hoveredZoomButton = newZoomHover;
+                UpdateZoomButtonTooltip(newZoomHover);
+                this.Invalidate();
+            }
+
+            if (newZoomHover != ZoomButton.None)
+            {
+                SetCursor(Cursors.Hand);
+                return;
             }
 
             if (sortedBucketKeys.Count == 0)
@@ -975,7 +1045,7 @@ namespace LogScraper.Controls
         {
             string text = button switch
             {
-                ZoomButton.ZoomIn => "Zoom in — show selected range only",
+                ZoomButton.ZoomIn => "Zoom in",
                 ZoomButton.ZoomOut => "Zoom out — show full timeline",
                 _ => string.Empty
             };
@@ -1042,20 +1112,11 @@ namespace LogScraper.Controls
                 return;
 
             // Zoom buttons
-            if (_logRange?.IsBeginOrEndSet == true)
+            ZoomButton clicked = HitTestZoomButton(e.X, e.Y);
+            if (clicked != ZoomButton.None)
             {
-                ZoomButton clicked = HitTestZoomButton(e.X, e.Y);
-                if (clicked != ZoomButton.None)
-                {
-                    bool newShowFullTimeline = clicked == ZoomButton.ZoomOut;
-                    if (_showFullTimeline != newShowFullTimeline)
-                    {
-                        _showFullTimeline = newShowFullTimeline;
-                        RebuildRangeRelatedObjects();
-                        this.Invalidate();
-                    }
-                    return;
-                }
+                PerformZoom(clicked == ZoomButton.ZoomIn, GetViewportCenter());
+                return;
             }
 
             if (sortedBucketKeys.Count == 0)
@@ -1092,6 +1153,199 @@ namespace LogScraper.Controls
             LogAppState.Instance.ViewportSelectedLogEntry.Set(entry);
         }
 
+        private bool IsAtMaxZoom() => _zoomMin == default;
+
+        private bool IsAtMinZoom()
+        {
+            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            return (viewMax - viewMin) <= MIN_ZOOM_SPAN;
+        }
+
+        /// <summary>Converts a pixel x position within the histogram to a timestamp in the current zoom window.</summary>
+        private DateTime GetTimestampAtX(int x)
+        {
+            int histogramWidth = GetHistogramWidth();
+            if (histogramWidth <= 0) return minimumTimestamp;
+            double fraction = Math.Clamp((double)x / histogramWidth, 0.0, 1.0);
+            TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
+            return minimumTimestamp.Add(TimeSpan.FromSeconds(totalSpan.TotalSeconds * fraction));
+        }
+
+        /// <summary>
+        /// Returns the midpoint of the viewport visible range, clamped to the current view,
+        /// falling back to the current view center when no viewport range is available.
+        /// </summary>
+        private DateTime GetViewportCenter()
+        {
+            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            DateTime viewCenter = viewMin + TimeSpan.FromSeconds((viewMax - viewMin).TotalSeconds / 2);
+
+            if (_viewportRange?.IsBeginOrEndSet == true)
+            {
+                DateTime vpBegin = _viewportRange.Begin?.TimeStamp ?? viewMin;
+                DateTime vpEnd = _viewportRange.End?.TimeStamp ?? viewMax;
+                DateTime vpCenter = vpBegin + TimeSpan.FromSeconds((vpEnd - vpBegin).TotalSeconds / 2);
+                if (vpCenter >= viewMin && vpCenter <= viewMax)
+                    return vpCenter;
+            }
+
+            return viewCenter;
+        }
+
+        /// <summary>
+        /// Zooms in or out around the given focus timestamp, halving or doubling the visible time span.
+        /// Zoom in is capped at MIN_ZOOM_SPAN; zoom out is capped at the full span.
+        /// </summary>
+        private void PerformZoom(bool zoomIn, DateTime focus)
+        {
+            if (fullSpanMinimum == default)
+                return;
+
+            if (zoomIn && IsAtMinZoom())
+                return;
+
+            if (!zoomIn && IsAtMaxZoom())
+                return;
+
+            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            TimeSpan currentSpan = viewMax - viewMin;
+
+            TimeSpan newSpan;
+            if (zoomIn)
+            {
+                newSpan = TimeSpan.FromSeconds(currentSpan.TotalSeconds / 2);
+                if (newSpan < MIN_ZOOM_SPAN)
+                    newSpan = MIN_ZOOM_SPAN;
+            }
+            else
+            {
+                TimeSpan fullSpan = fullSpanMaximum - fullSpanMinimum;
+                newSpan = TimeSpan.FromSeconds(currentSpan.TotalSeconds * 2);
+                if (newSpan >= fullSpan)
+                {
+                    _zoomMin = default;
+                    _zoomMax = default;
+                    RebuildRangeRelatedObjects();
+                    Invalidate();
+                    return;
+                }
+            }
+
+            DateTime newMin = focus - TimeSpan.FromSeconds(newSpan.TotalSeconds / 2);
+            DateTime newMax = newMin + newSpan;
+
+            if (newMin < fullSpanMinimum)
+            {
+                newMin = fullSpanMinimum;
+                newMax = newMin + newSpan;
+            }
+            if (newMax > fullSpanMaximum)
+            {
+                newMax = fullSpanMaximum;
+                newMin = newMax - newSpan;
+                if (newMin < fullSpanMinimum)
+                    newMin = fullSpanMinimum;
+            }
+
+            _zoomMin = newMin;
+            _zoomMax = newMax;
+            RebuildRangeRelatedObjects();
+            Invalidate();
+        }
+
+        private void OnMouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta == 0 || fullSpanMinimum == default)
+                return;
+
+            // Zoom centered on the mouse cursor position within the histogram
+            DateTime focus = e.X < GetHistogramWidth() && minimumTimestamp != default
+                ? GetTimestampAtX(e.X)
+                : GetViewportCenter();
+
+            PerformZoom(e.Delta > 0, focus);
+        }
+
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            // Don't start a drag on the zoom strip
+            if (e.X >= GetHistogramWidth())
+                return;
+
+            _dragStartX = e.X;
+            _dragCurrentX = e.X;
+            _isDragging = false;
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || _dragStartX < 0)
+                return;
+
+            if (_isDragging)
+            {
+                CommitDragSelection();
+            }
+
+            _isDragging = false;
+            _dragStartX = -1;
+            _dragCurrentX = -1;
+            this.Invalidate();
+        }
+
+        /// <summary>
+        /// Converts an x pixel position within the histogram to the nearest LogEntry
+        /// in the currently displayed entries, based on the zoom window timestamps.
+        /// </summary>
+        private LogEntry GetNearestLogEntryAtX(int x)
+        {
+            if (filteredLogEntries.Count == 0 || minimumTimestamp == default)
+                return null;
+
+            int histogramWidth = GetHistogramWidth();
+            if (histogramWidth <= 0) return null;
+
+            TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
+            double fraction = (double)x / histogramWidth;
+            DateTime targetTime = minimumTimestamp.Add(TimeSpan.FromSeconds(totalSpan.TotalSeconds * fraction));
+
+            // Binary-search the full filtered list for the nearest entry by timestamp
+            LogEntry best = filteredLogEntries[0];
+            long bestDiff = Math.Abs((best.TimeStamp - targetTime).Ticks);
+
+            int lo = 0, hi = filteredLogEntries.Count - 1;
+            while (lo <= hi)
+            {
+                int mid = (lo + hi) / 2;
+                long diff = Math.Abs((filteredLogEntries[mid].TimeStamp - targetTime).Ticks);
+                if (diff < bestDiff) { bestDiff = diff; best = filteredLogEntries[mid]; }
+                if (filteredLogEntries[mid].TimeStamp < targetTime) lo = mid + 1;
+                else hi = mid - 1;
+            }
+
+            return best;
+        }
+
+        private void CommitDragSelection()
+        {
+            int x1 = Math.Min(_dragStartX, _dragCurrentX);
+            int x2 = Math.Max(_dragStartX, _dragCurrentX);
+
+            LogEntry beginEntry = GetNearestLogEntryAtX(x1);
+            LogEntry endEntry = GetNearestLogEntryAtX(x2);
+
+            if (beginEntry == null || endEntry == null || beginEntry == endEntry)
+                return;
+
+            LogAppState.Instance.Range.ForceSet(new LogRange { Begin = beginEntry, End = endEntry });
+        }
+
         internal void Reset()
         {
             filteredLogEntries.Clear();
@@ -1108,13 +1362,17 @@ namespace LogScraper.Controls
             maximumRawValue = 0;
             currentBucketSize = default;
             _logRange = null;
-            _showFullTimeline = true;
+            _zoomMin = default;
+            _zoomMax = default;
             hoveredBucketIndex = -1;
             hoveredErrorIndex = -1;
             hoveredBookmarkIndex = -1;
             hoveredZoomButton = ZoomButton.None;
             zoomInButtonRect = Rectangle.Empty;
             zoomOutButtonRect = Rectangle.Empty;
+            _isDragging = false;
+            _dragStartX = -1;
+            _dragCurrentX = -1;
 
             this.Invalidate();
         }
