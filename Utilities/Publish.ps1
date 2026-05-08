@@ -1,34 +1,49 @@
-# Execute this PS1 file via Terminal in View
-#
-# EXAMPLES:
-#   Stable releases:
-#     .\Utilities\Publish.ps1                              # bump patch  →  e.g. 3.2.11
-#     .\Utilities\Publish.ps1 -bump minor                 # bump minor  →  e.g. 3.3.0
-#     .\Utilities\Publish.ps1 -bump major                 # bump major  →  e.g. 4.0.0
-#     .\Utilities\Publish.ps1 -noBump                     # re-publish current version (no version change)
-#
-#   Pre-release:
-#     .\Utilities\Publish.ps1 -bump major -prerelease alpha          # first alpha  →  4.0.0-alpha.1
-#     .\Utilities\Publish.ps1 -noBump    -prerelease alpha          # next alpha   →  4.0.0-alpha.2  (auto-incremented)
-#     .\Utilities\Publish.ps1 -noBump    -prerelease beta           # first beta   →  4.0.0-beta.1
-#     .\Utilities\Publish.ps1 -noBump    -prerelease alpha -prereleaseNumber 5  # force specific number
-#
-#   Test (no version bump, no installer, no git tag):
-#     .\Utilities\Publish.ps1 -test
-#     .\Utilities\Publish.ps1 -test -prerelease alpha
-
 param(
+    [switch]$help,
     [switch]$test,
     [switch]$noBump,
 
     [ValidateSet("major", "minor", "patch")]
-    [string]$bump = "patch",
+    [string]$bump = "",
 
     [ValidateSet("", "alpha", "beta")]
     [string]$prerelease = "",
 
     [int]$prereleaseNumber = 0
 )
+
+if ($help -or (-not $test -and -not $noBump -and -not $bump -and -not $prerelease -and $prereleaseNumber -eq 0)) {
+    Write-Host ""
+    Write-Host "USAGE"
+    Write-Host "  .\Utilities\Publish.ps1 [options]"
+    Write-Host ""
+    Write-Host "OPTIONS"
+    Write-Host "  -bump <major|minor|patch>       Version segment to increment (default when not specified: patch)"
+    Write-Host "  -noBump                         Re-publish current version without changing it"
+    Write-Host "  -prerelease <alpha|beta>        Append a pre-release label (e.g. -alpha.1)"
+    Write-Host "  -prereleaseNumber <n>           Force a specific pre-release number (default: auto)"
+    Write-Host "  -test                           Build only - no version bump, no installer, no git tag"
+    Write-Host "  -help                           Show this help message"
+    Write-Host ""
+    Write-Host "EXAMPLES"
+    Write-Host "  Stable releases:"
+    Write-Host "    .\Utilities\Publish.ps1 -bump patch                       # bump patch  e.g. 3.2.11"
+    Write-Host "    .\Utilities\Publish.ps1 -bump minor                       # bump minor  e.g. 3.3.0"
+    Write-Host "    .\Utilities\Publish.ps1 -bump major                       # bump major  e.g. 4.0.0"
+    Write-Host "    .\Utilities\Publish.ps1 -noBump                           # re-publish current version"
+    Write-Host ""
+    Write-Host "  Pre-release:"
+    Write-Host "    .\Utilities\Publish.ps1 -bump major -prerelease alpha     # 4.0.0-alpha.1"
+    Write-Host "    .\Utilities\Publish.ps1 -noBump    -prerelease alpha      # 4.0.0-alpha.2 (auto)"
+    Write-Host "    .\Utilities\Publish.ps1 -noBump    -prerelease beta       # 4.0.0-beta.1"
+    Write-Host "    .\Utilities\Publish.ps1 -noBump    -prerelease alpha -prereleaseNumber 5"
+    Write-Host ""
+    Write-Host "  Test build:"
+    Write-Host "    .\Utilities\Publish.ps1 -test"
+    Write-Host "    .\Utilities\Publish.ps1 -test -prerelease alpha"
+    Write-Host ""
+    exit 0
+}
 
 $ErrorActionPreference = 'Stop'
 
