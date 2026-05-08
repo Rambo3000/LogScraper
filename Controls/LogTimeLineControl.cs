@@ -93,12 +93,9 @@ namespace LogScraper.Controls
         private static readonly TimeSpan MIN_ZOOM_SPAN = TimeSpan.FromMilliseconds(10);
 
         // Colors
-        private static readonly Color BAR_COLOR = Color.LightGray;
-        private static readonly Color BAR_HOVER_COLOR = Color.FromArgb(100, 160, 210);
-        private static readonly Color VISIBLE_RANGE_COLOR = Color.FromArgb(80, 100, 160, 210);
-        private static readonly Color VISIBLE_RANGE_BORDER_COLOR = Color.FromArgb(150, 100, 160, 210);
-        private static readonly Color VISIBLE_RANGE_COLOR_DIMMED = Color.FromArgb(30, 100, 160, 210);
-        private static readonly Color VISIBLE_RANGE_BORDER_COLOR_DIMMED = Color.FromArgb(60, 100, 160, 210);
+        private static readonly Color LOGENTRIES_RANGE_COLOR = Color.FromArgb(30, 0, 0, 0);
+        private static readonly Color VIEWPORT_RANGE_COLOR = Color.FromArgb(80, 100, 160, 210);
+        private static readonly Color VIEWPORT_RANGE_BORDER_COLOR = Color.FromArgb(150, 100, 160, 210);
         private static readonly Color ERROR_MARKER_COLOR = Color.FromArgb(220, 50, 50);
         private static readonly Color ERROR_MARKER_HOVER_COLOR = Color.FromArgb(255, 80, 80);
         private static readonly Color ERROR_MARKER_OUT_OF_RANGE_COLOR = Color.FromArgb(100, 160, 40, 40);
@@ -125,6 +122,7 @@ namespace LogScraper.Controls
         private static readonly SolidBrush _tooltipTextBrush = new(Color.White);
         private static readonly SolidBrush _barBrush = new(Color.LightGray);
         private static readonly SolidBrush _barHoverBrush = new(Color.FromArgb(100, 160, 210));
+        private static readonly SolidBrush _rangeDimmedBrush = new (LOGENTRIES_RANGE_COLOR);
 
         // Tooltip
         private readonly ToolTip toolTip = new();
@@ -555,7 +553,7 @@ namespace LogScraper.Controls
             DrawHistogramBars(graphics, drawableHeight);
             DrawErrorMarkers(graphics, histogramWidth, drawableHeight);
             DrawBookmarkMarkers(graphics, histogramWidth, drawableHeight);
-            DrawOnScreenRangeIndicator(graphics, histogramWidth, drawableHeight);
+            DrawViewportRangeIndicator(graphics, histogramWidth, drawableHeight);
             DrawTimeTickMarks(graphics, histogramWidth);
             DrawDragSelectionOverlay(graphics, histogramWidth, drawableHeight);
 
@@ -641,7 +639,7 @@ namespace LogScraper.Controls
             {
                 DateTime t1 = GetTimestampAtX(Math.Min(_dragStartX, _dragCurrentX));
                 DateTime t2 = GetTimestampAtX(Math.Max(_dragStartX, _dragCurrentX));
-                string label = $"Set range: {t1:HH:mm:ss.fff} → {t2:HH:mm:ss}";
+                string label = $"Set range: {t1:HH:mm:ss} → {t2:HH:mm:ss}";
 
                 float tooltipX = x1 + w / 2f;
                 float tooltipY = 2;
@@ -674,12 +672,10 @@ namespace LogScraper.Controls
             rangeStartX = Math.Clamp(rangeStartX, 0, histogramWidth);
             rangeEndX = Math.Clamp(rangeEndX, 0, histogramWidth);
 
-            using SolidBrush dimBrush = new(Color.FromArgb(60, 0, 0, 0));
-
             if (rangeStartX > 0)
-                graphics.FillRectangle(dimBrush, 0, 0, rangeStartX, drawableHeight);
+                graphics.FillRectangle(_rangeDimmedBrush, 0, 0, rangeStartX, drawableHeight);
             if (rangeEndX < histogramWidth)
-                graphics.FillRectangle(dimBrush, rangeEndX, 0, histogramWidth - rangeEndX, drawableHeight);
+                graphics.FillRectangle(_rangeDimmedBrush, rangeEndX, 0, histogramWidth - rangeEndX, drawableHeight);
         }
 
         /// <summary>Draws the histogram bars for all non-empty buckets.</summary>
@@ -701,7 +697,6 @@ namespace LogScraper.Controls
                 float x = i * totalBarWidth;
                 float y = drawableHeight - barHeight;
 
-                Color barColor = (i == hoveredBucketIndex) ? BAR_HOVER_COLOR : BAR_COLOR;
                 SolidBrush brush = (i == hoveredBucketIndex) ? _barHoverBrush : _barBrush;
                 graphics.FillRectangle(brush, x, y, barWidth, barHeight);
             }
@@ -763,7 +758,7 @@ namespace LogScraper.Controls
             }
         }
 
-        private void DrawOnScreenRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
+        private void DrawViewportRangeIndicator(Graphics graphics, int histogramWidth, int drawableHeight)
         {
             if (_viewportRange == null || !_viewportRange.IsBeginOrEndSet) return;
 
@@ -792,14 +787,10 @@ namespace LogScraper.Controls
 
             if (width <= 0) return;
 
-            bool dimmed = IsAtMaxZoom();
-            Color fillColor = dimmed ? VISIBLE_RANGE_COLOR_DIMMED : VISIBLE_RANGE_COLOR;
-            Color borderColor = dimmed ? VISIBLE_RANGE_BORDER_COLOR_DIMMED : VISIBLE_RANGE_BORDER_COLOR;
-
-            using (SolidBrush fillBrush = new(fillColor))
+            using (SolidBrush fillBrush = new(VIEWPORT_RANGE_COLOR))
                 graphics.FillRectangle(fillBrush, startX, 0, width, drawableHeight);
 
-            using Pen borderPen = new(borderColor, 2);
+            using Pen borderPen = new(VIEWPORT_RANGE_BORDER_COLOR, 2);
             graphics.DrawLine(borderPen, startX, 0, startX, drawableHeight);
             graphics.DrawLine(borderPen, endX, 0, endX, drawableHeight);
         }
