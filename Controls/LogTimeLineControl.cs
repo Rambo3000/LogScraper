@@ -9,6 +9,7 @@ using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
@@ -44,7 +45,8 @@ namespace LogScraper.Controls
         // Log range
         private LogRange _logRange;
 
-        // Zoom window: when default the histogram spans the full collection; otherwise clips to this window
+        // Zoom window: when _isZoomed is false the histogram spans the full collection; otherwise clips to this window
+        private bool _isZoomed;
         private DateTime _zoomMin;
         private DateTime _zoomMax;
 
@@ -113,8 +115,16 @@ namespace LogScraper.Controls
         private static readonly Color ZOOM_BUTTON_INACTIVE_BORDER_COLOR = Color.FromArgb(210, 215, 220);
         private static readonly Color ZOOM_POSITION_BAR_TRACK_COLOR = Color.FromArgb(210, 215, 220);
         private static readonly Color ZOOM_POSITION_BAR_THUMB_COLOR = Color.FromArgb(100, 160, 210);
-        private static readonly Color DRAG_SELECTION_FILL_COLOR = Color.FromArgb(60, 210, 175, 110);
-        private static readonly Color DRAG_SELECTION_BORDER_COLOR = Color.FromArgb(180, 210, 175, 110);
+        private static readonly Color DRAG_SELECTION_FILL_COLOR = Color.FromArgb(110, 210, 175, 110);
+        private static readonly Color DRAG_SELECTION_BORDER_COLOR = Color.FromArgb(220, 210, 175, 110);
+
+        // Cached GDI resources reused every paint cycle
+        private static readonly Font _tickFont = new("Segoe UI", 7);
+        private static readonly SolidBrush _tickBrush = new(Color.FromArgb(120, 120, 120));
+        private static readonly Font _tooltipFont = new("Segoe UI", 9);
+        private static readonly SolidBrush _tooltipTextBrush = new(Color.White);
+        private static readonly SolidBrush _barBrush = new(Color.LightGray);
+        private static readonly SolidBrush _barHoverBrush = new(Color.FromArgb(100, 160, 210));
 
         // Tooltip
         private readonly ToolTip toolTip = new();
@@ -149,6 +159,9 @@ namespace LogScraper.Controls
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
             LogAppState.Instance.ViewportVisibleRange.Changed += (s, e) => SetViewportRange();
             LogAppState.Instance.Bookmarks.Changed += (s, e) => UpdateBookmarks();
+
+            ShortcutManager.Register(this, AppShortcut.TimelineZoomIn, () => PerformZoom(zoomIn: true, GetViewportCenter()));
+            ShortcutManager.Register(this, AppShortcut.TimelineZoomOut, () => PerformZoom(zoomIn: false, GetViewportCenter()));
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -253,6 +266,15 @@ namespace LogScraper.Controls
             List<LogEntry> bookMarkAvailable = [];
             bookmarkLogEntriesNotAvailable = [];
 
+            // Guard against null mask (e.g. before any log is loaded)
+            if (filteredLogEntriesMask == null)
+            {
+                bookmarkLogEntriesNotAvailable = [.. allBookmarkLogEntries];
+                bookmarkLogEntriesInRange = [];
+                bookmarkLogEntriesOutOfRange = [];
+                return;
+            }
+
             foreach (LogEntry bookmarkEntry in allBookmarkLogEntries)
             {
                 if (filteredLogEntriesMask[bookmarkEntry.Index])
@@ -290,7 +312,7 @@ namespace LogScraper.Controls
             buckets.Clear();
             sortedBucketKeys.Clear();
 
-            if (_zoomMin != default)
+            if (_isZoomed)
             {
                 minimumTimestamp = _zoomMin;
                 maximumTimestamp = _zoomMax;
@@ -391,23 +413,20 @@ namespace LogScraper.Controls
 
         private static DateTime GetBucketKeyForTimestamp(DateTime timestamp, DateTime bucketStart, TimeSpan bucketSize)
         {
-            long bucketIndex = (long)((timestamp - bucketStart).TotalSeconds / bucketSize.TotalSeconds);
-            return bucketStart.Add(TimeSpan.FromSeconds(bucketIndex * bucketSize.TotalSeconds));
+            long bucketIndex = (timestamp.Ticks - bucketStart.Ticks) / bucketSize.Ticks;
+            return new DateTime(bucketStart.Ticks + bucketIndex * bucketSize.Ticks);
         }
 
         private int FindBucketIndexContainingTimestamp(DateTime timestamp, List<DateTime> keys)
         {
-            for (int i = 0; i < keys.Count; i++)
-            {
-                if (timestamp >= keys[i] && timestamp < keys[i].Add(currentBucketSize))
-                    return i;
-            }
-
             if (keys.Count == 0) return -1;
-            if (timestamp < keys[0]) return 0;
-            if (timestamp >= keys[^1].Add(currentBucketSize)) return keys.Count - 1;
 
-            return -1;
+            long index = (timestamp.Ticks - keys[0].Ticks) / currentBucketSize.Ticks;
+
+            if (index < 0) return 0;
+            if (index >= keys.Count) return keys.Count - 1;
+
+            return (int)index;
         }
 
         #endregion
@@ -586,8 +605,8 @@ namespace LogScraper.Controls
                 graphics.FillRectangle(trackBrush, 0, barY, histogramWidth, ZOOM_POSITION_BAR_HEIGHT);
 
             // Thumb: fraction of the full span covered by the current zoom window
-            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
-            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            DateTime viewMin = _isZoomed ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _isZoomed ? _zoomMax : fullSpanMaximum;
             double fullSeconds = (fullSpanMaximum - fullSpanMinimum).TotalSeconds;
             float thumbStart = (float)((viewMin - fullSpanMinimum).TotalSeconds / fullSeconds * histogramWidth);
             float thumbEnd = (float)((viewMax - fullSpanMinimum).TotalSeconds / fullSeconds * histogramWidth);
@@ -616,6 +635,19 @@ namespace LogScraper.Controls
             using Pen borderPen = new(DRAG_SELECTION_BORDER_COLOR, 1);
             graphics.DrawLine(borderPen, x1, 0, x1, drawableHeight);
             graphics.DrawLine(borderPen, x2, 0, x2, drawableHeight);
+
+            // Show the time range that would be set if the user releases here
+            if (minimumTimestamp != default)
+            {
+                DateTime t1 = GetTimestampAtX(Math.Min(_dragStartX, _dragCurrentX));
+                DateTime t2 = GetTimestampAtX(Math.Max(_dragStartX, _dragCurrentX));
+                string label = $"Set range: {t1:HH:mm:ss.fff} → {t2:HH:mm:ss}";
+
+                float tooltipX = x1 + w / 2f;
+                float tooltipY = 2;
+                DrawTooltipBox(graphics, label, ref tooltipX, ref tooltipY, histogramWidth,
+                    Color.FromArgb(200, 80, 60, 20), DRAG_SELECTION_BORDER_COLOR, padding: 8);
+            }
         }
 
         /// <summary>
@@ -670,7 +702,7 @@ namespace LogScraper.Controls
                 float y = drawableHeight - barHeight;
 
                 Color barColor = (i == hoveredBucketIndex) ? BAR_HOVER_COLOR : BAR_COLOR;
-                using SolidBrush brush = new(barColor);
+                SolidBrush brush = (i == hoveredBucketIndex) ? _barHoverBrush : _barBrush;
                 graphics.FillRectangle(brush, x, y, barWidth, barHeight);
             }
         }
@@ -774,24 +806,27 @@ namespace LogScraper.Controls
 
         private void DrawTimeTickMarks(Graphics graphics, int histogramWidth)
         {
-            using Font font = new("Segoe UI", 7);
-            using SolidBrush brush = new(Color.FromArgb(120, 120, 120));
-
             TimeSpan totalSpan = maximumTimestamp - minimumTimestamp;
             int tickCount = Math.Max(2, histogramWidth / 65);
+            float lastLabelRight = float.MinValue;
 
             for (int i = 0; i <= tickCount; i++)
             {
                 float x = (float)i / tickCount * histogramWidth;
                 DateTime tickTime = minimumTimestamp.Add(TimeSpan.FromSeconds(totalSpan.TotalSeconds * i / tickCount));
                 string label = FormatTickLabelBySpan(tickTime, totalSpan);
-                SizeF labelSize = graphics.MeasureString(label, font);
+                SizeF labelSize = graphics.MeasureString(label, _tickFont);
 
                 float labelX = x - labelSize.Width / 2;
                 if (i == 0) labelX = 0;
                 else if (i == tickCount) labelX = histogramWidth - labelSize.Width;
 
-                graphics.DrawString(label, font, brush, labelX, 0);
+                // Skip this label if it would overlap the previous one
+                if (labelX < lastLabelRight + 4)
+                    continue;
+
+                graphics.DrawString(label, _tickFont, _tickBrush, labelX, 0);
+                lastLabelRight = labelX + labelSize.Width;
             }
         }
 
@@ -811,6 +846,8 @@ namespace LogScraper.Controls
         /// </summary>
         private void DrawActiveTooltip(Graphics graphics, int histogramWidth, int drawableHeight)
         {
+            if (_isDragging) return;
+
             if (hoveredBookmarkIndex >= 0 && hoveredBookmarkIndex < bookmarkLogEntriesInRange.Count)
                 DrawMarkerTooltip(graphics, bookmarkLogEntriesInRange[hoveredBookmarkIndex], histogramWidth, drawableHeight, BOOKMARK_MARKER_Y_OFFSET, BOOKMARK_MARKER_COLOR, "Bookmark");
             else if (hoveredErrorIndex >= 0 && hoveredErrorIndex < errorLogEntriesInRange.Count)
@@ -859,8 +896,7 @@ namespace LogScraper.Controls
         private static void DrawTooltipBox(Graphics graphics, string tooltipText, ref float tooltipX, ref float tooltipY,
             int histogramWidth, Color backgroundColor, Color borderColor, int padding = 0, float baselineY = 0)
         {
-            using Font font = new("Segoe UI", 9);
-            SizeF textSize = graphics.MeasureString(tooltipText, font);
+            SizeF textSize = graphics.MeasureString(tooltipText, _tooltipFont);
 
             float tooltipWidth = textSize.Width + (padding > 0 ? padding * 2 : 0);
             float tooltipHeight = textSize.Height + (padding > 0 ? padding / 2 : 0);
@@ -888,10 +924,9 @@ namespace LogScraper.Controls
             }
 
             // Draw text
-            using SolidBrush textBrush = new(Color.White);
             float textX = tooltipX + (padding > 0 ? padding : 0);
             float textY = tooltipY + (padding > 0 ? padding / 4 : 0);
-            graphics.DrawString(tooltipText, font, textBrush, textX, textY);
+            graphics.DrawString(tooltipText, _tooltipFont, _tooltipTextBrush, textX, textY);
         }
 
         /// <summary>
@@ -1045,8 +1080,8 @@ namespace LogScraper.Controls
         {
             string text = button switch
             {
-                ZoomButton.ZoomIn => "Zoom in",
-                ZoomButton.ZoomOut => "Zoom out — show full timeline",
+                ZoomButton.ZoomIn => "Zoom in [+]",
+                ZoomButton.ZoomOut => "Zoom out [-]",
                 _ => string.Empty
             };
             toolTip.SetToolTip(this, text);
@@ -1153,12 +1188,12 @@ namespace LogScraper.Controls
             LogAppState.Instance.ViewportSelectedLogEntry.Set(entry);
         }
 
-        private bool IsAtMaxZoom() => _zoomMin == default;
+        private bool IsAtMaxZoom() => !_isZoomed;
 
         private bool IsAtMinZoom()
         {
-            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
-            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            DateTime viewMin = _isZoomed ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _isZoomed ? _zoomMax : fullSpanMaximum;
             return (viewMax - viewMin) <= MIN_ZOOM_SPAN;
         }
 
@@ -1178,8 +1213,8 @@ namespace LogScraper.Controls
         /// </summary>
         private DateTime GetViewportCenter()
         {
-            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
-            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            DateTime viewMin = _isZoomed ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _isZoomed ? _zoomMax : fullSpanMaximum;
             DateTime viewCenter = viewMin + TimeSpan.FromSeconds((viewMax - viewMin).TotalSeconds / 2);
 
             if (_viewportRange?.IsBeginOrEndSet == true)
@@ -1192,6 +1227,43 @@ namespace LogScraper.Controls
             }
 
             return viewCenter;
+        }
+
+        /// <summary>
+        /// Returns the smallest nice interval larger than <paramref name="current"/>,
+        /// capped at <paramref name="fullSpan"/>. Used for gradual zoom-out steps.
+        /// </summary>
+        private static TimeSpan GetNextLargerNiceSpan(TimeSpan current, TimeSpan fullSpan)
+        {
+            TimeSpan[] niceIntervals =
+            [
+                TimeSpan.FromMilliseconds(10),
+                TimeSpan.FromMilliseconds(100),
+                TimeSpan.FromMilliseconds(500),
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromSeconds(30),
+                TimeSpan.FromMinutes(1),
+                TimeSpan.FromMinutes(2),
+                TimeSpan.FromMinutes(5),
+                TimeSpan.FromMinutes(10),
+                TimeSpan.FromMinutes(30),
+                TimeSpan.FromHours(1),
+                TimeSpan.FromHours(6),
+                TimeSpan.FromHours(12),
+                TimeSpan.FromDays(1),
+                TimeSpan.FromDays(7),
+                TimeSpan.FromDays(30),
+            ];
+
+            foreach (TimeSpan interval in niceIntervals)
+            {
+                if (interval > current)
+                    return interval;
+            }
+
+            return fullSpan;
         }
 
         /// <summary>
@@ -1209,8 +1281,8 @@ namespace LogScraper.Controls
             if (!zoomIn && IsAtMaxZoom())
                 return;
 
-            DateTime viewMin = _zoomMin != default ? _zoomMin : fullSpanMinimum;
-            DateTime viewMax = _zoomMax != default ? _zoomMax : fullSpanMaximum;
+            DateTime viewMin = _isZoomed ? _zoomMin : fullSpanMinimum;
+            DateTime viewMax = _isZoomed ? _zoomMax : fullSpanMaximum;
             TimeSpan currentSpan = viewMax - viewMin;
 
             TimeSpan newSpan;
@@ -1223,9 +1295,11 @@ namespace LogScraper.Controls
             else
             {
                 TimeSpan fullSpan = fullSpanMaximum - fullSpanMinimum;
-                newSpan = TimeSpan.FromSeconds(currentSpan.TotalSeconds * 2);
+                // Step through nice intervals rather than doubling, so zoom-out is gradual
+                newSpan = GetNextLargerNiceSpan(currentSpan, fullSpan);
                 if (newSpan >= fullSpan)
                 {
+                    _isZoomed = false;
                     _zoomMin = default;
                     _zoomMax = default;
                     RebuildRangeRelatedObjects();
@@ -1250,6 +1324,7 @@ namespace LogScraper.Controls
                     newMin = fullSpanMinimum;
             }
 
+            _isZoomed = true;
             _zoomMin = newMin;
             _zoomMax = newMax;
             RebuildRangeRelatedObjects();
@@ -1362,6 +1437,7 @@ namespace LogScraper.Controls
             maximumRawValue = 0;
             currentBucketSize = default;
             _logRange = null;
+            _isZoomed = false;
             _zoomMin = default;
             _zoomMax = default;
             hoveredBucketIndex = -1;

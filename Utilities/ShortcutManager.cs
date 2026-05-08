@@ -37,6 +37,8 @@ namespace LogScraper.Utilities
         ResetAllFilters,
         ToggleMetadata,
         PrettyPrint,
+        TimelineZoomIn,
+        TimelineZoomOut,
     }
 
     /// <summary>
@@ -82,6 +84,8 @@ namespace LogScraper.Utilities
             { Keys.Control | Keys.R, AppShortcut.ResetAllFilters },
             { Keys.Control | Keys.M, AppShortcut.ToggleMetadata },
             { Keys.Control | Keys.P, AppShortcut.PrettyPrint },
+            { Keys.Oemplus, AppShortcut.TimelineZoomIn },
+            { Keys.OemMinus, AppShortcut.TimelineZoomOut },
         };
 
         private static readonly Dictionary<AppShortcut, List<ShortcutHandlerRegistration>> _handlers = new();
