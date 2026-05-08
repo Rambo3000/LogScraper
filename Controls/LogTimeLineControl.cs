@@ -186,7 +186,31 @@ namespace LogScraper.Controls
         /// </summary>
         public void UpdateLogEntries(LogMetadataFilterResult filterResult, List<LogEntry> visibleEntries, LogRange range, LogCollection fullCollection)
         {
-            if (fullCollection?.LogEntries == null || fullCollection?.LogEntries?.Count == 0)
+            // Read the first/last timestamps under a read lock so we don't race with a concurrent
+            // CommitParsedEntries write that could mutate the live list at the same time.
+            DateTime spanMin = default;
+            DateTime spanMax = default;
+            bool hasEntries = false;
+
+            if (fullCollection?.LogEntries != null)
+            {
+                fullCollection.AcquireReadAccess();
+                try
+                {
+                    if (fullCollection.LogEntries.Count > 0)
+                    {
+                        hasEntries = true;
+                        spanMin = fullCollection.LogEntries[0].TimeStamp;
+                        spanMax = fullCollection.LogEntries[^1].TimeStamp;
+                    }
+                }
+                finally
+                {
+                    fullCollection.ReleaseReadAccess();
+                }
+            }
+
+            if (!hasEntries)
             {
                 filteredLogEntries.Clear();
                 displayedLogEntries.Clear();
@@ -198,8 +222,8 @@ namespace LogScraper.Controls
                 return;
             }
 
-            fullSpanMinimum = fullCollection.LogEntries[0].TimeStamp;
-            fullSpanMaximum = fullCollection.LogEntries[^1].TimeStamp;
+            fullSpanMinimum = spanMin;
+            fullSpanMaximum = spanMax;
             filteredLogEntriesMask = filterResult.FilteredLogEntriesMask;
 
             filteredLogEntries = filterResult?.LogEntries == null ? [] : [.. filterResult.LogEntries];

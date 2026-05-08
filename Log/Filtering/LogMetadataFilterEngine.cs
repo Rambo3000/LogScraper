@@ -24,7 +24,22 @@ namespace LogScraper.Log.Filtering
         /// <returns>A result containing the filtered log entries, per-property value counts, and log flow trees.</returns>
         public static LogMetadataFilterResult Apply(LogCollection collection, List<LogMetadataFilter> filters, LogLayout logLayout)
         {
-            List<LogEntry> logEntries = FilterLogEntries(collection.LogEntries, filters, out BitArray filteredLogEntriesMask);
+            List<LogEntry> logEntries;
+            BitArray filteredLogEntriesMask;
+
+            // Hold the read lock only while iterating the live LogEntries list so a concurrent
+            // CommitParsedEntries (write lock) cannot mutate it mid-enumeration.
+            collection.AcquireReadAccess();
+            try
+            {
+                logEntries = FilterLogEntries(collection.LogEntries, filters, out filteredLogEntriesMask);
+            }
+            finally
+            {
+                collection.ReleaseReadAccess();
+            }
+
+            // logEntries is now an independent snapshot — safe to use outside the lock.
             IndexDictionary<LogMetadataProperty, LogMetadataFilterStats> filterStats = LogMetadataStatsBuilder.Build(logEntries, logLayout.LogMetadataProperties);
             IndexDictionary<LogContentProperty, LogFlowTree> logFlowTrees = LogFlowTreeBuilder.Build(logLayout, logEntries);
 
@@ -49,13 +64,21 @@ namespace LogScraper.Log.Filtering
             if (filters == null || filters.Count == 0)
             {
                 filteredLogEntriesMask = new BitArray(allLogEntries.Count, true);
-                return (List<LogEntry>)allLogEntries;
+                // Return a copy rather than the live list reference. The caller (Apply) holds the read
+                // lock only for the duration of this method. Once the lock is released the background
+                // thread may call CommitParsedEntries and mutate _logEntries, which would invalidate
+                // any iterator held by the downstream render pipeline. Copying only the references
+                // (not the LogEntry objects themselves) costs ~8 bytes per entry — ~8 MB for 1M lines.
+                return [.. allLogEntries];
             }
 
             List<LogMetadataFilter> activeFilters = [.. filters.Where(f => f.ActiveValues.Count > 0)];
             if (activeFilters.Count == 0)
             {
                 filteredLogEntriesMask = new BitArray(allLogEntries.Count, true);
+                // Same reason as above: return a snapshot copy so the live list is safe to mutate
+                // after the read lock is released.
+                return [.. allLogEntries];
             }
             
 
