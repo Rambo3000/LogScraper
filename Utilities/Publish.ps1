@@ -89,6 +89,10 @@ else {
         throw "Version '$currentVersion' must be in format Major.Minor.Patch"
     }
 
+    if ($prerelease -and -not $noBump.IsPresent -and -not $bump) {
+        $noBump = $true
+    }
+
     if (!$noBump.IsPresent) {
         if ($bump -eq "major") {
             $versionComponents[0]++
