@@ -91,13 +91,13 @@ namespace LogScraper.Log.Rendering
             // Adjust the end index based on the LogEntryEnd setting
             if (logRange.End != null)
             {
-                for (int i = 0; i < numberOfLogEntriesTotal; i++)
+                for (int i = startindex; i < numberOfLogEntriesTotal; i++)
                 {
-                    if (logEntries[i].Index >= logRange.End.Index)
+                    if (logEntries[i].Index > logRange.End.Index)
                     {
-                        endindex = i + 1;
                         break;
                     }
+                    endindex = i + 1;
                 }
             }
             else
