@@ -88,6 +88,9 @@ namespace LogScraper.Log.Rendering
                 startindex = 0;
             }
 
+            // If the startindex is not found, no items are in range, return an empty list
+            if (startindex == -1) return [];
+
             // Adjust the end index based on the LogEntryEnd setting
             if (logRange.End != null)
             {
@@ -106,7 +109,7 @@ namespace LogScraper.Log.Rendering
             }
 
             // If the calculated indices are invalid, return an empty list.
-            if (startindex == -1 || endindex == -1 || startindex > endindex) return [];
+            if (endindex == -1 || startindex > endindex) return [];
 
             return logEntries[startindex..endindex];
         }
