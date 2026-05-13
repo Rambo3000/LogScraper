@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
@@ -21,6 +22,14 @@ namespace LogScraper.Controls.Viewport
         private LogFilterResultWithRange _logFilterResultWithRange;
         private LogRenderSettings _logRenderSettings;
 
+        /// <summary>
+        /// When true the viewport skips re-renders because the last render was too slow.
+        /// It resumes once processing finishes or the log size drops significantly.
+        /// </summary>
+        private bool _viewportUpdatesSuspended = false;
+        private int _logEntryCountAtSuspension = 0;
+        private static readonly TimeSpan RenderPauseThreshold = TimeSpan.FromMilliseconds(1);
+
         private List<LogContentProperty> _contentPropertiesWithCustomColoring;
         private LogEntry _selectedLogEntry = null;
         private LogEntry _logEntryAtCursor = null;
@@ -35,9 +44,39 @@ namespace LogScraper.Controls.Viewport
             LogAppState.Instance.RenderSettings.Changed += OnRenderSettingsChanged;
             LogAppState.Instance.Layout.Changed += (s, e) => UpdateLogLayout(LogAppState.Instance.Layout.Value);
             LogAppState.Instance.ResetRequested += (s, e) => Reset();
+            LogAppState.Instance.ResetRequested += (s, e) => ClearSuspension();
             LogAppState.Instance.ViewportSelectedLogEntry.Changed += (s, e) => ScrollToAndSelectLogEntry();
             LogAppState.Instance.Bookmarks.Changed += (s, e) => UpdateBookMarks();
             LogAppState.Instance.RawLogFallback.Changed += OnRawLogFallbackChanged;
+            LogAppState.Instance.ProcessingState.Changed += OnProcessingStateChanged;
+            LblPaused.Click += OnLblPausedClick;
+        }
+
+        private void OnLblPausedClick(object sender, EventArgs e)
+        {
+            ClearSuspension();
+            // Do not call RenderLogEntries() here directly — a FilterResultWithRange.Changed
+            // event is already queued from the active processing and will trigger the render.
+        }
+
+        private void ClearSuspension()
+        {
+            _viewportUpdatesSuspended = false;
+            _logEntryCountAtSuspension = 0;
+            LblPaused.Visible = false;
+        }
+
+        private void OnProcessingStateChanged(object sender, EventArgs e)
+        {
+            bool isActive = LogAppState.Instance.ProcessingState.Value?.IsActive ?? false;
+            if (!isActive && _viewportUpdatesSuspended)
+            {
+                ClearSuspension();
+                // Do one final render now that processing has finished
+                _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+                _logRenderSettings = LogAppState.Instance.RenderSettings.Value;
+                RenderLogEntries();
+            }
         }
 
         private void OnFilterResultWithRangeChanged(object sender, EventArgs e)
@@ -45,12 +84,23 @@ namespace LogScraper.Controls.Viewport
             LblExplenation.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
             LblExplenation2.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
             _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+
+            // If suspended but the log size has dropped to less than half of what triggered the suspension, resume immediately
+            if (_viewportUpdatesSuspended)
+            {
+                int currentCount = _logFilterResultWithRange?.LogEntries?.Count ?? 0;
+                if (currentCount < _logEntryCountAtSuspension / 2)
+                {
+                    ClearSuspension();
+                }
+            }
+
             RenderLogEntries();
         }
         private void OnRenderSettingsChanged(object sender, EventArgs e)
         {
             _logRenderSettings = LogAppState.Instance.RenderSettings.Value;
-            RenderLogEntries();
+            if (!_viewportUpdatesSuspended) RenderLogEntries();
         }
 
         private void OnRawLogFallbackChanged(object sender, EventArgs e)
@@ -106,6 +156,11 @@ namespace LogScraper.Controls.Viewport
                 return;
             }
 
+            // Skip the render when suspended due to a previous slow render during continuous processing
+            if (_viewportUpdatesSuspended) return;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             LogEntry logEntryAtCarot = null;
             if (TxtLogEntries.SelectionStart > 0)
             {
@@ -159,6 +214,15 @@ namespace LogScraper.Controls.Viewport
 
             // Resume drawing once the content and scroll position are fully restored
             this.ResumeDrawing();
+
+            stopwatch.Stop();
+            if (stopwatch.Elapsed > RenderPauseThreshold && (LogAppState.Instance.ProcessingState.Value?.IsActive ?? false))
+            {
+                _viewportUpdatesSuspended = true;
+                _logEntryCountAtSuspension = visibleLogEntries?.Count ?? 0;
+                LblPaused.Visible = true;
+                LblPaused.BringToFront();
+            }
         }
 
 

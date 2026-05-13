@@ -79,10 +79,28 @@
             LblExplenation2.Text = "Start met het (automatisch) ophalen van log";
             LblExplenation2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // LblPaused
+            // 
+            LblPaused = new System.Windows.Forms.Label();
+            LblPaused.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblPaused.AutoSize = false;
+            LblPaused.BackColor = System.Drawing.Color.FromArgb(255, 255, 210);
+            LblPaused.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            LblPaused.ForeColor = System.Drawing.Color.FromArgb(100, 80, 0);
+            LblPaused.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            LblPaused.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            LblPaused.Size = new System.Drawing.Size(712, 24);
+            LblPaused.Location = new System.Drawing.Point(0, 362);
+            LblPaused.Text = "⏸ Weergave gepauzeerd – grote hoeveelheid log. Klik om eenmalig te vernieuwen.";
+            LblPaused.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            LblPaused.Cursor = System.Windows.Forms.Cursors.Hand;
+            LblPaused.Visible = false;
+            // 
             // LogViewportControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(LblPaused);
             Controls.Add(LblExplenation);
             Controls.Add(LblExplenation2);
             Controls.Add(TxtLogEntries);
@@ -96,5 +114,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label LblExplenation;
         private System.Windows.Forms.Label LblExplenation2;
+        private System.Windows.Forms.Label LblPaused;
     }
 }
