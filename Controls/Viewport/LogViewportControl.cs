@@ -28,7 +28,7 @@ namespace LogScraper.Controls.Viewport
         /// </summary>
         private bool _viewportUpdatesSuspended = false;
         private int _logEntryCountAtSuspension = 0;
-        private static readonly TimeSpan RenderPauseThreshold = TimeSpan.FromMilliseconds(1);
+        private static readonly TimeSpan RenderPauseThreshold = TimeSpan.FromMilliseconds(500);
 
         private List<LogContentProperty> _contentPropertiesWithCustomColoring;
         private LogEntry _selectedLogEntry = null;
