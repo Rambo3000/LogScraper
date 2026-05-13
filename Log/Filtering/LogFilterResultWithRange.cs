@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Rendering;
@@ -80,7 +81,26 @@ namespace LogScraper.Log.Filtering
             get
             {
                 if (_errorMaskCache != null) return _errorMaskCache;
-                _errorMaskCache = new BitArray(MetadataFilterResult.SourceLogCollection.ErrorMask).And(FilteredAndRangedMask);
+
+                BitArray rangedMask = FilteredAndRangedMask;
+                BitArray sourceErrorMask = MetadataFilterResult.SourceLogCollection.ErrorMask;
+
+                // During continuous reading the source ErrorMask may have grown beyond the snapshot
+                // captured in FilteredAndRangedMask. Normalize to rangedMask length before AND-ing.
+                BitArray errorMask;
+                if (sourceErrorMask.Length == rangedMask.Length)
+                {
+                    errorMask = new BitArray(sourceErrorMask);
+                }
+                else
+                {
+                    errorMask = new BitArray(rangedMask.Length);
+                    int copyLength = Math.Min(sourceErrorMask.Length, rangedMask.Length);
+                    for (int i = 0; i < copyLength; i++)
+                        errorMask[i] = sourceErrorMask[i];
+                }
+
+                _errorMaskCache = errorMask.And(rangedMask);
                 return _errorMaskCache;
             }
         }
