@@ -1,6 +1,6 @@
 ﻿# LogScraper
 
-**LogScraper** is a powerful, standalone tool for retrieving, filtering, and analyzing logs from HTTP endpoints, Kubernetes clusters, or local files. It's designed to help developers and operators inspect logs quickly and efficiently.
+**LogScraper** is a standalone tool for retrieving, filtering, and analyzing logs from HTTP endpoints, Kubernetes clusters, and local files. It is built to help developers and operators inspect logs quickly and efficiently.
 
 ![image](https://github.com/user-attachments/assets/60c5bb6d-0830-4b20-867a-c89575853e0a)
 
@@ -9,18 +9,20 @@
 
 ## 🔍 Key Features
 
-- ✅ Retrieve logs from HTTP endpoints, Kubernetes, and local file systems  
-- 🔄 Concatenate multiple log downloads for seamless reading  
-- 📡 Continuous log reading for live monitoring  
-- 🧩 Filter and hide metadata for cleaner views  
-- ⚡ Fast navigation via metadata and content filters  
-- 🔍 Search within logs  
-- 📤 Export to external tools like Notepad++  
-- 🛠️ Fully configurable UI  
-- 🗃️ Available as installer or standalone, no .Net framework installation required
-- 🔔 Automatic update checks  
-- 📌 Mini Controls: compact always-on-top UI for quick log access  
-- 🔐 Secure credential storage using Windows Credential Manager 
+- Read logs from HTTP endpoints, Kubernetes, and local files  
+- Filter large logs quickly using metadata fields  
+- Navigate quickly with content filters and begin/end markers  
+- Find problem areas fast with the timeline and error indicators  
+- Follow related log lines in a hierarchical flow view  
+- Color log lines  
+- Monitor logs live with continuous reading  
+- Configure log layouts with custom timestamps, metadata, and content rules  
+- Pretty print JSON and XML inside log lines  
+- Read raw JSON logs more easily with JSON path extraction  
+- Combine multiple log downloads into one seamless view  
+- Use Mini Controls for compact, always-on-top log access  
+- Run as an installer or standalone app without a separate .NET runtime  
+- Stay up to date with automatic update checks  
 
 ---
 
@@ -32,7 +34,7 @@ Get the latest release from the [Releases section](https://github.com/Rambo3000/
 
 ## ⚙️ Before You Start
 
-Download the installer and run it or download the standalone ZIP and extract it to a desired location. 
+Download and run the installer, or download the standalone ZIP and extract it to a location of your choice.
 
 Built in C# (.NET), the application does **not** require a separate .NET runtime.
 
@@ -41,9 +43,9 @@ Built in C# (.NET), the application does **not** require a separate .NET runtime
 ## 🔄 Updates
 
 ### Recommended: Use the installer
-The preferred way to update Logscraper is to **download and run the latest installer** from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
+The preferred way to update LogScraper is to **download and run the latest installer** from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
 
-When switching from standalone to installer, you can import settings from the standalone version in the installed version using the settings window. The JSON files adjecent to the standalone can be imported one at a time.
+If you switch from the standalone version to the installer version, you can import your existing settings through the Settings window. The JSON files next to the standalone executable can be imported one at a time.
 
 ---
 
@@ -61,43 +63,43 @@ You can **keep your existing configuration files**
 
 ## 🛠️ Configuration
 
-Open the **Settings** window via the ⚙️ icon. Most options are self-explanatory.
+Open the **Settings** window via the ⚙️ icon.
 
-LogScraper uses a **layout system** to define how logs are interpreted. Each log line is treated as a combination of:
+LogScraper uses a **layout system** to define how logs are interpreted. Each log line is split into:
 
 - A **timestamp**
 - **Metadata fields**
 - The actual **log content**
 
 You can configure:
-- The **timestamp format** (used for parsing)
-- Which **metadata fields** are present, on which you filter the log
-- Log content filters for easy navigating within the log
-- Transformers which can inverse the log or extract JSON from a line
+- Which **metadata fields** are present and available for filtering
+- **Content filters** for faster navigation within the log
+- **Content-based styling** to color log lines per content filter
+- **Transformers** that extract values from raw JSON logs
+- The **timestamp format** used for parsing (Optional)
 
 ---
 
 ## 🚀 Using the Application
 
-1. Select a log source (HTTP, Kubernetes, or file system) and select the corresponding detailed source information like a filename or a Kubernetes pod
-2. (optional) Select a log layout, or use the default
+1. Select a log source (HTTP, Kubernetes, or file system), then choose the specific source details such as a filename or Kubernetes pod
+2. (Optional) Select a log layout, or use the default
 3. Click **Record** or **Record for several minutes** to start loading logs
-4. (optional) Filter on specified metadata
-5. (optional) Search for a specific word or use the content filter to the right of the screen to quickly navigate to a specific line in the log or to pick a specific beginn and end of the log
+4. (Optional) Filter by metadata
+5. (Optional) Restrict the range of log lines using begin/end markers
+6. (Optional) Use the timeline, navigation or search to jump to a relevant section of the log
 
 ---
 
 ## 💡 Tips & Recommendations
 
-- 🪟 Use **Mini Controls**: a compact always-on-top window for easy log reading without switching apps  
-- 🌲 Enable hierarchical navigation by setting up Begin/End Content Filters in the layout section of Settings. This groups related log lines into a hierarchical view/tree, making large logs easier to scan and explore.
-- 👁️ By default, metadata is hidden — enable it via the **Metadata** section, or change the defaults in Settings
+- 🪟 Use **Mini Controls** for a compact always-on-top window while working in other apps  
+- 🌲 Enable hierarchical navigation by configuring Begin/End Content Filters in Settings. This groups related log lines into a tree view and makes large logs easier to scan.
+- 🎨 Use content properties to color log lines and make patterns easier to spot
+- 👁️ Metadata is hidden by default. Enable it in the **Metadata** section or change the default in Settings
 - ✂️ Keep logs readable by selectively showing metadata values inline  
 - ⚠️ Ensure the correct **log layout** is selected to avoid parsing issues  
 - 🧠 Memory usage depends on log size. As a guideline, keep logs under **100,000 lines** to avoid performance issues  
-- 🔑 When accessing protected HTTP sources, the app will prompt for credentials and store them securely  
-- 📝 For advanced search/editing, use **Notepad++** via the **Open in Notepad++** button (configurable in Settings)  
-- 🔐 Credentials are stored securely via the **Windows Credential Manager** and can be managed from there  
 
 ---
 
