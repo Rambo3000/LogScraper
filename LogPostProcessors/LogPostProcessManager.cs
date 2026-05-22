@@ -161,7 +161,7 @@ namespace LogScraper.LogPostProcessors
             {
                 CancellationToken = cancellationToken,
                 //Make sure not to overload the CPU
-                MaxDegreeOfParallelism = Math.Min(1, Environment.ProcessorCount / 2)
+                MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount / 2)
             };
 
             Parallel.For(start, end + 1, options,
