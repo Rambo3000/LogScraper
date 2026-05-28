@@ -169,5 +169,47 @@ namespace LogScraper.Log.Filtering
 
             _entriesByContentPropertCache[property] = result;
         }
+
+        /// <summary>
+        /// Determines whether the visible log entries in this instance are the same as another instance.
+        /// Returns true if the FilteredAndRangedMask matches, allowing the new mask to be longer
+        /// as long as all additional bits are 0 (indicating no new visible entries).
+        /// Uses internal int array comparison for optimal performance with large masks (300k+ entries).
+        /// </summary>
+        public bool HasSameVisibleEntries(LogFilterResultWithRange other)
+        {
+            if (other == null) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            BitArray thisMask = FilteredAndRangedMask;
+            BitArray otherMask = other.FilteredAndRangedMask;
+
+            if (thisMask == null && otherMask == null) return true;
+            if (thisMask == null || otherMask == null) return false;
+
+            // Access the internal int arrays for fast comparison
+            int[] thisArray = new int[(thisMask.Length + 31) / 32];
+            int[] otherArray = new int[(otherMask.Length + 31) / 32];
+            thisMask.CopyTo(thisArray, 0);
+            otherMask.CopyTo(otherArray, 0);
+
+            int minIntCount = Math.Min(thisArray.Length, otherArray.Length);
+            int maxIntCount = Math.Max(thisArray.Length, otherArray.Length);
+
+            // Compare the common portion using int arrays (32 bits at a time)
+            for (int i = 0; i < minIntCount; i++)
+            {
+                if (thisArray[i] != otherArray[i]) return false;
+            }
+
+            // If one array is longer, check that all extra ints are 0
+            int[] longerArray = thisArray.Length > otherArray.Length ? thisArray : otherArray;
+            for (int i = minIntCount; i < maxIntCount; i++)
+            {
+                if (longerArray[i] != 0) return false;
+            }
+
+            return true;
+        }
     }
 }

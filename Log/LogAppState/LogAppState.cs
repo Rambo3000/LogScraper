@@ -222,7 +222,7 @@ namespace LogScraper.Log.LogAppState
             }
 
             LogMetadataFilterResult metadataFilterResult = LogMetadataFilterEngine.Apply(LogCollection.Value, MetadataFilters.Value, Layout.Value);
-           
+
             MetadataFilterResult.Set(metadataFilterResult);
         }
 
@@ -233,6 +233,8 @@ namespace LogScraper.Log.LogAppState
         {
             if (_resetInProgress) return;
 
+            /// Note: This is always called when the LogCollection updates because the masks (FilteredLogEntriesMask) get updated 
+            /// and refer to the LogCollection.
             FilterResultWithRange.Set(new(MetadataFilterResult.Value, Range.Value));
         }
     }

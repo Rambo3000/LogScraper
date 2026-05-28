@@ -84,7 +84,20 @@ namespace LogScraper.Controls.Viewport
         {
             LblExplenation.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
             LblExplenation2.Visible = !LogAppState.Instance.LogCollectionIsAvailable;
-            _logFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+
+            LogFilterResultWithRange newFilterResultWithRange = LogAppState.Instance.FilterResultWithRange.Value;
+
+            // Check if the visible entries have actually changed before rerendering
+            // This avoids unnecessary rerenders when the LogCollection updates but the visible entries remain the same
+            // (e.g., when masks grow with only 0 bits added)
+            if (_logFilterResultWithRange != null && newFilterResultWithRange != null && _logFilterResultWithRange.HasSameVisibleEntries(newFilterResultWithRange))
+            {
+                // Update the reference but skip the rerender
+                _logFilterResultWithRange = newFilterResultWithRange;
+                return;
+            }
+
+            _logFilterResultWithRange = newFilterResultWithRange;
 
             // If suspended but the log size has dropped to less than half of what triggered the suspension, resume immediately
             if (_viewportUpdatesSuspended)
@@ -224,7 +237,7 @@ namespace LogScraper.Controls.Viewport
 
                 // Hide loading indicator
                 HideLoading();
-                
+
                 if (stopwatch.Elapsed > RenderPauseThreshold && (LogAppState.Instance.ProcessingState.Value?.IsActive ?? false))
                 {
                     _viewportUpdatesSuspended = true;
