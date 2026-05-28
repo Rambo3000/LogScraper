@@ -33,6 +33,7 @@
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             LblExplenation = new System.Windows.Forms.Label();
             LblExplenation2 = new System.Windows.Forms.Label();
+            LblLoading = new System.Windows.Forms.Label();
             SuspendLayout();
             // 
             // TxtLogEntries
@@ -96,10 +97,30 @@
             LblPaused.Cursor = System.Windows.Forms.Cursors.Hand;
             LblPaused.Visible = false;
             // 
+            // LblLoading
+            // 
+            LblLoading = new System.Windows.Forms.Label();
+            LblLoading.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            LblLoading.AutoSize = false;
+            LblLoading.BackColor = System.Drawing.Color.FromArgb(255, 251, 210);
+            LblLoading.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            LblLoading.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            LblLoading.ForeColor = System.Drawing.Color.FromArgb(110, 90, 0);
+            LblLoading.Location = new System.Drawing.Point(684, 6);
+            LblLoading.Name = "LblLoading";
+            LblLoading.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            LblLoading.Size = new System.Drawing.Size(90, 26);
+            LblLoading.TabIndex = 44;
+            LblLoading.Text = "Bezig...";
+            LblLoading.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            LblLoading.Visible = false;
+            LblLoading.Paint += LblFeedback_Paint;
+            // 
             // LogViewportControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(LblLoading);
             Controls.Add(LblPaused);
             Controls.Add(LblExplenation);
             Controls.Add(LblExplenation2);
@@ -107,6 +128,7 @@
             Name = "LogViewportControl";
             Size = new System.Drawing.Size(712, 403);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -115,5 +137,6 @@
         private System.Windows.Forms.Label LblExplenation;
         private System.Windows.Forms.Label LblExplenation2;
         private System.Windows.Forms.Label LblPaused;
+        private System.Windows.Forms.Label LblLoading;
     }
 }

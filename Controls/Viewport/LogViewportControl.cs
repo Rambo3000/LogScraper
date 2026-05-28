@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
@@ -159,70 +160,155 @@ namespace LogScraper.Controls.Viewport
             // Skip the render when suspended due to a previous slow render during continuous processing
             if (_viewportUpdatesSuspended) return;
 
+            // Show loading indicator immediately
+            ShowLoading();
+
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            LogEntry logEntryAtCarot = null;
-            if (TxtLogEntries.SelectionStart > 0)
+            try
             {
-                if (LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.CurrentLine, _logEntriesRenderMapCache, out LogEntryRenderPosition logEntryRenderPosition))
+                LogEntry logEntryAtCarot = null;
+                if (TxtLogEntries.SelectionStart > 0)
                 {
-                    logEntryAtCarot = logEntryRenderPosition.LogEntry;
+                    if (LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.CurrentLine, _logEntriesRenderMapCache, out LogEntryRenderPosition logEntryRenderPosition))
+                    {
+                        logEntryAtCarot = logEntryRenderPosition.LogEntry;
+                    }
+                }
+
+                this.SuspendDrawing();
+                List<LogEntry> visibleLogEntries = _logFilterResultWithRange.LogEntries;
+                LogCollection sourceLogCollection = _logFilterResultWithRange.MetadataFilterResult.SourceLogCollection;
+
+                // Try to get the log entry and offset currently at the top of the view
+                // Do this before updateing the text to preserve scroll position
+                LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.FirstVisibleLine, _logEntriesRenderMapCache, out LogEntryRenderPosition preRenderTopLogEntryRenderPosition);
+
+                // Render all visible log entries into a single text representation
+                Text = LogRenderer.RenderLogEntriesAsString(_logFilterResultWithRange, _logRenderSettings);
+
+                // Build a render map that calculates the visual line index for each log entry based on the rendered text and active post-processors
+                LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(visibleLogEntries, _logRenderSettings.LogPostProcessorKinds, sourceLogCollection.LogEntries.Count);
+
+                // Apply syntax highlighting based on the content properties with custom coloring, using the visual line indexes from the render map
+                TxtLogEntries.StyleLines(_contentPropertiesWithCustomColoring, LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(visibleLogEntries, _contentPropertiesWithCustomColoring, postRenderLogEntriesRenderMap));
+
+                // Try to restore the log entry at the carot after the render, if it is still visible
+                // Set this before the scrollposition, so it doesnt interfere
+                if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, _logEntriesRenderMapCache, out int selectedIndex))
+                {
+                    TxtLogEntries.GotoPosition(TxtLogEntries.Lines[selectedIndex].Position);
+                    TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
+                }
+
+                // Restore scroll position based on the previously visible log entry
+                // This keeps the view stable when filters or visual spans change
+                if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(preRenderTopLogEntryRenderPosition, _logEntriesRenderMapCache, postRenderLogEntriesRenderMap, TxtLogEntries.LinesOnScreen, out int scrollToPosition))
+                {
+                    TxtLogEntries.FirstVisibleLine = scrollToPosition;
+                }
+
+                // Update caches for the next render cycle
+                _logEntriesRenderMapCache = postRenderLogEntriesRenderMap;
+
+                // Show bookmarks if used, after the logEntriesRenderMapCache is set
+                ApplyBookmarks();
+
+                //Raise the event that the visible range changed
+                RaiseVisibleRangeChanged(true);
+
+                // Resume drawing once the content and scroll position are fully restored
+                this.ResumeDrawing();
+
+                stopwatch.Stop();
+
+                // Hide loading indicator
+                HideLoading();
+                
+                if (stopwatch.Elapsed > RenderPauseThreshold && (LogAppState.Instance.ProcessingState.Value?.IsActive ?? false))
+                {
+                    _viewportUpdatesSuspended = true;
+                    _logEntryCountAtSuspension = visibleLogEntries?.Count ?? 0;
+                    LblPaused.Visible = true;
+                    LblPaused.BringToFront();
                 }
             }
-
-            this.SuspendDrawing();
-            List<LogEntry> visibleLogEntries = _logFilterResultWithRange.LogEntries;
-            LogCollection sourceLogCollection = _logFilterResultWithRange.MetadataFilterResult.SourceLogCollection;
-
-            // Try to get the log entry and offset currently at the top of the view
-            // Do this before updateing the text to preserve scroll position
-            LogEntryVisualIndexCalculator.TryGetRenderPosition(TxtLogEntries.FirstVisibleLine, _logEntriesRenderMapCache, out LogEntryRenderPosition preRenderTopLogEntryRenderPosition);
-
-            // Render all visible log entries into a single text representation
-            Text = LogRenderer.RenderLogEntriesAsString(_logFilterResultWithRange, _logRenderSettings);
-
-            // Build a render map that calculates the visual line index for each log entry based on the rendered text and active post-processors
-            LogEntriesRenderMap postRenderLogEntriesRenderMap = LogEntryVisualIndexCalculator.BuildRenderMap(visibleLogEntries, _logRenderSettings.LogPostProcessorKinds, sourceLogCollection.LogEntries.Count);
-
-            // Apply syntax highlighting based on the content properties with custom coloring, using the visual line indexes from the render map
-            TxtLogEntries.StyleLines(_contentPropertiesWithCustomColoring, LogEntryVisualIndexCalculator.GetVisualLineIndexesPerContentProperty(visibleLogEntries, _contentPropertiesWithCustomColoring, postRenderLogEntriesRenderMap));
-
-            // Try to restore the log entry at the carot after the render, if it is still visible
-            // Set this before the scrollposition, so it doesnt interfere
-            if (LogEntryVisualIndexCalculator.TryGetVisualLineIndex(logEntryAtCarot, _logEntriesRenderMapCache, out int selectedIndex))
+            catch
             {
-                TxtLogEntries.GotoPosition(TxtLogEntries.Lines[selectedIndex].Position);
-                TxtLogEntries.ClearAndHighlightSingleLine(selectedIndex, INDICATOR_CAROT_LINE);
+                // Make sure loading indicator is hidden on exception
+                HideLoading();
+                this.ResumeDrawing();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Returns the shared size and position for the feedback labels (loading + toast)
+        /// so they always occupy exactly the same space.
+        /// </summary>
+        private (Size size, Point location) GetFeedbackLabelBounds()
+        {
+            using Graphics g = LblLoading.CreateGraphics();
+            SizeF textSize = g.MeasureString("Bezig...", LblLoading.Font);
+            int width = (int)Math.Ceiling(textSize.Width) + LblLoading.Padding.Horizontal + 10;
+            const int height = 22;
+            LblLoading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+            int scrollBarWidth = SystemInformation.VerticalScrollBarWidth;
+            int x = Width - width - scrollBarWidth - 4;
+            int y = 2;
+            return (new Size(width, height), new Point(x, y));
+        }
+
+        /// <summary>
+        /// Shows the loading indicator
+        /// </summary>
+        private void ShowLoading()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(ShowLoading));
+                return;
             }
 
-            // Restore scroll position based on the previously visible log entry
-            // This keeps the view stable when filters or visual spans change
-            if (LogEntryVisualIndexCalculator.TryGetScrollToPosition(preRenderTopLogEntryRenderPosition, _logEntriesRenderMapCache, postRenderLogEntriesRenderMap, TxtLogEntries.LinesOnScreen, out int scrollToPosition))
+            var (size, location) = GetFeedbackLabelBounds();
+            LblLoading.Size = size;
+            LblLoading.Location = location;
+            LblLoading.Visible = true;
+            LblLoading.BringToFront();
+
+            // Force immediate UI update so the loading indicator is actually visible
+            LblLoading.Update();
+        }
+
+        /// <summary>
+        /// Hides the loading indicator
+        /// </summary>
+        private void HideLoading()
+        {
+            if (InvokeRequired)
             {
-                TxtLogEntries.FirstVisibleLine = scrollToPosition;
+                Invoke(new Action(HideLoading));
+                return;
             }
 
-            // Update caches for the next render cycle
-            _logEntriesRenderMapCache = postRenderLogEntriesRenderMap;
+            LblLoading.Visible = false;
+        }
 
-            // Show bookmarks if used, after the logEntriesRenderMapCache is set
-            ApplyBookmarks();
+        /// <summary>
+        /// Custom paint handler to draw a subtle border on feedback labels
+        /// </summary>
+        private void LblFeedback_Paint(object sender, PaintEventArgs e)
+        {
+            if (sender is not Label lbl) return;
 
-            //Raise the event that the visible range changed
-            RaiseVisibleRangeChanged(true);
+            // Border is a slightly darker shade of each label's own background
+            Color borderColor = lbl == LblLoading
+                ? Color.FromArgb(200, 185, 120)   // dim amber to match yellow background
+                : Color.FromArgb(150, 195, 150);  // dim sage to match green background
 
-
-            // Resume drawing once the content and scroll position are fully restored
-            this.ResumeDrawing();
-
-            stopwatch.Stop();
-            if (stopwatch.Elapsed > RenderPauseThreshold && (LogAppState.Instance.ProcessingState.Value?.IsActive ?? false))
-            {
-                _viewportUpdatesSuspended = true;
-                _logEntryCountAtSuspension = visibleLogEntries?.Count ?? 0;
-                LblPaused.Visible = true;
-                LblPaused.BringToFront();
-            }
+            using Pen pen = new(borderColor, 1);
+            e.Graphics.DrawRectangle(pen, new Rectangle(0, 0, lbl.Width - 1, lbl.Height - 1));
         }
 
 
