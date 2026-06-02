@@ -47,7 +47,6 @@ namespace LogScraper.Controls.Configuration
             BtnUpdate.Text = Resources.UserControlAbout_BtnCheckForUpdates;
             LblDisclaimer.Text = Resources.UserControlAbout_LblDisclaimer;
             LblDisclaimerFullText.Text = Resources.UserControlAbout_LblDisclaimerFullText;
-            LblGnuLicense.Text = Resources.UserControlAbout_LblGnuLicense;
         }
 
         private void LinkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

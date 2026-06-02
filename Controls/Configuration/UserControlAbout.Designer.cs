@@ -37,10 +37,8 @@
             LblDisclaimer = new System.Windows.Forms.Label();
             LblRuntime = new System.Windows.Forms.Label();
             LblDisclaimerFullText = new System.Windows.Forms.Label();
-            LblGnuLicense = new System.Windows.Forms.Label();
             BtnUpdate = new System.Windows.Forms.Button();
             LinkGitHub = new System.Windows.Forms.LinkLabel();
-            LblOpenExecutableFolder = new System.Windows.Forms.LinkLabel();
             GrpAbout.SuspendLayout();
             SuspendLayout();
             // 
@@ -70,7 +68,6 @@
             GrpAbout.Controls.Add(LblDisclaimer);
             GrpAbout.Controls.Add(LblRuntime);
             GrpAbout.Controls.Add(LblDisclaimerFullText);
-            GrpAbout.Controls.Add(LblGnuLicense);
             GrpAbout.Controls.Add(BtnUpdate);
             GrpAbout.Controls.Add(LinkGitHub);
             GrpAbout.Controls.Add(LblAuthor);
@@ -87,7 +84,6 @@
             // MemoryUsageControl
             // 
             MemoryUsageControl.Location = new System.Drawing.Point(515, 402);
-            MemoryUsageControl.AutoSize = false;
             MemoryUsageControl.Name = "MemoryUsageControl";
             MemoryUsageControl.Size = new System.Drawing.Size(205, 17);
             MemoryUsageControl.TabIndex = 44;
@@ -141,15 +137,6 @@
             LblDisclaimerFullText.Size = new System.Drawing.Size(712, 118);
             LblDisclaimerFullText.TabIndex = 5;
             // 
-            // LblGnuLicense
-            // 
-            LblGnuLicense.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblGnuLicense.Location = new System.Drawing.Point(3, 197);
-            LblGnuLicense.Name = "LblGnuLicense";
-            LblGnuLicense.Size = new System.Drawing.Size(707, 39);
-            LblGnuLicense.TabIndex = 5;
-            LblGnuLicense.Text = "This application is licensed under the GNU General Public License v3.0. You are free to use, modify, and distribute it under the terms of that license.";
-            // 
             // BtnUpdate
             // 
             BtnUpdate.Location = new System.Drawing.Point(8, 142);
@@ -171,17 +158,6 @@
             LinkGitHub.Text = "GitHub Project Page";
             LinkGitHub.LinkClicked += LinkGitHub_LinkClicked;
             // 
-            // LblOpenExecutableFolder
-            // 
-            LblOpenExecutableFolder.AutoSize = true;
-            LblOpenExecutableFolder.Location = new System.Drawing.Point(8, 118);
-            LblOpenExecutableFolder.Name = "LblOpenExecutableFolder";
-            LblOpenExecutableFolder.Size = new System.Drawing.Size(141, 15);
-            LblOpenExecutableFolder.TabIndex = 43;
-            LblOpenExecutableFolder.TabStop = true;
-            LblOpenExecutableFolder.Text = "Open de LogScraper map";
-            LblOpenExecutableFolder.LinkClicked += LblOpenExecutableFolder_LinkClicked;
-            // 
             // UserControlAbout
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -201,7 +177,6 @@
         private System.Windows.Forms.LinkLabel LinkGitHub;
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.Label LblDisclaimerFullText;
-        private System.Windows.Forms.Label LblGnuLicense;
         private System.Windows.Forms.Label LblRuntime;
         private System.Windows.Forms.Label LblAuthor;
         private System.Windows.Forms.Label LblDisclaimer;

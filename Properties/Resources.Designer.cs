@@ -220,15 +220,6 @@ namespace LogScraper.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This application is licensed under the GNU General Public License v3.0. You are free to use, modify, and distribute it under the terms of that license..
-        /// </summary>
-        internal static string UserControlAbout_LblGnuLicense {
-            get {
-                return ResourceManager.GetString("UserControlAbout_LblGnuLicense", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Runtime: {0}.
         /// </summary>
         internal static string UserControlAbout_LblRuntime {
