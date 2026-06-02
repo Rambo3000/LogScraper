@@ -17,13 +17,20 @@ namespace LogScraper.Controls.Search
             public override string ToString() => displayText;
         }
 
+        #endregion
+
+        #region Private fields
+
+        private List<LogEntry> _cachedEntries = [];
+        private LogRenderSettings _cachedRenderSettings;
+
+        #endregion
+
         public ErrorListControl()
         {
             InitializeComponent();
             LogAppState.Instance.FilterResultWithRange.Changed += (s,e) => ShowEntries();
         }
-
-        #endregion
 
         #region Public events
 
@@ -39,6 +46,16 @@ namespace LogScraper.Controls.Search
 
             List<LogEntry> entries = LogAppState.Instance.FilterResultWithRange.Value?.ErrorLogEntries ?? [];
             LogRenderSettings renderSettings = LogAppState.Instance.RenderSettings.Value;
+
+            // Check if the error list has actually changed
+            if (!force && !HasListChanged(entries, renderSettings))
+            {
+                return;
+            }
+
+            // Cache the current entries and settings
+            _cachedEntries = entries ?? [];
+            _cachedRenderSettings = renderSettings;
 
             LstEntries.Items.Clear();
             LblCount.Text = string.Empty;
@@ -65,6 +82,45 @@ namespace LogScraper.Controls.Search
         public void Clear()
         {
             LstEntries.Items.Clear();
+            _cachedEntries.Clear();
+            _cachedRenderSettings = null;
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private bool HasListChanged(List<LogEntry> newEntries, LogRenderSettings newRenderSettings)
+        {
+            // Quick check: different size means it changed
+            if (_cachedEntries.Count != (newEntries?.Count ?? 0))
+            {
+                return true;
+            }
+
+            // Check if render settings changed
+            if (_cachedRenderSettings != newRenderSettings)
+            {
+                return true;
+            }
+
+            // No entries, no change
+            if (newEntries == null || newEntries.Count == 0)
+            {
+                return false;
+            }
+
+            // Compare each entry
+            for (int i = 0; i < newEntries.Count; i++)
+            {
+                if (!_cachedEntries[i].Equals(newEntries[i]))
+                {
+                    return true;
+                }
+            }
+
+            // No changes detected
+            return false;
         }
 
         #endregion
