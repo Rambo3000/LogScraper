@@ -286,18 +286,8 @@ namespace LogScraper.Controls.Metadata
                 CheckBoxState state = isChecked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedNormal;
                 Size checkBoxSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, state);
 
-                if (isSelectedLine)
-                {
-                    int size = ScaleByDpi(4);
-                    int cx = bounds.Left + size / 2;
-                    int cy = bounds.Top + bounds.Height / 2;
-                    Point[] triangle = [new(cx, cy - size), new(cx + size, cy), new(cx, cy + size)];
-                    using SolidBrush brush = new(Color.FromArgb(150, 150, 150));
-                    e.Graphics.FillPolygon(brush, triangle);
-                }
-
                 Point checkBoxLocation = new(
-                    bounds.Left + 9,
+                    bounds.Left + 6,
                     bounds.Top + (bounds.Height - checkBoxSize.Height) / 2);
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, checkBoxLocation, state);
@@ -314,6 +304,29 @@ namespace LogScraper.Controls.Metadata
                     | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
 
                 TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor, flags);
+
+                if (isSelectedLine)
+                {
+                    int underlineY = textBounds.Top + textBounds.Height - ScaleByDpi(3);
+                    int underlineWidth;
+                    int underlineX = textBounds.Left + ScaleByDpi(3);
+
+                    if (string.IsNullOrWhiteSpace(value.Value))
+                    {
+                        // For empty values, underline from text start to near the count column with margin
+                        underlineWidth = bounds.Right - textBounds.Left - ScaleByDpi(5);
+                    }
+                    else
+                    {
+                        // For non-empty values, underline just the text with no padding
+                        Size textSize = TextRenderer.MeasureText(e.Graphics, value.Value, e.Item.Font, 
+                            textBounds.Size, flags | TextFormatFlags.NoPadding);
+                        underlineWidth = Math.Min(textSize.Width, textBounds.Width);
+                    }
+
+                    using Pen pen = new(Color.DarkGray, 1.5f);
+                    e.Graphics.DrawLine(pen, underlineX, underlineY, underlineX + underlineWidth, underlineY);
+                }
 
                 if (isExclude)
                 {
