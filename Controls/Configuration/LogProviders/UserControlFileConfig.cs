@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders.File;
@@ -21,6 +22,43 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 {
                     CboLogLayout.SelectedItem = layout;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the layout combo box with the current layouts, preserving the selected layout by reference.
+        /// </summary>
+        internal void RefreshLayouts(List<LogLayout> logLayouts)
+        {
+            LogLayout currentSelection = CboLogLayout.SelectedItem as LogLayout;
+
+            CboLogLayout.Items.Clear();
+            foreach (var layout in logLayouts)
+            {
+                CboLogLayout.Items.Add(layout);
+            }
+
+            // Try to re-select the same layout object
+            if (currentSelection != null)
+            {
+                // Find matching layout by reference or description as fallback
+                LogLayout matchingLayout = logLayouts.FirstOrDefault(l => ReferenceEquals(l, currentSelection)) 
+                    ?? logLayouts.FirstOrDefault(l => l.Description == currentSelection.Description);
+
+                if (matchingLayout != null)
+                {
+                    CboLogLayout.SelectedItem = matchingLayout;
+                }
+                else if (logLayouts.Count > 0)
+                {
+                    // If the previously selected layout no longer exists, select the first one
+                    CboLogLayout.SelectedIndex = 0;
+                }
+            }
+            else if (logLayouts.Count > 0 && CboLogLayout.SelectedIndex == -1)
+            {
+                // If nothing was selected, select the first layout
+                CboLogLayout.SelectedIndex = 0;
             }
         }
         internal bool TryGetConfiguration(out FileConfig config)

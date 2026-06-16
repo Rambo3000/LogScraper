@@ -172,6 +172,18 @@ namespace LogScraper.Controls
         {
             List<LogLayout> logLayouts = ConfigAppState.Instance.LogLayoutsConfig.Value.layouts;
 
+            // Re-link provider configs to the new layout objects
+            if (logLayouts != null)
+            {
+                LogProvidersConfig providersConfig = ConfigAppState.Instance.LogProvidersConfig.Value;
+                if (providersConfig.FileConfig != null)
+                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.FileConfig, logLayouts);
+                if (providersConfig.RuntimeConfig != null)
+                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.RuntimeConfig, logLayouts);
+                if (providersConfig.KubernetesConfig != null)
+                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.KubernetesConfig, logLayouts);
+            }
+
             cboLogLayout.Items.Clear();
             if (logLayouts != null)
             {

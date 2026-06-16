@@ -31,6 +31,20 @@ namespace LogScraper.Configuration
             userControlFileConfig.SetFileConfig(ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
             userControlGenericConfig.SetGenericConfig(ConfigAppState.Instance.GenericConfig.Value);
             userControlLogLayoutConfig.SetLogLayoutsConfig(ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
+
+            // Subscribe to the BindingList's ListChanged event to keep provider controls in sync
+            userControlLogLayoutConfig.Layouts.ListChanged += Layouts_ListChanged;
+        }
+
+        private void Layouts_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+        {
+            // Get the current layouts from the layout config control
+            List<LogLayout> currentLayouts = userControlLogLayoutConfig.GetCurrentLayouts();
+
+            // Refresh all provider controls with the updated layouts
+            userControlKubernetesConfig.RefreshLayouts(currentLayouts);
+            userControlRuntimeConfig.RefreshLayouts(currentLayouts);
+            userControlFileConfig.RefreshLayouts(currentLayouts);
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)

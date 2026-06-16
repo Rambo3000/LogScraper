@@ -200,7 +200,7 @@ namespace LogScraper.Configuration
         /// Sets the default log layout for a given log provider based on its description.
         /// </summary>
         /// <param name="logProviderConfig">The log provider configuration to update.</param>
-        private static void SetDefaultLogLayoutsForLogProvider(ILogProviderConfig logProviderConfig, List<LogLayout> logLayouts)
+        public static void SetDefaultLogLayoutsForLogProvider(ILogProviderConfig logProviderConfig, List<LogLayout> logLayouts)
         {
             foreach (var loglayout in logLayouts)
             {

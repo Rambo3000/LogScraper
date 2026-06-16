@@ -30,6 +30,9 @@ namespace LogScraper.Controls.Configuration
         // Tracks which layout currently owns the sub-lists so we can detach before switching
         private LogLayout _activeLayout;
 
+        // Expose the layouts BindingList so FormConfiguration can subscribe to its ListChanged event
+        public BindingList<LogLayout> Layouts => _layouts;
+
         public UserControlLogLayoutConfig()
         {
             InitializeComponent();
@@ -66,6 +69,11 @@ namespace LogScraper.Controls.Configuration
         {
             _activeLayout?.LogContentProperties = [.. _contentProperties];
         }
+
+        /// <summary>
+        /// Gets the current list of layouts being edited.
+        /// </summary>
+        public List<LogLayout> GetCurrentLayouts() => [.. _layouts];
 
         /// <summary>
         /// Refreshes a single item in the ListBox by triggering a ResetItem on the BindingList.
