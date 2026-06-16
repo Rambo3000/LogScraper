@@ -6,6 +6,7 @@ using LogScraper.Log.Filtering;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
+using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Log.Layout
 {
@@ -64,13 +65,13 @@ namespace LogScraper.Log.Layout
         public List<LogTransformerConfig> LogTransformersConfig { get; set; }
 
         /// <summary>
-        /// Determines whether the current LogLayout is equal to another LogLayout based on their hash codes.
+        /// Determines whether the current LogLayout is equal to another LogLayout based on JSON comparison.
         /// </summary>
         /// <param name="other">The other LogLayout to compare with.</param>
         /// <returns>True if the two LogLayouts are equal; otherwise, false.</returns>
         public bool Equals(LogLayout other)
         {
-            return null != other && GetHashCode() == other.GetHashCode();
+            return this.IsEqualByJsonComparison(other);
         }
 
         /// <summary>
@@ -89,7 +90,7 @@ namespace LogScraper.Log.Layout
         /// <returns>The hash code for the LogLayout.</returns>
         public override int GetHashCode()
         {
-            return Description.GetHashCode();
+            return Description?.GetHashCode() ?? 0;
         }
 
         /// <summary>

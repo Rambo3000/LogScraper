@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Log.Layout;
@@ -172,49 +173,52 @@ namespace LogScraper.Controls
         {
             List<LogLayout> logLayouts = ConfigAppState.Instance.LogLayoutsConfig.Value.layouts;
 
-            // Re-link provider configs to the new layout objects
-            if (logLayouts != null)
-            {
-                LogProvidersConfig providersConfig = ConfigAppState.Instance.LogProvidersConfig.Value;
-                if (providersConfig.FileConfig != null)
-                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.FileConfig, logLayouts);
-                if (providersConfig.RuntimeConfig != null)
-                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.RuntimeConfig, logLayouts);
-                if (providersConfig.KubernetesConfig != null)
-                    ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.KubernetesConfig, logLayouts);
-            }
-
+            // Store the description of the currently active layout to re-select it
+            string currentLayoutDescription = LogAppState.Instance.Layout.Value?.Description;
             cboLogLayout.Items.Clear();
             if (logLayouts != null)
             {
                 cboLogLayout.Items.AddRange([.. logLayouts]);
                 if (cboLogLayout.Items.Count > 0)
                 {
-                    // Select default layout for the currently selected provider
-                    ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
-                    if (logProviderConfig != null)
+                    // Try to re-select the layout that was active before (by description)
+                    LogLayout layoutToSelect = null;
+
+                    if (!string.IsNullOrEmpty(currentLayoutDescription))
                     {
-                        switch (logProviderConfig.LogProviderType)
+                        layoutToSelect = logLayouts.FirstOrDefault(l => l.Description == currentLayoutDescription);
+                    }
+
+                    // If we couldn't find the previously active layout, use the default for the current provider
+                    if (layoutToSelect == null)
+                    {
+                        ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
+                        if (logProviderConfig != null)
                         {
-                            case LogProviderType.Runtime:
-                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout;
-                                break;
-                            case LogProviderType.Kubernetes:
-                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout;
-                                break;
-                            case LogProviderType.File:
-                                cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout;
-                                break;
+                            layoutToSelect = logProviderConfig.LogProviderType switch
+                            {
+                                LogProviderType.Runtime => ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout,
+                                LogProviderType.Kubernetes => ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout,
+                                LogProviderType.File => ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout,
+                                _ => null
+                            };
                         }
                     }
 
-                    // If no default layout was selected, select the first one
-                    if (cboLogLayout.SelectedIndex == -1 && cboLogLayout.Items.Count > 0)
+                    // If we still don't have a layout, just select the first one
+                    if (layoutToSelect == null && logLayouts.Count > 0)
                     {
-                        cboLogLayout.SelectedIndex = 0;
+                        layoutToSelect = logLayouts[0];
                     }
 
-                    CboLogLayout_SelectedIndexChanged(this, EventArgs.Empty);
+                    // Select the layout in the combo box
+                    if (layoutToSelect != null)
+                    {
+                        cboLogLayout.SelectedItem = layoutToSelect;
+                    }
+
+                    // Update LogAppState with the new layout object
+                    LogAppState.Instance.Layout.Set(GetSelectedLogLayout());
                 }
             }
         }
