@@ -71,13 +71,25 @@ namespace LogScraper.Configuration
             bool providerConfigChanged = kubernetesChanged || runtimeChanged || fileChanged;
             if (providerConfigChanged || logLayoutsChanged)
             {
-                if (MessageBox.Show("De instellingen zijn gewijzigd. De applicatie wordt gereset om deze toe te passen. Wilt u doorgaan?", "Instellingen gewijzigd", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                // Check if logs are loaded before showing the reset confirmation
+                bool hasLogs = LogAppState.Instance.LogCollectionIsAvailable && 
+                               LogAppState.Instance.LogCollection.Value.TotalCount > 0;
+
+                if (hasLogs)
                 {
-                    LogAppState.Instance.Reset(keepFilters: false);
+                    if (MessageBox.Show("De instellingen zijn gewijzigd. De applicatie wordt gereset om deze toe te passen. Wilt u doorgaan?", "Instellingen gewijzigd", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        LogAppState.Instance.Reset(keepFilters: false);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    return;
+                    // No logs loaded, just reset silently
+                    LogAppState.Instance.Reset(keepFilters: false);
                 }
             }
 
