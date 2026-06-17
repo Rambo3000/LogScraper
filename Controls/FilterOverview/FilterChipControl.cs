@@ -380,9 +380,11 @@ namespace LogScraper.Controls.FilterOverview
         private string BuildCollapsedTooltip()
         {
             if (_variant != ChipVariant.Metadata) return null;
-            if (_specificValue != null) return _specificValue.Value;
+            if (_specificValue != null) 
+                return string.IsNullOrEmpty(_specificValue.Value) ? "(leeg)" : _specificValue.Value;
             if (_metadataFilter?.ActiveValues.Count > 0)
-                return string.Join(Environment.NewLine, _metadataFilter.ActiveValues.Keys.Select(v => v.Value));
+                return string.Join(Environment.NewLine, _metadataFilter.ActiveValues.Keys.Select(v => 
+                    string.IsNullOrEmpty(v.Value) ? "(leeg)" : v.Value));
             return null;
         }
 
@@ -404,11 +406,19 @@ namespace LogScraper.Controls.FilterOverview
 
             // Single specific value supplied by the caller (per-value chip).
             if (specificValue != null)
-                return $"{filter.Property.Description}: {specificValue.Value}";
+            {
+                string displayValue = string.IsNullOrEmpty(specificValue.Value) ? "(leeg)" : specificValue.Value;
+                return $"{filter.Property.Description}: {displayValue}";
+            }
 
             // Single active value — show it explicitly.
             if (filter.ActiveValues.Count == 1)
-                return $"{filter.Property.Description}: {filter.ActiveValues.Keys.First().Value}";
+            {
+                string displayValue = string.IsNullOrEmpty(filter.ActiveValues.Keys.First().Value) 
+                    ? "(leeg)" 
+                    : filter.ActiveValues.Keys.First().Value;
+                return $"{filter.Property.Description}: {displayValue}";
+            }
 
             // Multiple values or none — no expanded form; fall back to collapsed label.
             return BuildMetadataCollapsedLabel(filter, specificValue);

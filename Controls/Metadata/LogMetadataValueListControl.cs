@@ -250,7 +250,8 @@ namespace LogScraper.Controls.Metadata
             LogMetadataValue value = sortedValues[e.ItemIndex];
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
 
-            ListViewItem item = new(value.Value)
+            string displayText = string.IsNullOrEmpty(value.Value) ? "(leeg)" : value.Value;
+            ListViewItem item = new(displayText)
             {
                 ForeColor = count == 0 ? Color.Gray : Color.Black,
                 Tag = value
@@ -277,6 +278,7 @@ namespace LogScraper.Controls.Metadata
             bool isSelectedLine = selectedEntryValue != null && selectedEntryValue.Equals(value);
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
             Rectangle bounds = e.Bounds;
+            string displayText = string.IsNullOrEmpty(value.Value) ? "(leeg)" : value.Value;
 
             if (e.ColumnIndex == 0)
             {
@@ -303,26 +305,17 @@ namespace LogScraper.Controls.Metadata
                 TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter
                     | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
 
-                TextRenderer.DrawText(e.Graphics, value.Value, e.Item.Font, textBounds, textColor, flags);
+                TextRenderer.DrawText(e.Graphics, displayText, e.Item.Font, textBounds, textColor, flags);
 
                 if (isSelectedLine)
                 {
                     int underlineY = textBounds.Top + textBounds.Height - ScaleByDpi(3);
-                    int underlineWidth;
                     int underlineX = textBounds.Left + ScaleByDpi(3);
 
-                    if (string.IsNullOrWhiteSpace(value.Value))
-                    {
-                        // For empty values, underline from text start to near the count column with margin
-                        underlineWidth = bounds.Right - textBounds.Left - ScaleByDpi(5);
-                    }
-                    else
-                    {
-                        // For non-empty values, underline just the text with no padding
-                        Size textSize = TextRenderer.MeasureText(e.Graphics, value.Value, e.Item.Font, 
-                            textBounds.Size, flags | TextFormatFlags.NoPadding);
-                        underlineWidth = Math.Min(textSize.Width, textBounds.Width);
-                    }
+                    // Measure the display text to get the correct underline width
+                    Size textSize = TextRenderer.MeasureText(e.Graphics, displayText, e.Item.Font, 
+                        textBounds.Size, flags | TextFormatFlags.NoPadding);
+                    int underlineWidth = Math.Min(textSize.Width, textBounds.Width);
 
                     using Pen pen = new(Color.DarkGray, 1.5f);
                     e.Graphics.DrawLine(pen, underlineX, underlineY, underlineX + underlineWidth, underlineY);
@@ -330,7 +323,7 @@ namespace LogScraper.Controls.Metadata
 
                 if (isExclude)
                 {
-                    Size textSize = TextRenderer.MeasureText(e.Graphics, value.Value, e.Item.Font, textBounds.Size, flags);
+                    Size textSize = TextRenderer.MeasureText(e.Graphics, displayText, e.Item.Font, textBounds.Size, flags);
                     int strikeY = textBounds.Top + textBounds.Height / 2;
                     int strikeWidth = Math.Min(textSize.Width, textBounds.Width);
                     using Pen pen = new(textColor);
