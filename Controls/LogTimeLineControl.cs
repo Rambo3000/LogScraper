@@ -72,10 +72,15 @@ namespace LogScraper.Controls
         private Rectangle zoomInButtonRect = Rectangle.Empty;
         private Rectangle zoomOutButtonRect = Rectangle.Empty;
 
-        // Drag-to-select range state
+        // Drag state (for both panning and range selection)
         private bool _isDragging;
+        private bool _isDragPanning; // true = pan mode, false = range selection mode
         private int _dragStartX = -1;
         private int _dragCurrentX = -1;
+        private DateTime _panDragStartZoomMin; // Initial zoom window when pan started
+        private DateTime _panDragStartZoomMax;
+        private bool _frozenScaleActive; // When true, use frozen scale values during pan
+        private double _frozenMaximumRawValue; // Scale value captured at pan start
         private const int DRAG_THRESHOLD = 5;
 
         // Constants
@@ -126,6 +131,9 @@ namespace LogScraper.Controls
 
         // Tooltip
         private readonly ToolTip toolTip = new();
+        private readonly Timer hoverTooltipTimer = new();
+        private bool hoverTooltipShown = false;
+        private const int HOVER_TOOLTIP_DELAY_MS = 1200; // Show tooltip after 1.2 seconds of hovering
 
         private enum ZoomButton { None, ZoomIn, ZoomOut }
 
@@ -141,6 +149,10 @@ namespace LogScraper.Controls
             this.DoubleBuffered = true;
             this.BackColor = Color.White;
             this.Cursor = Cursors.Default;
+
+            // Configure hover tooltip timer for "Drag to pan" hint
+            hoverTooltipTimer.Interval = HOVER_TOOLTIP_DELAY_MS;
+            hoverTooltipTimer.Tick += OnHoverTooltipTimerTick;
 
             this.Paint += OnPaint;
             this.MouseDown += OnMouseDown;
@@ -379,11 +391,20 @@ namespace LogScraper.Controls
                     value.Add(entry);
             }
 
-            if (buckets.Count > 0)
+            // Calculate scale unless we're using frozen scale during panning
+            if (!_frozenScaleActive)
             {
-                int maximumCount = buckets.Values.Max(list => list.Count);
-                if (maximumCount > 0)
-                    maximumRawValue = Math.Pow(maximumCount, SCALE_POWER);
+                if (buckets.Count > 0)
+                {
+                    int maximumCount = buckets.Values.Max(list => list.Count);
+                    if (maximumCount > 0)
+                        maximumRawValue = Math.Pow(maximumCount, SCALE_POWER);
+                }
+            }
+            else
+            {
+                // During panning, use the frozen scale captured at drag start
+                maximumRawValue = _frozenMaximumRawValue;
             }
 
             sortedBucketKeys = [.. buckets.Keys.OrderBy(key => key)];
@@ -640,10 +661,11 @@ namespace LogScraper.Controls
             graphics.FillRectangle(thumbBrush, thumbStart, barY, thumbWidth, ZOOM_POSITION_BAR_HEIGHT);
         }
 
-        /// <summary>Draws the amber drag-selection highlight while the user is dragging.</summary>
+        /// <summary>Draws the amber drag-selection highlight while the user is Ctrl+dragging.</summary>
         private void DrawDragSelectionOverlay(Graphics graphics, int histogramWidth, int drawableHeight)
         {
-            if (!_isDragging || _dragStartX < 0 || _dragCurrentX < 0)
+            // Only show selection overlay when in selection mode (Ctrl+drag), not panning
+            if (!_isDragging || _isDragPanning || _dragStartX < 0 || _dragCurrentX < 0)
                 return;
 
             int x1 = Math.Clamp(Math.Min(_dragStartX, _dragCurrentX), 0, histogramWidth);
@@ -1004,17 +1026,39 @@ namespace LogScraper.Controls
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            bool isCtrlPressed = (ModifierKeys & Keys.Control) == Keys.Control;
+
             // Update drag state when left button is held
             if (_dragStartX >= 0 && e.Button == MouseButtons.Left)
             {
                 int dx = Math.Abs(e.X - _dragStartX);
                 if (!_isDragging && dx >= DRAG_THRESHOLD)
+                {
                     _isDragging = true;
+                    _isDragPanning = !isCtrlPressed; // Pan mode unless Ctrl is held
+
+                    // Enable frozen scale when starting pan mode
+                    if (_isDragPanning)
+                        _frozenScaleActive = true;
+                }
 
                 if (_isDragging)
                 {
                     _dragCurrentX = e.X;
-                    SetCursor(Cursors.SizeWE);
+                    ClearHoverTooltip(); // Clear tooltip during drag
+
+                    if (_isDragPanning)
+                    {
+                        // Pan mode: adjust zoom window in real-time
+                        SetCursor(Cursors.SizeAll);
+                        ApplyPanDrag();
+                    }
+                    else
+                    {
+                        // Range selection mode: show selection overlay
+                        SetCursor(Cursors.Cross);
+                    }
+
                     this.Invalidate();
                     return;
                 }
@@ -1031,12 +1075,14 @@ namespace LogScraper.Controls
 
             if (newZoomHover != ZoomButton.None)
             {
+                ClearHoverTooltip(); // Clear tooltip when hovering over zoom buttons
                 SetCursor(Cursors.Hand);
                 return;
             }
 
             if (sortedBucketKeys.Count == 0)
             {
+                ClearHoverTooltip();
                 SetCursor(Cursors.Default);
                 return;
             }
@@ -1045,6 +1091,7 @@ namespace LogScraper.Controls
             int newBookmark = GetMarkerIndexAtPosition(e.X, e.Y, bookmarkLogEntriesInRange, BOOKMARK_MARKER_Y_OFFSET);
             if (UpdateHoveredMarker(ref hoveredBookmarkIndex, newBookmark, ref hoveredErrorIndex, ref hoveredBucketIndex))
             {
+                ClearHoverTooltip(); // Clear tooltip when hovering over markers
                 SetCursor(Cursors.Hand);
                 return;
             }
@@ -1053,6 +1100,7 @@ namespace LogScraper.Controls
             int newError = GetMarkerIndexAtPosition(e.X, e.Y, errorLogEntriesInRange, ERROR_MARKER_Y_OFFSET);
             if (UpdateHoveredMarker(ref hoveredErrorIndex, newError, ref hoveredBookmarkIndex, ref hoveredBucketIndex))
             {
+                ClearHoverTooltip(); // Clear tooltip when hovering over markers
                 SetCursor(Cursors.Hand);
                 return;
             }
@@ -1066,6 +1114,14 @@ namespace LogScraper.Controls
                 {
                     if (newBucketIndex != hoveredBucketIndex)
                     {
+                        // Hide tooltip and reset timer when moving to a different bucket
+                        if (hoverTooltipShown)
+                        {
+                            toolTip.SetToolTip(this, string.Empty);
+                            hoverTooltipShown = false;
+                        }
+                        hoverTooltipTimer.Stop();
+
                         ClearHoveredMarker(ref hoveredBucketIndex);
                         hoveredBucketIndex = newBucketIndex;
                         this.Invalidate();
@@ -1073,11 +1129,20 @@ namespace LogScraper.Controls
 
                     bool hasEntries = buckets[sortedBucketKeys[newBucketIndex]].Count > 0;
                     SetCursor(hasEntries ? Cursors.Hand : Cursors.Default);
+
+                    // Start timer for delayed tooltip (only when hovering in place, not dragging)
+                    // Allow timer to restart even if tooltip was shown before (it may have auto-hidden)
+                    if (_dragStartX < 0 && minimumTimestamp != default)
+                    {
+                        if (!hoverTooltipTimer.Enabled)
+                            hoverTooltipTimer.Start();
+                    }
                     return;
                 }
             }
 
-            // Nothing hovered
+            // Nothing hovered - clear tooltip and stop timer
+            ClearHoverTooltip();
             ClearHoveredMarker(ref hoveredBucketIndex);
             ClearHoveredMarker(ref hoveredErrorIndex);
             ClearHoveredMarker(ref hoveredBookmarkIndex);
@@ -1140,8 +1205,51 @@ namespace LogScraper.Controls
                 this.Cursor = cursor;
         }
 
+        /// <summary>
+        /// Called when hover tooltip timer expires - shows the timeline interaction hint.
+        /// </summary>
+        private void OnHoverTooltipTimerTick(object sender, EventArgs e)
+        {
+            hoverTooltipTimer.Stop();
+            if (_dragStartX < 0 && minimumTimestamp != default)
+            {
+                string tooltipText = "Tijdlijn besturing:\n" +
+                                   "• Slepen = verschuif tijdlijn\n" +
+                                   "• Ctrl+slepen = selecteer tijdbereik\n" +
+                                   "• Scrollen = zoom in/uit\n" +
+                                   "• Klikken = spring naar logpositie";
+                toolTip.SetToolTip(this, tooltipText);
+                hoverTooltipShown = true;
+            }
+        }
+
+        /// <summary>
+        /// Stops the hover tooltip timer and clears the tooltip.
+        /// Use this when leaving the control or entering non-histogram areas.
+        /// </summary>
+        private void ClearHoverTooltip()
+        {
+            hoverTooltipTimer.Stop();
+            if (hoverTooltipShown)
+            {
+                toolTip.SetToolTip(this, string.Empty);
+                hoverTooltipShown = false;
+            }
+        }
+
+        /// <summary>
+        /// Resets the hover tooltip timer without clearing the tooltip.
+        /// Use this when moving within the histogram area.
+        /// </summary>
+        private void ResetHoverTooltipTimer()
+        {
+            hoverTooltipTimer.Stop();
+            hoverTooltipShown = false;
+        }
+
         private void OnMouseLeave(object sender, EventArgs e)
         {
+            ClearHoverTooltip();
             ClearHoveredMarker(ref hoveredBucketIndex);
             ClearHoveredMarker(ref hoveredErrorIndex);
             ClearHoveredMarker(ref hoveredBookmarkIndex);
@@ -1242,6 +1350,62 @@ namespace LogScraper.Controls
             }
 
             return viewCenter;
+        }
+
+        /// <summary>
+        /// Applies a pan operation in real-time during mouse drag.
+        /// Converts the pixel drag offset to a time offset and shifts the zoom window.
+        /// Only works when zoomed; does nothing when viewing the full span.
+        /// </summary>
+        private void ApplyPanDrag()
+        {
+            if (fullSpanMinimum == default || minimumTimestamp == default)
+                return;
+
+            // Can only pan when zoomed in
+            if (!_isZoomed && _panDragStartZoomMin == fullSpanMinimum && _panDragStartZoomMax == fullSpanMaximum)
+                return;
+
+            int histogramWidth = GetHistogramWidth();
+            if (histogramWidth <= 0)
+                return;
+
+            // Calculate pixel offset (negative means dragging right = moving timeline left = going back in time)
+            int pixelOffset = _dragStartX - _dragCurrentX;
+
+            // Convert pixel offset to time offset based on the initial zoom window span
+            TimeSpan initialSpan = _panDragStartZoomMax - _panDragStartZoomMin;
+            double pixelToTimeRatio = initialSpan.TotalSeconds / histogramWidth;
+            TimeSpan timeOffset = TimeSpan.FromSeconds(pixelOffset * pixelToTimeRatio);
+
+            // Apply the time offset to the initial zoom window
+            DateTime newMin = _panDragStartZoomMin + timeOffset;
+            DateTime newMax = _panDragStartZoomMax + timeOffset;
+
+            // Clamp to full span boundaries
+            if (newMin < fullSpanMinimum)
+            {
+                TimeSpan shift = fullSpanMinimum - newMin;
+                newMin = fullSpanMinimum;
+                newMax += shift;
+            }
+
+            if (newMax > fullSpanMaximum)
+            {
+                TimeSpan shift = newMax - fullSpanMaximum;
+                newMax = fullSpanMaximum;
+                newMin -= shift;
+                if (newMin < fullSpanMinimum)
+                    newMin = fullSpanMinimum;
+            }
+
+            // Update zoom window
+            _isZoomed = true;
+            _zoomMin = newMin;
+            _zoomMax = newMax;
+
+            // Rebuild buckets and markers for the new window
+            RebuildRangeRelatedObjects();
         }
 
         /// <summary>
@@ -1371,6 +1535,22 @@ namespace LogScraper.Controls
             _dragStartX = e.X;
             _dragCurrentX = e.X;
             _isDragging = false;
+            _isDragPanning = false;
+
+            // Capture current zoom window for panning calculations
+            if (_isZoomed)
+            {
+                _panDragStartZoomMin = _zoomMin;
+                _panDragStartZoomMax = _zoomMax;
+            }
+            else
+            {
+                _panDragStartZoomMin = fullSpanMinimum;
+                _panDragStartZoomMax = fullSpanMaximum;
+            }
+
+            // Capture current scale for frozen panning
+            _frozenMaximumRawValue = maximumRawValue;
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -1380,10 +1560,21 @@ namespace LogScraper.Controls
 
             if (_isDragging)
             {
-                CommitDragSelection();
+                if (_isDragPanning)
+                {
+                    // Pan mode: disable frozen scale and recalculate for final position
+                    _frozenScaleActive = false;
+                    RebuildRangeRelatedObjects();
+                }
+                else
+                {
+                    // Range selection mode: commit the selection
+                    CommitDragSelection();
+                }
             }
 
             _isDragging = false;
+            _isDragPanning = false;
             _dragStartX = -1;
             _dragCurrentX = -1;
             this.Invalidate();
@@ -1462,8 +1653,14 @@ namespace LogScraper.Controls
             zoomInButtonRect = Rectangle.Empty;
             zoomOutButtonRect = Rectangle.Empty;
             _isDragging = false;
+            _isDragPanning = false;
             _dragStartX = -1;
             _dragCurrentX = -1;
+            _panDragStartZoomMin = default;
+            _panDragStartZoomMax = default;
+            _frozenScaleActive = false;
+            _frozenMaximumRawValue = 0;
+            ClearHoverTooltip();
 
             this.Invalidate();
         }
