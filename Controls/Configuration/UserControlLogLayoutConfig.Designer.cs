@@ -62,6 +62,7 @@ namespace LogScraper.Controls.Configuration
             TabControl = new System.Windows.Forms.TabControl();
             tabPageMetadata = new System.Windows.Forms.TabPage();
             grpMetadata = new System.Windows.Forms.GroupBox();
+            ChkMetadataCollapse = new System.Windows.Forms.CheckBox();
             ChkShowMetadataByDefault = new System.Windows.Forms.CheckBox();
             pictureBox5 = new System.Windows.Forms.PictureBox();
             pictureBox4 = new System.Windows.Forms.PictureBox();
@@ -521,6 +522,16 @@ namespace LogScraper.Controls.Configuration
             grpMetadata.TabStop = false;
             grpMetadata.Text = "Metadata";
             // 
+            // ChkMetadataCollapse
+            // 
+            ChkMetadataCollapse.Location = new System.Drawing.Point(241, 183);
+            ChkMetadataCollapse.Name = "ChkMetadataCollapse";
+            ChkMetadataCollapse.Size = new System.Drawing.Size(373, 20);
+            ChkMetadataCollapse.TabIndex = 33;
+            ChkMetadataCollapse.Text = "Standaard deze metdata inklappen";
+            ChkMetadataCollapse.UseVisualStyleBackColor = true;
+            ChkMetadataCollapse.CheckedChanged += ChkMetadataCollapse_CheckedChanged;
+            // 
             // ChkShowMetadataByDefault
             // 
             ChkShowMetadataByDefault.Location = new System.Drawing.Point(241, 157);
@@ -567,7 +578,7 @@ namespace LogScraper.Controls.Configuration
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(64, 0);
+            pictureBox1.Location = new System.Drawing.Point(155, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 21;
@@ -703,7 +714,7 @@ namespace LogScraper.Controls.Configuration
             tabPageContentFilters.Padding = new System.Windows.Forms.Padding(3);
             tabPageContentFilters.Size = new System.Drawing.Size(712, 390);
             tabPageContentFilters.TabIndex = 1;
-            tabPageContentFilters.Text = "Inhoudsfilters";
+            tabPageContentFilters.Text = "Navigatie en kleuren filters";
             tabPageContentFilters.UseVisualStyleBackColor = true;
             // 
             // GrpContent
@@ -738,7 +749,7 @@ namespace LogScraper.Controls.Configuration
             GrpContent.Size = new System.Drawing.Size(706, 384);
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
-            GrpContent.Text = "Inhoudsfilters";
+            GrpContent.Text = "Navigatie en kleuren filters";
             // 
             // pictureBox12
             // 
@@ -1103,16 +1114,6 @@ namespace LogScraper.Controls.Configuration
             toolTip.AutoPopDelay = 9999999;
             toolTip.InitialDelay = 500;
             toolTip.ReshowDelay = 100;
-            // 
-            // BtnMetadataCollapse
-            // 
-            ChkMetadataCollapse.Location = new System.Drawing.Point(241, 183);
-            ChkMetadataCollapse.Name = "BtnMetadataCollapse";
-            ChkMetadataCollapse.Size = new System.Drawing.Size(373, 20);
-            ChkMetadataCollapse.TabIndex = 33;
-            ChkMetadataCollapse.Text = "Standaard deze metdata inklappen";
-            ChkMetadataCollapse.UseVisualStyleBackColor = true;
-            ChkMetadataCollapse.CheckedChanged += ChkMetadataCollapse_CheckedChanged;
             // 
             // UserControlLogLayoutConfig
             // 

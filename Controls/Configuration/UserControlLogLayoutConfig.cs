@@ -554,7 +554,7 @@ namespace LogScraper.Controls.Configuration
                     information += $"   {property.Description}: {metadataValue}" + Environment.NewLine;
                 }
                 information += Environment.NewLine;
-                information += "Inhoudsfilters:" + Environment.NewLine;
+                information += "Navigatie en kleuren filters:" + Environment.NewLine;
                 foreach (var property in logLayout.LogContentProperties)
                 {
                     logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
