@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
@@ -20,6 +24,14 @@ namespace LogScraper.Controls.LogProviders
         {
             public string Name { get; set; }
             public string Url { get; set; }
+
+            /// <summary>
+            /// The date/time detected near this link in the source HTML (e.g. a "last modified" column in a
+            /// table row or list item). Used to restore chronological order when the server returns entries in
+            /// a different order than displayed (for example because sorting only happens client-side, via
+            /// JavaScript, after the page has loaded).
+            /// </summary>
+            public DateTime? Timestamp { get; set; }
 
             public bool Equals(HtmlLink other)
             {
@@ -343,14 +355,34 @@ namespace LogScraper.Controls.LogProviders
 
                     if (!string.IsNullOrEmpty(href))
                     {
+                        // Timestamp detection is a best-effort enhancement only: an unexpected failure for one
+                        // row (e.g. unusual markup around that specific link) must never discard an otherwise
+                        // valid link, let alone the entire result set.
+                        DateTime? timestamp;
+                        try
+                        {
+                            timestamp = TryFindRowTimestamp(anchor);
+                        }
+                        catch
+                        {
+                            timestamp = null;
+                        }
+
                         HtmlLink link = new()
                         {
                             Name = text,
-                            Url = href
+                            Url = href,
+                            Timestamp = timestamp
                         };
                         links.Add(link);
                     }
                 }
+
+                // Many servers return entries in an arbitrary (e.g. filesystem) order and only sort them
+                // chronologically client-side via JavaScript after the page has loaded. Links without a
+                // detected timestamp sort after any dated ones (keeping their relative order), so this is a
+                // safe no-op when no dates could be found at all.
+                links = [.. links.OrderByDescending(link => link.Timestamp)];
 
                 return links.Count > 0;
             }
@@ -359,6 +391,108 @@ namespace LogScraper.Controls.LogProviders
                 links = null;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Maximum number of ancestor elements to inspect, above a link, when looking for a "row" container in
+        /// non-tabular markup (lists, div/span based layouts). Keeps the search close to the link so unrelated
+        /// dates elsewhere on the page cannot be picked up by accident.
+        /// </summary>
+        private const int MaxRowContainerDepth = 5;
+
+        /// <summary>
+        /// Attempts to find a date/time value associated with the row (or list item) that contains the given
+        /// anchor. This is a generic, structure-agnostic alternative to parsing specific CSS classes/columns or
+        /// the linked file name: it inspects the text surrounding the link - the enclosing table row, list
+        /// item, or a nearby container - and tries to recognize a date/time within it.
+        /// </summary>
+        private static DateTime? TryFindRowTimestamp(HtmlAgilityPack.HtmlNode anchor)
+        {
+            // Table rows are structured enough to inspect cell-by-cell, which avoids accidentally merging
+            // unrelated column text (e.g. a file size) into a single candidate string.
+            HtmlAgilityPack.HtmlNode tableRow = anchor.Ancestors("tr").FirstOrDefault();
+            if (tableRow != null)
+            {
+                HtmlAgilityPack.HtmlNodeCollection cells = tableRow.SelectNodes(".//td");
+                if (cells != null)
+                {
+                    foreach (HtmlAgilityPack.HtmlNode cell in cells)
+                    {
+                        if (TryExtractTimestamp(cell.InnerText, out DateTime cellTimestamp)) return cellTimestamp;
+                    }
+                }
+                return null;
+            }
+
+            // For non-tabular markup (lists, or div/span based rows), climb a limited number of ancestors and
+            // stop as soon as a container is reached that still holds only this single link. That container is
+            // the most likely "row" scope, and its combined text is searched for a date/time.
+            HtmlAgilityPack.HtmlNode candidate = anchor;
+            for (int depth = 0; depth < MaxRowContainerDepth && candidate.ParentNode != null; depth++)
+            {
+                candidate = candidate.ParentNode;
+                if (candidate.Name is not ("li" or "div" or "p" or "span")) continue;
+
+                HtmlAgilityPack.HtmlNodeCollection anchorsInCandidate = candidate.SelectNodes(".//a");
+                if (anchorsInCandidate == null || anchorsInCandidate.Count > 1) break;
+
+                if (TryExtractTimestamp(candidate.InnerText, out DateTime containerTimestamp)) return containerTimestamp;
+            }
+
+            // Classic flat listings (e.g. Apache/Nginx directory indexes) place the timestamp as plain text
+            // right after the link instead of wrapping each entry in its own element.
+            return TryExtractTimestamp(GetTrailingSiblingText(anchor), out DateTime trailingTimestamp) ? trailingTimestamp : null;
+        }
+
+        /// <summary>
+        /// Collects the plain text that follows an anchor, up to the next link or line break, so a timestamp
+        /// that was not wrapped in its own row/list element can still be recognized.
+        /// </summary>
+        private static string GetTrailingSiblingText(HtmlAgilityPack.HtmlNode anchor)
+        {
+            StringBuilder text = new();
+            HtmlAgilityPack.HtmlNode sibling = anchor.NextSibling;
+            while (sibling != null && sibling.Name != "a" && sibling.Name != "br")
+            {
+                text.Append(sibling.InnerText).Append(' ');
+                sibling = sibling.NextSibling;
+            }
+            return text.ToString();
+        }
+
+        /// <summary>
+        /// Common date/time representations that may appear next to a link in a directory or file listing
+        /// (e.g. "2026-07-01T06:00:05Z", "30-Jun-2026 14:33", "Mon, 30 Jun 2026 22:00:00 GMT"). Only patterns
+        /// with unambiguous separators (-, /, :, or a textual month) are matched, so plain numbers such as file
+        /// sizes are never mistaken for a date.
+        /// </summary>
+        private static readonly Regex TimestampPattern = new(
+              @"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?"
+            + @"|\d{1,2}[-/][A-Za-z]{3}[-/]\d{2,4}([ T]\d{2}:\d{2}(:\d{2})?)?"
+            + @"|[A-Za-z]{3},?\s+\d{1,2}\s+[A-Za-z]{3}\s+\d{4}\s+\d{2}:\d{2}:\d{2}\s+GMT"
+            + @"|\d{1,2}/\d{1,2}/\d{2,4}(\s+\d{1,2}:\d{2}(:\d{2})?(\s*[AP]M)?)?",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Tries to find and parse the first recognizable date/time within the given text. Matching uses
+        /// invariant culture and results are normalized to UTC so timestamps using different formats (with or
+        /// without an explicit offset) can be compared consistently.
+        /// </summary>
+        private static bool TryExtractTimestamp(string text, out DateTime timestamp)
+        {
+            timestamp = default;
+            if (string.IsNullOrWhiteSpace(text)) return false;
+
+            foreach (Match match in TimestampPattern.Matches(text))
+            {
+                if (DateTime.TryParse(match.Value, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                    out timestamp))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void CboFolderList_SelectedIndexChanged(object sender, EventArgs e)
