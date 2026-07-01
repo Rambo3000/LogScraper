@@ -13,7 +13,7 @@
     <Version>4.0.2</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <InformationalVersion>4.0.2-alpha.1</InformationalVersion>
+    <InformationalVersion>4.0.2-alpha.2</InformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>False</Optimize>
