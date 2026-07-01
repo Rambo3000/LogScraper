@@ -122,14 +122,11 @@ namespace LogScraper.Utilities
                         root.GetProperty("tag_name").GetString(), root.GetProperty("html_url").GetString(), root.GetProperty("prerelease").GetBoolean());
                 }
 
+                // When prereleases are included, return the first (newest) release regardless of whether it's a prerelease or stable release
                 foreach (JsonElement release in document.RootElement.EnumerateArray())
                 {
-                    if (!release.GetProperty("prerelease").GetBoolean())
-                    {
-                        continue;
-                    }
-
-                    return (release.GetProperty("tag_name").GetString(), release.GetProperty("html_url").GetString(), true);
+                    bool isPrerelease = release.GetProperty("prerelease").GetBoolean();
+                    return (release.GetProperty("tag_name").GetString(), release.GetProperty("html_url").GetString(), isPrerelease);
                 }
             }
             catch (Exception ex)
