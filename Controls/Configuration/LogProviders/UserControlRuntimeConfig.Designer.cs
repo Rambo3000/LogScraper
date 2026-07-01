@@ -41,6 +41,9 @@ namespace LogScraper.Controls.Configuration.LogProviders
             TxtUrl = new ValidatedTextBox();
             GrpRuntimes = new System.Windows.Forms.GroupBox();
             grpRuntime = new System.Windows.Forms.GroupBox();
+            pictureBox4 = new System.Windows.Forms.PictureBox();
+            ChkFilterUrlName = new System.Windows.Forms.CheckBox();
+            TxtFilterUrlName = new ValidatedTextBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -66,6 +69,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             PnlUsedForScalingCompatibility = new System.Windows.Forms.Panel();
             GrpRuntimes.SuspendLayout();
             grpRuntime.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -80,14 +84,14 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LstUrls.IntegralHeight = false;
             LstUrls.Location = new System.Drawing.Point(6, 22);
             LstUrls.Name = "LstUrls";
-            LstUrls.Size = new System.Drawing.Size(232, 399);
+            LstUrls.Size = new System.Drawing.Size(232, 478);
             LstUrls.TabIndex = 0;
             LstUrls.SelectedIndexChanged += LstUrls_SelectedIndexChanged;
             // 
             // BtnAddUrl
             // 
             BtnAddUrl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnAddUrl.Location = new System.Drawing.Point(6, 427);
+            BtnAddUrl.Location = new System.Drawing.Point(6, 506);
             BtnAddUrl.Name = "BtnAddUrl";
             BtnAddUrl.Size = new System.Drawing.Size(80, 23);
             BtnAddUrl.TabIndex = 1;
@@ -98,7 +102,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             // BtnRemoveUrl
             // 
             BtnRemoveUrl.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnRemoveUrl.Location = new System.Drawing.Point(92, 427);
+            BtnRemoveUrl.Location = new System.Drawing.Point(92, 506);
             BtnRemoveUrl.Name = "BtnRemoveUrl";
             BtnRemoveUrl.Size = new System.Drawing.Size(80, 23);
             BtnRemoveUrl.TabIndex = 2;
@@ -110,7 +114,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             // 
             BtnUrlUp.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnUrlUp.Image = Properties.Resources.up;
-            BtnUrlUp.Location = new System.Drawing.Point(192, 427);
+            BtnUrlUp.Location = new System.Drawing.Point(192, 506);
             BtnUrlUp.Name = "BtnUrlUp";
             BtnUrlUp.Size = new System.Drawing.Size(22, 23);
             BtnUrlUp.TabIndex = 3;
@@ -121,7 +125,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             // 
             BtnUrlDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             BtnUrlDown.Image = Properties.Resources.down;
-            BtnUrlDown.Location = new System.Drawing.Point(216, 427);
+            BtnUrlDown.Location = new System.Drawing.Point(216, 506);
             BtnUrlDown.Name = "BtnUrlDown";
             BtnUrlDown.Size = new System.Drawing.Size(22, 23);
             BtnUrlDown.TabIndex = 4;
@@ -162,7 +166,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             GrpRuntimes.Controls.Add(BtnUrlDown);
             GrpRuntimes.Location = new System.Drawing.Point(0, 34);
             GrpRuntimes.Name = "GrpRuntimes";
-            GrpRuntimes.Size = new System.Drawing.Size(868, 456);
+            GrpRuntimes.Size = new System.Drawing.Size(868, 535);
             GrpRuntimes.TabIndex = 8;
             GrpRuntimes.TabStop = false;
             GrpRuntimes.Text = "Urls";
@@ -170,6 +174,9 @@ namespace LogScraper.Controls.Configuration.LogProviders
             // grpRuntime
             // 
             grpRuntime.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            grpRuntime.Controls.Add(pictureBox4);
+            grpRuntime.Controls.Add(ChkFilterUrlName);
+            grpRuntime.Controls.Add(TxtFilterUrlName);
             grpRuntime.Controls.Add(pictureBox3);
             grpRuntime.Controls.Add(pictureBox2);
             grpRuntime.Controls.Add(pictureBox1);
@@ -185,16 +192,52 @@ namespace LogScraper.Controls.Configuration.LogProviders
             grpRuntime.Controls.Add(TxtDescription);
             grpRuntime.Location = new System.Drawing.Point(244, 16);
             grpRuntime.Name = "grpRuntime";
-            grpRuntime.Size = new System.Drawing.Size(618, 405);
+            grpRuntime.Size = new System.Drawing.Size(618, 484);
             grpRuntime.TabIndex = 14;
             grpRuntime.TabStop = false;
             grpRuntime.Text = "Urls";
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            pictureBox4.Image = Properties.Resources.help;
+            pictureBox4.Location = new System.Drawing.Point(596, 163);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new System.Drawing.Size(16, 16);
+            pictureBox4.TabIndex = 42;
+            pictureBox4.TabStop = false;
+            Tooltip.SetToolTip(pictureBox4, "Kort de namen van de logbestanden in door bepaalde delen tekst uit de bestandsnaam te verwijderen. \r\nGeef de te verwijderen delen van tekst op, geef meerdere delen op door deze met spatie te scheiden.");
+            // 
+            // ChkFilterUrlName
+            // 
+            ChkFilterUrlName.Location = new System.Drawing.Point(8, 160);
+            ChkFilterUrlName.Name = "ChkFilterUrlName";
+            ChkFilterUrlName.Size = new System.Drawing.Size(363, 19);
+            ChkFilterUrlName.TabIndex = 41;
+            ChkFilterUrlName.Text = "Verwijder woorden uit de name van logbestanden";
+            ChkFilterUrlName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            ChkFilterUrlName.UseVisualStyleBackColor = true;
+            ChkFilterUrlName.CheckedChanged += ChkFilterUrlName_CheckedChanged;
+            // 
+            // TxtFilterUrlName
+            // 
+            TxtFilterUrlName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtFilterUrlName.BackColor = System.Drawing.Color.MistyRose;
+            TxtFilterUrlName.Enabled = false;
+            TxtFilterUrlName.ForeColor = System.Drawing.SystemColors.WindowText;
+            TxtFilterUrlName.IsRequired = true;
+            TxtFilterUrlName.IsWhiteSpaceAllowed = false;
+            TxtFilterUrlName.Location = new System.Drawing.Point(8, 185);
+            TxtFilterUrlName.Name = "TxtFilterUrlName";
+            TxtFilterUrlName.Size = new System.Drawing.Size(604, 23);
+            TxtFilterUrlName.TabIndex = 40;
+            TxtFilterUrlName.TextChanged += TxtFilterUrlName_TextChanged;
             // 
             // pictureBox3
             // 
             pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             pictureBox3.Image = (System.Drawing.Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new System.Drawing.Point(596, 160);
+            pictureBox3.Location = new System.Drawing.Point(596, 214);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new System.Drawing.Size(16, 16);
             pictureBox3.TabIndex = 11;
@@ -255,7 +298,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             GrpWebFormSettings.Controls.Add(TxtPasswordFieldName);
             GrpWebFormSettings.Controls.Add(TxtUserFieldName);
             GrpWebFormSettings.Controls.Add(TxtLoginPageUrl);
-            GrpWebFormSettings.Location = new System.Drawing.Point(20, 185);
+            GrpWebFormSettings.Location = new System.Drawing.Point(20, 239);
             GrpWebFormSettings.Name = "GrpWebFormSettings";
             GrpWebFormSettings.Size = new System.Drawing.Size(592, 155);
             GrpWebFormSettings.TabIndex = 37;
@@ -346,7 +389,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             // 
             // ChkWebFormLogin
             // 
-            ChkWebFormLogin.Location = new System.Drawing.Point(8, 160);
+            ChkWebFormLogin.Location = new System.Drawing.Point(8, 214);
             ChkWebFormLogin.Name = "ChkWebFormLogin";
             ChkWebFormLogin.Size = new System.Drawing.Size(363, 19);
             ChkWebFormLogin.TabIndex = 36;
@@ -359,18 +402,18 @@ namespace LogScraper.Controls.Configuration.LogProviders
             TxtTestMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             TxtTestMessage.BackColor = System.Drawing.SystemColors.Control;
             TxtTestMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            TxtTestMessage.Location = new System.Drawing.Point(108, 369);
+            TxtTestMessage.Location = new System.Drawing.Point(108, 400);
             TxtTestMessage.Multiline = true;
             TxtTestMessage.Name = "TxtTestMessage";
             TxtTestMessage.ReadOnly = true;
-            TxtTestMessage.Size = new System.Drawing.Size(504, 30);
+            TxtTestMessage.Size = new System.Drawing.Size(504, 78);
             TxtTestMessage.TabIndex = 35;
             TxtTestMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // BtnTest
             // 
             BtnTest.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
-            BtnTest.Location = new System.Drawing.Point(6, 372);
+            BtnTest.Location = new System.Drawing.Point(6, 451);
             BtnTest.Name = "BtnTest";
             BtnTest.Size = new System.Drawing.Size(96, 27);
             BtnTest.TabIndex = 16;
@@ -430,7 +473,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             PnlUsedForScalingCompatibility.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForScalingCompatibility.Location = new System.Drawing.Point(0, 0);
             PnlUsedForScalingCompatibility.Name = "PnlUsedForScalingCompatibility";
-            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(868, 493);
+            PnlUsedForScalingCompatibility.Size = new System.Drawing.Size(868, 572);
             PnlUsedForScalingCompatibility.TabIndex = 11;
             // 
             // UserControlRuntimeConfig
@@ -439,10 +482,11 @@ namespace LogScraper.Controls.Configuration.LogProviders
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForScalingCompatibility);
             Name = "UserControlRuntimeConfig";
-            Size = new System.Drawing.Size(868, 493);
+            Size = new System.Drawing.Size(868, 572);
             GrpRuntimes.ResumeLayout(false);
             grpRuntime.ResumeLayout(false);
             grpRuntime.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -487,5 +531,8 @@ namespace LogScraper.Controls.Configuration.LogProviders
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Panel PnlUsedForScalingCompatibility;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.CheckBox ChkFilterUrlName;
+        private ValidatedTextBox TxtFilterUrlName;
     }
 }

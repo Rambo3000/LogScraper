@@ -23,6 +23,13 @@ namespace LogScraper.Controls.LogProviders
         private class HtmlLink : IEquatable<HtmlLink>
         {
             public string Name { get; set; }
+
+            /// <summary>
+            /// The name used for display in the selection list. Equal to <see cref="Name"/> unless the
+            /// containing runtime instance has filtering enabled, in which case the configured words have been
+            /// removed to improve readability.
+            /// </summary>
+            public string NameFiltered { get; set; }
             public string Url { get; set; }
 
             /// <summary>
@@ -44,7 +51,7 @@ namespace LogScraper.Controls.LogProviders
 
             public override string ToString()
             {
-                return Name;
+                return NameFiltered;
             }
             public override int GetHashCode()
             {
@@ -232,7 +239,8 @@ namespace LogScraper.Controls.LogProviders
 
             Thread.Sleep(100);
             string html = sourceAdapter.GetLog();
-            if (TryParseHtmlLinks(html, SelectedRuntimeInstance.UrlRuntimeLog, out List<HtmlLink> links))
+            List<string> filterUrlNameValues = SelectedRuntimeInstance.FilterUrlName ? SelectedRuntimeInstance.FilterUrlNameValues : null;
+            if (TryParseHtmlLinks(html, SelectedRuntimeInstance.UrlRuntimeLog, filterUrlNameValues, out List<HtmlLink> links))
             {
                 CboFileList.Items.AddRange([.. links]);
                 UpdateFolderAndFileControls();
@@ -259,7 +267,7 @@ namespace LogScraper.Controls.LogProviders
             Thread.Sleep(100);
             string html = sourceAdapter.GetLog();
 
-            if (TryParseHtmlLinks(html, SelectedRuntimeInstance.UrlRuntimeLog, out List<HtmlLink> links))
+            if (TryParseHtmlLinks(html, SelectedRuntimeInstance.UrlRuntimeLog, null, out List<HtmlLink> links))
             {
                 CboFolderList.Items.AddRange([.. links]);
                 UpdateFolderAndFileControls();
@@ -309,7 +317,7 @@ namespace LogScraper.Controls.LogProviders
 
             }
         }
-        private static bool TryParseHtmlLinks(string html, string baseUrl, out List<HtmlLink> links)
+        private static bool TryParseHtmlLinks(string html, string baseUrl, List<string> filterUrlNameValues, out List<HtmlLink> links)
         {
             links = [];
 
@@ -368,9 +376,17 @@ namespace LogScraper.Controls.LogProviders
                             timestamp = null;
                         }
 
+                        string nameFiltered = text;
+                        if (filterUrlNameValues != null && filterUrlNameValues.Count > 0)
+                        {
+                            foreach (string filterValue in filterUrlNameValues)
+                                nameFiltered = nameFiltered.Replace(filterValue, "");
+                        }
+
                         HtmlLink link = new()
                         {
                             Name = text,
+                            NameFiltered = nameFiltered,
                             Url = href,
                             Timestamp = timestamp
                         };

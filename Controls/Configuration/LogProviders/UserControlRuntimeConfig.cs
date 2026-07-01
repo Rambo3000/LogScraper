@@ -52,7 +52,9 @@ namespace LogScraper.Controls.Configuration.LogProviders
                         Description = runtime.Description,
                         UrlRuntimeLog = runtime.UrlRuntimeLog,
                         IsUrlLinkToHtmlFileList = runtime.IsUrlLinkToHtmlFileList,
-                        IsUrlLinkToHtmlFolderList = runtime.IsUrlLinkToHtmlFolderList
+                        IsUrlLinkToHtmlFolderList = runtime.IsUrlLinkToHtmlFolderList,
+                        FilterUrlName = runtime.FilterUrlName,
+                        FilterUrlNameValues = [.. runtime.FilterUrlNameValues ?? []]
                     };
                     if (runtime.HttpAuthenticationSettings != null)
                     {
@@ -131,6 +133,11 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 if (instance.HttpAuthenticationSettings != null && string.IsNullOrWhiteSpace(instance.HttpAuthenticationSettings.LoginPageUrl))
                 {
                     errorMessages.Add($"Url '{instance.Description}' moet een login url hebben");
+                }
+
+                if (instance.FilterUrlName && (instance.FilterUrlNameValues == null || instance.FilterUrlNameValues.All(string.IsNullOrWhiteSpace)))
+                {
+                    errorMessages.Add($"Url '{instance.Description}' moet minimaal één woord opgeven om uit de naam van het logbestand te verwijderen.");
                 }
 
             }
@@ -228,6 +235,8 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 ChkWebFormLogin.Checked = selected.HttpAuthenticationSettings != null && selected.HttpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf;
                 ChkUrlLinksToHtmlFileList.Checked = selected.IsUrlLinkToHtmlFileList;
                 ChkUrlLinksToHtmlFolderList.Checked = selected.IsUrlLinkToHtmlFolderList;
+                ChkFilterUrlName.Checked = selected.FilterUrlName;
+                TxtFilterUrlName.Text = string.Join(" ", selected.FilterUrlNameValues ?? []);
                 TxtLoginPageUrl.Text = selected.HttpAuthenticationSettings?.LoginPageUrl ?? string.Empty;
                 TxtUserFieldName.Text = selected.HttpAuthenticationSettings?.UserFieldName;
                 TxtPasswordFieldName.Text = selected.HttpAuthenticationSettings?.PasswordFieldName;
@@ -391,6 +400,24 @@ namespace LogScraper.Controls.Configuration.LogProviders
                     ChkUrlLinksToHtmlFileList.Checked = false;
                 }
             }
+        }
+
+        private void ChkFilterUrlName_CheckedChanged(object sender, EventArgs e)
+        {
+            TxtFilterUrlName.Enabled = ChkFilterUrlName.Checked;
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            {
+                selected.FilterUrlName = ChkFilterUrlName.Checked;
+            }
+        }
+
+        private void TxtFilterUrlName_TextChanged(object sender, EventArgs e)
+        {
+            if (UpdatingUrlInformation) return;
+
+            if (LstUrls.SelectedItem is RuntimeInstance selected) selected.FilterUrlNameValues = [.. TxtFilterUrlName.Text.Split(' ')];
         }
     }
 }

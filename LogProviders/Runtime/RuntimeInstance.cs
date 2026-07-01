@@ -1,4 +1,5 @@
-﻿using LogScraper.Sources.Adapters.Http;
+﻿using System.Collections.Generic;
+using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.LogProviders.Runtime
 {
@@ -24,6 +25,20 @@ namespace LogScraper.LogProviders.Runtime
         public HttpAuthenticationSettings HttpAuthenticationSettings { get; set; }
         public bool IsUrlLinkToHtmlFolderList { get; set; }
         public bool IsUrlLinkToHtmlFileList { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the names of the log files (shown when browsing an HTML file
+        /// list) should be filtered in the user interface.
+        /// </summary>
+        /// <remarks>When enabled, the configured <see cref="FilterUrlNameValues"/> are removed from the
+        /// log file name to improve readability. This setting does not affect the actual URL used to retrieve the
+        /// log file.</remarks>
+        public bool FilterUrlName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of values used to filter the log file name. This list is only used if <see cref="FilterUrlName"/> is set to true.
+        /// </summary>
+        public List<string> FilterUrlNameValues { get; set; }
 
         /// <summary>
         /// Returns the string representation of the endpoint.
