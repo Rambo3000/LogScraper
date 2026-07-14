@@ -214,7 +214,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkFilterUrlName.Name = "ChkFilterUrlName";
             ChkFilterUrlName.Size = new System.Drawing.Size(363, 19);
             ChkFilterUrlName.TabIndex = 41;
-            ChkFilterUrlName.Text = "Verwijder woorden uit de name van logbestanden";
+            ChkFilterUrlName.Text = "Verwijder woorden uit de naam van logbestanden";
             ChkFilterUrlName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             ChkFilterUrlName.UseVisualStyleBackColor = true;
             ChkFilterUrlName.CheckedChanged += ChkFilterUrlName_CheckedChanged;
