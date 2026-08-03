@@ -28,7 +28,6 @@ namespace LogScraper.Controls
             set
             {
                 _isPinned = value;
-                UpdatePinButtonImage();
             }
         }
         public bool IsCollapsed => _isCollapsed;
@@ -330,7 +329,6 @@ namespace LogScraper.Controls
             cboLogLayout.Visible = false;
             PnlLogProviders.Visible = false;
             BtnCollapseExpand.ImageIndex = 1;
-            btnPin.Visible = false;
             _isCollapsed = true;
             UpdateProviderDescription();
             Height = CollapsedHeight;
@@ -345,7 +343,6 @@ namespace LogScraper.Controls
             cboLogLayout.Visible = true;
             PnlLogProviders.Visible = true;
             BtnCollapseExpand.ImageIndex = 0;
-            btnPin.Visible = true;
             _isCollapsed = false;
             Height = ExpandedHeight;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
@@ -364,12 +361,6 @@ namespace LogScraper.Controls
         private void TogglePinButton()
         {
             _isPinned = !_isPinned;
-            UpdatePinButtonImage();
-        }
-
-        private void UpdatePinButtonImage()
-        {
-            btnPin.ImageIndex = _isPinned ? 1 : 0;
         }
 
         private void LogProviderSelectionControl_Leave(object sender, EventArgs e)

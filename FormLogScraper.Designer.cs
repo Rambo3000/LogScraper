@@ -39,7 +39,7 @@ namespace LogScraper
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogScraper));
             BtnConfig = new System.Windows.Forms.Button();
             BtnFormRecord = new System.Windows.Forms.Button();
-            PreReleaseBadgeControl = new LogScraper.Controls.PreReleaseBadgeControl();
+            PreReleaseBadgeControl = new PreReleaseBadgeControl();
             LogProviderSelectionControl = new LogProviderSelectionControl();
             SplitContainerViewportAndNavigation = new SplitContainerWithGrip();
             SplitContainerTimeLineAndViewport = new SplitContainerWithGrip();
@@ -62,6 +62,7 @@ namespace LogScraper
             SearchResultListControl = new SearchResultListControl();
             ErrorListControl = new ErrorListControl();
             ContentNavigationControl = new ContentNavigationControl();
+            ProcessingStatusBarControl = new ProcessingStatusBarControl();
             LogMetadataFiltersOverviewControl = new LogMetadataFiltersOverviewControl();
             SplitContainerMain = new SplitContainerWithGrip();
             SplitContainerSourceControlAndMetadata = new System.Windows.Forms.SplitContainer();
@@ -130,6 +131,15 @@ namespace LogScraper
             ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-W]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
+            // 
+            // PreReleaseBadgeControl
+            // 
+            PreReleaseBadgeControl.Location = new System.Drawing.Point(203, 3);
+            PreReleaseBadgeControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            PreReleaseBadgeControl.MinimumSize = new System.Drawing.Size(15, 15);
+            PreReleaseBadgeControl.Name = "PreReleaseBadgeControl";
+            PreReleaseBadgeControl.Size = new System.Drawing.Size(55, 25);
+            PreReleaseBadgeControl.TabIndex = 51;
             // 
             // LogProviderSelectionControl
             // 
@@ -392,6 +402,19 @@ namespace LogScraper
             ContentNavigationControl.Size = new System.Drawing.Size(315, 608);
             ContentNavigationControl.TabIndex = 0;
             // 
+            // ProcessingStatusBarControl
+            // 
+            ProcessingStatusBarControl.Dock = System.Windows.Forms.DockStyle.Bottom;
+            ProcessingStatusBarControl.IconProcessing = (System.Drawing.Image)resources.GetObject("ProcessingStatusBarControl.IconProcessing");
+            ProcessingStatusBarControl.IconRetrieving = (System.Drawing.Image)resources.GetObject("ProcessingStatusBarControl.IconRetrieving");
+            ProcessingStatusBarControl.IconWaiting = (System.Drawing.Image)resources.GetObject("ProcessingStatusBarControl.IconWaiting");
+            ProcessingStatusBarControl.Location = new System.Drawing.Point(0, 588);
+            ProcessingStatusBarControl.Name = "ProcessingStatusBarControl";
+            ProcessingStatusBarControl.Padding = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            ProcessingStatusBarControl.Size = new System.Drawing.Size(1220, 22);
+            ProcessingStatusBarControl.TabIndex = 14;
+            ProcessingStatusBarControl.Visible = false;
+            // 
             // LogMetadataFiltersOverviewControl
             // 
             LogMetadataFiltersOverviewControl.AutoScroll = true;
@@ -473,13 +496,6 @@ namespace LogScraper
             SplitContainerSourceControlAndLogProviders.SplitterWidth = 1;
             SplitContainerSourceControlAndLogProviders.TabIndex = 0;
             // 
-            // PreReleaseBadgeControl
-            // 
-            PreReleaseBadgeControl.Location = new System.Drawing.Point(203, 3);
-            PreReleaseBadgeControl.Name = "PreReleaseBadgeControl";
-            PreReleaseBadgeControl.Size = new System.Drawing.Size(55, 25);
-            PreReleaseBadgeControl.TabIndex = 51;
-            // 
             // BtnReset
             // 
             BtnReset.Image = (System.Drawing.Image)resources.GetObject("BtnReset.Image");
@@ -525,6 +541,7 @@ namespace LogScraper
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1220, 610);
             Controls.Add(SplitContainerMain);
+            Controls.Add(ProcessingStatusBarControl);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "FormLogScraper";
@@ -600,5 +617,6 @@ namespace LogScraper
         private System.Windows.Forms.SplitContainer SplitContainerActiveFiltersViewport;
         private System.Windows.Forms.SplitContainer SplitContainerSourceControlAndLogProviders;
         private System.Windows.Forms.Panel PnlSaveAndExternalEditor;
+        private LogScraper.Controls.ProcessingStatusBarControl ProcessingStatusBarControl;
     }
 }
