@@ -51,6 +51,7 @@ namespace LogScraper.Controls.Viewport
             LogAppState.Instance.RawLogFallback.Changed += OnRawLogFallbackChanged;
             LogAppState.Instance.ProcessingState.Changed += OnProcessingStateChanged;
             LblPaused.Click += OnLblPausedClick;
+            InitializeMarkContextMenu();
         }
 
         private void OnLblPausedClick(object sender, EventArgs e)
@@ -226,6 +227,9 @@ namespace LogScraper.Controls.Viewport
 
                 // Show bookmarks if used, after the logEntriesRenderMapCache is set
                 ApplyBookmarks();
+
+                // Re-apply all active marks, since the log content has been re-rendered
+                ApplyMarks();
 
                 //Raise the event that the visible range changed
                 RaiseVisibleRangeChanged(true);
@@ -450,5 +454,108 @@ namespace LogScraper.Controls.Viewport
             TxtLogEntries.SetBookMargeMarginVisibily(bookmarksLineToApply.Any());
             TxtLogEntries.ApplyLineIndicators(INDICATOR_BOOKMARK, MARKER_BOOKMARK, bookmarksLineToApply);
         }
+
+        #region Mark (highlight all occurrences of the selected text)
+
+        /// <summary>
+        /// Maps a mark color index (0..MARK_COLOR_COUNT-1) to the text that is currently marked with that color.
+        /// </summary>
+        private readonly Dictionary<int, string> _marks = [];
+
+        private void InitializeMarkContextMenu()
+        {
+            ContextMenuStripViewport.Opening += ContextMenuStripViewport_Opening;
+
+            ItemCopy.Click += (s, e) => TxtLogEntries.Copy();
+            ItemSelectAll.Click += (s, e) => TxtLogEntries.SelectAll();
+            ItemMarkReset.Click += (s, e) => ResetMarks();
+
+            ToolStripMenuItem[] markColorItems = [ItemMarkColor1, ItemMarkColor2, ItemMarkColor3, ItemMarkColor4, ItemMarkColor5];
+            for (int colorIndex = 0; colorIndex < markColorItems.Length; colorIndex++)
+            {
+                markColorItems[colorIndex].Image = CreateColorSwatch(MarkColors[colorIndex]);
+                int capturedColorIndex = colorIndex;
+                markColorItems[colorIndex].Click += (s, e) => MarkSelectedText(capturedColorIndex);
+            }
+        }
+
+        private static Bitmap CreateColorSwatch(Color color)
+        {
+            Bitmap bitmap = new(16, 16);
+            using Graphics graphics = Graphics.FromImage(bitmap);
+            using SolidBrush brush = new(color);
+            graphics.FillRectangle(brush, 0, 0, 15, 15);
+            using Pen pen = new(Color.FromArgb(90, 90, 90));
+            graphics.DrawRectangle(pen, 0, 0, 15, 15);
+            return bitmap;
+        }
+
+        private void ContextMenuStripViewport_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string selectedText = TxtLogEntries.SelectedText;
+            bool isEligibleForMark = IsEligibleForMark(selectedText);
+
+            ItemCopy.Enabled = !string.IsNullOrEmpty(selectedText);
+            ItemMarkColor1.Enabled = isEligibleForMark;
+            ItemMarkColor2.Enabled = isEligibleForMark;
+            ItemMarkColor3.Enabled = isEligibleForMark;
+            ItemMarkColor4.Enabled = isEligibleForMark;
+            ItemMarkColor5.Enabled = isEligibleForMark;
+            ItemMarkReset.Enabled = _marks.Count > 0;
+        }
+
+        /// <summary>
+        /// A selection is eligible to be marked when it contains at least 3 characters and does not span multiple lines.
+        /// </summary>
+        private static bool IsEligibleForMark(string selectedText)
+        {
+            return !string.IsNullOrEmpty(selectedText)
+                && selectedText.Length >= 3
+                && !selectedText.Contains('\n')
+                && !selectedText.Contains('\r');
+        }
+
+        private void MarkSelectedText(int colorIndex)
+        {
+            string selectedText = TxtLogEntries.SelectedText;
+            if (!IsEligibleForMark(selectedText)) return;
+
+            // Remove this exact text from any other color it may already be marked with
+            foreach (int existingColorIndex in _marks.Where(mark => mark.Value == selectedText).Select(mark => mark.Key).ToList())
+            {
+                _marks.Remove(existingColorIndex);
+            }
+
+            _marks[colorIndex] = selectedText;
+            ApplyMarks();
+        }
+
+        private void ResetMarks()
+        {
+            if (_marks.Count == 0) return;
+
+            _marks.Clear();
+            ApplyMarks();
+        }
+
+        /// <summary>
+        /// (Re-)applies all currently active marks to the log text. Called whenever the log content is re-rendered.
+        /// </summary>
+        private void ApplyMarks()
+        {
+            for (int colorIndex = 0; colorIndex < MARK_COLOR_COUNT; colorIndex++)
+            {
+                if (_marks.TryGetValue(colorIndex, out string markedText))
+                {
+                    TxtLogEntries.ApplyMarkOccurrences(colorIndex, markedText);
+                }
+                else
+                {
+                    TxtLogEntries.ClearMarkIndicator(colorIndex);
+                }
+            }
+        }
+
+        #endregion
     }
 }

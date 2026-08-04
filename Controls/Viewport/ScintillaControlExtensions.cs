@@ -14,8 +14,23 @@ namespace LogScraper.Controls.Viewport
         public const int INDICATOR_CAROT_LINE = 10;
         public const int INDICATOR_SEARCH = 20;
         public const int INDICATOR_BOOKMARK = 30;
+        public const int INDICATOR_MARK_BASE = 21;
+        public const int MARK_COLOR_COUNT = 5;
         public const int MARGIN_BOOKMARK = 1;
         public const int MARKER_BOOKMARK = 1;
+
+        /// <summary>
+        /// Static set of colors that can be used to mark (highlight all occurrences of) selected text.
+        /// Yellow is intentionally excluded as it is reserved for the search indicator.
+        /// </summary>
+        public static readonly Color[] MarkColors =
+        [
+            Color.FromArgb(144, 238, 144), // Light green
+            Color.FromArgb(135, 206, 250), // Light sky blue
+            Color.FromArgb(255, 182, 193), // Light pink
+            Color.FromArgb(221, 160, 221), // Plum
+            Color.FromArgb(255, 165, 0),   // Orange
+        ];
 
         /// <summary>
         /// Initializes custom indicators for highlighting and search in the Scintilla control.
@@ -36,6 +51,17 @@ namespace LogScraper.Controls.Viewport
             scintillaControl.Indicators[INDICATOR_SEARCH].ForeColor = Color.Yellow;
             scintillaControl.Indicators[INDICATOR_SEARCH].Alpha = 255;
             scintillaControl.Indicators[INDICATOR_SEARCH].OutlineAlpha = 200;
+
+            // Mark indicators (highlight all occurrences of selected text)
+            for (int markColorIndex = 0; markColorIndex < MARK_COLOR_COUNT; markColorIndex++)
+            {
+                Indicator markIndicator = scintillaControl.Indicators[INDICATOR_MARK_BASE + markColorIndex];
+                markIndicator.Style = IndicatorStyle.StraightBox;
+                markIndicator.Under = true;
+                markIndicator.ForeColor = MarkColors[markColorIndex];
+                markIndicator.Alpha = 255;
+                markIndicator.OutlineAlpha = 200;
+            }
 
             // Bookmark indicator
             scintillaControl.Indicators[INDICATOR_BOOKMARK].Style = IndicatorStyle.RoundBox;
@@ -533,6 +559,46 @@ namespace LogScraper.Controls.Viewport
                 scintillaControl.TargetEnd = scintillaControl.TextLength;
                 pos = scintillaControl.SearchInTarget(searchText);
             }
+        }
+
+        /// <summary>
+        /// Highlights all occurrences of the specified text using the mark indicator associated with the given color index.
+        /// </summary>
+        /// <param name="scintillaControl">The Scintilla control to highlight in.</param>
+        /// <param name="colorIndex">The zero-based mark color index (0..MARK_COLOR_COUNT-1).</param>
+        /// <param name="searchText">The text whose occurrences should be highlighted.</param>
+        public static void ApplyMarkOccurrences(this Scintilla scintillaControl, int colorIndex, string searchText)
+        {
+            int indicatorIndex = INDICATOR_MARK_BASE + colorIndex;
+
+            scintillaControl.IndicatorCurrent = indicatorIndex;
+            scintillaControl.IndicatorClearRange(0, scintillaControl.TextLength);
+
+            if (string.IsNullOrEmpty(searchText)) return;
+
+            scintillaControl.TargetStart = 0;
+            scintillaControl.TargetEnd = scintillaControl.TextLength;
+            scintillaControl.SearchFlags = SearchFlags.MatchCase;
+
+            int pos = scintillaControl.SearchInTarget(searchText);
+            while (pos >= 0)
+            {
+                scintillaControl.IndicatorFillRange(scintillaControl.TargetStart, scintillaControl.TargetEnd - scintillaControl.TargetStart);
+                scintillaControl.TargetStart = scintillaControl.TargetEnd;
+                scintillaControl.TargetEnd = scintillaControl.TextLength;
+                pos = scintillaControl.SearchInTarget(searchText);
+            }
+        }
+
+        /// <summary>
+        /// Clears the mark highlight associated with the given color index.
+        /// </summary>
+        /// <param name="scintillaControl">The Scintilla control to clear the highlight from.</param>
+        /// <param name="colorIndex">The zero-based mark color index (0..MARK_COLOR_COUNT-1).</param>
+        public static void ClearMarkIndicator(this Scintilla scintillaControl, int colorIndex)
+        {
+            scintillaControl.IndicatorCurrent = INDICATOR_MARK_BASE + colorIndex;
+            scintillaControl.IndicatorClearRange(0, scintillaControl.TextLength);
         }
 
         /// <summary>

@@ -30,16 +30,30 @@
         {
             components = new System.ComponentModel.Container();
             TxtLogEntries = new ScintillaNET.Scintilla();
+            ContextMenuStripViewport = new System.Windows.Forms.ContextMenuStrip(components);
+            ItemCopy = new System.Windows.Forms.ToolStripMenuItem();
+            ItemSelectAll = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripSeparatorMark = new System.Windows.Forms.ToolStripSeparator();
+            ItemMark = new System.Windows.Forms.ToolStripMenuItem();
+            ItemMarkColor1 = new System.Windows.Forms.ToolStripMenuItem();
+            ItemMarkColor2 = new System.Windows.Forms.ToolStripMenuItem();
+            ItemMarkColor3 = new System.Windows.Forms.ToolStripMenuItem();
+            ItemMarkColor4 = new System.Windows.Forms.ToolStripMenuItem();
+            ItemMarkColor5 = new System.Windows.Forms.ToolStripMenuItem();
+            ToolStripSeparatorMarkReset = new System.Windows.Forms.ToolStripSeparator();
+            ItemMarkReset = new System.Windows.Forms.ToolStripMenuItem();
             toolTip1 = new System.Windows.Forms.ToolTip(components);
             LblExplenation = new System.Windows.Forms.Label();
             LblExplenation2 = new System.Windows.Forms.Label();
             LblLoading = new System.Windows.Forms.Label();
+            ContextMenuStripViewport.SuspendLayout();
             SuspendLayout();
             // 
             // TxtLogEntries
             // 
             TxtLogEntries.AutoCMaxHeight = 9;
             TxtLogEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            TxtLogEntries.ContextMenuStrip = ContextMenuStripViewport;
             TxtLogEntries.Dock = System.Windows.Forms.DockStyle.Fill;
             TxtLogEntries.Location = new System.Drawing.Point(0, 0);
             TxtLogEntries.Name = "TxtLogEntries";
@@ -48,6 +62,77 @@
             TxtLogEntries.TabIndents = true;
             TxtLogEntries.TabIndex = 42;
             TxtLogEntries.UpdateUI += TrackedScintilla_UpdateUI;
+            // 
+            // ContextMenuStripViewport
+            // 
+            ContextMenuStripViewport.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemCopy, ItemSelectAll, ToolStripSeparatorMark, ItemMark });
+            ContextMenuStripViewport.Name = "ContextMenuStripViewport";
+            ContextMenuStripViewport.Size = new System.Drawing.Size(180, 76);
+            // 
+            // ItemCopy
+            // 
+            ItemCopy.Name = "ItemCopy";
+            ItemCopy.Size = new System.Drawing.Size(179, 22);
+            ItemCopy.Text = "Kopiëren";
+            // 
+            // ItemSelectAll
+            // 
+            ItemSelectAll.Name = "ItemSelectAll";
+            ItemSelectAll.Size = new System.Drawing.Size(179, 22);
+            ItemSelectAll.Text = "Alles selecteren";
+            // 
+            // ToolStripSeparatorMark
+            // 
+            ToolStripSeparatorMark.Name = "ToolStripSeparatorMark";
+            ToolStripSeparatorMark.Size = new System.Drawing.Size(176, 6);
+            // 
+            // ItemMark
+            // 
+            ItemMark.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemMarkColor1, ItemMarkColor2, ItemMarkColor3, ItemMarkColor4, ItemMarkColor5, ToolStripSeparatorMarkReset, ItemMarkReset });
+            ItemMark.Name = "ItemMark";
+            ItemMark.Size = new System.Drawing.Size(179, 22);
+            ItemMark.Text = "Markeren";
+            // 
+            // ItemMarkColor1
+            // 
+            ItemMarkColor1.Name = "ItemMarkColor1";
+            ItemMarkColor1.Size = new System.Drawing.Size(180, 22);
+            ItemMarkColor1.Text = "Kleur 1";
+            // 
+            // ItemMarkColor2
+            // 
+            ItemMarkColor2.Name = "ItemMarkColor2";
+            ItemMarkColor2.Size = new System.Drawing.Size(180, 22);
+            ItemMarkColor2.Text = "Kleur 2";
+            // 
+            // ItemMarkColor3
+            // 
+            ItemMarkColor3.Name = "ItemMarkColor3";
+            ItemMarkColor3.Size = new System.Drawing.Size(180, 22);
+            ItemMarkColor3.Text = "Kleur 3";
+            // 
+            // ItemMarkColor4
+            // 
+            ItemMarkColor4.Name = "ItemMarkColor4";
+            ItemMarkColor4.Size = new System.Drawing.Size(180, 22);
+            ItemMarkColor4.Text = "Kleur 4";
+            // 
+            // ItemMarkColor5
+            // 
+            ItemMarkColor5.Name = "ItemMarkColor5";
+            ItemMarkColor5.Size = new System.Drawing.Size(180, 22);
+            ItemMarkColor5.Text = "Kleur 5";
+            // 
+            // ToolStripSeparatorMarkReset
+            // 
+            ToolStripSeparatorMarkReset.Name = "ToolStripSeparatorMarkReset";
+            ToolStripSeparatorMarkReset.Size = new System.Drawing.Size(177, 6);
+            // 
+            // ItemMarkReset
+            // 
+            ItemMarkReset.Name = "ItemMarkReset";
+            ItemMarkReset.Size = new System.Drawing.Size(180, 22);
+            ItemMarkReset.Text = "Reset";
             // 
             // toolTip1
             // 
@@ -127,6 +212,7 @@
             Controls.Add(TxtLogEntries);
             Name = "LogViewportControl";
             Size = new System.Drawing.Size(712, 403);
+            ContextMenuStripViewport.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -138,5 +224,17 @@
         private System.Windows.Forms.Label LblExplenation2;
         private System.Windows.Forms.Label LblPaused;
         private System.Windows.Forms.Label LblLoading;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuStripViewport;
+        private System.Windows.Forms.ToolStripMenuItem ItemCopy;
+        private System.Windows.Forms.ToolStripMenuItem ItemSelectAll;
+        private System.Windows.Forms.ToolStripSeparator ToolStripSeparatorMark;
+        private System.Windows.Forms.ToolStripMenuItem ItemMark;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkColor1;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkColor2;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkColor3;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkColor4;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkColor5;
+        private System.Windows.Forms.ToolStripSeparator ToolStripSeparatorMarkReset;
+        private System.Windows.Forms.ToolStripMenuItem ItemMarkReset;
     }
 }
