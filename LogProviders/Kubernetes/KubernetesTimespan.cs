@@ -68,15 +68,15 @@ namespace LogScraper.LogProviders.Kubernetes
         {
             return timeSpan switch
             {
-                KubernetesTimespan.Last1Minute => "Laatste 1 min",
-                KubernetesTimespan.Last5Minutes => "Laatste 5 min",
-                KubernetesTimespan.Last10Minutes => "Laatste 10 min",
-                KubernetesTimespan.Last30Minutes => "Laatste 30 min",
-                KubernetesTimespan.Last1Hour => "Laatste 1 uur",
-                KubernetesTimespan.Last4Hours => "Laatste 4 uur",
-                KubernetesTimespan.Last12Hours => "Laatste 12 uur",
-                KubernetesTimespan.Last1Day => "Laatste 1 dag",
-                KubernetesTimespan.Everything => "Alles",
+                KubernetesTimespan.Last1Minute => "Last 1 min",
+                KubernetesTimespan.Last5Minutes => "Last 5 min",
+                KubernetesTimespan.Last10Minutes => "Last 10 min",
+                KubernetesTimespan.Last30Minutes => "Last 30 min",
+                KubernetesTimespan.Last1Hour => "Last 1 hour",
+                KubernetesTimespan.Last4Hours => "Last 4 hours",
+                KubernetesTimespan.Last12Hours => "Last 12 hours",
+                KubernetesTimespan.Last1Day => "Last 1 day",
+                KubernetesTimespan.Everything => "Everything",
                 _ => timeSpan.ToString()
             };
         }
