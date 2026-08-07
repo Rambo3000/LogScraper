@@ -79,7 +79,7 @@
             GrpAbout.Size = new System.Drawing.Size(723, 422);
             GrpAbout.TabIndex = 3;
             GrpAbout.TabStop = false;
-            GrpAbout.Text = "Over LogScraper";
+            GrpAbout.Text = "About LogScraper";
             // 
             // MemoryUsageControl
             // 
@@ -96,7 +96,7 @@
             LblOpenExecutableFolder.Size = new System.Drawing.Size(141, 15);
             LblOpenExecutableFolder.TabIndex = 43;
             LblOpenExecutableFolder.TabStop = true;
-            LblOpenExecutableFolder.Text = "Open de LogScraper map";
+            LblOpenExecutableFolder.Text = "Open the LogScraper folder";
             LblOpenExecutableFolder.LinkClicked += LblOpenExecutableFolder_LinkClicked;
             // 
             // LinkComponents
@@ -108,7 +108,7 @@
             LinkComponents.Size = new System.Drawing.Size(378, 15);
             LinkComponents.TabIndex = 8;
             LinkComponents.TabStop = true;
-            LinkComponents.Text = "Gebruikt ScintillaNET (scintilla.org) en iconen van pictogrammers.com";
+            LinkComponents.Text = "Uses ScintillaNET (scintilla.org) and icons from pictogrammers.com";
             LinkComponents.LinkClicked += LinkComponents_LinkClicked;
             // 
             // LblDisclaimer
@@ -143,7 +143,7 @@
             BtnUpdate.Name = "BtnUpdate";
             BtnUpdate.Size = new System.Drawing.Size(165, 34);
             BtnUpdate.TabIndex = 4;
-            BtnUpdate.Text = "Controleer op updates";
+            BtnUpdate.Text = "Check for updates";
             BtnUpdate.UseVisualStyleBackColor = true;
             BtnUpdate.Click += BtnUpdate_Click;
             // 

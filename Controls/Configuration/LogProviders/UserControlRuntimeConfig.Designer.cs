@@ -95,7 +95,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnAddUrl.Name = "BtnAddUrl";
             BtnAddUrl.Size = new System.Drawing.Size(80, 23);
             BtnAddUrl.TabIndex = 1;
-            BtnAddUrl.Text = "Toevoegen";
+            BtnAddUrl.Text = "Add";
             BtnAddUrl.UseVisualStyleBackColor = true;
             BtnAddUrl.Click += BtnAddUrl_Click;
             // 
@@ -106,7 +106,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnRemoveUrl.Name = "BtnRemoveUrl";
             BtnRemoveUrl.Size = new System.Drawing.Size(80, 23);
             BtnRemoveUrl.TabIndex = 2;
-            BtnRemoveUrl.Text = "Verwijderen";
+            BtnRemoveUrl.Text = "Remove";
             BtnRemoveUrl.UseVisualStyleBackColor = true;
             BtnRemoveUrl.Click += BtnRemoveUrl_Click;
             // 
@@ -206,7 +206,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             pictureBox4.Size = new System.Drawing.Size(16, 16);
             pictureBox4.TabIndex = 42;
             pictureBox4.TabStop = false;
-            Tooltip.SetToolTip(pictureBox4, "Kort de namen van de logbestanden in door bepaalde delen tekst uit de bestandsnaam te verwijderen. \r\nGeef de te verwijderen delen van tekst op, geef meerdere delen op door deze met spatie te scheiden.");
+            Tooltip.SetToolTip(pictureBox4, "Shortens the names of the log files by removing certain parts of text from the file name. \r\nSpecify the parts of text to remove, specify multiple parts by separating them with a space.");
             // 
             // ChkFilterUrlName
             // 
@@ -214,7 +214,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkFilterUrlName.Name = "ChkFilterUrlName";
             ChkFilterUrlName.Size = new System.Drawing.Size(363, 19);
             ChkFilterUrlName.TabIndex = 41;
-            ChkFilterUrlName.Text = "Verwijder woorden uit de naam van logbestanden";
+            ChkFilterUrlName.Text = "Remove words from the name of log files";
             ChkFilterUrlName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             ChkFilterUrlName.UseVisualStyleBackColor = true;
             ChkFilterUrlName.CheckedChanged += ChkFilterUrlName_CheckedChanged;
@@ -272,7 +272,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkUrlLinksToHtmlFileList.Name = "ChkUrlLinksToHtmlFileList";
             ChkUrlLinksToHtmlFileList.Size = new System.Drawing.Size(492, 19);
             ChkUrlLinksToHtmlFileList.TabIndex = 39;
-            ChkUrlLinksToHtmlFileList.Text = "De URL verwijst naar een HTML pagina met een lijst van log bestanden";
+            ChkUrlLinksToHtmlFileList.Text = "The URL refers to an HTML page with a list of log files";
             ChkUrlLinksToHtmlFileList.UseVisualStyleBackColor = true;
             ChkUrlLinksToHtmlFileList.CheckedChanged += ChkUrlLinksToHtmlFileList_CheckedChanged;
             // 
@@ -283,7 +283,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkUrlLinksToHtmlFolderList.Name = "ChkUrlLinksToHtmlFolderList";
             ChkUrlLinksToHtmlFolderList.Size = new System.Drawing.Size(582, 19);
             ChkUrlLinksToHtmlFolderList.TabIndex = 38;
-            ChkUrlLinksToHtmlFolderList.Text = "De URL verwijst naar een HTML pagina met een lijst van mappen, elke map bevat links naar logs";
+            ChkUrlLinksToHtmlFolderList.Text = "The URL refers to an HTML page with a list of folders, each folder contains links to logs";
             ChkUrlLinksToHtmlFolderList.UseVisualStyleBackColor = true;
             ChkUrlLinksToHtmlFolderList.CheckedChanged += ChkUrlLinksToHtmlFolderList_CheckedChanged;
             // 
@@ -303,7 +303,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             GrpWebFormSettings.Size = new System.Drawing.Size(592, 155);
             GrpWebFormSettings.TabIndex = 37;
             GrpWebFormSettings.TabStop = false;
-            GrpWebFormSettings.Text = "Webformulier instellingen";
+            GrpWebFormSettings.Text = "Web form settings";
             GrpWebFormSettings.Visible = false;
             // 
             // LblCsrfFieldName
@@ -313,7 +313,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblCsrfFieldName.Name = "LblCsrfFieldName";
             LblCsrfFieldName.Size = new System.Drawing.Size(135, 15);
             LblCsrfFieldName.TabIndex = 3;
-            LblCsrfFieldName.Text = "Naam (CSRF) token veld";
+            LblCsrfFieldName.Text = "Name (CSRF) token field";
             // 
             // LblPasswordFieldName
             // 
@@ -322,7 +322,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblPasswordFieldName.Name = "LblPasswordFieldName";
             LblPasswordFieldName.Size = new System.Drawing.Size(160, 15);
             LblPasswordFieldName.TabIndex = 2;
-            LblPasswordFieldName.Text = "Naam veld voor wachtwoord";
+            LblPasswordFieldName.Text = "Name field for password";
             // 
             // LblUserFieldName
             // 
@@ -331,7 +331,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblUserFieldName.Name = "LblUserFieldName";
             LblUserFieldName.Size = new System.Drawing.Size(179, 15);
             LblUserFieldName.TabIndex = 1;
-            LblUserFieldName.Text = "Naam veld voor gebruikersnaam";
+            LblUserFieldName.Text = "Name field for username";
             // 
             // LblLoginPageUrl
             // 
@@ -340,7 +340,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblLoginPageUrl.Name = "LblLoginPageUrl";
             LblLoginPageUrl.Size = new System.Drawing.Size(132, 15);
             LblLoginPageUrl.TabIndex = 0;
-            LblLoginPageUrl.Text = "URL van de inlogpagina";
+            LblLoginPageUrl.Text = "URL of the login page";
             // 
             // TxtCsrfFieldName
             // 
@@ -393,7 +393,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkWebFormLogin.Name = "ChkWebFormLogin";
             ChkWebFormLogin.Size = new System.Drawing.Size(363, 19);
             ChkWebFormLogin.TabIndex = 36;
-            ChkWebFormLogin.Text = "Inloggen via webformulier inschakelen";
+            ChkWebFormLogin.Text = "Enable login via web form";
             ChkWebFormLogin.UseVisualStyleBackColor = true;
             ChkWebFormLogin.CheckedChanged += ChkWebFormLogin_CheckedChanged;
             // 
@@ -439,7 +439,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblClusterDescription.Name = "LblClusterDescription";
             LblClusterDescription.Size = new System.Drawing.Size(78, 15);
             LblClusterDescription.TabIndex = 8;
-            LblClusterDescription.Text = "Omschrijving";
+            LblClusterDescription.Text = "Description";
             // 
             // CboLogLayout
             // 
@@ -457,7 +457,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             lblLogLayout.Name = "lblLogLayout";
             lblLogLayout.Size = new System.Drawing.Size(116, 15);
             lblLogLayout.TabIndex = 10;
-            lblLogLayout.Text = "Standaard log layout";
+            lblLogLayout.Text = "Default log layout";
             // 
             // Tooltip
             // 

@@ -41,7 +41,7 @@
             btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
             btnOpenWithEditor.TabIndex = 12;
             btnOpenWithEditor.TabStop = false;
-            toolTip1.SetToolTip(btnOpenWithEditor, "Log openen in editor [CTRL-E]");
+            toolTip1.SetToolTip(btnOpenWithEditor, "Open log in editor [CTRL-E]");
             btnOpenWithEditor.UseVisualStyleBackColor = true;
             btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
             // 

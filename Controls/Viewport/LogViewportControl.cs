@@ -266,7 +266,7 @@ namespace LogScraper.Controls.Viewport
         private (Size size, Point location) GetFeedbackLabelBounds()
         {
             using Graphics g = LblLoading.CreateGraphics();
-            SizeF textSize = g.MeasureString("Bezig...", LblLoading.Font);
+            SizeF textSize = g.MeasureString("Loading...", LblLoading.Font);
             int width = (int)Math.Ceiling(textSize.Width) + LblLoading.Padding.Horizontal + 10;
             const int height = 22;
             LblLoading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

@@ -115,7 +115,7 @@ namespace LogScraper
             BtnConfig.TabIndex = 23;
             BtnConfig.TabStop = false;
             BtnConfig.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnConfig, "Instellingen [CTRL-,]");
+            ToolTip.SetToolTip(BtnConfig, "Settings [CTRL-,]");
             BtnConfig.UseVisualStyleBackColor = true;
             BtnConfig.Click += BtnConfig_Click;
             // 
@@ -128,7 +128,7 @@ namespace LogScraper
             BtnFormRecord.TabIndex = 11;
             BtnFormRecord.TabStop = false;
             BtnFormRecord.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnFormRecord, "Compacte weergave [CTRL-W]");
+            ToolTip.SetToolTip(BtnFormRecord, "Compact view [CTRL-W]");
             BtnFormRecord.UseVisualStyleBackColor = true;
             BtnFormRecord.Click += BtnCompactView_Click;
             // 
@@ -525,7 +525,7 @@ namespace LogScraper
             BtnErase.TabIndex = 26;
             BtnErase.TabStop = false;
             BtnErase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            ToolTip.SetToolTip(BtnErase, "Wis het log (filters behouden) [CTRL-L]");
+            ToolTip.SetToolTip(BtnErase, "Clear the log (keep filters) [CTRL-L]");
             BtnErase.UseVisualStyleBackColor = true;
             BtnErase.Click += BtnErase_Click;
             // 

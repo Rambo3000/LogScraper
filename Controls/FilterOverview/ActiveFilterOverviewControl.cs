@@ -127,8 +127,8 @@ namespace LogScraper.Controls.FilterOverview
 
             LblCount.Text = resultsWithRangeCount == totalCount ? $"{totalCount:N0}" : $"{resultsWithRangeCount:N0} / {totalCount:N0}";
             _toolTip.SetToolTip(LblCount, resultsWithRangeCount == totalCount
-                ? "Totaal aantal logregels"
-                : "Zichtbare logregels / Totaal aantal logregels");
+                ? "Total number of log lines"
+                : "Visible log lines / Total number of log lines");
 
             _errorEntriesCollectionCount = LogAppState.Instance.LogCollection.Value?.ErrorCount ?? 0;
             _errorEntriesFilterResultWithRangeCount = LogAppState.Instance.FilterResultWithRange.Value?.ErrorMask?.CountSetBits() ?? 0;

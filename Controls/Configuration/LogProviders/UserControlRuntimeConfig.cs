@@ -119,7 +119,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout voor Directly Url moet geselecteerd zijn.");
+                errorMessages.Add($"The default layout for Directly Url must be selected.");
             }
 
             foreach (RuntimeInstance instance in _instances)
@@ -127,17 +127,17 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 if (string.IsNullOrWhiteSpace(instance.Description) ||
                     string.IsNullOrWhiteSpace(instance.UrlRuntimeLog))
                 {
-                    errorMessages.Add($"Url '{instance.Description}' moet een Description en Url hebben.");
+                    errorMessages.Add($"Url '{instance.Description}' must have a Description and Url.");
                 }
 
                 if (instance.HttpAuthenticationSettings != null && string.IsNullOrWhiteSpace(instance.HttpAuthenticationSettings.LoginPageUrl))
                 {
-                    errorMessages.Add($"Url '{instance.Description}' moet een login url hebben");
+                    errorMessages.Add($"Url '{instance.Description}' must have a login url");
                 }
 
                 if (instance.FilterUrlName && (instance.FilterUrlNameValues == null || instance.FilterUrlNameValues.All(string.IsNullOrWhiteSpace)))
                 {
-                    errorMessages.Add($"Url '{instance.Description}' moet minimaal één woord opgeven om uit de naam van het logbestand te verwijderen.");
+                    errorMessages.Add($"Url '{instance.Description}' must specify at least one word to remove from the log file name.");
                 }
 
             }
@@ -145,7 +145,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             config = null;
             if (errorMessages.Count > 0)
             {
-                MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Join("\n", errorMessages), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -163,7 +163,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             RuntimeInstance instance = new()
             {
-                Description = "Nieuwe runtime",
+                Description = "New runtime",
                 UrlRuntimeLog = string.Empty
             };
             _instances.Add(instance);
@@ -283,7 +283,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 if (((HttpSourceAdapter)sourceAdapter).TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string errorMessage))
                 {
                     TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
-                    TxtTestMessage.Text = "Succes";
+                    TxtTestMessage.Text = "Success";
                     TxtTestMessage.Text += Environment.NewLine + Environment.NewLine + url;
                 }
                 else

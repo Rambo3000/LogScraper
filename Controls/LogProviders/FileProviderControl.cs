@@ -11,7 +11,7 @@ namespace LogScraper.Controls.LogProviders
 {
     public partial class FileProviderControl : UserControl, ILogProviderUserControl
     {
-        private const string PlaceholderText = "Geen bestand geselecteerd";
+        private const string PlaceholderText = "No file selected";
         private const int SampleSizeForValidation = 8192; // 8KB
         private const int SampleSizeForLineEstimate = 64 * 1024; // 64KB
         private const long MaxFileSizeBytes = 500L * 1024 * 1024; // 500MB

@@ -108,7 +108,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout voor Kubernetes moet geselecteerd zijn.");
+                errorMessages.Add($"The default layout for Kubernetes must be selected.");
             }
 
             foreach (KubernetesCluster cluster in _clusters)
@@ -117,12 +117,12 @@ namespace LogScraper.Controls.Configuration.LogProviders
                     string.IsNullOrWhiteSpace(cluster.BaseUrl) ||
                     string.IsNullOrWhiteSpace(cluster.ClusterId))
                 {
-                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' moet een Description, BaseUrl en ClusterId hebben.");
+                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' must have a Description, BaseUrl and ClusterId.");
                 }
 
                 if (cluster.Namespaces == null || cluster.Namespaces.Count == 0)
                 {
-                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' bevat geen namespaces.");
+                    errorMessages.Add($"Kubernetes cluster '{cluster.Description}' contains no namespaces.");
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                     {
                         if (string.IsNullOrWhiteSpace(ns.Description) || string.IsNullOrWhiteSpace(ns.Name))
                         {
-                            errorMessages.Add($"Kubernetes namespaces in cluster '{cluster.Description}' moeten een naam en beschrijving hebben.");
+                            errorMessages.Add($"Kubernetes namespaces in cluster '{cluster.Description}' must have a name and description.");
                         }
                     }
                 }
@@ -139,7 +139,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             config = null;
             if (errorMessages.Count > 0)
             {
-                MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Join("\n", errorMessages), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -158,7 +158,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             KubernetesCluster cluster = new()
             {
-                Description = "Nieuwe cluster",
+                Description = "New cluster",
                 BaseUrl = string.Empty,
                 ClusterId = string.Empty,
                 Namespaces = []
@@ -233,7 +233,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             KubernetesNamespace ns = new()
             {
-                Description = "Nieuwe namespace",
+                Description = "New namespace",
                 Name = string.Empty
             };
 
@@ -420,7 +420,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 ISourceAdapter sourceAdapter = SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", kubernetesCluster.ClusterId), ConfigAppState.Instance.GenericConfig.Value.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, null);
                 sourceAdapter.GetLog();
 
-                TxtTestMessage.Text = "Succes";
+                TxtTestMessage.Text = "Success";
                 TxtTestMessage.Text += Environment.NewLine + url;
                 TxtTestMessage.ForeColor = System.Drawing.Color.DarkGreen;
             }
@@ -442,7 +442,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             if (LstClusters.SelectedItem is not KubernetesCluster selected) return;
 
             KubernetesCluster newCluster = selected.Copy();
-            newCluster.Description += " (kopie)";
+            newCluster.Description += " (copy)";
 
             _namespaces = [.. newCluster.Namespaces];
             _clusters.Add(newCluster);

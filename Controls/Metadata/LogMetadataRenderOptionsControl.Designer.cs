@@ -54,7 +54,7 @@ namespace LogScraper.Controls.Metadata
             splitButton1.Size = new System.Drawing.Size(40, 25);
             splitButton1.TabIndex = 4;
             splitButton1.Tag = "";
-            toolTip1.SetToolTip(splitButton1, "Metadata tonen/verbergen [CTRL-M]");
+            toolTip1.SetToolTip(splitButton1, "Show/hide metadata [CTRL-M]");
             splitButton1.ButtonClick += SplitButton1_Click;
             // 
             // ContextMenuStrip1
@@ -70,13 +70,13 @@ namespace LogScraper.Controls.Metadata
             ItemShowOriginalMetadata.CheckOnClick = true;
             ItemShowOriginalMetadata.Name = "ItemShowOriginalMetadata";
             ItemShowOriginalMetadata.Size = new System.Drawing.Size(235, 22);
-            ItemShowOriginalMetadata.Text = "Originele metadata weergeven";
+            ItemShowOriginalMetadata.Text = "Show original metadata";
             // 
             // ItemHideAllMetadata
             // 
             ItemHideAllMetadata.Name = "ItemHideAllMetadata";
             ItemHideAllMetadata.Size = new System.Drawing.Size(235, 22);
-            ItemHideAllMetadata.Text = "Metadata verbergen";
+            ItemHideAllMetadata.Text = "Hide metadata";
             // 
             // toolStripSeparator1
             // 

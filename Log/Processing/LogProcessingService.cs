@@ -123,7 +123,7 @@ namespace LogScraper.Log.Processing
                 }
                 catch (Exception ex)
                 {
-                    ex.LogStackTraceToFile("Fout tijdens parsen van raw log.");
+                    ex.LogStackTraceToFile("Error while parsing raw log.");
                     AppState.Instance.RawLogFallback.Set(RawLogParser.JoinRawLogIntoString(rawLog));
                     throw;
                 }

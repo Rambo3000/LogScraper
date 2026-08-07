@@ -66,7 +66,7 @@
             BtnClose.Name = "BtnClose";
             BtnClose.Size = new System.Drawing.Size(20, 22);
             BtnClose.TabIndex = 2;
-            toolTip1.SetToolTip(BtnClose, "Sluiten [ESC]");
+            toolTip1.SetToolTip(BtnClose, "Close [ESC]");
             BtnClose.UseVisualStyleBackColor = true;
             BtnClose.Click += BtnClose_Click;
             // 

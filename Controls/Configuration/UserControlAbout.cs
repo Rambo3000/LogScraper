@@ -29,8 +29,8 @@ namespace LogScraper.Controls.Configuration
             }
 
             LinkComponents.Links.Clear();
-            LinkComponents.Links.Add(23, 13, "https://scintilla.org");
-            LinkComponents.Links.Add(52, 18, "https://pictogrammers.com/library/mdi/");
+            LinkComponents.Links.Add(19, 13, "https://scintilla.org");
+            LinkComponents.Links.Add(49, 18, "https://pictogrammers.com/library/mdi/");
 
             ApplyLocalization();
         }

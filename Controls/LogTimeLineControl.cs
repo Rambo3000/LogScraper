@@ -1213,11 +1213,11 @@ namespace LogScraper.Controls
             hoverTooltipTimer.Stop();
             if (_dragStartX < 0 && minimumTimestamp != default)
             {
-                string tooltipText = "Tijdlijn besturing:\n" +
-                                   "• Slepen = verschuif tijdlijn\n" +
-                                   "• Ctrl+slepen = selecteer tijdbereik\n" +
-                                   "• Scrollen = zoom in/uit\n" +
-                                   "• Klikken = spring naar logpositie";
+                string tooltipText = "Timeline controls:\n" +
+                                   "• Drag = shift timeline\n" +
+                                   "• Ctrl+drag = select time range\n" +
+                                   "• Scroll = zoom in/out\n" +
+                                   "• Click = jump to log position";
                 toolTip.SetToolTip(this, tooltipText);
                 hoverTooltipShown = true;
             }

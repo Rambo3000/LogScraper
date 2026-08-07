@@ -114,7 +114,6 @@ namespace LogScraper.Controls.Configuration
             TxtJsonPath = new ValidatedTextBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
-            ChkMetadataCollapse = new System.Windows.Forms.CheckBox();
             GrpLayouts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             grpRuntime.SuspendLayout();
@@ -167,7 +166,7 @@ namespace LogScraper.Controls.Configuration
             BtnLayoutAdd.Name = "BtnLayoutAdd";
             BtnLayoutAdd.Size = new System.Drawing.Size(80, 23);
             BtnLayoutAdd.TabIndex = 1;
-            BtnLayoutAdd.Text = "Toevoegen";
+            BtnLayoutAdd.Text = "Add";
             BtnLayoutAdd.UseVisualStyleBackColor = true;
             BtnLayoutAdd.Click += BtnAddLayout_Click;
             // 
@@ -178,7 +177,7 @@ namespace LogScraper.Controls.Configuration
             BtnLayoutRemove.Name = "BtnLayoutRemove";
             BtnLayoutRemove.Size = new System.Drawing.Size(80, 23);
             BtnLayoutRemove.TabIndex = 2;
-            BtnLayoutRemove.Text = "Verwijderen";
+            BtnLayoutRemove.Text = "Remove";
             BtnLayoutRemove.UseVisualStyleBackColor = true;
             BtnLayoutRemove.Click += BtnRemoveLayout_Click;
             // 
@@ -253,7 +252,7 @@ namespace LogScraper.Controls.Configuration
             BtnCopy.Name = "BtnCopy";
             BtnCopy.Size = new System.Drawing.Size(22, 23);
             BtnCopy.TabIndex = 23;
-            toolTip.SetToolTip(BtnCopy, "Kopieren");
+            toolTip.SetToolTip(BtnCopy, "Copy");
             BtnCopy.UseVisualStyleBackColor = true;
             BtnCopy.Click += BtnCopy_Click;
             // 
@@ -325,9 +324,9 @@ namespace LogScraper.Controls.Configuration
             ChkAutomaticTimestampDetection.CheckState = System.Windows.Forms.CheckState.Checked;
             ChkAutomaticTimestampDetection.Location = new System.Drawing.Point(7, 97);
             ChkAutomaticTimestampDetection.Name = "ChkAutomaticTimestampDetection";
-            ChkAutomaticTimestampDetection.Size = new System.Drawing.Size(223, 19);
+            ChkAutomaticTimestampDetection.Size = new System.Drawing.Size(195, 19);
             ChkAutomaticTimestampDetection.TabIndex = 38;
-            ChkAutomaticTimestampDetection.Text = "Automatische datum tijd identificatie";
+            ChkAutomaticTimestampDetection.Text = "Automatic timestamp detection";
             ChkAutomaticTimestampDetection.UseVisualStyleBackColor = true;
             ChkAutomaticTimestampDetection.CheckedChanged += ChkAutomaticTimestampDetection_CheckedChanged;
             // 
@@ -354,7 +353,7 @@ namespace LogScraper.Controls.Configuration
             groupBox2.Size = new System.Drawing.Size(427, 139);
             groupBox2.TabIndex = 32;
             groupBox2.TabStop = false;
-            groupBox2.Text = "Test de layout";
+            groupBox2.Text = "Test the layout";
             // 
             // pictureBox16
             // 
@@ -365,7 +364,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox16.Size = new System.Drawing.Size(16, 16);
             pictureBox16.TabIndex = 35;
             pictureBox16.TabStop = false;
-            toolTip.SetToolTip(pictureBox16, "Voer een logregel in en controleer hoe de applicatie de regel interpreteert.");
+            toolTip.SetToolTip(pictureBox16, "Enter a log line and check how the application interprets the line.");
             // 
             // TxtTestResponse
             // 
@@ -384,9 +383,9 @@ namespace LogScraper.Controls.Configuration
             label3.AutoSize = true;
             label3.Location = new System.Drawing.Point(6, 18);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(56, 15);
+            label3.Size = new System.Drawing.Size(49, 15);
             label3.TabIndex = 32;
-            label3.Text = "Log regel";
+            label3.Text = "Log line";
             // 
             // TxtExampleLogEntry
             // 
@@ -437,9 +436,9 @@ namespace LogScraper.Controls.Configuration
             label1.AutoSize = true;
             label1.Location = new System.Drawing.Point(7, 50);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(171, 15);
+            label1.Size = new System.Drawing.Size(160, 15);
             label1.TabIndex = 33;
-            label1.Text = "Tekst welke de metadata afsluit";
+            label1.Text = "Text that closes the metadata";
             // 
             // TxtMetadataEnd
             // 
@@ -458,9 +457,9 @@ namespace LogScraper.Controls.Configuration
             LblDescription.AutoSize = true;
             LblDescription.Location = new System.Drawing.Point(7, 6);
             LblDescription.Name = "LblDescription";
-            LblDescription.Size = new System.Drawing.Size(78, 15);
+            LblDescription.Size = new System.Drawing.Size(67, 15);
             LblDescription.TabIndex = 8;
-            LblDescription.Text = "Omschrijving";
+            LblDescription.Text = "Description";
             // 
             // LblDateTimeFormat
             // 
@@ -528,7 +527,7 @@ namespace LogScraper.Controls.Configuration
             ChkMetadataCollapse.Name = "ChkMetadataCollapse";
             ChkMetadataCollapse.Size = new System.Drawing.Size(373, 20);
             ChkMetadataCollapse.TabIndex = 33;
-            ChkMetadataCollapse.Text = "Standaard deze metdata inklappen";
+            ChkMetadataCollapse.Text = "Collapse this metadata by default";
             ChkMetadataCollapse.UseVisualStyleBackColor = true;
             ChkMetadataCollapse.CheckedChanged += ChkMetadataCollapse_CheckedChanged;
             // 
@@ -538,7 +537,7 @@ namespace LogScraper.Controls.Configuration
             ChkShowMetadataByDefault.Name = "ChkShowMetadataByDefault";
             ChkShowMetadataByDefault.Size = new System.Drawing.Size(373, 20);
             ChkShowMetadataByDefault.TabIndex = 32;
-            ChkShowMetadataByDefault.Text = "Toon deze metadata standaard in het log";
+            ChkShowMetadataByDefault.Text = "Show this metadata by default in the log";
             ChkShowMetadataByDefault.UseVisualStyleBackColor = true;
             ChkShowMetadataByDefault.CheckedChanged += ChkShowMetadataByDefault_CheckedChanged;
             // 
@@ -551,7 +550,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox5.Size = new System.Drawing.Size(16, 16);
             pictureBox5.TabIndex = 29;
             pictureBox5.TabStop = false;
-            toolTip.SetToolTip(pictureBox5, "Geef de tekst die net na de metadata waarde staat.\r\nBijvoorbeeld ', indien in de logregel staat metadataX='waardeY',");
+            toolTip.SetToolTip(pictureBox5, "Specify the text that appears right after the metadata value.\r\nFor example ', if the log line contains metadataX='ValueY',");
             // 
             // pictureBox4
             // 
@@ -562,7 +561,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox4.Size = new System.Drawing.Size(16, 16);
             pictureBox4.TabIndex = 28;
             pictureBox4.TabStop = false;
-            toolTip.SetToolTip(pictureBox4, "Geef de tekst die net voor de metadata waarde staat, dit bevat meestal de omschrijving van de metadata.\r\nBijvoorbeeld metadataX=' indien in de logregel staat metadataX='waardeY',");
+            toolTip.SetToolTip(pictureBox4, "Specify the text that appears right before the metadata value, this usually contains the description of the metadata.\r\nFor example metadataX=' if the log line contains metadataX='ValueY',");
             // 
             // pictureBox3
             // 
@@ -573,17 +572,17 @@ namespace LogScraper.Controls.Configuration
             pictureBox3.Size = new System.Drawing.Size(16, 16);
             pictureBox3.TabIndex = 27;
             pictureBox3.TabStop = false;
-            toolTip.SetToolTip(pictureBox3, "De omschrijving wordt getoond in de logscraper ");
+            toolTip.SetToolTip(pictureBox3, "The description is shown in the logscraper ");
             // 
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.help;
-            pictureBox1.Location = new System.Drawing.Point(155, 0);
+            pictureBox1.Location = new System.Drawing.Point(70, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 21;
             pictureBox1.TabStop = false;
-            toolTip.SetToolTip(pictureBox1, resources.GetString("pictureBox1.ToolTip"));
+            toolTip.SetToolTip(pictureBox1, "Metadata is information that is present with every log line and can be filtered on. \r\nFor example 2025-01-01T01:02:03.123 INFO metadataA=ValueX, MetadataB=ValueY");
             // 
             // LblMetadataAfterPhrase
             // 
@@ -591,9 +590,9 @@ namespace LogScraper.Controls.Configuration
             LblMetadataAfterPhrase.AutoSize = true;
             LblMetadataAfterPhrase.Location = new System.Drawing.Point(241, 110);
             LblMetadataAfterPhrase.Name = "LblMetadataAfterPhrase";
-            LblMetadataAfterPhrase.Size = new System.Drawing.Size(160, 15);
+            LblMetadataAfterPhrase.Size = new System.Drawing.Size(159, 15);
             LblMetadataAfterPhrase.TabIndex = 24;
-            LblMetadataAfterPhrase.Text = "Tekst na de metadata waarde";
+            LblMetadataAfterPhrase.Text = "Text after the metadata value";
             // 
             // TxtMetadataAfterPhrase
             // 
@@ -613,9 +612,9 @@ namespace LogScraper.Controls.Configuration
             LblMetadataBeforePhrase.AutoSize = true;
             LblMetadataBeforePhrase.Location = new System.Drawing.Point(241, 66);
             LblMetadataBeforePhrase.Name = "LblMetadataBeforePhrase";
-            LblMetadataBeforePhrase.Size = new System.Drawing.Size(171, 15);
+            LblMetadataBeforePhrase.Size = new System.Drawing.Size(169, 15);
             LblMetadataBeforePhrase.TabIndex = 22;
-            LblMetadataBeforePhrase.Text = "Tekst voor de metadata waarde";
+            LblMetadataBeforePhrase.Text = "Text before the metadata value";
             // 
             // TxtMetadataBeforePhrase
             // 
@@ -635,9 +634,9 @@ namespace LogScraper.Controls.Configuration
             LblMetadataDescription.AutoSize = true;
             LblMetadataDescription.Location = new System.Drawing.Point(241, 22);
             LblMetadataDescription.Name = "LblMetadataDescription";
-            LblMetadataDescription.Size = new System.Drawing.Size(78, 15);
+            LblMetadataDescription.Size = new System.Drawing.Size(67, 15);
             LblMetadataDescription.TabIndex = 20;
-            LblMetadataDescription.Text = "Omschrijving";
+            LblMetadataDescription.Text = "Description";
             // 
             // TxtMetadataDescription
             // 
@@ -669,7 +668,7 @@ namespace LogScraper.Controls.Configuration
             BtnMetadataAdd.Name = "BtnMetadataAdd";
             BtnMetadataAdd.Size = new System.Drawing.Size(80, 23);
             BtnMetadataAdd.TabIndex = 15;
-            BtnMetadataAdd.Text = "Toevoegen";
+            BtnMetadataAdd.Text = "Add";
             BtnMetadataAdd.UseVisualStyleBackColor = true;
             BtnMetadataAdd.Click += BtnMetadataAdd_Click;
             // 
@@ -680,7 +679,7 @@ namespace LogScraper.Controls.Configuration
             BtnMetadataRemove.Name = "BtnMetadataRemove";
             BtnMetadataRemove.Size = new System.Drawing.Size(80, 23);
             BtnMetadataRemove.TabIndex = 16;
-            BtnMetadataRemove.Text = "Verwijderen";
+            BtnMetadataRemove.Text = "Remove";
             BtnMetadataRemove.UseVisualStyleBackColor = true;
             BtnMetadataRemove.Click += BtnMetadataRemove_Click;
             // 
@@ -714,7 +713,7 @@ namespace LogScraper.Controls.Configuration
             tabPageContentFilters.Padding = new System.Windows.Forms.Padding(3);
             tabPageContentFilters.Size = new System.Drawing.Size(712, 390);
             tabPageContentFilters.TabIndex = 1;
-            tabPageContentFilters.Text = "Navigatie en kleuren filters";
+            tabPageContentFilters.Text = "Navigation and line colors";
             tabPageContentFilters.UseVisualStyleBackColor = true;
             // 
             // GrpContent
@@ -749,7 +748,7 @@ namespace LogScraper.Controls.Configuration
             GrpContent.Size = new System.Drawing.Size(706, 384);
             GrpContent.TabIndex = 20;
             GrpContent.TabStop = false;
-            GrpContent.Text = "Navigatie en kleuren filters";
+            GrpContent.Text = "Navigation and line colors";
             // 
             // pictureBox12
             // 
@@ -760,7 +759,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox12.Size = new System.Drawing.Size(16, 16);
             pictureBox12.TabIndex = 45;
             pictureBox12.TabStop = false;
-            toolTip.SetToolTip(pictureBox12, resources.GetString("pictureBox12.ToolTip"));
+            toolTip.SetToolTip(pictureBox12, "If enabled, this filter can be used to quickly jump to related log lines.\r\nIf disabled, the filter is only used for visual marking (colors and indentation).");
             // 
             // ChkContentPropertyIsNavigationEnabled
             // 
@@ -771,7 +770,7 @@ namespace LogScraper.Controls.Configuration
             ChkContentPropertyIsNavigationEnabled.Name = "ChkContentPropertyIsNavigationEnabled";
             ChkContentPropertyIsNavigationEnabled.Size = new System.Drawing.Size(326, 20);
             ChkContentPropertyIsNavigationEnabled.TabIndex = 44;
-            ChkContentPropertyIsNavigationEnabled.Text = "Gebruik dit filter voor navigatie in het log";
+            ChkContentPropertyIsNavigationEnabled.Text = "Use this filter for navigation in the log";
             ChkContentPropertyIsNavigationEnabled.UseVisualStyleBackColor = true;
             ChkContentPropertyIsNavigationEnabled.CheckedChanged += ChkContentPropertyIsNavigationEnabled_CheckedChanged;
             // 
@@ -782,7 +781,7 @@ namespace LogScraper.Controls.Configuration
             ChkContentBackColorFillLine.Name = "ChkContentBackColorFillLine";
             ChkContentBackColorFillLine.Size = new System.Drawing.Size(373, 20);
             ChkContentBackColorFillLine.TabIndex = 43;
-            ChkContentBackColorFillLine.Text = "Toon de achtergrond kleur over de gehele breedte";
+            ChkContentBackColorFillLine.Text = "Show the background color across the full width";
             ChkContentBackColorFillLine.UseVisualStyleBackColor = true;
             ChkContentBackColorFillLine.CheckedChanged += ChkContentBackColorFillLine_CheckedChanged;
             // 
@@ -842,7 +841,7 @@ namespace LogScraper.Controls.Configuration
             ChkContentPropertyIsError.Name = "ChkContentPropertyIsError";
             ChkContentPropertyIsError.Size = new System.Drawing.Size(326, 20);
             ChkContentPropertyIsError.TabIndex = 36;
-            ChkContentPropertyIsError.Text = "Markeert een error";
+            ChkContentPropertyIsError.Text = "Marks an error";
             ChkContentPropertyIsError.UseVisualStyleBackColor = true;
             ChkContentPropertyIsError.CheckedChanged += ChkContentPropertyIsError_CheckedChanged;
             // 
@@ -864,7 +863,7 @@ namespace LogScraper.Controls.Configuration
             ChkContentFilterMarksBegin.Name = "ChkContentFilterMarksBegin";
             ChkContentFilterMarksBegin.Size = new System.Drawing.Size(336, 20);
             ChkContentFilterMarksBegin.TabIndex = 33;
-            ChkContentFilterMarksBegin.Text = "Markeert het begin van een (sub)flow, en het einde door";
+            ChkContentFilterMarksBegin.Text = "Marks the start of a (sub)flow, and the end by";
             ChkContentFilterMarksBegin.UseVisualStyleBackColor = true;
             ChkContentFilterMarksBegin.CheckedChanged += ChkContentFilterMarksBegin_CheckedChanged;
             // 
@@ -873,9 +872,9 @@ namespace LogScraper.Controls.Configuration
             CboContentFilterMarksEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             CboContentFilterMarksEnd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             CboContentFilterMarksEnd.FormattingEnabled = true;
-            CboContentFilterMarksEnd.Location = new System.Drawing.Point(583, 354);
+            CboContentFilterMarksEnd.Location = new System.Drawing.Point(517, 354);
             CboContentFilterMarksEnd.Name = "CboContentFilterMarksEnd";
-            CboContentFilterMarksEnd.Size = new System.Drawing.Size(97, 23);
+            CboContentFilterMarksEnd.Size = new System.Drawing.Size(133, 23);
             CboContentFilterMarksEnd.TabIndex = 32;
             CboContentFilterMarksEnd.SelectedIndexChanged += CboContentFilterMarksEnd_SelectedIndexChanged;
             // 
@@ -899,7 +898,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox10.Size = new System.Drawing.Size(16, 16);
             pictureBox10.TabIndex = 30;
             pictureBox10.TabStop = false;
-            toolTip.SetToolTip(pictureBox10, "De omschrijving wordt getoond in de logscraper ");
+            toolTip.SetToolTip(pictureBox10, "The description is shown in the logscraper ");
             // 
             // pictureBox6
             // 
@@ -917,9 +916,9 @@ namespace LogScraper.Controls.Configuration
             LblContentBeforePhrase.AutoSize = true;
             LblContentBeforePhrase.Location = new System.Drawing.Point(241, 66);
             LblContentBeforePhrase.Name = "LblContentBeforePhrase";
-            LblContentBeforePhrase.Size = new System.Drawing.Size(163, 15);
+            LblContentBeforePhrase.Size = new System.Drawing.Size(171, 15);
             LblContentBeforePhrase.TabIndex = 22;
-            LblContentBeforePhrase.Text = "Teksten voor en na de waarde";
+            LblContentBeforePhrase.Text = "Texts before and after the value";
             // 
             // TxtContentBeforeAndAfterPhrases
             // 
@@ -941,9 +940,9 @@ namespace LogScraper.Controls.Configuration
             LblContentDescription.AutoSize = true;
             LblContentDescription.Location = new System.Drawing.Point(241, 19);
             LblContentDescription.Name = "LblContentDescription";
-            LblContentDescription.Size = new System.Drawing.Size(78, 15);
+            LblContentDescription.Size = new System.Drawing.Size(67, 15);
             LblContentDescription.TabIndex = 20;
-            LblContentDescription.Text = "Omschrijving";
+            LblContentDescription.Text = "Description";
             // 
             // TxtContentDescription
             // 
@@ -975,7 +974,7 @@ namespace LogScraper.Controls.Configuration
             BtnContentAdd.Name = "BtnContentAdd";
             BtnContentAdd.Size = new System.Drawing.Size(80, 23);
             BtnContentAdd.TabIndex = 15;
-            BtnContentAdd.Text = "Toevoegen";
+            BtnContentAdd.Text = "Add";
             BtnContentAdd.UseVisualStyleBackColor = true;
             BtnContentAdd.Click += BtnContentAdd_Click;
             // 
@@ -986,7 +985,7 @@ namespace LogScraper.Controls.Configuration
             BtnContentRemove.Name = "BtnContentRemove";
             BtnContentRemove.Size = new System.Drawing.Size(80, 23);
             BtnContentRemove.TabIndex = 16;
-            BtnContentRemove.Text = "Verwijderen";
+            BtnContentRemove.Text = "Remove";
             BtnContentRemove.UseVisualStyleBackColor = true;
             BtnContentRemove.Click += BtnContentRemove_Click;
             // 
@@ -1019,7 +1018,7 @@ namespace LogScraper.Controls.Configuration
             ChkColorContentPropertyLogEntries.Name = "ChkColorContentPropertyLogEntries";
             ChkColorContentPropertyLogEntries.Size = new System.Drawing.Size(373, 20);
             ChkColorContentPropertyLogEntries.TabIndex = 41;
-            ChkColorContentPropertyLogEntries.Text = "Kleur logregels met deze inhoud";
+            ChkColorContentPropertyLogEntries.Text = "Color log lines with this content";
             ChkColorContentPropertyLogEntries.UseVisualStyleBackColor = true;
             ChkColorContentPropertyLogEntries.CheckedChanged += ChkColorContentPropertyLogEntries_CheckedChanged;
             // 
@@ -1055,7 +1054,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox15.Size = new System.Drawing.Size(16, 16);
             pictureBox15.TabIndex = 37;
             pictureBox15.TabStop = false;
-            toolTip.SetToolTip(pictureBox15, "Gebruik deze functionaliteit indien het log in JSON format is opgeslagen");
+            toolTip.SetToolTip(pictureBox15, "Use this functionality if the log is stored in JSON format");
             // 
             // pictureBox14
             // 
@@ -1065,7 +1064,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox14.Size = new System.Drawing.Size(16, 16);
             pictureBox14.TabIndex = 36;
             pictureBox14.TabStop = false;
-            toolTip.SetToolTip(pictureBox14, "Geef hier de JSON path expressie op die binnen elke logregel de locatie bevat naar de daadwerkelijk logregel\r\n");
+            toolTip.SetToolTip(pictureBox14, "Specify the JSON path expression here that contains, within each log line, the location of the actual log line\r\n");
             // 
             // chkTransformJson
             // 
@@ -1073,7 +1072,7 @@ namespace LogScraper.Controls.Configuration
             chkTransformJson.Name = "chkTransformJson";
             chkTransformJson.Size = new System.Drawing.Size(266, 20);
             chkTransformJson.TabIndex = 1;
-            chkTransformJson.Text = "Extract logregel uit JSON";
+            chkTransformJson.Text = "Extract log entries using JSON";
             chkTransformJson.UseVisualStyleBackColor = true;
             chkTransformJson.CheckedChanged += ChkTransformJson_CheckedChanged;
             // 
@@ -1083,9 +1082,9 @@ namespace LogScraper.Controls.Configuration
             lbl.AutoSize = true;
             lbl.Location = new System.Drawing.Point(25, 44);
             lbl.Name = "lbl";
-            lbl.Size = new System.Drawing.Size(112, 15);
+            lbl.Size = new System.Drawing.Size(62, 15);
             lbl.TabIndex = 34;
-            lbl.Text = "JSON path expressie";
+            lbl.Text = "JSON path";
             // 
             // TxtJsonPath
             // 

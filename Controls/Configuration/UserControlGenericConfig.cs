@@ -40,19 +40,19 @@ namespace LogScraper.Controls.Configuration
             config = GetLogScraperConfig();
             if (config.HttpCLientTimeOUtSeconds == 0)
             {
-                MessageBox.Show("De timeout voor downloaden moet groter dan nul zijn.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The download timeout must be greater than zero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             if (config.ExportToFile)
             {
                 if (string.IsNullOrWhiteSpace(config.EditorFileName))
                 {
-                    MessageBox.Show("De locatie van de editor is verplicht.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The editor location is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 if (string.IsNullOrWhiteSpace(config.ExportFileName))
                 {
-                    MessageBox.Show("De bestandsnaam is verplicht.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The file name is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
@@ -82,8 +82,8 @@ namespace LogScraper.Controls.Configuration
         {
             OpenFileDialog dialog = new()
             {
-                Title = "Selecteer exportbestand",
-                Filter = "Log bestanden (*.log, *.txt)|*.log;*.txt;|Alle bestanden (*.*)|*.*",
+                Title = "Select export file",
+                Filter = "Log files (*.log, *.txt)|*.log;*.txt;|All files (*.*)|*.*",
                 CheckFileExists = false,
                 CheckPathExists = true
             };
@@ -118,8 +118,8 @@ namespace LogScraper.Controls.Configuration
         {
             OpenFileDialog dialog = new()
             {
-                Title = "Selecteer een teksteditor",
-                Filter = "Uitvoerbare bestanden (*.exe)|*.exe|Alle bestanden (*.*)|*.*",
+                Title = "Select a text editor",
+                Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*",
                 CheckFileExists = true,
                 CheckPathExists = true
             };
@@ -144,7 +144,7 @@ namespace LogScraper.Controls.Configuration
                 }
                 catch (Exception ex)
                 {
-                    // ongeldig pad, negeren
+                    // invalid path, ignore
                     ex.LogStackTraceToFile("Error setting initial directory or file name in editor location dialog.");
                 }
             }

@@ -48,7 +48,7 @@
             LblCount.TabIndex = 8;
             LblCount.Text = "-";
             LblCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            ToolTip.SetToolTip(LblCount, "Zichtbare logregels / Totaal aantal logregels");
+            ToolTip.SetToolTip(LblCount, "Visible log lines / Total number of log lines");
             // 
             // btnErase
             // 
@@ -57,7 +57,7 @@
             btnErase.Name = "btnErase";
             btnErase.Size = new System.Drawing.Size(25, 25);
             btnErase.TabIndex = 11;
-            ToolTip.SetToolTip(btnErase, "Wis het log [CTRL-L]");
+            ToolTip.SetToolTip(btnErase, "Clear the log [CTRL-L]");
             btnErase.UseVisualStyleBackColor = true;
             btnErase.Click += BtnErase_Click;
             // 
@@ -68,7 +68,7 @@
             btnBack.Name = "btnBack";
             btnBack.Size = new System.Drawing.Size(40, 40);
             btnBack.TabIndex = 14;
-            ToolTip.SetToolTip(btnBack, "Compacte weergave sluiten [CTRL-W]");
+            ToolTip.SetToolTip(btnBack, "Close compact view [CTRL-W]");
             btnBack.UseVisualStyleBackColor = true;
             btnBack.Click += BtnBack_Click;
             // 

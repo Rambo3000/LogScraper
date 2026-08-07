@@ -76,7 +76,7 @@ namespace LogScraper.Configuration
             TabLogProviders.Location = new System.Drawing.Point(3, 3);
             TabLogProviders.Name = "TabLogProviders";
             TabLogProviders.SelectedIndex = 0;
-            TabLogProviders.Size = new System.Drawing.Size(1033, 576);
+            TabLogProviders.Size = new System.Drawing.Size(1033, 575);
             TabLogProviders.TabIndex = 0;
             // 
             // tabKubernetes
@@ -84,7 +84,7 @@ namespace LogScraper.Configuration
             tabKubernetes.Controls.Add(userControlKubernetesConfig);
             tabKubernetes.Location = new System.Drawing.Point(4, 24);
             tabKubernetes.Name = "tabKubernetes";
-            tabKubernetes.Size = new System.Drawing.Size(1025, 548);
+            tabKubernetes.Size = new System.Drawing.Size(1025, 547);
             tabKubernetes.TabIndex = 0;
             tabKubernetes.Text = "Kubernetes";
             tabKubernetes.UseVisualStyleBackColor = true;
@@ -95,7 +95,7 @@ namespace LogScraper.Configuration
             userControlKubernetesConfig.Location = new System.Drawing.Point(0, 0);
             userControlKubernetesConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlKubernetesConfig.Name = "userControlKubernetesConfig";
-            userControlKubernetesConfig.Size = new System.Drawing.Size(1025, 548);
+            userControlKubernetesConfig.Size = new System.Drawing.Size(1025, 547);
             userControlKubernetesConfig.TabIndex = 0;
             // 
             // tabUrl
@@ -103,7 +103,7 @@ namespace LogScraper.Configuration
             tabUrl.Controls.Add(userControlRuntimeConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
-            tabUrl.Size = new System.Drawing.Size(1025, 543);
+            tabUrl.Size = new System.Drawing.Size(1025, 548);
             tabUrl.TabIndex = 1;
             tabUrl.Text = "HTTP API";
             tabUrl.UseVisualStyleBackColor = true;
@@ -114,7 +114,7 @@ namespace LogScraper.Configuration
             userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
             userControlRuntimeConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlRuntimeConfig.Name = "userControlRuntimeConfig";
-            userControlRuntimeConfig.Size = new System.Drawing.Size(1025, 543);
+            userControlRuntimeConfig.Size = new System.Drawing.Size(1025, 548);
             userControlRuntimeConfig.TabIndex = 0;
             // 
             // tabFile
@@ -122,9 +122,9 @@ namespace LogScraper.Configuration
             tabFile.Controls.Add(userControlFileConfig);
             tabFile.Location = new System.Drawing.Point(4, 24);
             tabFile.Name = "tabFile";
-            tabFile.Size = new System.Drawing.Size(1025, 543);
+            tabFile.Size = new System.Drawing.Size(1025, 548);
             tabFile.TabIndex = 2;
-            tabFile.Text = "Bestand";
+            tabFile.Text = "File";
             tabFile.UseVisualStyleBackColor = true;
             // 
             // userControlFileConfig
@@ -133,7 +133,7 @@ namespace LogScraper.Configuration
             userControlFileConfig.Location = new System.Drawing.Point(0, 0);
             userControlFileConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlFileConfig.Name = "userControlFileConfig";
-            userControlFileConfig.Size = new System.Drawing.Size(1025, 543);
+            userControlFileConfig.Size = new System.Drawing.Size(1025, 548);
             userControlFileConfig.TabIndex = 0;
             // 
             // btnOk
@@ -178,7 +178,7 @@ namespace LogScraper.Configuration
             TabPageGeneral.Name = "TabPageGeneral";
             TabPageGeneral.Size = new System.Drawing.Size(1039, 581);
             TabPageGeneral.TabIndex = 2;
-            TabPageGeneral.Text = "Algemeen";
+            TabPageGeneral.Text = "General";
             TabPageGeneral.UseVisualStyleBackColor = true;
             // 
             // userControlGenericConfig
@@ -195,7 +195,7 @@ namespace LogScraper.Configuration
             TabPageLogLayouts.Controls.Add(userControlLogLayoutConfig);
             TabPageLogLayouts.Location = new System.Drawing.Point(4, 24);
             TabPageLogLayouts.Name = "TabPageLogLayouts";
-            TabPageLogLayouts.Size = new System.Drawing.Size(1039, 582);
+            TabPageLogLayouts.Size = new System.Drawing.Size(1039, 581);
             TabPageLogLayouts.TabIndex = 3;
             TabPageLogLayouts.Text = "Log layout";
             TabPageLogLayouts.UseVisualStyleBackColor = true;
@@ -206,7 +206,7 @@ namespace LogScraper.Configuration
             userControlLogLayoutConfig.Location = new System.Drawing.Point(0, 0);
             userControlLogLayoutConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlLogLayoutConfig.Name = "userControlLogLayoutConfig";
-            userControlLogLayoutConfig.Size = new System.Drawing.Size(1039, 582);
+            userControlLogLayoutConfig.Size = new System.Drawing.Size(1039, 581);
             userControlLogLayoutConfig.TabIndex = 0;
             // 
             // TabPageLogProviders
@@ -215,9 +215,9 @@ namespace LogScraper.Configuration
             TabPageLogProviders.Location = new System.Drawing.Point(4, 24);
             TabPageLogProviders.Name = "TabPageLogProviders";
             TabPageLogProviders.Padding = new System.Windows.Forms.Padding(3);
-            TabPageLogProviders.Size = new System.Drawing.Size(1039, 582);
+            TabPageLogProviders.Size = new System.Drawing.Size(1039, 581);
             TabPageLogProviders.TabIndex = 1;
-            TabPageLogProviders.Text = "Bron van logging";
+            TabPageLogProviders.Text = "Log source";
             TabPageLogProviders.UseVisualStyleBackColor = true;
             // 
             // TabPageAbout
@@ -225,9 +225,9 @@ namespace LogScraper.Configuration
             TabPageAbout.Controls.Add(userControlAbout);
             TabPageAbout.Location = new System.Drawing.Point(4, 24);
             TabPageAbout.Name = "TabPageAbout";
-            TabPageAbout.Size = new System.Drawing.Size(1039, 582);
+            TabPageAbout.Size = new System.Drawing.Size(1039, 581);
             TabPageAbout.TabIndex = 4;
-            TabPageAbout.Text = "Info";
+            TabPageAbout.Text = "About";
             TabPageAbout.UseVisualStyleBackColor = true;
             // 
             // userControlAbout
@@ -236,7 +236,7 @@ namespace LogScraper.Configuration
             userControlAbout.Location = new System.Drawing.Point(0, 0);
             userControlAbout.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             userControlAbout.Name = "userControlAbout";
-            userControlAbout.Size = new System.Drawing.Size(1039, 582);
+            userControlAbout.Size = new System.Drawing.Size(1039, 581);
             userControlAbout.TabIndex = 0;
             // 
             // BtnImport
@@ -244,9 +244,9 @@ namespace LogScraper.Configuration
             BtnImport.Image = (System.Drawing.Image)resources.GetObject("BtnImport.Image");
             BtnImport.Location = new System.Drawing.Point(9, 0);
             BtnImport.Name = "BtnImport";
-            BtnImport.Size = new System.Drawing.Size(175, 25);
+            BtnImport.Size = new System.Drawing.Size(140, 25);
             BtnImport.TabIndex = 15;
-            BtnImport.Text = "Instellingen importeren...";
+            BtnImport.Text = "Import settings...";
             BtnImport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             BtnImport.UseVisualStyleBackColor = true;
             BtnImport.Click += BtnImport_Click;
@@ -254,11 +254,11 @@ namespace LogScraper.Configuration
             // BtnExport
             // 
             BtnExport.Image = (System.Drawing.Image)resources.GetObject("BtnExport.Image");
-            BtnExport.Location = new System.Drawing.Point(190, 0);
+            BtnExport.Location = new System.Drawing.Point(153, 0);
             BtnExport.Name = "BtnExport";
-            BtnExport.Size = new System.Drawing.Size(175, 25);
+            BtnExport.Size = new System.Drawing.Size(140, 25);
             BtnExport.TabIndex = 8;
-            BtnExport.Text = "Instellingen exporteren...\r\n";
+            BtnExport.Text = "Export settings...\r\n";
             BtnExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             BtnExport.UseVisualStyleBackColor = true;
             BtnExport.Click += BtnExport_Click;
@@ -296,7 +296,7 @@ namespace LogScraper.Configuration
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MinimumSize = new System.Drawing.Size(848, 619);
             Name = "FormConfiguration";
-            Text = "LogScraper instellingen";
+            Text = "LogScraper settings";
             Load += FormConfiguration_Load;
             TabLogProviders.ResumeLayout(false);
             tabKubernetes.ResumeLayout(false);

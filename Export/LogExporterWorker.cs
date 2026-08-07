@@ -31,7 +31,7 @@ namespace LogScraper.Export
             try
             {
                 // Notify that the export process has started.
-                OnStatusUpdate("Bezig met wegschrijven...", true);
+                OnStatusUpdate("Writing...", true);
 
                 // Write the generated log content to the specified file asynchronously.
                 await File.WriteAllTextAsync(logFilePath, log);

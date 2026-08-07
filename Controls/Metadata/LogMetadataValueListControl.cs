@@ -250,7 +250,7 @@ namespace LogScraper.Controls.Metadata
             LogMetadataValue value = sortedValues[e.ItemIndex];
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
 
-            string displayText = string.IsNullOrEmpty(value.Value) ? "(leeg)" : value.Value;
+            string displayText = string.IsNullOrEmpty(value.Value) ? "(empty)" : value.Value;
             ListViewItem item = new(displayText)
             {
                 ForeColor = count == 0 ? Color.Gray : Color.Black,
@@ -278,7 +278,7 @@ namespace LogScraper.Controls.Metadata
             bool isSelectedLine = selectedEntryValue != null && selectedEntryValue.Equals(value);
             int count = valueCounts.TryGetValue(value, out int c) ? c : 0;
             Rectangle bounds = e.Bounds;
-            string displayText = string.IsNullOrEmpty(value.Value) ? "(leeg)" : value.Value;
+            string displayText = string.IsNullOrEmpty(value.Value) ? "(empty)" : value.Value;
 
             if (e.ColumnIndex == 0)
             {

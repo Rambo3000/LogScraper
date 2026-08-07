@@ -56,17 +56,17 @@ namespace LogScraper.Controls
             {
                 case LogProcessingStatus.Retrieving:
                     PicStatusIcon.Image = IconRetrieving;
-                    LblStatusText.Text = "Data ophalen...";
+                    LblStatusText.Text = "Retrieving data...";
                     Visible = true;
                     break;
                 case LogProcessingStatus.Processing:
                     PicStatusIcon.Image = IconProcessing;
-                    LblStatusText.Text = "Data verwerken...";
+                    LblStatusText.Text = "Processing data...";
                     Visible = true;
                     break;
                 case LogProcessingStatus.Waiting:
                     PicStatusIcon.Image = IconWaiting;
-                    LblStatusText.Text = "Wachten...";
+                    LblStatusText.Text = "Waiting...";
                     Visible = true;
                     break;
                 case LogProcessingStatus.Idle:

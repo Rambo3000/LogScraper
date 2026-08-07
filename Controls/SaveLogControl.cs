@@ -63,8 +63,8 @@ namespace LogScraper.Controls
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Fout bij opslaan van log: " + ex.Message, "Opslaan mislukt", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ex.LogStackTraceToFile("Fout bij opslaan van log.");
+                        MessageBox.Show("Error saving log: " + ex.Message, "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ex.LogStackTraceToFile("Error saving log.");
                     }
                 }
             }

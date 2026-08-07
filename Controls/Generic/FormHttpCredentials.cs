@@ -27,10 +27,10 @@ namespace LogScraper.Controls.Generic
                 return AuthenticationType switch
                 {
                     HttpAuthenticationType.ApiKey => "API key",
-                    HttpAuthenticationType.None => "Geen authenticatie",
+                    HttpAuthenticationType.None => "No authentication",
                     HttpAuthenticationType.BearerToken => "Bearer token",
                     HttpAuthenticationType.BasicAuthentication => "Basic authentication",
-                    HttpAuthenticationType.FormLoginWithCsrf => "Inloggen via webformulier",
+                    HttpAuthenticationType.FormLoginWithCsrf => "Log in via web form",
                     _ => string.Empty,
                 };
             }
@@ -99,18 +99,18 @@ namespace LogScraper.Controls.Generic
 
             if (authenticationType == HttpAuthenticationType.BearerToken && !txtBearerToken.Text.Contains(':', StringComparison.CurrentCulture))
             {
-                MessageBox.Show("Geef een bearer correcte token op", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide a correct bearer token", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             if (authenticationType == HttpAuthenticationType.ApiKey && (string.IsNullOrEmpty(txtKey.Text) || string.IsNullOrEmpty(txtSecret.Text)))
             {
-                MessageBox.Show("Geef de key en het secret op", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide the key and secret", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if ((authenticationType == HttpAuthenticationType.BasicAuthentication || authenticationType == HttpAuthenticationType.FormLoginWithCsrf) && (string.IsNullOrEmpty(txtUsername.Text) || string.IsNullOrEmpty(txtPassword.Text)))
             {
-                MessageBox.Show("Geef de gebruikersnaam en het wachtwoord op", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please provide the username and password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

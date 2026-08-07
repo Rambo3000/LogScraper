@@ -48,14 +48,14 @@ namespace LogScraper.Controls.Configuration
 
         private void SetupImportMode()
         {
-            Text = "Instellingen importeren";
-            BtnImportExport.Text = "Importeren";
-            LblExplenation.Text = "Selecteer welke instellingen u wilt importeren uit het gekozen bestand.";
+            Text = "Import settings";
+            BtnImportExport.Text = "Import";
+            LblExplenation.Text = "Select which settings you want to import from the chosen file.";
 
             OpenFileDialog dialog = new()
             {
-                Title = "Selecteer het instellingenbestand",
-                Filter = "JSON-bestanden (*.json)|*.json|Alle bestanden (*.*)|*.*",
+                Title = "Select the settings file",
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
                 InitialDirectory = GetDefaultOpenFolder()
             };
 
@@ -71,7 +71,7 @@ namespace LogScraper.Controls.Configuration
                 bool success = ConfigurationManager.TryLoadConfigurationExportFromFile(dialog.FileName, out ConfigurationExport config);
                 if (!success)
                 {
-                    MessageBox.Show("Het bestand bevat geen herkenbare instellingen.", "Importeren", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("The file does not contain recognizable settings.", "Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     DialogResult = DialogResult.Cancel;
                     Close();
                     return;
@@ -83,14 +83,14 @@ namespace LogScraper.Controls.Configuration
             }
             catch (JsonException jex)
             {
-                MessageBox.Show("Importeren mislukt – ongeldig JSON-bestand:\n" + jex.Message, "Importeerfout", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Import failed – invalid JSON file:\n" + jex.Message, "Import error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 jex.LogStackTraceToFile("Error parsing JSON during import");
                 DialogResult = DialogResult.Cancel;
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Importeren mislukt:\n" + ex.Message, "Importeerfout", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Import failed:\n" + ex.Message, "Import error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ex.LogStackTraceToFile("Error during import");
                 DialogResult = DialogResult.Cancel;
                 Close();
@@ -99,9 +99,9 @@ namespace LogScraper.Controls.Configuration
 
         private void SetupExportMode()
         {
-            Text = "Instellingen exporteren";
-            BtnImportExport.Text = "Exporteren...";
-            LblExplenation.Text = "Selecteer welke instellingen u wilt exporteren naar een bestand.";
+            Text = "Export settings";
+            BtnImportExport.Text = "Export...";
+            LblExplenation.Text = "Select which settings you want to export to a file.";
 
             SetCheckboxStates(true, true, true);
             UpdateActionButton();
@@ -152,7 +152,7 @@ namespace LogScraper.Controls.Configuration
 
             if (File.Exists(filePath))
             {
-                if (MessageBox.Show("Het bestand bestaat al. Wilt u het overschrijven?", "Bestand overschrijven?",
+                if (MessageBox.Show("The file already exists. Do you want to overwrite it?", "Overwrite file?",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                     return;
             }
@@ -160,14 +160,14 @@ namespace LogScraper.Controls.Configuration
             try
             {
                 ConfigurationManager.SaveToFile(filePath, exportObj);
-                MessageBox.Show("Instellingen zijn succesvol geëxporteerd naar:\n" + filePath,
-                    "Exporteren", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Settings have been successfully exported to:\n" + filePath,
+                    "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Exporteren mislukt:\n" + ex.Message, "Exporteerfout", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Export failed:\n" + ex.Message, "Export error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ex.LogStackTraceToFile("Error during export");
             }
         }
@@ -176,8 +176,8 @@ namespace LogScraper.Controls.Configuration
         {
             SaveFileDialog dialog = new()
             {
-                Title = "Exporteer instellingen",
-                Filter = "JSON-bestanden (*.json)|*.json|Alle bestanden (*.*)|*.*",
+                Title = "Export settings",
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
                 FileName = CreateDefaultExportFileName(),
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
                 OverwritePrompt = false
@@ -188,12 +188,12 @@ namespace LogScraper.Controls.Configuration
 
         private string CreateDefaultExportFileName()
         {
-            List<string> parts = ["LogScraperInstellingen"];
+            List<string> parts = ["LogScraperSettings"];
             if (!(ChkImportGeneralSettings.Checked && ChkImportLogLayoutSettings.Checked && ChkImportLogProvidersSettings.Checked))
             {
-                if (ChkImportGeneralSettings.Checked) parts.Add("Algemeen");
+                if (ChkImportGeneralSettings.Checked) parts.Add("General");
                 if (ChkImportLogLayoutSettings.Checked) parts.Add("LogLayouts");
-                if (ChkImportLogProvidersSettings.Checked) parts.Add("LogBronnen");
+                if (ChkImportLogProvidersSettings.Checked) parts.Add("LogProviders");
             }
             return string.Join("_", parts) + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".json";
         }

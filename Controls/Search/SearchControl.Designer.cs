@@ -95,21 +95,21 @@ namespace LogScraper.Controls.Search
             ItemPrevious.Image = (System.Drawing.Image)resources.GetObject("ItemPrevious.Image");
             ItemPrevious.Name = "ItemPrevious";
             ItemPrevious.Size = new System.Drawing.Size(242, 22);
-            ItemPrevious.Text = "Vorige zoeken [SHIFT-F3]";
+            ItemPrevious.Text = "Previous search [SHIFT-F3]";
             // 
             // ItemNext
             // 
             ItemNext.Image = (System.Drawing.Image)resources.GetObject("ItemNext.Image");
             ItemNext.Name = "ItemNext";
             ItemNext.Size = new System.Drawing.Size(242, 22);
-            ItemNext.Text = "Volgende zoeken [F3]";
+            ItemNext.Text = "Next search [F3]";
             // 
             // ItemAll
             // 
             ItemAll.Image = (System.Drawing.Image)resources.GetObject("ItemAll.Image");
             ItemAll.Name = "ItemAll";
             ItemAll.Size = new System.Drawing.Size(242, 22);
-            ItemAll.Text = "Alle zoeken [CTRL-SHIFT-F]";
+            ItemAll.Text = "Search all [CTRL-SHIFT-F]";
             // 
             // toolStripSeparator1
             // 
@@ -122,7 +122,7 @@ namespace LogScraper.Controls.Search
             ItemCaseSensitive.Image = (System.Drawing.Image)resources.GetObject("ItemCaseSensitive.Image");
             ItemCaseSensitive.Name = "ItemCaseSensitive";
             ItemCaseSensitive.Size = new System.Drawing.Size(242, 22);
-            ItemCaseSensitive.Text = "Hoofdletter gevoelig";
+            ItemCaseSensitive.Text = "Case sensitive";
             // 
             // ItemWholeWords
             // 
@@ -130,7 +130,7 @@ namespace LogScraper.Controls.Search
             ItemWholeWords.Image = (System.Drawing.Image)resources.GetObject("ItemWholeWords.Image");
             ItemWholeWords.Name = "ItemWholeWords";
             ItemWholeWords.Size = new System.Drawing.Size(242, 22);
-            ItemWholeWords.Text = "Alleen hele woorden";
+            ItemWholeWords.Text = "Whole words only";
             // 
             // ItemWrapAround
             // 
@@ -141,7 +141,7 @@ namespace LogScraper.Controls.Search
             ItemWrapAround.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             ItemWrapAround.Name = "ItemWrapAround";
             ItemWrapAround.Size = new System.Drawing.Size(242, 22);
-            ItemWrapAround.Text = "Verder zoeken vanaf begin";
+            ItemWrapAround.Text = "Continue searching from the beginning";
             // 
             // imageList1
             // 

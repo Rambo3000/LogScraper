@@ -78,7 +78,7 @@
             PctWarning.Size = new System.Drawing.Size(24, 24);
             PctWarning.TabIndex = 7;
             PctWarning.TabStop = false;
-            toolTip1.SetToolTip(PctWarning, "Groot bestand, inlezen, verwerken en navigeren duurt mogelijk lang en gebruikt veel geheugen");
+            toolTip1.SetToolTip(PctWarning, "Large file detected. Loading, processing, and navigating may take a long time and consume significant memory.");
             PctWarning.Visible = false;
             // 
             // LblFileSizeValue
@@ -110,9 +110,9 @@
             LblModificationDateTime.Font = new System.Drawing.Font("Segoe UI", 7F);
             LblModificationDateTime.Location = new System.Drawing.Point(3, 87);
             LblModificationDateTime.Name = "LblModificationDateTime";
-            LblModificationDateTime.Size = new System.Drawing.Size(74, 12);
+            LblModificationDateTime.Size = new System.Drawing.Size(64, 12);
             LblModificationDateTime.TabIndex = 4;
-            LblModificationDateTime.Text = "Laatst gewijzigd";
+            LblModificationDateTime.Text = "Last modified";
             // 
             // LblFileSize
             // 
@@ -121,9 +121,9 @@
             LblFileSize.Font = new System.Drawing.Font("Segoe UI", 7F);
             LblFileSize.Location = new System.Drawing.Point(3, 105);
             LblFileSize.Name = "LblFileSize";
-            LblFileSize.Size = new System.Drawing.Size(76, 12);
+            LblFileSize.Size = new System.Drawing.Size(38, 12);
             LblFileSize.TabIndex = 3;
-            LblFileSize.Text = "Bestandsgrootte";
+            LblFileSize.Text = "File size";
             // 
             // txtFilePath
             // 
@@ -143,12 +143,12 @@
             toolTip1.InitialDelay = 1;
             toolTip1.ReshowDelay = 1;
             // 
-            // UserControlFileLogProvider
+            // FileProviderControl
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForScalingCompatibility);
-            Name = "UserControlFileLogProvider";
+            Name = "FileProviderControl";
             Size = new System.Drawing.Size(236, 124);
             PnlUsedForScalingCompatibility.ResumeLayout(false);
             PnlUsedForScalingCompatibility.PerformLayout();

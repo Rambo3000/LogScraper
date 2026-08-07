@@ -121,9 +121,9 @@
     <value>17, 17</value>
   </metadata>
   <data name="pictureBox3.ToolTip" xml:space="preserve">
-    <value>Kort de namen van pods in door bepaalde delen tekst uit de naam te verwijderen. 
-Geef de te verwijderen delen van tekst op, geef meerdere delen op door deze met spatie te scheiden.
+    <value>Shortens the names of pods by removing certain parts of text from the name. 
+Specify the parts of text to remove, specify multiple parts by separating them with a space.
 
-De afgekorte naam wordt alleen binnen de Logscraper applicatie aangepast. Kubernetes wordt hierdoor niet aangepast of beïnvloed.</value>
+The shortened name is only adjusted within the Logscraper application. Kubernetes is not modified or affected by this.</value>
   </data>
 </root>

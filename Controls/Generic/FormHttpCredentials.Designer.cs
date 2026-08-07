@@ -62,7 +62,7 @@
             lblAuthenticationType.Name = "lblAuthenticationType";
             lblAuthenticationType.Size = new System.Drawing.Size(103, 15);
             lblAuthenticationType.TabIndex = 1;
-            lblAuthenticationType.Text = "Type authenticatie";
+            lblAuthenticationType.Text = "Authentication type";
             // 
             // txtUsername
             // 
@@ -118,7 +118,7 @@
             lblUsername.Name = "lblUsername";
             lblUsername.Size = new System.Drawing.Size(93, 15);
             lblUsername.TabIndex = 7;
-            lblUsername.Text = "Gebruikersnaam";
+            lblUsername.Text = "Username";
             lblUsername.Visible = false;
             // 
             // lblPassword
@@ -128,7 +128,7 @@
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new System.Drawing.Size(75, 15);
             lblPassword.TabIndex = 8;
-            lblPassword.Text = "Wachtwoord";
+            lblPassword.Text = "Password";
             lblPassword.Visible = false;
             // 
             // lblBearerToken
@@ -217,7 +217,7 @@
             ShowIcon = false;
             ShowInTaskbar = false;
             SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            Text = "Geef credentials op om verbinding te kunnen maken";
+            Text = "Provide credentials to connect";
             TopMost = true;
             ResumeLayout(false);
             PerformLayout();

@@ -373,18 +373,18 @@ namespace LogScraper.Controls.FilterOverview
         private string BuildErrorTooltip()
         {
             if (_errorCount == _totalErrorCount)
-                return $"Totaal aantal fouten: {_totalErrorCount}\n[CTRL-SHIFT-E]";
-            return $"Zichtbare fouten: {_errorCount}\nTotaal aantal fouten: {_totalErrorCount}\n[CTRL-SHIFT-E]";
+                return $"Total number of errors: {_totalErrorCount}\n[CTRL-SHIFT-E]";
+            return $"Visible errors: {_errorCount}\nTotal number of errors: {_totalErrorCount}\n[CTRL-SHIFT-E]";
         }
 
         private string BuildCollapsedTooltip()
         {
             if (_variant != ChipVariant.Metadata) return null;
             if (_specificValue != null) 
-                return string.IsNullOrEmpty(_specificValue.Value) ? "(leeg)" : _specificValue.Value;
+                return string.IsNullOrEmpty(_specificValue.Value) ? "(empty)" : _specificValue.Value;
             if (_metadataFilter?.ActiveValues.Count > 0)
                 return string.Join(Environment.NewLine, _metadataFilter.ActiveValues.Keys.Select(v => 
-                    string.IsNullOrEmpty(v.Value) ? "(leeg)" : v.Value));
+                    string.IsNullOrEmpty(v.Value) ? "(empty)" : v.Value));
             return null;
         }
 
@@ -407,7 +407,7 @@ namespace LogScraper.Controls.FilterOverview
             // Single specific value supplied by the caller (per-value chip).
             if (specificValue != null)
             {
-                string displayValue = string.IsNullOrEmpty(specificValue.Value) ? "(leeg)" : specificValue.Value;
+                string displayValue = string.IsNullOrEmpty(specificValue.Value) ? "(empty)" : specificValue.Value;
                 return $"{filter.Property.Description}: {displayValue}";
             }
 
@@ -415,7 +415,7 @@ namespace LogScraper.Controls.FilterOverview
             if (filter.ActiveValues.Count == 1)
             {
                 string displayValue = string.IsNullOrEmpty(filter.ActiveValues.Keys.First().Value) 
-                    ? "(leeg)" 
+                    ? "(empty)" 
                     : filter.ActiveValues.Keys.First().Value;
                 return $"{filter.Property.Description}: {displayValue}";
             }
@@ -446,12 +446,12 @@ namespace LogScraper.Controls.FilterOverview
             if (variant == LogRangeChipVariant.Begin)
             {
                 string begin = range?.Begin?.TimeStamp.ToString("HH:mm:ss");
-                return $"Vanaf: {begin}";
+                return $"From: {begin}";
             }
             else if (variant == LogRangeChipVariant.End)
             {
                 string end = range?.End?.TimeStamp.ToString("HH:mm:ss");
-                return $"Tot: {end}";
+                return $"To: {end}";
             }
             return string.Empty;
         }

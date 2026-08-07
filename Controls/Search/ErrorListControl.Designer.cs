@@ -49,7 +49,7 @@ namespace LogScraper.Controls.Search
             BtnClose.Name = "BtnClose";
             BtnClose.Size = new Size(20, 20);
             BtnClose.TabIndex = 0;
-            toolTip1.SetToolTip(BtnClose, "Sluiten [ESC]");
+            toolTip1.SetToolTip(BtnClose, "Close [ESC]");
             BtnClose.UseVisualStyleBackColor = true;
             BtnClose.Click += BtnClose_Click;
             // 

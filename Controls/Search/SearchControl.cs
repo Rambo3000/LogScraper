@@ -19,7 +19,7 @@ namespace LogScraper.Controls.Search
             Previous
         }
 
-        private const string DefaultSearchText = "Zoeken...";
+        private const string DefaultSearchText = "Search...";
 
         /// <summary>
         /// Fired when the user triggers a directional search (Next/Previous).
@@ -57,7 +57,7 @@ namespace LogScraper.Controls.Search
             ShortcutManager.Register(this, AppShortcut.SearchPrevious, SearchPrevious);
             ShortcutManager.Register(this, AppShortcut.SearchAll, SearchAll);
 
-            ToolTip.SetToolTip(splitButton1, "Zoeken [CTRL-F / F3]");
+            ToolTip.SetToolTip(splitButton1, "Search [CTRL-F / F3]");
         }
 
 

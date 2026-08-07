@@ -65,7 +65,7 @@
             LblReset.TabIndex = 2;
             LblReset.TabStop = true;
             LblReset.Text = "reset";
-            toolTip1.SetToolTip(LblReset, "Verwijder alle filters en toon alle logregels [CTRL-R]");
+            toolTip1.SetToolTip(LblReset, "Remove all filters and show all log lines [CTRL-R]");
             LblReset.LinkClicked += LblReset_LinkClicked;
             // 
             // ActiveFilterOverviewControl

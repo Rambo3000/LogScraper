@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Controls;
@@ -26,9 +24,6 @@ namespace LogScraper
             StateSlice.SetSynchronizationContext();
 
             InitializeComponent();
-
-            CultureInfo culture = new("nl");
-            Thread.CurrentThread.CurrentUICulture = culture;
 
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
             LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateButtonStatus();
@@ -89,7 +84,6 @@ namespace LogScraper
                 MessageBox.Show(ex.Message);
             }
 
-            RepositionLogEntriesTextBox();
             GitHubUpdateChecker.CheckForUpdateInSeperateThread();
 
             if (PreReleaseBadgeControl.Visible)
@@ -148,7 +142,7 @@ namespace LogScraper
                 ErrorListControl.Visible = false;
                 SearchResultListControl.Visible = true;
                 SplitContainerViewportAndSearchResultList.Panel2Collapsed = false;
-                SplitContainerViewportAndSearchResultList.TextSplitter = $"Zoekresultaten ({settings.SearchText})";
+                SplitContainerViewportAndSearchResultList.TextSplitter = $"Search results ({settings.SearchText})";
                 SplitContainerViewportAndSearchResultList.Expand();
             }
             if (SearchResultListControl.Visible) SearchResultListControl.UpdateSearchResults(settings);
@@ -181,8 +175,6 @@ namespace LogScraper
             if (SplitContainerActiveFiltersViewport.SplitterDistance == desired) return;
             SplitContainerActiveFiltersViewport.SplitterDistance = desired;
         }
-
-        private void RepositionLogEntriesTextBox() { }
 
         private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
         {
@@ -219,8 +211,8 @@ namespace LogScraper
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fout tijdens zoeken: " + ex.Message);
-                ex.LogStackTraceToFile("Fout tijdens zoeken in log.");
+                MessageBox.Show("Error while searching: " + ex.Message);
+                ex.LogStackTraceToFile("Error while searching in log.");
             }
             finally
             {

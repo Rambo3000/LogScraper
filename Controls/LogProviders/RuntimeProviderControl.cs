@@ -114,11 +114,11 @@ namespace LogScraper.Controls.LogProviders
 
         public ISourceAdapter GetSourceAdapter()
         {
-            if (SelectedRuntimeInstance == null) throw new Exception("De runtime instantie is verplicht");
+            if (SelectedRuntimeInstance == null) throw new Exception("The HTTP API is required");
 
             if (SelectedRuntimeInstance.IsUrlLinkToHtmlFolderList || SelectedRuntimeInstance.IsUrlLinkToHtmlFileList)
             {
-                if (SelectedFileLink == null) throw new Exception("Het log bestand is verplicht. Selecteer een bestand in de lijst.");
+                if (SelectedFileLink == null) throw new Exception("The log file is required. Select a file from the list.");
                 return GetSourceAdapterWithSpecificUrl(SelectedRuntimeInstance, SelectedFileLink.Url);
             }
             return GetSourceAdapterWithSpecificUrl(SelectedRuntimeInstance, SelectedRuntimeInstance.UrlRuntimeLog);
@@ -126,7 +126,7 @@ namespace LogScraper.Controls.LogProviders
 
         private ISourceAdapter GetSourceAdapterWithSpecificUrl(RuntimeInstance runtimeInstance, string url = null, bool authenticate = true)
         {
-            if (SelectedRuntimeInstance == null) throw new Exception("De runtime instantie is verplicht");
+            if (SelectedRuntimeInstance == null) throw new Exception("The HTTP API is required");
 
             url ??= SelectedRuntimeInstance.UrlRuntimeLog;
 

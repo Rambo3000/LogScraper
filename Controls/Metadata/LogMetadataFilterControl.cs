@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Metadata;
 
@@ -51,7 +50,7 @@ namespace LogScraper.Controls.Metadata
             LblIncludeExclude.BackColor = Color.FromArgb(10, 0, 0, 0);
 
             toolTip = new ToolTip();
-            toolTip.SetToolTip(LblIncludeExclude, "Schakel tussen opnemen (in) en uitsluiten (ex) van geselecteerde waarden");
+            toolTip.SetToolTip(LblIncludeExclude, "Switch between including (in) and excluding (ex) selected values");
 
             LblIncludeExclude.MouseEnter += LblIncludeExclude_MouseEnter;
             LblIncludeExclude.MouseLeave += LblIncludeExclude_MouseLeave;

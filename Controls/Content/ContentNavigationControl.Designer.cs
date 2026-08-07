@@ -93,7 +93,7 @@ namespace LogScraper.Controls.Content
             BtnShowTree.Name = "BtnShowTree";
             BtnShowTree.Size = new System.Drawing.Size(25, 25);
             BtnShowTree.TabIndex = 8;
-            toolTip.SetToolTip(BtnShowTree, "Hierarchische weergave");
+            toolTip.SetToolTip(BtnShowTree, "Hierarchical view");
             BtnShowTree.UseVisualStyleBackColor = true;
             BtnShowTree.Click += BtnShowTree_Click;
             // 
@@ -113,7 +113,7 @@ namespace LogScraper.Controls.Content
             BtnAutoScroll.Name = "BtnAutoScroll";
             BtnAutoScroll.Size = new System.Drawing.Size(25, 25);
             BtnAutoScroll.TabIndex = 9;
-            toolTip.SetToolTip(BtnAutoScroll, "Volg logweergave automatisch");
+            toolTip.SetToolTip(BtnAutoScroll, "Automatically follow log view");
             BtnAutoScroll.UseVisualStyleBackColor = true;
             BtnAutoScroll.Click += BtnAutoScroll_Click;
             // 
@@ -132,7 +132,7 @@ namespace LogScraper.Controls.Content
             BtnJumpToLogPosition.Name = "BtnJumpToLogPosition";
             BtnJumpToLogPosition.Size = new System.Drawing.Size(25, 25);
             BtnJumpToLogPosition.TabIndex = 10;
-            toolTip.SetToolTip(BtnJumpToLogPosition, "Spring naar huidige logweergave");
+            toolTip.SetToolTip(BtnJumpToLogPosition, "Jump to current log view");
             BtnJumpToLogPosition.UseVisualStyleBackColor = true;
             BtnJumpToLogPosition.Click += BtnJumpToLogPosition_Click;
             // 
@@ -161,7 +161,7 @@ namespace LogScraper.Controls.Content
             LblExplenation.Padding = new System.Windows.Forms.Padding(5);
             LblExplenation.Size = new System.Drawing.Size(243, 219);
             LblExplenation.TabIndex = 11;
-            LblExplenation.Text = "Navigeer door het log";
+            LblExplenation.Text = "Navigate the log";
             LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ContentNavigationControl

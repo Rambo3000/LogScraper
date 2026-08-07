@@ -99,7 +99,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnAddCluster.Name = "BtnAddCluster";
             BtnAddCluster.Size = new System.Drawing.Size(80, 23);
             BtnAddCluster.TabIndex = 1;
-            BtnAddCluster.Text = "Toevoegen";
+            BtnAddCluster.Text = "Add";
             BtnAddCluster.UseVisualStyleBackColor = true;
             BtnAddCluster.Click += BtnAddCluster_Click;
             // 
@@ -110,7 +110,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnRemoveCluster.Name = "BtnRemoveCluster";
             BtnRemoveCluster.Size = new System.Drawing.Size(80, 23);
             BtnRemoveCluster.TabIndex = 2;
-            BtnRemoveCluster.Text = "Verwijderen";
+            BtnRemoveCluster.Text = "Remove";
             BtnRemoveCluster.UseVisualStyleBackColor = true;
             BtnRemoveCluster.Click += BtnRemoveCluster_Click;
             // 
@@ -196,7 +196,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnCopy.Name = "BtnCopy";
             BtnCopy.Size = new System.Drawing.Size(22, 23);
             BtnCopy.TabIndex = 24;
-            toolTip1.SetToolTip(BtnCopy, "Kopiëren");
+            toolTip1.SetToolTip(BtnCopy, "Copy");
             BtnCopy.UseVisualStyleBackColor = true;
             BtnCopy.Click += BtnCopy_Click;
             // 
@@ -233,7 +233,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             pictureBox2.Size = new System.Drawing.Size(16, 16);
             pictureBox2.TabIndex = 35;
             pictureBox2.TabStop = false;
-            toolTip1.SetToolTip(pictureBox2, "Dit is de basis kubernetes url. Deze eindigd op k8s, bijvoorbeeld: http://localhost/k8s");
+            toolTip1.SetToolTip(pictureBox2, "This is the base kubernetes url. It ends with k8s, for example: http://localhost/k8s");
             // 
             // grpNamespace
             // 
@@ -272,7 +272,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblDefaultPodName.Name = "LblDefaultPodName";
             LblDefaultPodName.Size = new System.Drawing.Size(253, 15);
             LblDefaultPodName.TabIndex = 37;
-            LblDefaultPodName.Text = "Selecteer standaard pod welke deze tekst bevat";
+            LblDefaultPodName.Text = "Select default pod which contains this text";
             // 
             // pictureBox3
             // 
@@ -291,7 +291,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             ChkFilterPodNames.Name = "ChkFilterPodNames";
             ChkFilterPodNames.Size = new System.Drawing.Size(215, 19);
             ChkFilterPodNames.TabIndex = 17;
-            ChkFilterPodNames.Text = "Verwijder woorden uit podnamen";
+            ChkFilterPodNames.Text = "Remove words from pod names";
             ChkFilterPodNames.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             ChkFilterPodNames.UseVisualStyleBackColor = true;
             ChkFilterPodNames.CheckedChanged += ChkFilterPodNames_CheckedChanged;
@@ -340,7 +340,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblNamespaceName.Name = "LblNamespaceName";
             LblNamespaceName.Size = new System.Drawing.Size(102, 15);
             LblNamespaceName.TabIndex = 13;
-            LblNamespaceName.Text = "Namespace naam";
+            LblNamespaceName.Text = "Namespace name";
             // 
             // TxtNamespaceDescription
             // 
@@ -361,7 +361,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblNamespaceDescription.Name = "LblNamespaceDescription";
             LblNamespaceDescription.Size = new System.Drawing.Size(78, 15);
             LblNamespaceDescription.TabIndex = 11;
-            LblNamespaceDescription.Text = "Omschrijving";
+            LblNamespaceDescription.Text = "Description";
             // 
             // TxtNamespaceName
             // 
@@ -393,7 +393,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnAddNamespace.Name = "BtnAddNamespace";
             BtnAddNamespace.Size = new System.Drawing.Size(74, 23);
             BtnAddNamespace.TabIndex = 15;
-            BtnAddNamespace.Text = "Toevoegen";
+            BtnAddNamespace.Text = "Add";
             BtnAddNamespace.UseVisualStyleBackColor = true;
             BtnAddNamespace.Click += BtnAddNamespace_Click;
             // 
@@ -425,7 +425,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LblClusterDescription.Name = "LblClusterDescription";
             LblClusterDescription.Size = new System.Drawing.Size(78, 15);
             LblClusterDescription.TabIndex = 8;
-            LblClusterDescription.Text = "Omschrijving";
+            LblClusterDescription.Text = "Description";
             // 
             // BtnRemoveNamespace
             // 
@@ -434,7 +434,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             BtnRemoveNamespace.Name = "BtnRemoveNamespace";
             BtnRemoveNamespace.Size = new System.Drawing.Size(76, 23);
             BtnRemoveNamespace.TabIndex = 16;
-            BtnRemoveNamespace.Text = "Verwijderen";
+            BtnRemoveNamespace.Text = "Remove";
             BtnRemoveNamespace.UseVisualStyleBackColor = true;
             BtnRemoveNamespace.Click += BtnRemoveNamespace_Click;
             // 
@@ -487,7 +487,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             lblLogLayout.Name = "lblLogLayout";
             lblLogLayout.Size = new System.Drawing.Size(116, 15);
             lblLogLayout.TabIndex = 10;
-            lblLogLayout.Text = "Standaard log layout";
+            lblLogLayout.Text = "Default log layout";
             // 
             // label1
             // 
@@ -496,7 +496,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(118, 15);
             label1.TabIndex = 33;
-            label1.Text = "Standaard tijdspanne";
+            label1.Text = "Default timespan";
             // 
             // CboKubernetesTimespan
             // 
@@ -515,7 +515,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 34;
             pictureBox1.TabStop = false;
-            toolTip1.SetToolTip(pictureBox1, "De tijdspanne limiteerd het downloaden van het log tot de aangegeven periode. DIt is handig wanneer er een groot logbestand aanwezig is en alleen recente data opgehaald hoeft te worden.");
+            toolTip1.SetToolTip(pictureBox1, "The timespan limits the downloading of the log to the specified period. This is useful when a large log file is present and only recent data needs to be retrieved.");
             // 
             // toolTip1
             // 

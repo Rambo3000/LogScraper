@@ -32,7 +32,7 @@ namespace LogScraper.Controls.Generic
         private void UpdateMemoryUsage(object sender, EventArgs e)
         {
             // Get the current process's memory usage in megabytes and display it in the label.
-            LblMemoryUsageValue.Text = $"Geheugengebruik: {(Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024))} MB";
+            LblMemoryUsageValue.Text = $"Memory usage: {(Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024))} MB";
         }
 
         /// <summary>

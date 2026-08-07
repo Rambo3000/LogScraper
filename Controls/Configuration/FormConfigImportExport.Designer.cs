@@ -47,7 +47,7 @@
             BtnCancel.Name = "BtnCancel";
             BtnCancel.Size = new System.Drawing.Size(109, 29);
             BtnCancel.TabIndex = 5;
-            BtnCancel.Text = "Annuleren";
+            BtnCancel.Text = "Cancel";
             BtnCancel.UseVisualStyleBackColor = true;
             BtnCancel.Click += BtnCancel_Click;
             // 
@@ -61,7 +61,7 @@
             BtnImportExport.Name = "BtnImportExport";
             BtnImportExport.Size = new System.Drawing.Size(109, 29);
             BtnImportExport.TabIndex = 4;
-            BtnImportExport.Text = "Importeren";
+            BtnImportExport.Text = "Import";
             BtnImportExport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             BtnImportExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             BtnImportExport.UseVisualStyleBackColor = true;
@@ -87,7 +87,7 @@
             ChkImportGeneralSettings.Name = "ChkImportGeneralSettings";
             ChkImportGeneralSettings.Size = new System.Drawing.Size(144, 19);
             ChkImportGeneralSettings.TabIndex = 1;
-            ChkImportGeneralSettings.Text = "Algemene instellingen";
+            ChkImportGeneralSettings.Text = "General settings";
             ChkImportGeneralSettings.UseVisualStyleBackColor = true;
             ChkImportGeneralSettings.CheckedChanged += ChkChanged;
             // 
@@ -99,7 +99,7 @@
             ChkImportLogProvidersSettings.Name = "ChkImportLogProvidersSettings";
             ChkImportLogProvidersSettings.Size = new System.Drawing.Size(137, 19);
             ChkImportLogProvidersSettings.TabIndex = 3;
-            ChkImportLogProvidersSettings.Text = "Bronnen van logging";
+            ChkImportLogProvidersSettings.Text = "Log sources";
             ChkImportLogProvidersSettings.UseVisualStyleBackColor = true;
             ChkImportLogProvidersSettings.CheckedChanged += ChkChanged;
             // 
@@ -110,7 +110,7 @@
             LblExplenation.Name = "LblExplenation";
             LblExplenation.Size = new System.Drawing.Size(57, 15);
             LblExplenation.TabIndex = 0;
-            LblExplenation.Text = "Selecteer ";
+            LblExplenation.Text = "Select ";
             LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // imageList1
@@ -137,7 +137,7 @@
             MinimizeBox = false;
             Name = "FormConfigImportExport";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "Instellingen importeren";
+            Text = "Import settings";
             Load += FormConfigImportExport_Load;
             ResumeLayout(false);
             PerformLayout();

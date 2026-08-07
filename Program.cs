@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 
@@ -12,6 +13,11 @@ namespace LogScraper
         [STAThread]
         static void Main()
         {
+            // Force English UI resource strings for every thread, including background worker threads,
+            // regardless of the OS culture. CurrentCulture (number/date formatting) is left dynamic
+            // so it still follows the OS locale.
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
+
             ConfigurationManager.Initialize();
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);

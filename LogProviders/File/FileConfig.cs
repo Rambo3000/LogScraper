@@ -36,10 +36,10 @@ namespace LogScraper.LogProviders.File
         /// <summary>
         /// Returns a string representation of the file-based log provider configuration.
         /// </summary>
-        /// <returns>A localized string representing the log provider ("Lokaal bestand").</returns>
+        /// <returns>A localized string representing the log provider ("File").</returns>
         public override string ToString()
         {
-            return "Bestand";
+            return "File";
         }
 
         public bool Equals(FileConfig other) => this.IsEqualByJsonComparison(other);

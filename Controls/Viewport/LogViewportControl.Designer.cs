@@ -46,6 +46,7 @@
             LblExplenation = new System.Windows.Forms.Label();
             LblExplenation2 = new System.Windows.Forms.Label();
             LblLoading = new System.Windows.Forms.Label();
+            LblPaused = new System.Windows.Forms.Label();
             ContextMenuStripViewport.SuspendLayout();
             SuspendLayout();
             // 
@@ -67,71 +68,71 @@
             // 
             ContextMenuStripViewport.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemCopy, ItemSelectAll, ToolStripSeparatorMark, ItemMark });
             ContextMenuStripViewport.Name = "ContextMenuStripViewport";
-            ContextMenuStripViewport.Size = new System.Drawing.Size(180, 76);
+            ContextMenuStripViewport.Size = new System.Drawing.Size(121, 76);
             // 
             // ItemCopy
             // 
             ItemCopy.Name = "ItemCopy";
-            ItemCopy.Size = new System.Drawing.Size(179, 22);
-            ItemCopy.Text = "Kopiëren";
+            ItemCopy.Size = new System.Drawing.Size(120, 22);
+            ItemCopy.Text = "Copy";
             // 
             // ItemSelectAll
             // 
             ItemSelectAll.Name = "ItemSelectAll";
-            ItemSelectAll.Size = new System.Drawing.Size(179, 22);
-            ItemSelectAll.Text = "Alles selecteren";
+            ItemSelectAll.Size = new System.Drawing.Size(120, 22);
+            ItemSelectAll.Text = "Select all";
             // 
             // ToolStripSeparatorMark
             // 
             ToolStripSeparatorMark.Name = "ToolStripSeparatorMark";
-            ToolStripSeparatorMark.Size = new System.Drawing.Size(176, 6);
+            ToolStripSeparatorMark.Size = new System.Drawing.Size(117, 6);
             // 
             // ItemMark
             // 
             ItemMark.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { ItemMarkColor1, ItemMarkColor2, ItemMarkColor3, ItemMarkColor4, ItemMarkColor5, ToolStripSeparatorMarkReset, ItemMarkReset });
             ItemMark.Name = "ItemMark";
-            ItemMark.Size = new System.Drawing.Size(179, 22);
-            ItemMark.Text = "Markeren";
+            ItemMark.Size = new System.Drawing.Size(120, 22);
+            ItemMark.Text = "Mark";
             // 
             // ItemMarkColor1
             // 
             ItemMarkColor1.Name = "ItemMarkColor1";
-            ItemMarkColor1.Size = new System.Drawing.Size(180, 22);
-            ItemMarkColor1.Text = "Kleur 1";
+            ItemMarkColor1.Size = new System.Drawing.Size(112, 22);
+            ItemMarkColor1.Text = "Color 1";
             // 
             // ItemMarkColor2
             // 
             ItemMarkColor2.Name = "ItemMarkColor2";
-            ItemMarkColor2.Size = new System.Drawing.Size(180, 22);
-            ItemMarkColor2.Text = "Kleur 2";
+            ItemMarkColor2.Size = new System.Drawing.Size(112, 22);
+            ItemMarkColor2.Text = "Color 2";
             // 
             // ItemMarkColor3
             // 
             ItemMarkColor3.Name = "ItemMarkColor3";
-            ItemMarkColor3.Size = new System.Drawing.Size(180, 22);
-            ItemMarkColor3.Text = "Kleur 3";
+            ItemMarkColor3.Size = new System.Drawing.Size(112, 22);
+            ItemMarkColor3.Text = "Color 3";
             // 
             // ItemMarkColor4
             // 
             ItemMarkColor4.Name = "ItemMarkColor4";
-            ItemMarkColor4.Size = new System.Drawing.Size(180, 22);
-            ItemMarkColor4.Text = "Kleur 4";
+            ItemMarkColor4.Size = new System.Drawing.Size(112, 22);
+            ItemMarkColor4.Text = "Color 4";
             // 
             // ItemMarkColor5
             // 
             ItemMarkColor5.Name = "ItemMarkColor5";
-            ItemMarkColor5.Size = new System.Drawing.Size(180, 22);
-            ItemMarkColor5.Text = "Kleur 5";
+            ItemMarkColor5.Size = new System.Drawing.Size(112, 22);
+            ItemMarkColor5.Text = "Color 5";
             // 
             // ToolStripSeparatorMarkReset
             // 
             ToolStripSeparatorMarkReset.Name = "ToolStripSeparatorMarkReset";
-            ToolStripSeparatorMarkReset.Size = new System.Drawing.Size(177, 6);
+            ToolStripSeparatorMarkReset.Size = new System.Drawing.Size(109, 6);
             // 
             // ItemMarkReset
             // 
             ItemMarkReset.Name = "ItemMarkReset";
-            ItemMarkReset.Size = new System.Drawing.Size(180, 22);
+            ItemMarkReset.Size = new System.Drawing.Size(112, 22);
             ItemMarkReset.Text = "Reset";
             // 
             // toolTip1
@@ -149,7 +150,7 @@
             LblExplenation.Name = "LblExplenation";
             LblExplenation.Size = new System.Drawing.Size(712, 26);
             LblExplenation.TabIndex = 43;
-            LblExplenation.Text = "Geen log geladen...\r\n";
+            LblExplenation.Text = "No log available";
             LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LblExplenation2
@@ -162,33 +163,13 @@
             LblExplenation2.Name = "LblExplenation2";
             LblExplenation2.Size = new System.Drawing.Size(712, 26);
             LblExplenation2.TabIndex = 43;
-            LblExplenation2.Text = "Start met het (automatisch) ophalen van log";
+            LblExplenation2.Text = "Start retrieving the log to view its contents.";
             LblExplenation2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // LblPaused
-            // 
-            LblPaused = new System.Windows.Forms.Label();
-            LblPaused.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            LblPaused.AutoSize = false;
-            LblPaused.BackColor = System.Drawing.Color.FromArgb(255, 255, 210);
-            LblPaused.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            LblPaused.ForeColor = System.Drawing.Color.FromArgb(100, 80, 0);
-            LblPaused.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            LblPaused.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            LblPaused.Size = new System.Drawing.Size(695, 24);
-            LblPaused.Location = new System.Drawing.Point(0, 0);
-            LblPaused.Text = "⏸ Weergave gepauzeerd – grote hoeveelheid log. Klik om eenmalig te vernieuwen.";
-            LblPaused.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            LblPaused.Cursor = System.Windows.Forms.Cursors.Hand;
-            LblPaused.Visible = false;
             // 
             // LblLoading
             // 
-            LblLoading = new System.Windows.Forms.Label();
             LblLoading.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            LblLoading.AutoSize = false;
             LblLoading.BackColor = System.Drawing.Color.FromArgb(255, 251, 210);
-            LblLoading.BorderStyle = System.Windows.Forms.BorderStyle.None;
             LblLoading.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             LblLoading.ForeColor = System.Drawing.Color.FromArgb(110, 90, 0);
             LblLoading.Location = new System.Drawing.Point(684, 6);
@@ -196,10 +177,27 @@
             LblLoading.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
             LblLoading.Size = new System.Drawing.Size(90, 26);
             LblLoading.TabIndex = 44;
-            LblLoading.Text = "Bezig...";
+            LblLoading.Text = "Loading...";
             LblLoading.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             LblLoading.Visible = false;
             LblLoading.Paint += LblFeedback_Paint;
+            // 
+            // LblPaused
+            // 
+            LblPaused.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            LblPaused.BackColor = System.Drawing.Color.FromArgb(255, 255, 210);
+            LblPaused.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            LblPaused.Cursor = System.Windows.Forms.Cursors.Hand;
+            LblPaused.Font = new System.Drawing.Font("Segoe UI", 8.25F);
+            LblPaused.ForeColor = System.Drawing.Color.FromArgb(100, 80, 0);
+            LblPaused.Location = new System.Drawing.Point(0, 0);
+            LblPaused.Name = "LblPaused";
+            LblPaused.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            LblPaused.Size = new System.Drawing.Size(695, 24);
+            LblPaused.TabIndex = 45;
+            LblPaused.Text = "⏸ View paused – large amount of log. Click to refresh once.";
+            LblPaused.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            LblPaused.Visible = false;
             // 
             // LogViewportControl
             // 
@@ -214,7 +212,6 @@
             Size = new System.Drawing.Size(712, 403);
             ContextMenuStripViewport.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

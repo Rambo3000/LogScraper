@@ -110,7 +110,7 @@ namespace LogScraper.Controls.Search
                 }
             }
 
-            LblResultCount.Text = $"Zoeken op '{searchSettings.SearchText}', {results.Count} resultaten gevonden";
+            LblResultCount.Text = $"Search for '{searchSettings.SearchText}', {results.Count} results found";
 
             LstSearchResults.EndUpdate();
         }

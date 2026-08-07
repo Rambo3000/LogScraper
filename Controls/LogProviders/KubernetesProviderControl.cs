@@ -75,7 +75,7 @@ namespace LogScraper.Controls.LogProviders
 
             if (url == null)
             {
-                if (SelectedKubernetesCluster == null || SelectedKubernetesNamespace == null || SelectedKubernetesPod == null) throw new Exception("Er is geen Kubernetes pod geselecteerd");
+                if (SelectedKubernetesCluster == null || SelectedKubernetesNamespace == null || SelectedKubernetesPod == null) throw new Exception("No Kubernetes pod is selected");
                 url = KubernetesHelper.GetUrlForPodLog(SelectedKubernetesCluster, SelectedKubernetesNamespace, SelectedKubernetesPod);
             }
             return SourceAdapterFactory.CreateHttpSourceAdapter(url, CredentialManager.GenerateTargetLogProvider("Kubernetes", SelectedKubernetesCluster.ClusterId), ConfigAppState.Instance.GenericConfig.Value.HttpCLientTimeOUtSeconds, null, TrailType.Kubernetes, lastTrailTime, authenticate);
@@ -258,7 +258,7 @@ namespace LogScraper.Controls.LogProviders
                 cboKubernetesPod.SelectedIndex != -1 &&
                 previousTimeSpan != null && previousTimeSpan != KubernetesTimespan.Everything &&
                 (newTimeSpan == KubernetesTimespan.Everything || previousTimeSpan < newTimeSpan) &&
-                MessageBox.Show("Om oudere loggegevens op te halen moeten het log eerst gewist worden, wil je dit doen?", "Log wissen", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                MessageBox.Show("To retrieve older log data, the log must first be cleared. Do you want to do this?", "Clear log", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 OnSourceSelectionChanged(EventArgs.Empty);
             }

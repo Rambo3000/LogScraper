@@ -52,7 +52,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             lblLogLayout.Name = "lblLogLayout";
             lblLogLayout.Size = new System.Drawing.Size(116, 15);
             lblLogLayout.TabIndex = 10;
-            lblLogLayout.Text = "Standaard log layout";
+            lblLogLayout.Text = "Default log layout";
             // 
             // PnlUsedForScalingCompatibility
             // 

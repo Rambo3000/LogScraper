@@ -482,8 +482,8 @@ namespace LogScraper.Controls.Generic
             if (show)
             {
                 string tip = !string.IsNullOrEmpty(_textSplitter)
-                    ? $"Klik om te vergroten \"{_textSplitter}\""
-                    : "Klik om te vergroten";
+                    ? $"Click to enlarge \"{_textSplitter}\""
+                    : "Click to enlarge";
                 _toolTip.SetToolTip(this, tip);
             }
             else

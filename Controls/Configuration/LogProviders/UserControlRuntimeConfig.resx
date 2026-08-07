@@ -134,10 +134,10 @@
 </value>
   </data>
   <data name="pictureBox3.ToolTip" xml:space="preserve">
-    <value>Deze optie werkt momenteel alleen voor paginas die middels een sessie cookie en een token op de inlogpagina.
+    <value>This option currently only works for pages that use a session cookie and a token on the login page.
 
-Geef de URL van inlog webpagina op. 
-Voor de namen van de velden kijk in de HTML van de inlogpagina en identificeer de ids van de gebruikersnaam, wachtwoord en (CSRF) token.</value>
+Specify the URL of the login web page.
+For the field names, look in the HTML of the login page and identify the ids of the username, password and (CSRF) token.</value>
   </data>
   <data name="pictureBox2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -152,11 +152,11 @@ Voor de namen van de velden kijk in de HTML van de inlogpagina en identificeer d
 </value>
   </data>
   <data name="pictureBox2.ToolTip" xml:space="preserve">
-    <value>Gebruik deze optie indien er een lijst met logbestanden benaderbaar is vanaf een HTML pagina. 
+    <value>Use this option if a list of log files can be accessed from an HTML page. 
 
-Geef bij de URL die van de HTML pagina op die links naar de logs bevat. 
+Specify the URL of the HTML page that contains links to the logs. 
 
-De applicatie detecteerd automatisch de logs en geeft hierin een keuze.</value>
+The application automatically detects the logs and offers a choice among them.</value>
   </data>
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -171,10 +171,10 @@ De applicatie detecteerd automatisch de logs en geeft hierin een keuze.</value>
 </value>
   </data>
   <data name="pictureBox1.ToolTip" xml:space="preserve">
-    <value>Gebruik deze optie indien er mappen met logbestanden benaderbaar zijn vanaf een HTML pagina. 
+    <value>Use this option if folders with log files can be accessed from an HTML page. 
 
-Geef bij de URL die van de HTML pagina op die mappen bevat. 
+Specify the URL of the HTML page that contains folders. 
 
-De mappen verwijzen naar HTML paginas waar links naar log bestanden staan. De applicatie detecteerd automatisch de mappen en logs en geeft hierin een keuze.</value>
+The folders refer to HTML pages that contain links to log files. The application automatically detects the folders and logs and offers a choice among them.</value>
   </data>
 </root>

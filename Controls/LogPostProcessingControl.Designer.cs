@@ -68,7 +68,7 @@
             BtnPrettyPrint.Name = "BtnPrettyPrint";
             BtnPrettyPrint.Size = new System.Drawing.Size(40, 25);
             BtnPrettyPrint.TabIndex = 0;
-            toolTip1.SetToolTip(BtnPrettyPrint, "Pretty print JSON en XML [CTRL-P]");
+            toolTip1.SetToolTip(BtnPrettyPrint, "Pretty print JSON and XML [CTRL-P]");
             BtnPrettyPrint.ButtonClick += BtnPrettyPrint_Click;
             // 
             // contextMenuStrip1
@@ -104,7 +104,7 @@
             RemoveToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("RemoveToolStripMenuItem.Image");
             RemoveToolStripMenuItem.Name = "RemoveToolStripMenuItem";
             RemoveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            RemoveToolStripMenuItem.Text = "Wis pretty print";
+            RemoveToolStripMenuItem.Text = "Clear pretty print";
             RemoveToolStripMenuItem.Click += RemoveToolStripMenuItem_Click;
             // 
             // LogPostProcessingControl

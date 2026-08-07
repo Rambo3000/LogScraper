@@ -67,9 +67,9 @@ namespace LogScraper.Controls.Configuration
             LblDefaultLogProviderType.AutoSize = true;
             LblDefaultLogProviderType.Location = new System.Drawing.Point(6, 19);
             LblDefaultLogProviderType.Name = "LblDefaultLogProviderType";
-            LblDefaultLogProviderType.Size = new System.Drawing.Size(132, 15);
+            LblDefaultLogProviderType.Size = new System.Drawing.Size(127, 15);
             LblDefaultLogProviderType.TabIndex = 0;
-            LblDefaultLogProviderType.Text = "Standaard logging bron";
+            LblDefaultLogProviderType.Text = "Default logging source";
             // 
             // GrpExportSettings
             // 
@@ -86,7 +86,7 @@ namespace LogScraper.Controls.Configuration
             GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
             GrpExportSettings.TabStop = false;
-            GrpExportSettings.Text = "Log wegschrijven instellingen";
+            GrpExportSettings.Text = "Log export settings";
             // 
             // BtnBrowseEditor
             // 
@@ -124,9 +124,9 @@ namespace LogScraper.Controls.Configuration
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(6, 25);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(84, 15);
+            label2.Size = new System.Drawing.Size(58, 15);
             label2.TabIndex = 8;
-            label2.Text = "Bestandsnaam";
+            label2.Text = "File name";
             // 
             // TxtEditorLocation
             // 
@@ -155,9 +155,9 @@ namespace LogScraper.Controls.Configuration
             ChkExportToFile.AutoSize = true;
             ChkExportToFile.Location = new System.Drawing.Point(6, 175);
             ChkExportToFile.Name = "ChkExportToFile";
-            ChkExportToFile.Size = new System.Drawing.Size(241, 19);
+            ChkExportToFile.Size = new System.Drawing.Size(413, 19);
             ChkExportToFile.TabIndex = 5;
-            ChkExportToFile.Text = "Schrijf de gefilterde log naar een bestand";
+            ChkExportToFile.Text = "Continuously write the filtered log to a file for quick access in a text editor";
             ChkExportToFile.UseVisualStyleBackColor = true;
             ChkExportToFile.CheckedChanged += ChkExportToFile_CheckedChanged;
             // 
@@ -175,9 +175,9 @@ namespace LogScraper.Controls.Configuration
             LblTimeout.AutoSize = true;
             LblTimeout.Location = new System.Drawing.Point(3, 79);
             LblTimeout.Name = "LblTimeout";
-            LblTimeout.Size = new System.Drawing.Size(137, 15);
+            LblTimeout.Size = new System.Drawing.Size(122, 15);
             LblTimeout.TabIndex = 3;
-            LblTimeout.Text = "Timeout downloaden (s)";
+            LblTimeout.Text = "Download timeout (s)";
             // 
             // TxtTimeOut
             // 
@@ -203,9 +203,9 @@ namespace LogScraper.Controls.Configuration
             LblAutomaticReadTimea.AutoSize = true;
             LblAutomaticReadTimea.Location = new System.Drawing.Point(6, 48);
             LblAutomaticReadTimea.Name = "LblAutomaticReadTimea";
-            LblAutomaticReadTimea.Size = new System.Drawing.Size(147, 15);
+            LblAutomaticReadTimea.Size = new System.Drawing.Size(138, 15);
             LblAutomaticReadTimea.TabIndex = 6;
-            LblAutomaticReadTimea.Text = "Automatisch lezen tijd (m)";
+            LblAutomaticReadTimea.Text = "Automatic read time (m)";
             // 
             // GrpGeneralSettings
             // 
@@ -230,16 +230,16 @@ namespace LogScraper.Controls.Configuration
             GrpGeneralSettings.Size = new System.Drawing.Size(848, 349);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
-            GrpGeneralSettings.Text = "Algemene instellingen";
+            GrpGeneralSettings.Text = "General settings";
             // 
             // ChkIsDebugModeEnabled
             // 
             ChkIsDebugModeEnabled.AutoSize = true;
             ChkIsDebugModeEnabled.Location = new System.Drawing.Point(6, 313);
             ChkIsDebugModeEnabled.Name = "ChkIsDebugModeEnabled";
-            ChkIsDebugModeEnabled.Size = new System.Drawing.Size(237, 19);
+            ChkIsDebugModeEnabled.Size = new System.Drawing.Size(194, 19);
             ChkIsDebugModeEnabled.TabIndex = 43;
-            ChkIsDebugModeEnabled.Text = "Sla foutmeldingen op in een logbestand";
+            ChkIsDebugModeEnabled.Text = "Save error messages to a log file";
             ChkIsDebugModeEnabled.UseVisualStyleBackColor = true;
             // 
             // ChkShowTimeLine
@@ -247,9 +247,9 @@ namespace LogScraper.Controls.Configuration
             ChkShowTimeLine.AutoSize = true;
             ChkShowTimeLine.Location = new System.Drawing.Point(6, 150);
             ChkShowTimeLine.Name = "ChkShowTimeLine";
-            ChkShowTimeLine.Size = new System.Drawing.Size(168, 19);
+            ChkShowTimeLine.Size = new System.Drawing.Size(178, 19);
             ChkShowTimeLine.TabIndex = 42;
-            ChkShowTimeLine.Text = "Toon het tijdlijn-histogram";
+            ChkShowTimeLine.Text = "Show the timeline histogram";
             ChkShowTimeLine.UseVisualStyleBackColor = true;
             // 
             // ChkIncludePrereleaseUpdates
@@ -257,9 +257,9 @@ namespace LogScraper.Controls.Configuration
             ChkIncludePrereleaseUpdates.AutoSize = true;
             ChkIncludePrereleaseUpdates.Location = new System.Drawing.Point(6, 288);
             ChkIncludePrereleaseUpdates.Name = "ChkIncludePrereleaseUpdates";
-            ChkIncludePrereleaseUpdates.Size = new System.Drawing.Size(264, 19);
+            ChkIncludePrereleaseUpdates.Size = new System.Drawing.Size(241, 19);
             ChkIncludePrereleaseUpdates.TabIndex = 41;
-            ChkIncludePrereleaseUpdates.Text = "Controleer ook op beta-updates (prereleases)";
+            ChkIncludePrereleaseUpdates.Text = "Also check for beta updates (prereleases)";
             ChkIncludePrereleaseUpdates.UseVisualStyleBackColor = true;
             // 
             // ChkPinLogProvidersByDefault
@@ -267,9 +267,9 @@ namespace LogScraper.Controls.Configuration
             ChkPinLogProvidersByDefault.AutoSize = true;
             ChkPinLogProvidersByDefault.Location = new System.Drawing.Point(6, 128);
             ChkPinLogProvidersByDefault.Name = "ChkPinLogProvidersByDefault";
-            ChkPinLogProvidersByDefault.Size = new System.Drawing.Size(373, 19);
+            ChkPinLogProvidersByDefault.Size = new System.Drawing.Size(335, 19);
             ChkPinLogProvidersByDefault.TabIndex = 39;
-            ChkPinLogProvidersByDefault.Text = "Bron instellingen automatisch verbergen zodra deze compleet zijn";
+            ChkPinLogProvidersByDefault.Text = "Automatically hide source settings once they are complete";
             ChkPinLogProvidersByDefault.UseVisualStyleBackColor = true;
             // 
             // pictureBox1
@@ -280,7 +280,7 @@ namespace LogScraper.Controls.Configuration
             pictureBox1.Size = new System.Drawing.Size(16, 16);
             pictureBox1.TabIndex = 37;
             pictureBox1.TabStop = false;
-            toolTip.SetToolTip(pictureBox1, "Toont bij de navigatie (rechts in het scherm) een rode regel met de tijd en de tekst ERROR.");
+            toolTip.SetToolTip(pictureBox1, "Shows a red line with the time and the text ERROR in the navigation (right side of the screen).");
             // 
             // pictureBox16
             // 
@@ -290,16 +290,16 @@ namespace LogScraper.Controls.Configuration
             pictureBox16.Size = new System.Drawing.Size(16, 16);
             pictureBox16.TabIndex = 36;
             pictureBox16.TabStop = false;
-            toolTip.SetToolTip(pictureBox16, "Dit betreft het aantal seconden dat een enkele download mag duren. Indien er grote bestanden gedownload moeten worden dan kan deze waarde verhoogd worden.");
+            toolTip.SetToolTip(pictureBox16, "This concerns the number of seconds a single download may take. If large files need to be downloaded, this value can be increased.");
             // 
             // ChkShowErrorsInBeginAndEndFilters
             // 
             ChkShowErrorsInBeginAndEndFilters.AutoSize = true;
             ChkShowErrorsInBeginAndEndFilters.Location = new System.Drawing.Point(6, 103);
             ChkShowErrorsInBeginAndEndFilters.Name = "ChkShowErrorsInBeginAndEndFilters";
-            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(320, 19);
+            ChkShowErrorsInBeginAndEndFilters.Size = new System.Drawing.Size(326, 19);
             ChkShowErrorsInBeginAndEndFilters.TabIndex = 8;
-            ChkShowErrorsInBeginAndEndFilters.Text = "Toon error logregels altijd tussen de navigatie resultaten";
+            ChkShowErrorsInBeginAndEndFilters.Text = "Always show error log lines among the navigation results";
             ChkShowErrorsInBeginAndEndFilters.UseVisualStyleBackColor = true;
             // 
             // toolTip

@@ -50,12 +50,12 @@ namespace LogScraper.Controls
                 if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                 {
                     // Path exists but the file is missing.
-                    MessageBox.Show($"Bestand is niet gevonden: {fileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"File not found: {fileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
                     // Path is invalid or empty.
-                    MessageBox.Show($"Er is een ongeldig locatie opgegeven voor het exporteren van het log: {fileName}, pas deze aan via de instellingen.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"An invalid location was specified for exporting the log: {fileName}, adjust this via the settings.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 return;
             }

@@ -58,7 +58,7 @@ namespace LogScraper.Controls
             lblLogProvider.Name = "lblLogProvider";
             lblLogProvider.Size = new System.Drawing.Size(32, 15);
             lblLogProvider.TabIndex = 21;
-            lblLogProvider.Text = "Bron";
+            lblLogProvider.Text = "Source";
             // 
             // cboLogProvider
             // 
@@ -161,7 +161,7 @@ namespace LogScraper.Controls
             BtnCollapseExpand.Name = "BtnCollapseExpand";
             BtnCollapseExpand.Size = new System.Drawing.Size(24, 24);
             BtnCollapseExpand.TabIndex = 28;
-            toolTip1.SetToolTip(BtnCollapseExpand, "Logbron in-/uitklappen [CTRL-SHIFT-P]");
+            toolTip1.SetToolTip(BtnCollapseExpand, "Collapse/expand log source [CTRL-SHIFT-P]");
             BtnCollapseExpand.UseVisualStyleBackColor = true;
             BtnCollapseExpand.Click += BtnCollapseExpand_Click;
             // 

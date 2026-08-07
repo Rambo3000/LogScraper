@@ -45,17 +45,17 @@ namespace LogScraper.Controls
             if (status == LogProcessingStatus.Retrieving)
             {
                 LblStatusIcon.ImageIndex = 0;
-                toolTip1.SetToolTip(LblStatusIcon, "Data ontvangen...");
+                toolTip1.SetToolTip(LblStatusIcon, "Receiving data...");
             }
             else if (status == LogProcessingStatus.Processing)
             {
                 LblStatusIcon.ImageIndex = 1;
-                toolTip1.SetToolTip(LblStatusIcon, "Data verwerken...");
+                toolTip1.SetToolTip(LblStatusIcon, "Processing data...");
             }
             else if (status == LogProcessingStatus.Waiting)
             {
                 LblStatusIcon.ImageIndex = 2;
-                toolTip1.SetToolTip(LblStatusIcon, "Wachten...");
+                toolTip1.SetToolTip(LblStatusIcon, "Waiting...");
             }
 
             LblStatusIcon.Visible = status != LogProcessingStatus.Idle;

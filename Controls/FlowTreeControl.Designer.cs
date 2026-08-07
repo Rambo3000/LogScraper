@@ -54,7 +54,7 @@ namespace LogScraper.Controls
             BtnTreeView.Size = new System.Drawing.Size(40, 25);
             BtnTreeView.TabIndex = 4;
             BtnTreeView.Tag = "";
-            toolTip1.SetToolTip(BtnTreeView, "Hierarchische weergave aan/uit [CTRL-T]");
+            toolTip1.SetToolTip(BtnTreeView, "Hierarchical view on/off [CTRL-T]");
             BtnTreeView.ButtonClick += BtnTreeView_Click;
             // 
             // ContextMenuStrip1
@@ -69,14 +69,14 @@ namespace LogScraper.Controls
             ItemShowTree.Image = (System.Drawing.Image)resources.GetObject("ItemShowTree.Image");
             ItemShowTree.Name = "ItemShowTree";
             ItemShowTree.Size = new System.Drawing.Size(193, 22);
-            ItemShowTree.Text = "Hirarchische weergave";
+            ItemShowTree.Text = "Hierarchical view";
             // 
             // ItemHideTree
             // 
             ItemHideTree.Image = (System.Drawing.Image)resources.GetObject("ItemHideTree.Image");
             ItemHideTree.Name = "ItemHideTree";
             ItemHideTree.Size = new System.Drawing.Size(193, 22);
-            ItemHideTree.Text = "Normale weergave";
+            ItemHideTree.Text = "Normal view";
             // 
             // CboContentProperties
             // 

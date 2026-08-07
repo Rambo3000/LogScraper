@@ -51,9 +51,9 @@ namespace LogScraper.Controls.Configuration
             TxtCustomStyleExample.HideUnusedMargins();
             string dateTimeNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             TxtCustomStyleExample.ReadOnly = false;
-            TxtCustomStyleExample.Text = dateTimeNow + " Dit is een voorbeeld zonder aangepaste kleuren" + Environment.NewLine +
-                                        dateTimeNow + " Dit is een voorbeeld met aangepaste kleuren" + Environment.NewLine +
-                                        dateTimeNow + " Dit is een voorbeeld met selectie en aangepaste kleuren";
+            TxtCustomStyleExample.Text = dateTimeNow + " This is an example without custom colors" + Environment.NewLine +
+                                        dateTimeNow + " This is an example with custom colors" + Environment.NewLine +
+                                        dateTimeNow + " This is an example with selection and custom colors";
             TxtCustomStyleExample.EmptyUndoBuffer();
             TxtCustomStyleExample.ReadOnly = true;
             TxtCustomStyleExample.HighlightSingleLine(2, 11);
@@ -112,7 +112,7 @@ namespace LogScraper.Controls.Configuration
                     (!layout.IsAutomaticTimeStampRecognitionEnabled && string.IsNullOrWhiteSpace(layout.DateTimeFormat)) ||
                     string.IsNullOrEmpty(layout.RemoveMetaDataCriteria.AfterPhrase))
                 {
-                    errorMessages.Add($"Layout '{layout.Description}' is niet compleet ingevuld.");
+                    errorMessages.Add($"Layout '{layout.Description}' is not completely filled in.");
                 }
 
                 foreach (LogMetadataProperty property in layout.LogMetadataProperties)
@@ -121,7 +121,7 @@ namespace LogScraper.Controls.Configuration
                         string.IsNullOrEmpty(property.Criteria.BeforePhrase) ||
                         string.IsNullOrEmpty(property.Criteria.AfterPhrase))
                     {
-                        errorMessages.Add($"Layout '{layout.Description}' en metadata '{property.Description}' is niet compleet ingevuld.");
+                        errorMessages.Add($"Layout '{layout.Description}' and metadata '{property.Description}' is not completely filled in.");
                     }
                 }
 
@@ -129,18 +129,18 @@ namespace LogScraper.Controls.Configuration
                 {
                     if (string.IsNullOrWhiteSpace(property.Description))
                     {
-                        errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' is niet compleet ingevuld.");
+                        errorMessages.Add($"Layout '{layout.Description}' and content item '{property.Description}' is not completely filled in.");
                     }
                     foreach (FilterCriteria criteria in property.Criterias)
                     {
                         if (string.IsNullOrWhiteSpace(criteria.BeforePhrase))
                         {
-                            errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft een missende \"voor\" waarde.");
+                            errorMessages.Add($"Layout '{layout.Description}' and content item '{property.Description}' has a missing \"before\" value.");
                         }
                     }
                     if (property.IsBeginFlowTreeFilter && property.EndFlowTreeContentProperty == null)
                     {
-                        errorMessages.Add($"Layout '{layout.Description}' en content item '{property.Description}' heeft geen einde flow geselecteerd.");
+                        errorMessages.Add($"Layout '{layout.Description}' and content item '{property.Description}' has no end flow selected.");
                     }
                 }
 
@@ -148,7 +148,7 @@ namespace LogScraper.Controls.Configuration
                 {
                     if (transformer is JsonPathExtractionTranformer jsonPathExtractionTranformer && string.IsNullOrWhiteSpace(jsonPathExtractionTranformer.JsonPath))
                     {
-                        errorMessages.Add($"Voor layout '{layout.Description}' is de JSON transformer geselecteerd maar er is geen JSON path ingevuld");
+                        errorMessages.Add($"For layout '{layout.Description}' the JSON transformer is selected but no JSON path is filled in");
                     }
                 }
 
@@ -159,7 +159,7 @@ namespace LogScraper.Controls.Configuration
             config = null;
             if (errorMessages.Count > 0)
             {
-                MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Join("\n", errorMessages), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -185,7 +185,7 @@ namespace LogScraper.Controls.Configuration
 
         private static LogLayout CreateLayout() => new()
         {
-            Description = "Nieuwe layout",
+            Description = "New layout",
             DateTimeFormat = "",
             RemoveMetaDataCriteria = new(),
             LogMetadataProperties = [CreateLogMetadataProperty()],
@@ -193,8 +193,8 @@ namespace LogScraper.Controls.Configuration
             LogTransformers = []
         };
 
-        private static LogMetadataProperty CreateLogMetadataProperty() => new() { Description = "Nieuwe metadata", Criteria = new() };
-        private static LogContentProperty CreateLogContentProperty() => new() { Description = "Nieuwe metadata", Criterias = [] };
+        private static LogMetadataProperty CreateLogMetadataProperty() => new() { Description = "New metadata", Criteria = new() };
+        private static LogContentProperty CreateLogContentProperty() => new() { Description = "New metadata", Criterias = [] };
 
         private void BtnRemoveLayout_Click(object sender, EventArgs e)
         {
@@ -529,7 +529,7 @@ namespace LogScraper.Controls.Configuration
             {
                 if (TxtExampleLogEntry.Text == string.Empty)
                 {
-                    throw new Exception("Voer een logregel op om te testen hoe deze geinterpreteerd wordt.");
+                    throw new Exception("Enter a log line to test how it is interpreted.");
                 }
 
                 RawLogParser.TryParseNewLogEntries([TxtExampleLogEntry.Text], logCollection, logLayout, out List<LogEntry> newEntries);
@@ -541,25 +541,25 @@ namespace LogScraper.Controls.Configuration
                 string information = string.Empty;
                 LogEntry logEntry = logCollection.LogEntries[0];
 
-                information += $"Datum tijd: {logEntry.TimeStamp}" + Environment.NewLine;
+                information += $"Date time: {logEntry.TimeStamp}" + Environment.NewLine;
                 information += Environment.NewLine;
-                information += $"Log regel zonder metadata:" + Environment.NewLine;
+                information += $"Log line without metadata:" + Environment.NewLine;
                 information += $"   {LogRenderer.RemoveTextByCriteria(logEntry.Entry, logEntry.StartIndexMetadata, logEntry.StartIndexContent)}" + Environment.NewLine;
                 information += Environment.NewLine;
                 information += "Metadata:" + Environment.NewLine;
                 foreach (var property in logLayout.LogMetadataProperties)
                 {
-                    string metadataValue = logEntry.Metadata.TryGetValue(property, out LogMetadataValue value) ? value.Value : "<niet gevonden>";
+                    string metadataValue = logEntry.Metadata.TryGetValue(property, out LogMetadataValue value) ? value.Value : "<not found>";
 
                     information += $"   {property.Description}: {metadataValue}" + Environment.NewLine;
                 }
                 information += Environment.NewLine;
-                information += "Navigatie en kleuren filters:" + Environment.NewLine;
+                information += "Navigation and color filters:" + Environment.NewLine;
                 foreach (var property in logLayout.LogContentProperties)
                 {
                     logEntry.LogContentProperties.TryGetValue(property, out LogContentValue contentValue);
                     bool hasContentValue = contentValue != null && contentValue.Value != null;
-                    information += $"   {property.Description}: {(hasContentValue ? contentValue.Value : "<niet gevonden>")}" + Environment.NewLine;
+                    information += $"   {property.Description}: {(hasContentValue ? contentValue.Value : "<not found>")}" + Environment.NewLine;
                 }
                 TxtTestResponse.ForeColor = Color.Black;
                 TxtTestResponse.Text = information;
@@ -576,7 +576,7 @@ namespace LogScraper.Controls.Configuration
         {
             if (LstLayouts.SelectedItem is not LogLayout logLayout) return;
             LogLayout logLayoutCopy = logLayout.Copy();
-            logLayoutCopy.Description += " (kopie)";
+            logLayoutCopy.Description += " (copy)";
             _layouts.Add(logLayoutCopy);
         }
 

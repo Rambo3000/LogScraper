@@ -77,7 +77,7 @@ namespace LogScraper.Configuration
 
                 if (hasLogs)
                 {
-                    if (MessageBox.Show("De instellingen zijn gewijzigd. De applicatie wordt gereset om deze toe te passen. Wilt u doorgaan?", "Instellingen gewijzigd", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    if (MessageBox.Show("The settings have been changed. The application will be reset to apply these. Do you want to continue?", "Settings changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         LogAppState.Instance.Reset(keepFilters: false);
                     }
@@ -158,7 +158,7 @@ namespace LogScraper.Configuration
                     userControlFileConfig.SetFileConfig(importConfig.LogProvidersConfig.FileConfig, referencingLogLayouts);
                 }
             }
-            MessageBox.Show("Succesvol geïmporteerd. Sluit het instellingenscherm met OK om de wijzigingen op te slaan.", "Importeren", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Successfully imported. Close the settings screen with OK to save the changes.", "Import", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void BtnExport_Click(object sender, EventArgs e)

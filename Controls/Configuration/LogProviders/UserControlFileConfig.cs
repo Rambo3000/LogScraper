@@ -67,13 +67,13 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
             if (CboLogLayout.SelectedIndex == -1)
             {
-                errorMessages.Add($"De standaard layout voor lokale bestanden moet geselecteerd zijn.");
+                errorMessages.Add($"The default layout for local files must be selected.");
             }
 
             config = null;
             if (errorMessages.Count > 0)
             {
-                MessageBox.Show(string.Join("\n", errorMessages), "Fout", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Join("\n", errorMessages), "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 

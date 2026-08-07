@@ -69,7 +69,7 @@
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(31, 12);
             label2.TabIndex = 21;
-            label2.Text = "Naam";
+            label2.Text = "Name";
             // 
             // txtUrl
             // 
@@ -116,7 +116,7 @@
             LblFolder.Name = "LblFolder";
             LblFolder.Size = new System.Drawing.Size(25, 12);
             LblFolder.TabIndex = 21;
-            LblFolder.Text = "Map";
+            LblFolder.Text = "Folder";
             // 
             // LblFile
             // 
@@ -127,7 +127,7 @@
             LblFile.Name = "LblFile";
             LblFile.Size = new System.Drawing.Size(40, 12);
             LblFile.TabIndex = 21;
-            LblFile.Text = "Bestand";
+            LblFile.Text = "File";
             // 
             // PnlUsedForScalingCompatibility
             // 

@@ -75,7 +75,7 @@ namespace LogScraper.Controls.Search
             }
             LstEntries.Items.AddRange([.. logEntryDisplayObjects]);
 
-            LblCount.Text = $"{LstEntries.Items.Count} fout{(LstEntries.Items.Count == 1 ? string.Empty : "en")} gevonden";
+            LblCount.Text = $"{LstEntries.Items.Count} error{(LstEntries.Items.Count == 1 ? string.Empty : "s")} found";
             LstEntries.EndUpdate();
         }
 

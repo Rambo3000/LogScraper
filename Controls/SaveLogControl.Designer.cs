@@ -41,7 +41,7 @@
             BtnSave.Size = new System.Drawing.Size(25, 25);
             BtnSave.TabIndex = 27;
             BtnSave.TabStop = false;
-            toolTip1.SetToolTip(BtnSave, "Log opslaan [CTRL-S]");
+            toolTip1.SetToolTip(BtnSave, "Save log [CTRL-S]");
             BtnSave.UseVisualStyleBackColor = true;
             BtnSave.Click += BtnSave_Click;
             // 

@@ -41,7 +41,7 @@
             LblExplenation.Padding = new System.Windows.Forms.Padding(5);
             LblExplenation.Size = new System.Drawing.Size(150, 150);
             LblExplenation.TabIndex = 0;
-            LblExplenation.Text = "Filter op metadata";
+            LblExplenation.Text = "Filter on metadata";
             LblExplenation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LogMetadataFiltersOverviewControl

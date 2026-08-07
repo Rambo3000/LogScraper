@@ -121,13 +121,13 @@
     <value>17, 17</value>
   </metadata>
   <data name="pictureBox7.ToolTip" xml:space="preserve">
-    <value>Een log layout bevat de definitie van hoe elke log regel eruit ziet. Dit bevat:
-- de datum-tijd die aan het begin van elke regel verwacht wordt (stack traces zonder datum zijn toegestaan).
-- de metadata die per logregel weggeschreven wordt en waarop gefilterd kan worden.
-- inhoudelijke gegevens waar snel heen genavigeerd kan worden en welke in het log gekleurd kan worden</value>
+    <value>A log layout contains the definition of what each log line looks like. This includes:
+- the date-time expected at the start of each line (stack traces without a date are allowed).
+- the metadata written per log line, which can be filtered on.
+- content data that can be quickly navigated to and which can be colored in the log</value>
   </data>
   <data name="pictureBox13.ToolTip" xml:space="preserve">
-    <value>Detecteert automatisch de timestamp aan het begin van elke logregel. Mocht automatische detectie niet werken, schakel deze uit en geef een eigen datetime format op.
+    <value>Automatically detects the timestamp at the start of each log line. If automatic detection does not work, disable it and specify a custom datetime format.
 
 d: Represents the day of the month as a number from 1 through 31.
 dd: Represents the day of the month as a number from 01 through 31.
@@ -165,103 +165,95 @@ ffffff: Represents the six most significant digits of the second's fraction; tha
 fffffff: Represents the seven most significant digits of the second's fraction; that is, it represents the ten-millionths of a second in a date and time value.</value>
   </data>
   <data name="pictureBox11.ToolTip" xml:space="preserve">
-    <value>Geef de tekst die het einde van de metadata, en het begin van de daadwerkelijke log regel content identificeerd.
+    <value>Specify the text that identifies the end of the metadata and the start of the actual log line content.
 
-Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY - Voorbeeld logregel tekst
-Gebruik in dit voorbeeld: " -"
+For example 2025-01-01T01:02:03.123 INFO metadataA=ValueX, MetadataB=ValueY - Example log line text
+Use in this example: " -"
 
-De applicatie gebruikt deze informatie o.a. om de metadata te verwijderen en een meer leesbaar log te tonen
+The application uses this information, among other things, to remove the metadata and show a more readable log
 
-Indien de Regex optie is aangevinkt wordt naar de metadata tekst gezocht die aan de Regex expressie voldoet, de tekst na de metadata wordt als content beschouwd. Gebruik geen ^ aan het begin van de Regex. De regex zoekt na de timestamp, dus die hoeft niet in de regex.
+If the Regex option is checked, the metadata text matching the Regex expression is searched for, the text after the metadata is considered content. Do not use ^ at the start of the Regex. The regex searches after the timestamp, so that does not need to be in the regex.
 
-Gebruik de volgende regex om op meerdere spaties te zoeken vanaf de timestamp, bijvoorbeeld 8:
+Use the following regex to search for multiple spaces from the timestamp, for example 8:
 (?:\s+\S+){8}</value>
   </data>
-  <data name="pictureBox1.ToolTip" xml:space="preserve">
-    <value>Metadata zijn gegevens die bij elke logregel aanwezig zijn en waarop gefilterd kan worden. 
-Bijvoorbeeld 2025-01-01T01:02:03.123 INFO metadataA=WaardeX, MetadataB=WaardeY</value>
-  </data>
-  <data name="pictureBox12.ToolTip" xml:space="preserve">
-    <value>Indien ingeschakeld kan dit filter worden gebruikt om snel naar bijbehorende logregels te springen.
-Indien uitgeschakeld wordt het filter alleen gebruikt voor visuele markering (kleuren en inspringen).</value>
-  </data>
   <data name="pictureBox18.ToolTip" xml:space="preserve">
-    <value>Als deze optie is ingeschakeld en de opgegeven content wordt gevonden, wordt de betreffende logregel als een fout gemarkeerd.
+    <value>If this option is enabled and the specified content is found, the corresponding log line is marked as an error.
 
-Deze fouten worden geteld en teruggekoppeld, en binnen de contentfilters worden fouten apart in rood weergegeven tussen de andere content (dit is configureerbaar).</value>
+These errors are counted and reported, and within the content filters, errors are displayed separately in red among the other content (this is configurable).</value>
   </data>
   <data name="pictureBox17.ToolTip" xml:space="preserve">
-    <value>Het is mogelijk om een hiërarchische weergave van logregels te tonen die een flow en eventuele subflows beschrijven. Selecteer deze optie als deze contentfilter het begin van een (sub)flow markeert.
-Kies vervolgens in de dropdown de contentfilter die het bijbehorende einde van de (sub)flow aanduidt.
+    <value>It is possible to show a hierarchical view of log lines that describe a flow and any sub-flows. Select this option if this content filter marks the start of a (sub)flow.
+Then select in the dropdown the content filter that indicates the corresponding end of the (sub)flow.
 
-De applicatie herkent hiermee beginnen en eindes van aangegeven flows en hoe deze genest zijn in elkaar. Dit wordt omgezet naar een hiërarchische weergave.
+The application uses this to recognize the starts and ends of indicated flows and how they are nested within each other. This is converted into a hierarchical view.
 
-Zodra deze optie is ingeschakeld, kan de geselecteerde contentfilter hiërarchisch weergegeven worden.
+Once this option is enabled, the selected content filter can be displayed hierarchically.
 
-Let op: Als de hiërarchische weergave erg groot of (deels) onjuist is, moet het logbestand mogelijk verder worden gefilterd. Beperk de log tot de sessie waarin je geïnteresseerd bent om ruis te voorkomen.</value>
+Note: If the hierarchical view is very large or (partially) incorrect, the log file may need to be filtered further. Limit the log to the session you are interested in to avoid noise.</value>
   </data>
   <data name="pictureBox9.ToolTip" xml:space="preserve">
-    <value>Geef de tekst die net voor de content waarde staat en (optioneel) de tekst die net na de content waarde staat.
-Zet tussen de voor en na tekst: =&gt;
-Het is mogelijk meerdere voor en na teksten op te geven, zet elk op een eigen regel.
+    <value>Specify the text that appears right before the content value and (optionally) the text that appears right after the content value.
+Put between the before and after text: =&gt;
+It is possible to specify multiple before and after texts, put each on its own line.
 
-Voorbeeld: indien in de logregel staat API call: X
-Geef dan op: API call: 
+Example: if the log line contains API call: X
+Then specify: API call: 
 
-Voorbeeld: indien in de logregel staat API call: X is being started
-Geef dan op: API call: =&gt; is being started</value>
+Example: if the log line contains API call: X is being started
+Then specify: API call: =&gt; is being started</value>
   </data>
   <data name="pictureBox6.ToolTip" xml:space="preserve">
-    <value>Geef hier filters op voor de inhoud van logregels. Door te zoeken op een specifieke tekst of woordcombinatie kan snel naar 
-relevante logregels worden genavigeerd. De bijbehorende navigatie wordt rechts in het scherm weergegeven.
+    <value>Specify filters here for the content of log lines. By searching for a specific text or word combination, you can quickly navigate to 
+relevant log lines. The corresponding navigation is displayed on the right side of the screen.
 
-Daarnaast kan voor iedere filter een kleurcodering worden ingesteld, zodat logregels automatisch gekleurd worden weergegeven.
+In addition, a color coding can be set for each filter, so log lines are automatically displayed in color.
 
-Een filter kan bestaan uit alleen de tekst vóór de gewenste waarde, of uit zowel de tekst vóór als na de waarde. Wanneer beide 
-worden opgegeven, moeten deze worden gescheiden met =&gt;. De tekst die zich tussen deze twee delen bevindt, wordt als waarde beschouwd
-en wordt in de navigatie weergegeven.
+A filter can consist of just the text before the desired value, or of both the text before and after the value. When both 
+are specified, they must be separated with =&gt;. The text between these two parts is considered the value
+and is displayed in the navigation.
 
-Voorbeeld:
-2025-01-01 01:02:03.123 INFO MetadataX=WaardeY - Voorbeeld logtekst en hier begint de API call: X
+Example:
+2025-01-01 01:02:03.123 INFO MetadataX=ValueY - Example log text and here starts the API call: X
 
-Om de waarde X te vinden, kan als filter API call: worden opgegeven. De tekst na de waarde hoeft dan niet te worden ingevuld.
+To find the value X, API call: can be specified as the filter. The text after the value does not need to be filled in then.
 
-Wanneer zowel een begin- als eindtekst bekend is, kan bijvoorbeeld API call: =&gt; einde worden opgegeven. In dat geval wordt de tekst
-tussen API call: en einde als waarde gebruikt en in de navigatie weergegeven.</value>
+When both a start and end text are known, for example API call: =&gt; end can be specified. In that case, the text
+between API call: and end is used as the value and displayed in the navigation.</value>
   </data>
   <data name="pictureBox2.ToolTip" xml:space="preserve">
-    <value>Er wordt altijd een datum tijd verwacht aan het begin van de logregel. Zorg dat het format overeenkomt met hoe het in de logregel staat.
+    <value>A date time is always expected at the start of the log line. Make sure the format matches how it appears in the log line.
 
-Specifier	Voorbeeld	Betekenis
-yyyy	2025	Volledig jaartal (4 cijfers)
-yy	25	Jaar in 2 cijfers
-MM	04	Maand (met voorloopnul)
-M	4	Maand (zonder voorloopnul)
-dd	14	Dag van de maand (met nul)
-d	14	Dag van de maand (zonder nul)
-dddd	maandag	Volledige naam van de dag
-ddd	ma	Afgekorte dagnaam
+Specifier	Example	Meaning
+yyyy	2025	Full year (4 digits)
+yy	25	Year in 2 digits
+MM	04	Month (with leading zero)
+M	4	Month (without leading zero)
+dd	14	Day of the month (with zero)
+d	14	Day of the month (without zero)
+dddd	Monday	Full name of the day
+ddd	Mon	Abbreviated day name
 
-HH	09	Uur (24-uurs, met nul)
-H	9	Uur (24-uurs, zonder nul)
-hh	09	Uur (12-uurs, met nul)
-h	9	Uur (12-uurs, zonder nul)
-mm	07	Minuten (met nul)
-m	7	Minuten (zonder nul)
-ss	04	Seconden (met nul)
-s	4	Seconden (zonder nul)
-tt	AM / PM	Voormiddag / namiddag
+HH	09	Hour (24-hour, with zero)
+H	9	Hour (24-hour, without zero)
+hh	09	Hour (12-hour, with zero)
+h	9	Hour (12-hour, without zero)
+mm	07	Minutes (with zero)
+m	7	Minutes (without zero)
+ss	04	Seconds (with zero)
+s	4	Seconds (without zero)
+tt	AM / PM	Morning / afternoon
 
-fff	123	Milliseconden
-zz	+02	Tijdzone offset in uren
-zzz	+02:00	Tijdzone offset met minuten
+fff	123	Milliseconds
+zz	+02	Time zone offset in hours
+zzz	+02:00	Time zone offset with minutes
 
-Voorbeelden
-yyyy-MM-dd HH:mm:ss	2025-04-14 13:45:30	Volledige datum + tijd (24-uurs)
-yyyy-MM-ddTHH:mm:ss	2025-04-14T13:45:30	ISO 8601 notatie (bijv. voor JSON)
-ddd dd MMM yyyy	ma 14 apr 2025	Leesbare datum, afgekorte dag/maand
-dddd dd MMMM yyyy	maandag 14 april 2025	Volledig uitgeschreven datum
-yyyy-MM-dd HH:mm:ss.fff	2025-04-14 13:45:30.123	Inclusief milliseconden
-yyyy-MM-dd HH:mm:ss zzz	2025-04-14 13:45:30 +02:00	Met tijdzone offset</value>
+Examples
+yyyy-MM-dd HH:mm:ss	2025-04-14 13:45:30	Full date + time (24-hour)
+yyyy-MM-ddTHH:mm:ss	2025-04-14T13:45:30	ISO 8601 notation (e.g. for JSON)
+ddd dd MMM yyyy	Mon 14 Apr 2025	Readable date, abbreviated day/month
+dddd dd MMMM yyyy	Monday 14 April 2025	Fully spelled out date
+yyyy-MM-dd HH:mm:ss.fff	2025-04-14 13:45:30.123	Including milliseconds
+yyyy-MM-dd HH:mm:ss zzz	2025-04-14 13:45:30 +02:00	With time zone offset</value>
   </data>
 </root>

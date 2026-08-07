@@ -137,7 +137,7 @@
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(49, 12);
             label1.TabIndex = 31;
-            label1.Text = "Tijdspanne";
+            label1.Text = "Timespan";
             // 
             // PnlUsedForScalingCompatibility
             // 
