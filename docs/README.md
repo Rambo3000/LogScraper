@@ -1,31 +1,39 @@
-﻿# LogScraper
+# LogScraper
 
-**LogScraper** is a standalone tool for retrieving, filtering, and analyzing logs from HTTP endpoints, Kubernetes clusters, and local files. It is built to help developers and operators inspect logs quickly and efficiently.
+**Investigate application flows through the noise.**
+
+LogScraper is a desktop log analysis tool for investigating application flows in large and distributed logs. It retrieves logs directly from their source, filters the noise, and provides a compact set of tools to help you understand what happened.
+
+Centralized observability platforms such as Splunk, ELK, and Grafana are great for finding and aggregating logs. LogScraper focuses on what comes next: **understanding what actually happened.**
 
 <img width="1515" height="819" alt="image" src="https://github.com/user-attachments/assets/d7a5eb8c-f447-4705-88ff-b0f507198d9e" />
 
 ---
 
-## 🔍 Key Features
+## Built for log investigation
+- **Filter** large logs quickly using metadata fields
+- **Navigate** through logs with content filters and begin/end markers
+- **Find** problem areas quickly with the timeline and error indicators
+- **Follow** related log lines in a hierarchical flow view
+- **Highlight** log lines based on their content, using custom colors to emphasize important events or gray to de-emphasize noise
+- **Monitor** logs live with continuous reading
+- **Highlight** important log lines with configurable colors
+- **Inspect** JSON and XML directly within log lines using pretty print
+- **Extract** values from raw JSON logs using JSON path extraction
+- **Configure** custom log layouts with metadata and content rules
 
-- Read logs from HTTP endpoints, Kubernetes, and local files  
-- Filter large logs quickly using metadata fields  
-- Navigate quickly with content filters and begin/end markers  
-- Find problem areas fast with the timeline and error indicators  
-- Follow related log lines in a hierarchical flow view  
-- Color log lines  
-- Monitor logs live with continuous reading  
-- Configure log layouts with custom timestamps, metadata, and content rules  
-- Pretty print JSON and XML inside log lines  
-- Read raw JSON logs more easily with JSON path extraction  
-- Combine multiple log downloads into one seamless view  
-- Use Mini Controls for compact, always-on-top log access  
-- Run as an installer or standalone app without a separate .NET runtime  
-- Stay up to date with automatic update checks  
+## Designed for everyday use
+- Read logs directly from HTTP endpoints, Kubernetes, and local files
+- Use Mini Controls for compact, always-on-top log access
+- Run as a standalone application or install it without a separate .NET runtime
+- Stay up to date with automatic update checks
 
----
+## Security & privacy
+- Retrieved logs are kept in memory during analysis and are only written to disk when explicitly requested by the user.
+- Log data is processed locally and does not need to be uploaded to a third-party service or the cloud.
+- Credentials are stored using the Windows Credential Manager.
 
-## 📦 Download
+## Download
 
 Get the latest release from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
 
