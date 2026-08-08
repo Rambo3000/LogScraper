@@ -8,8 +8,6 @@ Centralized observability platforms such as Splunk, ELK, and Grafana are great f
 
 <img width="1515" height="819" alt="image" src="https://github.com/user-attachments/assets/d7a5eb8c-f447-4705-88ff-b0f507198d9e" />
 
----
-
 ## Built for log investigation
 - **Filter** large logs quickly using metadata fields
 - **Navigate** through logs with content filters and begin/end markers
@@ -17,7 +15,6 @@ Centralized observability platforms such as Splunk, ELK, and Grafana are great f
 - **Follow** related log lines in a hierarchical flow view
 - **Highlight** log lines based on their content, using custom colors to emphasize important events or gray to de-emphasize noise
 - **Monitor** logs live with continuous reading
-- **Highlight** important log lines with configurable colors
 - **Inspect** JSON and XML directly within log lines using pretty print
 - **Extract** values from raw JSON logs using JSON path extraction
 - **Configure** custom log layouts with metadata and content rules
@@ -39,22 +36,18 @@ Get the latest release from the [Releases section](https://github.com/Rambo3000/
 
 ---
 
-## ⚙️ Before You Start
+## Before You Start
 
 Download and run the installer, or download the standalone ZIP and extract it to a location of your choice.
 
 Built in C# (.NET), the application does **not** require a separate .NET runtime.
 
----
-
-## 🔄 Updates
+## Updates
 
 ### Recommended: Use the installer
 The preferred way to update LogScraper is to **download and run the latest installer** from the [Releases section](https://github.com/Rambo3000/logscraper/releases).
 
 If you switch from the standalone version to the installer version, you can import your existing settings through the Settings window. The JSON files next to the standalone executable can be imported one at a time.
-
----
 
 ### Alternative: Standalone (ZIP) update
 If the installer does not work for your setup, you can update manually using the **standalone ZIP**:
@@ -64,9 +57,6 @@ If the installer does not work for your setup, you can update manually using the
 
 You can **keep your existing configuration files**  
 (`LogScraperConfig.json`, `LogScraperLogLayouts.json`, `LogScraperLogProviders.json`) — there is no need to change or reconfigure them unless specified in the release notes.
-
-
----
 
 ## 🛠️ Configuration
 
@@ -85,9 +75,7 @@ You can configure:
 - **Transformers** that extract values from raw JSON logs
 - The **timestamp format** used for parsing (Optional)
 
----
-
-## 🚀 Using the Application
+## Using the Application
 
 1. Select a log source (HTTP, Kubernetes, or file system), then choose the specific source details such as a filename or Kubernetes pod
 2. (Optional) Select a log layout, or use the default
@@ -96,21 +84,17 @@ You can configure:
 5. (Optional) Restrict the range of log lines using begin/end markers
 6. (Optional) Use the timeline, navigation or search to jump to a relevant section of the log
 
----
+## Tips & Recommendations
 
-## 💡 Tips & Recommendations
+- Use **Mini Controls** for a compact always-on-top window while working in other apps  
+- Enable hierarchical navigation by configuring Begin/End Content Filters in Settings. This groups related log lines into a tree view and makes large logs easier to scan.
+- Use content properties to color log lines and make patterns easier to spot
+- Metadata is hidden by default. Enable it in the **Metadata** section or change the default in Settings
+- Keep logs readable by selectively showing metadata values inline  
+- Ensure the correct **log layout** is selected to avoid parsing issues  
+- Memory usage depends on log size. As a guideline, keep logs under **100,000 lines** to avoid performance issues  
 
-- 🪟 Use **Mini Controls** for a compact always-on-top window while working in other apps  
-- 🌲 Enable hierarchical navigation by configuring Begin/End Content Filters in Settings. This groups related log lines into a tree view and makes large logs easier to scan.
-- 🎨 Use content properties to color log lines and make patterns easier to spot
-- 👁️ Metadata is hidden by default. Enable it in the **Metadata** section or change the default in Settings
-- ✂️ Keep logs readable by selectively showing metadata values inline  
-- ⚠️ Ensure the correct **log layout** is selected to avoid parsing issues  
-- 🧠 Memory usage depends on log size. As a guideline, keep logs under **100,000 lines** to avoid performance issues  
-
----
-
-## 📧 Feedback
+## Feedback
 
 Found a bug or want to request a feature? Please open an issue on the [Issues page](https://github.com/Rambo3000/logscraper/issues).
 
