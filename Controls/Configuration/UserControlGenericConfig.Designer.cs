@@ -39,7 +39,6 @@ namespace LogScraper.Controls.Configuration
             label2 = new System.Windows.Forms.Label();
             TxtEditorLocation = new ValidatedTextBox();
             TxtExportFileName = new ValidatedTextBox();
-            ChkExportToFile = new System.Windows.Forms.CheckBox();
             CboLogProviderType = new System.Windows.Forms.ComboBox();
             LblTimeout = new System.Windows.Forms.Label();
             TxtTimeOut = new ValidatedTextBox();
@@ -55,6 +54,7 @@ namespace LogScraper.Controls.Configuration
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
+            ChkCheckForExternalViewingFilesOnExit = new System.Windows.Forms.CheckBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -80,13 +80,12 @@ namespace LogScraper.Controls.Configuration
             GrpExportSettings.Controls.Add(label2);
             GrpExportSettings.Controls.Add(TxtEditorLocation);
             GrpExportSettings.Controls.Add(TxtExportFileName);
-            GrpExportSettings.Enabled = false;
-            GrpExportSettings.Location = new System.Drawing.Point(29, 200);
+            GrpExportSettings.Location = new System.Drawing.Point(6, 200);
             GrpExportSettings.Name = "GrpExportSettings";
             GrpExportSettings.Size = new System.Drawing.Size(813, 82);
             GrpExportSettings.TabIndex = 1;
             GrpExportSettings.TabStop = false;
-            GrpExportSettings.Text = "Log export settings";
+            GrpExportSettings.Text = "Text editor export settings";
             // 
             // BtnBrowseEditor
             // 
@@ -124,9 +123,9 @@ namespace LogScraper.Controls.Configuration
             label2.AutoSize = true;
             label2.Location = new System.Drawing.Point(6, 25);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(58, 15);
+            label2.Size = new System.Drawing.Size(97, 15);
             label2.TabIndex = 8;
-            label2.Text = "File name";
+            label2.Text = "Default file name";
             // 
             // TxtEditorLocation
             // 
@@ -142,24 +141,12 @@ namespace LogScraper.Controls.Configuration
             // TxtExportFileName
             // 
             TxtExportFileName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
             TxtExportFileName.IsRequired = true;
             TxtExportFileName.IsWhiteSpaceAllowed = false;
             TxtExportFileName.Location = new System.Drawing.Point(154, 22);
             TxtExportFileName.Name = "TxtExportFileName";
             TxtExportFileName.Size = new System.Drawing.Size(618, 23);
             TxtExportFileName.TabIndex = 5;
-            // 
-            // ChkExportToFile
-            // 
-            ChkExportToFile.AutoSize = true;
-            ChkExportToFile.Location = new System.Drawing.Point(6, 175);
-            ChkExportToFile.Name = "ChkExportToFile";
-            ChkExportToFile.Size = new System.Drawing.Size(413, 19);
-            ChkExportToFile.TabIndex = 5;
-            ChkExportToFile.Text = "Continuously write the filtered log to a file for quick access in a text editor";
-            ChkExportToFile.UseVisualStyleBackColor = true;
-            ChkExportToFile.CheckedChanged += ChkExportToFile_CheckedChanged;
             // 
             // CboLogProviderType
             // 
@@ -210,6 +197,7 @@ namespace LogScraper.Controls.Configuration
             // GrpGeneralSettings
             // 
             GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            GrpGeneralSettings.Controls.Add(ChkCheckForExternalViewingFilesOnExit);
             GrpGeneralSettings.Controls.Add(ChkIsDebugModeEnabled);
             GrpGeneralSettings.Controls.Add(ChkShowTimeLine);
             GrpGeneralSettings.Controls.Add(ChkIncludePrereleaseUpdates);
@@ -222,7 +210,6 @@ namespace LogScraper.Controls.Configuration
             GrpGeneralSettings.Controls.Add(GrpExportSettings);
             GrpGeneralSettings.Controls.Add(LblAutomaticReadTimea);
             GrpGeneralSettings.Controls.Add(CboLogProviderType);
-            GrpGeneralSettings.Controls.Add(ChkExportToFile);
             GrpGeneralSettings.Controls.Add(LblTimeout);
             GrpGeneralSettings.Controls.Add(TxtTimeOut);
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
@@ -237,9 +224,9 @@ namespace LogScraper.Controls.Configuration
             ChkIsDebugModeEnabled.AutoSize = true;
             ChkIsDebugModeEnabled.Location = new System.Drawing.Point(6, 313);
             ChkIsDebugModeEnabled.Name = "ChkIsDebugModeEnabled";
-            ChkIsDebugModeEnabled.Size = new System.Drawing.Size(194, 19);
+            ChkIsDebugModeEnabled.Size = new System.Drawing.Size(207, 19);
             ChkIsDebugModeEnabled.TabIndex = 43;
-            ChkIsDebugModeEnabled.Text = "Save error messages to a log file";
+            ChkIsDebugModeEnabled.Text = "Save LogScraper errors to a log file";
             ChkIsDebugModeEnabled.UseVisualStyleBackColor = true;
             // 
             // ChkShowTimeLine
@@ -317,6 +304,16 @@ namespace LogScraper.Controls.Configuration
             PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 349);
             PnlUsedForScalingCompatiblity.TabIndex = 9;
             // 
+            // ChkCheckForExternalViewingFilesOnExit
+            // 
+            ChkCheckForExternalViewingFilesOnExit.AutoSize = true;
+            ChkCheckForExternalViewingFilesOnExit.Location = new System.Drawing.Point(6, 175);
+            ChkCheckForExternalViewingFilesOnExit.Name = "ChkCheckForExternalViewingFilesOnExit";
+            ChkCheckForExternalViewingFilesOnExit.Size = new System.Drawing.Size(284, 19);
+            ChkCheckForExternalViewingFilesOnExit.TabIndex = 44;
+            ChkCheckForExternalViewingFilesOnExit.Text = "Check for external viewing files to remove on exit";
+            ChkCheckForExternalViewingFilesOnExit.UseVisualStyleBackColor = true;
+            // 
             // UserControlGenericConfig
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -341,7 +338,6 @@ namespace LogScraper.Controls.Configuration
         private System.Windows.Forms.ComboBox CboLogProviderType;
         private System.Windows.Forms.Label LblTimeout;
         private ValidatedTextBox TxtTimeOut;
-        private System.Windows.Forms.CheckBox ChkExportToFile;
         private System.Windows.Forms.Label label2;
         private ValidatedTextBox TxtEditorLocation;
         private ValidatedTextBox TxtExportFileName;
@@ -360,5 +356,6 @@ namespace LogScraper.Controls.Configuration
         private System.Windows.Forms.CheckBox ChkIncludePrereleaseUpdates;
         private System.Windows.Forms.CheckBox ChkShowTimeLine;
         private System.Windows.Forms.CheckBox ChkIsDebugModeEnabled;
+        private System.Windows.Forms.CheckBox ChkCheckForExternalViewingFilesOnExit;
     }
 }

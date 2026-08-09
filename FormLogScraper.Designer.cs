@@ -46,8 +46,8 @@ namespace LogScraper
             LogTimeLineControl = new LogTimeLineControl();
             SplitContainerViewportAndSearchResultList = new SplitContainerWithGrip();
             SplitContainerViewportButtonsAndViewport = new System.Windows.Forms.SplitContainer();
-            PnlSaveAndExternalEditor = new System.Windows.Forms.Panel();
             SaveLogControl = new SaveLogControl();
+            PnlSaveAndExternalEditor = new System.Windows.Forms.Panel();
             OpenLogInTextEditor = new OpenLogInTextEditor();
             BookMarksControl = new BookMarksControl();
             FlowTreeControl = new FlowTreeControl();
@@ -166,7 +166,7 @@ namespace LogScraper
             // 
             SplitContainerViewportAndNavigation.Panel2.Controls.Add(ContentNavigationControl);
             SplitContainerViewportAndNavigation.Panel2.Padding = new System.Windows.Forms.Padding(0, 2, 1, 0);
-            SplitContainerViewportAndNavigation.Size = new System.Drawing.Size(982, 610);
+            SplitContainerViewportAndNavigation.Size = new System.Drawing.Size(982, 588);
             SplitContainerViewportAndNavigation.SplitterDistance = 658;
             SplitContainerViewportAndNavigation.SplitterWidth = 8;
             SplitContainerViewportAndNavigation.TabIndex = 8;
@@ -189,7 +189,7 @@ namespace LogScraper
             // SplitContainerTimeLineAndViewport.Panel2
             // 
             SplitContainerTimeLineAndViewport.Panel2.Controls.Add(SplitContainerViewportAndSearchResultList);
-            SplitContainerTimeLineAndViewport.Size = new System.Drawing.Size(658, 610);
+            SplitContainerTimeLineAndViewport.Size = new System.Drawing.Size(658, 588);
             SplitContainerTimeLineAndViewport.SplitterDistance = 48;
             SplitContainerTimeLineAndViewport.SplitterWidth = 8;
             SplitContainerTimeLineAndViewport.TabIndex = 5;
@@ -221,8 +221,8 @@ namespace LogScraper
             // 
             SplitContainerViewportAndSearchResultList.Panel2.Controls.Add(SearchResultListControl);
             SplitContainerViewportAndSearchResultList.Panel2.Controls.Add(ErrorListControl);
-            SplitContainerViewportAndSearchResultList.Size = new System.Drawing.Size(658, 554);
-            SplitContainerViewportAndSearchResultList.SplitterDistance = 442;
+            SplitContainerViewportAndSearchResultList.Size = new System.Drawing.Size(658, 532);
+            SplitContainerViewportAndSearchResultList.SplitterDistance = 424;
             SplitContainerViewportAndSearchResultList.SplitterWidth = 8;
             SplitContainerViewportAndSearchResultList.TabIndex = 44;
             SplitContainerViewportAndSearchResultList.TextSplitter = "";
@@ -239,6 +239,7 @@ namespace LogScraper
             // 
             // SplitContainerViewportButtonsAndViewport.Panel1
             // 
+            SplitContainerViewportButtonsAndViewport.Panel1.Controls.Add(SaveLogControl);
             SplitContainerViewportButtonsAndViewport.Panel1.Controls.Add(PnlSaveAndExternalEditor);
             SplitContainerViewportButtonsAndViewport.Panel1.Controls.Add(BookMarksControl);
             SplitContainerViewportButtonsAndViewport.Panel1.Controls.Add(FlowTreeControl);
@@ -250,14 +251,21 @@ namespace LogScraper
             // SplitContainerViewportButtonsAndViewport.Panel2
             // 
             SplitContainerViewportButtonsAndViewport.Panel2.Controls.Add(SplitContainerActiveFiltersViewport);
-            SplitContainerViewportButtonsAndViewport.Size = new System.Drawing.Size(658, 442);
+            SplitContainerViewportButtonsAndViewport.Size = new System.Drawing.Size(658, 424);
             SplitContainerViewportButtonsAndViewport.SplitterDistance = 25;
             SplitContainerViewportButtonsAndViewport.SplitterWidth = 1;
             SplitContainerViewportButtonsAndViewport.TabIndex = 0;
             // 
+            // SaveLogControl
+            // 
+            SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            SaveLogControl.Location = new System.Drawing.Point(569, 1);
+            SaveLogControl.Name = "SaveLogControl";
+            SaveLogControl.Size = new System.Drawing.Size(40, 25);
+            SaveLogControl.TabIndex = 44;
+            // 
             // PnlSaveAndExternalEditor
             // 
-            PnlSaveAndExternalEditor.Controls.Add(SaveLogControl);
             PnlSaveAndExternalEditor.Controls.Add(OpenLogInTextEditor);
             PnlSaveAndExternalEditor.Dock = System.Windows.Forms.DockStyle.Right;
             PnlSaveAndExternalEditor.Location = new System.Drawing.Point(608, 0);
@@ -265,19 +273,11 @@ namespace LogScraper
             PnlSaveAndExternalEditor.Size = new System.Drawing.Size(50, 25);
             PnlSaveAndExternalEditor.TabIndex = 46;
             // 
-            // SaveLogControl
-            // 
-            SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            SaveLogControl.Location = new System.Drawing.Point(0, 0);
-            SaveLogControl.Name = "SaveLogControl";
-            SaveLogControl.Size = new System.Drawing.Size(25, 25);
-            SaveLogControl.TabIndex = 44;
-            // 
             // OpenLogInTextEditor
             // 
-            OpenLogInTextEditor.Location = new System.Drawing.Point(25, 0);
+            OpenLogInTextEditor.Location = new System.Drawing.Point(0, 0);
             OpenLogInTextEditor.Name = "OpenLogInTextEditor";
-            OpenLogInTextEditor.Size = new System.Drawing.Size(25, 25);
+            OpenLogInTextEditor.Size = new System.Drawing.Size(40, 25);
             OpenLogInTextEditor.TabIndex = 45;
             // 
             // BookMarksControl
@@ -344,7 +344,7 @@ namespace LogScraper
             // 
             SplitContainerActiveFiltersViewport.Panel2.Controls.Add(ErrorMessageControl);
             SplitContainerActiveFiltersViewport.Panel2.Controls.Add(LogViewportControl);
-            SplitContainerActiveFiltersViewport.Size = new System.Drawing.Size(658, 416);
+            SplitContainerActiveFiltersViewport.Size = new System.Drawing.Size(658, 398);
             SplitContainerActiveFiltersViewport.SplitterDistance = 25;
             SplitContainerActiveFiltersViewport.SplitterWidth = 1;
             SplitContainerActiveFiltersViewport.TabIndex = 0;
@@ -371,7 +371,7 @@ namespace LogScraper
             LogViewportControl.Dock = System.Windows.Forms.DockStyle.Fill;
             LogViewportControl.Location = new System.Drawing.Point(0, 0);
             LogViewportControl.Name = "LogViewportControl";
-            LogViewportControl.Size = new System.Drawing.Size(658, 390);
+            LogViewportControl.Size = new System.Drawing.Size(658, 372);
             LogViewportControl.TabIndex = 38;
             // 
             // SearchResultListControl
@@ -379,7 +379,7 @@ namespace LogScraper
             SearchResultListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             SearchResultListControl.Location = new System.Drawing.Point(0, 0);
             SearchResultListControl.Name = "SearchResultListControl";
-            SearchResultListControl.Size = new System.Drawing.Size(658, 104);
+            SearchResultListControl.Size = new System.Drawing.Size(658, 100);
             SearchResultListControl.TabIndex = 26;
             // 
             // ErrorListControl
@@ -388,7 +388,7 @@ namespace LogScraper
             ErrorListControl.Dock = System.Windows.Forms.DockStyle.Fill;
             ErrorListControl.Location = new System.Drawing.Point(0, 0);
             ErrorListControl.Name = "ErrorListControl";
-            ErrorListControl.Size = new System.Drawing.Size(658, 104);
+            ErrorListControl.Size = new System.Drawing.Size(658, 100);
             ErrorListControl.TabIndex = 27;
             ErrorListControl.Visible = false;
             // 
@@ -399,7 +399,7 @@ namespace LogScraper
             ContentNavigationControl.Dock = System.Windows.Forms.DockStyle.Fill;
             ContentNavigationControl.Location = new System.Drawing.Point(0, 2);
             ContentNavigationControl.Name = "ContentNavigationControl";
-            ContentNavigationControl.Size = new System.Drawing.Size(315, 608);
+            ContentNavigationControl.Size = new System.Drawing.Size(315, 586);
             ContentNavigationControl.TabIndex = 0;
             // 
             // ProcessingStatusBarControl
@@ -423,7 +423,7 @@ namespace LogScraper
             LogMetadataFiltersOverviewControl.Location = new System.Drawing.Point(0, 0);
             LogMetadataFiltersOverviewControl.Margin = new System.Windows.Forms.Padding(0);
             LogMetadataFiltersOverviewControl.Name = "LogMetadataFiltersOverviewControl";
-            LogMetadataFiltersOverviewControl.Size = new System.Drawing.Size(230, 356);
+            LogMetadataFiltersOverviewControl.Size = new System.Drawing.Size(230, 334);
             LogMetadataFiltersOverviewControl.TabIndex = 0;
             // 
             // SplitContainerMain
@@ -442,7 +442,7 @@ namespace LogScraper
             // 
             SplitContainerMain.Panel2.Controls.Add(SplitContainerViewportAndNavigation);
             SplitContainerMain.Panel2MinSize = 400;
-            SplitContainerMain.Size = new System.Drawing.Size(1220, 610);
+            SplitContainerMain.Size = new System.Drawing.Size(1220, 588);
             SplitContainerMain.SplitterDistance = 230;
             SplitContainerMain.SplitterWidth = 8;
             SplitContainerMain.TabIndex = 13;
@@ -463,7 +463,7 @@ namespace LogScraper
             // SplitContainerSourceControlAndMetadata.Panel2
             // 
             SplitContainerSourceControlAndMetadata.Panel2.Controls.Add(LogMetadataFiltersOverviewControl);
-            SplitContainerSourceControlAndMetadata.Size = new System.Drawing.Size(230, 610);
+            SplitContainerSourceControlAndMetadata.Size = new System.Drawing.Size(230, 588);
             SplitContainerSourceControlAndMetadata.SplitterDistance = 250;
             SplitContainerSourceControlAndMetadata.TabIndex = 0;
             // 

@@ -20,18 +20,14 @@ namespace LogScraper.Configuration
         public LogProviderType LogProviderTypeDefault { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether logs should be exported to a file.
-        /// Default value is <c>true</c>.
-        /// </summary>
-        public bool ExportToFile { get; set; } = true;
-
-        /// <summary>
         /// Gets or sets the name of the file to be opened in an external editor.
         /// </summary>
         public string EditorFileName { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the file where logs will be exported.
+        /// Gets or sets the default/suggested file path used to pre-fill the save dialog
+        /// shown when the user chooses to export the log and open it in an external editor.
+        /// The log is only written to this (or another user-chosen) location on demand.
         /// </summary>
         public string ExportFileName { get; set; }
 
@@ -72,6 +68,11 @@ namespace LogScraper.Configuration
         /// Gets or sets a value indicating whether debug mode is enabled for the application.
         /// </summary>
         public bool IsDebugModeEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to check for external viewing files on application exit.
+        /// </summary>
+        public bool CheckForExternalViewingFilesOnExit { get; set; } = true;
 
         public bool Equals(GenericConfig other) => this.IsEqualByJsonComparison(other);
 

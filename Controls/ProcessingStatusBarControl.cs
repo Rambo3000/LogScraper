@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using LogScraper.Export;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 
@@ -10,10 +11,13 @@ namespace LogScraper.Controls
     /// <summary>
     /// Consolidated status bar shown at the bottom of the main form, indicating the
     /// current data retrieval/processing state (retrieving, processing, or waiting for
-    /// the next continuous/timed fetch). Hidden entirely while no fetch is active.
+    /// the next continuous/timed fetch), as well as an on-demand log export progress
+    /// indicator on the right. Hidden entirely while no fetch or export is active.
     /// </summary>
     public partial class ProcessingStatusBarControl : UserControl
     {
+        private bool _isExporting = false;
+
         public ProcessingStatusBarControl()
         {
             InitializeComponent();
@@ -21,6 +25,20 @@ namespace LogScraper.Controls
             if (DesignMode) return;
 
             LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateStatus();
+            LogExportWorkerManager.IsWritingChanged += OnExportWritingChanged;
+            UpdateStatus();
+        }
+
+        private void OnExportWritingChanged(bool isWriting)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<bool>(OnExportWritingChanged), isWriting);
+                return;
+            }
+
+            _isExporting = isWriting;
+            PnlExportStatus.Visible = isWriting;
             UpdateStatus();
         }
 
@@ -71,7 +89,9 @@ namespace LogScraper.Controls
                     break;
                 case LogProcessingStatus.Idle:
                 default:
-                    Visible = false;
+                    PicStatusIcon.Image = null;
+                    LblStatusText.Text = string.Empty;
+                    Visible = _isExporting;
                     break;
             }
         }

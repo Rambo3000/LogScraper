@@ -153,35 +153,35 @@
   </data>
   <data name="ProcessingStatusBarControl.IconProcessing" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAF4SURBVDhPbZOxL0RBEMZ/X04o5BKFqBQaF5GQXK2RCNFotTqFwj+gvFKhkmhVRK4SiUIjEvEP
-        oEEjkShoNCLBMbuzu+8dm/fe7s7ON/PNN/tAQoDNtaHw+FmZ0xvca5C4mQOdA9PVozwMlYJlW5xGEEfA
-        hUQPOAUOBUOFYR+o7MNqAfhCugSWgVukd1C7AvuDLDbLBDdCW5Gmdr2UgezeV7TzSmcyBj3BB+JA4tv2
-        iNno3DdKVI8UO7CE1AlA2BQsFh/2PMFVxHqE3LmSYlQwD2oCTcG6YMI0kWSB34AZwSqi5eWmANXGh7kT
-        Qeo52EoyFml9nNNG/0QrvydejgXZRhpDbHgpZnsAmfglRF5FZg3gWQRBGxXhro0VaDwD/rvGwBpS7Aa0
-        3D4MvHoJO/2wugboLNeLXgC7F48xe7A9IQaLZi5kRc8piTvEvuAziBnBXWRdYUWFQuUPcWMk40apG8QT
-        9zWaaVm5TDV7WghNEu4H7eQWjn4/P/McRHxuYWbGAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAXhJREFUOE9t
+        k7EvREEQxn9fTijkEoWoFBoXkZBcrZEI0Wi1OoXCP6C8UqGSaFVErhKJQiMS8Q+gQSORKGg0IsExu7O7
+        7x2b997uzs438803+0BCgM21ofD4WZnTG9xrkLiZA50D09WjPAyVgmVbnEYQR8CFRA84BQ4FQ4VhH6js
+        w2oB+EK6BJaBW6R3ULsC+4MsNssEN0JbkaZ2vZSB7N5XtPNKZzIGPcEH4kDi2/aI2ejcN0pUjxQ7sITU
+        CUDYFCwWH/Y8wVXEeoTcuZJiVDAPagJNwbpgwjSRZIHfgBnBKqLl5aYA1caHuRNB6jnYSjIWaX2c00b/
+        RCu/J16OBdlGGkNseClmewCZ+CVEXkVmDeBZBEEbFeGujRVoPAP+u8bAGlLsBrTcPgy8egk7/bC6Bugs
+        14teALsXjzF7sD0hBotmLmRFzymJO8S+4DOIGcFdZF1hRYVC5Q9xYyTjRqkbxBP3NZppWblMNXtaCE0S
+        7gft5BaOfj8/8xxEfG5hZsYAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="ProcessingStatusBarControl.IconRetrieving" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAADrSURBVDhPbVNJDsIwDJz5Dh/opYcKLrwVnocqjkXenQRLVmxnZuwkLRBG98wjYcVZkloCIxj5
-        AuqatkrNqwN4GsDjy5wXAPHGcblOmo0UUpJFbOiw8rKSgU4QAjb+BNEJVqkAROeYJFtPFE9t2UCeQ2c5
-        Sjj4IbEVtY9SthMlYpeofmqDtBxlfFMX3QF86/wQ8p7D6tmdW9TZeHcR8SQvNn4uiz0BPCxcr86H+Huz
-        +WiDvON67kFG7/bu+SHVRereK9DVouwG4CBwgDgspq4AD1pNMP0IZjra/Ne1vVqnTSkYsUk2TIc7Kl3s
-        Bx7YMiw7z4kgAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAOtJREFUOE9t
+        U0kOwjAMnPkOH+ilhwouvBWehyqORd6dBEtWbGdm7CQtEEb3zCNhxVmSWgIjGPkC6pq2Ss2rA3gawOPL
+        nBcA8cZxuU6ajRRSkkVs6LDyspKBThACNv4E0QlWqQBE55gkW08UT23ZQJ5DZzlKOPghsRW1j1K2EyVi
+        l6h+aoO0HGV8UxfdAXzr/BDynsPq2Z1b1Nl4dxHxJC82fi6LPQE8LFyvzof4e7P5aIO843ruQUbv9u75
+        IdVF6t4r0NWi7AbgIHCAOCymrgAPWk0w/QhmOtr817W9WqdNKRixSTZMhzsqXewHHtgyLDvPiSAAAAAA
+        SUVORK5CYII=
 </value>
   </data>
   <data name="ProcessingStatusBarControl.IconWaiting" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAEsSURBVDhPdZK7TQNBEIa/P3Lm7FpwQBWuwNm5AUKERBeINggIcBPEJHRADxBYCMk6a2b2fTCn
-        uZ2dxz+vhYGUOMutUO7lIpBx0tj3L5mjn/EriWq2Ia97rCBvgL1gbydo6s1NIpfTP59IJ9CCWAQLaB4y
-        KAD6amv10e5G4gP0idh2AG07gjeU2ORKL8A3YtdGNOFF54FCZ9BPlMIDUfqjkM0hz6CpsUPVHXABDkl7
-        MgDZHAxImi3oKNnFkJ1fE8AsdEHcqkx2VaXT5GsRTwn5Pm35Fzh7G9HOKj615dod4gvxHLo6A+cEEFtY
-        o9gqbCXvwKY3tVmbfWZbOOjoj8OHEjPoYrqAjNEbJpSfp2wW9lxrgupXhDrU3jJ0l2/1/KP/oRovcXRq
-        gHIbjfoKLs8ud/6alFcAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAASxJREFUOE91
+        krtNA0EQhr8/cubsWnBAFa7A2bkBQoREF4g2CAhwE8QkdEAPEFgIyTprZvZ9MKe5nZ3HP6+FgZQ4y61Q
+        7uUikHHS2PcvmaOf8SuJarYhr3usIG+AvWBvJ2jqzU0il9M/n0gn0IJYBAtoHjIoAPpqa/XR7kbiA/SJ
+        2HYAbTuCN5TY5EovwDdi10Y04UXngUJn0E+UwgNR+qOQzSHPoKmxQ9UdcAEOSXsyANkcDEiaLego2cWQ
+        nV8TwCx0QdyqTHZVpdPkaxFPCfk+bfkXOHsb0c4qPrXl2h3iC/EcujoD5wQQW1ij2CpsJe/Apje1WZt9
+        Zls46OiPw4cSM+hiuoCM0RsmlJ+nbBb2XGuC6leEOtTeMnSXb/X8o/+hGi9xdGqAchuN+gouzy53/pqU
+        VwAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="BtnReset.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

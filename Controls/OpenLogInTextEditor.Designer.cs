@@ -28,22 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenLogInTextEditor));
-            btnOpenWithEditor = new System.Windows.Forms.Button();
+            btnOpenWithEditor = new LogScraper.Controls.Generic.SplitButton();
+            RecentFilesMenu = new System.Windows.Forms.ContextMenuStrip(components);
             toolTip1 = new System.Windows.Forms.ToolTip();
             SuspendLayout();
             // 
             // btnOpenWithEditor
             // 
-            btnOpenWithEditor.Image = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
+            btnOpenWithEditor.DropDownMenu = RecentFilesMenu;
+            btnOpenWithEditor.DropDownWidth = 15;
+            btnOpenWithEditor.Icon = (System.Drawing.Image)resources.GetObject("btnOpenWithEditor.Image");
             btnOpenWithEditor.Location = new System.Drawing.Point(0, 0);
             btnOpenWithEditor.Name = "btnOpenWithEditor";
-            btnOpenWithEditor.Size = new System.Drawing.Size(25, 25);
+            btnOpenWithEditor.Size = new System.Drawing.Size(40, 25);
             btnOpenWithEditor.TabIndex = 12;
             btnOpenWithEditor.TabStop = false;
             toolTip1.SetToolTip(btnOpenWithEditor, "Open log in editor [CTRL-E]");
-            btnOpenWithEditor.UseVisualStyleBackColor = true;
-            btnOpenWithEditor.Click += BtnOpenWithEditor_Click;
+            btnOpenWithEditor.ButtonClick += BtnOpenWithEditor_Click;
+            // 
+            // RecentFilesMenu
+            // 
+            RecentFilesMenu.Name = "RecentFilesMenu";
+            RecentFilesMenu.Size = new System.Drawing.Size(61, 4);
+            RecentFilesMenu.Opening += RecentFilesMenu_Opening;
             // 
             // toolTip1
             // 
@@ -57,14 +66,16 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(btnOpenWithEditor);
             Name = "OpenLogInTextEditor";
-            Size = new System.Drawing.Size(25, 25);
+            Size = new System.Drawing.Size(40, 25);
             Load += OpenLogInTextEditor_Load;
             ResumeLayout(false);
         }
 
         #endregion
 
-        private System.Windows.Forms.Button btnOpenWithEditor;
+        private LogScraper.Controls.Generic.SplitButton btnOpenWithEditor;
+        private System.Windows.Forms.ContextMenuStrip RecentFilesMenu;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }
+

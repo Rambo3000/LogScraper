@@ -182,12 +182,13 @@ namespace LogScraper.Configuration
         /// <typeparam name="T">The type of the data to save.</typeparam>
         /// <param name="filePath">The path of the file to save the data to.</param>
         /// <param name="data">The data to serialize and save.</param>
-        public static void SaveToFile<T>(string filePath, T data)
+        /// <param name="createBackupFile">Whether to create a backup of the existing file.</param>
+        public static void SaveToFile<T>(string filePath, T data, bool createBackupFile = true)
         {
 
             string jsonContent = JsonSerializer.Serialize(data, jsonSerializerOptions);
 
-            if (File.Exists(filePath))
+            if (createBackupFile && File.Exists(filePath))
             {
                 string backupPath = filePath + ".bak";
                 File.Copy(filePath, backupPath, overwrite: true);

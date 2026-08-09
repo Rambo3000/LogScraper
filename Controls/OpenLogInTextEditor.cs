@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Controls.Generic;
 using LogScraper.Export;
+using LogScraper.Log.Filtering;
+using LogScraper.Log.LogAppState;
+using LogScraper.Log.Rendering;
+using LogScraper.UserData;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
@@ -11,10 +18,77 @@ namespace LogScraper.Controls
 {
     public partial class OpenLogInTextEditor : UserControl
     {
+        /// <summary>
+        /// Tracks the file path chosen via the save dialog during the current application
+        /// session. Reset on application restart, so the save dialog is always shown at
+        /// least once per session.
+        /// </summary>
+        private static string _sessionExportFilePath;
+
+        /// <summary>
+        /// Offers to remove any files still on disk from the recent "saved" and "editor" files
+        /// lists, since they may contain sensitive log data that was written on demand.
+        /// Called on application exit.
+        /// </summary>
+        public static void AskToRemoveTemporaryFile()
+        {
+            try
+            {
+                List<(RecentFileListType ListType, string FilePath)> existingFiles = [];
+
+                foreach (RecentFileEntry entry in UserDataManager.GetRecentFiles(RecentFileListType.Editor))
+                {
+                    if (File.Exists(entry.FilePath))
+                    {
+                        existingFiles.Add((RecentFileListType.Editor, entry.FilePath));
+                    }
+                }
+
+                if (existingFiles.Count == 0) return;
+
+                StringBuilder message = new();
+                message.AppendLine("The following log files used for viewing files in the external editor still exist:");
+                message.AppendLine();
+                foreach (var (_, filePath) in existingFiles)
+                {
+                    message.AppendLine(filePath);
+                }
+                message.AppendLine();
+                message.AppendLine("Do you want to remove them now?");
+
+                DialogResult result = MessageBox.Show(
+                   message.ToString(),
+                   "Remove exported log files",
+                   MessageBoxButtons.YesNo,
+                   MessageBoxIcon.Question);
+
+                if (result != DialogResult.Yes) return;
+
+                foreach (var (listType, filePath) in existingFiles)
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.LogStackTraceToFile("Error while trying to remove exported log file: " + filePath);
+                    }
+
+                    UserDataManager.RemoveRecentFile(listType, filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while trying to remove exported log files: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.LogStackTraceToFile("Error while trying to remove exported log files on application close.");
+            }
+        }
+
         public OpenLogInTextEditor()
         {
             InitializeComponent();
-            ConfigAppState.Instance.GenericConfig.Changed += (s, e) => UpdateButtons();
+            LogAppState.Instance.MetadataFilterResult.Changed += (s, e) => UpdateButtons();
             ShortcutManager.Register(this, AppShortcut.OpenLogInEditor, OpenFileInExternalEditor);
         }
 
@@ -26,44 +100,125 @@ namespace LogScraper.Controls
 
         private void UpdateButtons()
         {
-            btnOpenWithEditor.Enabled = ConfigAppState.Instance.GenericConfig.Value.ExportToFile;
-
         }
 
         private void BtnOpenWithEditor_Click(object sender, EventArgs e)
         {
+            LogMetadataFilterResult filterResult = LogAppState.Instance.MetadataFilterResult.Value;
+            if (filterResult?.LogEntries == null || filterResult.LogEntries.Count == 0) return;
             OpenFileInExternalEditor();
         }
 
-        /// <summary>
-        /// Opens the exported log file in an external editor.
-        /// </summary>
-        private static void OpenFileInExternalEditor()
+        private void RecentFilesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            string fileName = LogExportWorkerManager.GetExportFileName();
+            RecentFilesMenuHelper.BuildMenu(RecentFilesMenu, RecentFileListType.Editor);
 
-            // Check if the file exists.
-            if (!File.Exists(fileName))
+            ToolStripMenuItem overwriteItem = new("Overwrite previously selected file without asking")
             {
-                string path = Path.GetDirectoryName(fileName);
+                CheckOnClick = true,
+                Checked = UserDataManager.GetOverwritePreviousEditorFileWithoutPrompt()
+            };
+            overwriteItem.Click += (s, args) => UserDataManager.SetOverwritePreviousEditorFileWithoutPrompt(overwriteItem.Checked);
 
-                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            RecentFilesMenu.Items.Insert(0, overwriteItem);
+            RecentFilesMenu.Items.Insert(1, new ToolStripSeparator());
+        }
+
+        /// <summary>
+        /// Prompts the user for a destination file, writes the currently filtered log to it, and
+        /// opens the resulting file in the configured external editor. The log is only ever written
+        /// to disk on demand, when the user explicitly triggers this action.
+        /// </summary>
+        private async void OpenFileInExternalEditor()
+        {
+            LogMetadataFilterResult filterResult = LogAppState.Instance.MetadataFilterResult.Value;
+            if (filterResult == null || filterResult.LogEntries == null || filterResult.LogEntries.Count == 0) return;
+
+            LogRenderSettings logRenderSettings = new()
+            {
+                LogLayout = LogAppState.Instance.Layout.Value,
+                ShowOriginalMetadata = true
+            };
+
+            string renderedLog = LogRenderer.RenderLogEntriesAsString(LogAppState.Instance.FilterResultWithRange.Value, logRenderSettings);
+            if (string.IsNullOrEmpty(renderedLog)) return;
+
+            string filePath;
+
+            if (!string.IsNullOrWhiteSpace(_sessionExportFilePath) && UserDataManager.GetOverwritePreviousEditorFileWithoutPrompt())
+            {
+                filePath = _sessionExportFilePath;
+            }
+            else
+            {
+                string defaultExportFileName = !string.IsNullOrWhiteSpace(_sessionExportFilePath)
+                    ? _sessionExportFilePath
+                    : ConfigAppState.Instance.GenericConfig.Value.ExportFileName;
+
+                using SaveFileDialog saveFileDialog = new()
                 {
-                    // Path exists but the file is missing.
-                    MessageBox.Show($"File not found: {fileName}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
+                    Title = "Select where to save the log to open it in the text editor",
+                    Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                    DefaultExt = "log",
+                    AddExtension = true
+                };
+
+                if (!string.IsNullOrWhiteSpace(defaultExportFileName))
                 {
-                    // Path is invalid or empty.
-                    MessageBox.Show($"An invalid location was specified for exporting the log: {fileName}, adjust this via the settings.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    try
+                    {
+                        string directory = Path.GetDirectoryName(defaultExportFileName);
+                        if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+                        {
+                            saveFileDialog.InitialDirectory = directory;
+                        }
+
+                        string fileName = Path.GetFileName(defaultExportFileName);
+                        if (!string.IsNullOrWhiteSpace(fileName))
+                        {
+                            saveFileDialog.FileName = fileName;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // The configured default path is invalid, fall back to the default behaviour.
+                        ex.LogStackTraceToFile("Error setting default export path in save dialog.");
+                    }
                 }
-                return;
+
+                if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+                filePath = saveFileDialog.FileName;
+                _sessionExportFilePath = filePath;
             }
 
+            btnOpenWithEditor.Enabled = false;
+            try
+            {
+                bool success = await LogExportWorkerManager.WriteToFileAsync(renderedLog, filePath);
+                if (!success)
+                {
+                    MessageBox.Show($"Failed to write the log to: {filePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                UserDataManager.AddRecentFile(RecentFileListType.Editor, filePath);
+
+                OpenFileInTextEditor(filePath);
+            }
+            finally
+            {
+                btnOpenWithEditor.Enabled = true;
+                UpdateButtons();
+            }
+        }
+
+        public static void OpenFileInTextEditor(string filePath)
+        {
             try
             {
                 // Open the file in the configured external editor.
-                Process.Start(ConfigAppState.Instance.GenericConfig.Value.EditorFileName, "\"" + fileName + "\"");
+                Process.Start(ConfigAppState.Instance.GenericConfig.Value.EditorFileName, "\"" + filePath + "\"");
             }
             catch (Exception ex)
             {
@@ -74,3 +229,4 @@ namespace LogScraper.Controls
         }
     }
 }
+

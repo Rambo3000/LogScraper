@@ -19,20 +19,15 @@ namespace LogScraper.Controls.Configuration
         {
             CboLogProviderType.SelectedItem = config.LogProviderTypeDefault;
             CboAutomaticReadTime.SelectedItem = config.AutomaticReadTimeMinutes;
-            ChkExportToFile.Checked = config.ExportToFile;
             ChkShowErrorsInBeginAndEndFilters.Checked = config.ShowErrorLinesInBeginAndEndFilters;
             ChkShowTimeLine.Checked = config.ShowTimelineByDefault;
             ChkPinLogProvidersByDefault.Checked = !config.PinLogProvidersByDefault;
             ChkIsDebugModeEnabled.Checked = config.IsDebugModeEnabled;
+            ChkCheckForExternalViewingFilesOnExit.Checked = config.CheckForExternalViewingFilesOnExit;
             TxtEditorLocation.Text = config.EditorFileName;
             TxtExportFileName.Text = config.ExportFileName;
             TxtTimeOut.Text = config.HttpCLientTimeOUtSeconds.ToString();
             ChkIncludePrereleaseUpdates.Checked = config.IncludeBetaUpdates;
-        }
-
-        private void ChkExportToFile_CheckedChanged(object sender, EventArgs e)
-        {
-            GrpExportSettings.Enabled = ChkExportToFile.Checked;
         }
 
         internal bool TryGetGenericConfig(out GenericConfig config)
@@ -43,18 +38,10 @@ namespace LogScraper.Controls.Configuration
                 MessageBox.Show("The download timeout must be greater than zero.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            if (config.ExportToFile)
+            if (string.IsNullOrWhiteSpace(config.EditorFileName))
             {
-                if (string.IsNullOrWhiteSpace(config.EditorFileName))
-                {
-                    MessageBox.Show("The editor location is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
-                if (string.IsNullOrWhiteSpace(config.ExportFileName))
-                {
-                    MessageBox.Show("The file name is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
+                MessageBox.Show("The editor location is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
             return true;
         }
@@ -64,7 +51,6 @@ namespace LogScraper.Controls.Configuration
             {
                 EditorFileName = TxtEditorLocation.Text,
                 ExportFileName = TxtExportFileName.Text,
-                ExportToFile = ChkExportToFile.Checked,
                 PinLogProvidersByDefault = !ChkPinLogProvidersByDefault.Checked,
                 ShowErrorLinesInBeginAndEndFilters = ChkShowErrorsInBeginAndEndFilters.Checked,
                 ShowTimelineByDefault = ChkShowTimeLine.Checked,
@@ -72,7 +58,8 @@ namespace LogScraper.Controls.Configuration
                 AutomaticReadTimeMinutes = int.TryParse(CboAutomaticReadTime.SelectedItem.ToString(), out int automaticReadTime) ? automaticReadTime : 1,
                 LogProviderTypeDefault = (LogProviderType)CboLogProviderType.SelectedItem,
                 HttpCLientTimeOUtSeconds = int.TryParse(TxtTimeOut.Text, out int timeout) ? timeout : 0,
-                IncludeBetaUpdates = ChkIncludePrereleaseUpdates.Checked
+                IncludeBetaUpdates = ChkIncludePrereleaseUpdates.Checked,
+                CheckForExternalViewingFilesOnExit = ChkCheckForExternalViewingFilesOnExit.Checked
             };
 
             return config;

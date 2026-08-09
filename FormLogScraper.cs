@@ -1,11 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Controls;
 using LogScraper.Controls.FilterOverview;
 using LogScraper.Controls.Search;
 using LogScraper.Controls.Viewport;
-using LogScraper.Export;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Rendering;
@@ -25,6 +25,8 @@ namespace LogScraper
 
             InitializeComponent();
 
+            FormClosing += FormLogScraper_FormClosing;
+
             LogAppState.Instance.ResetRequested += LogAppState_ResetRequested;
             LogAppState.Instance.ProcessingState.Changed += (s, e) => UpdateButtonStatus();
             LogAppState.Instance.IsSourceValid.Changed += (s, e) => UpdateButtonStatus();
@@ -36,8 +38,6 @@ namespace LogScraper
             LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
             LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
             LogProviderSelectionControl.SizeChanged += (s, e) => AutoSizeLogProviderSelection();
-
-            LogViewportControl.LogEntriesTextChanged += UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged;
 
             ActiveFilterOverviewControl.SizeChanged += (s, e) => UpdateActiveFiltersSplitter();
             ActiveFilterOverviewControl.FilterRemoved += ActiveFilterOverviewControl_FilterRemoved;
@@ -176,12 +176,6 @@ namespace LogScraper
             SplitContainerActiveFiltersViewport.SplitterDistance = desired;
         }
 
-        private void UserControlLogEntriesTextBox_LogEntriesTextBoxTextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(LogViewportControl.Text)) return;
-            LogExportWorkerManager.WriteToFile(LogViewportControl.Text);
-        }
-
         #endregion
 
         #region Erase and reset
@@ -252,6 +246,22 @@ namespace LogScraper
         private void BtnConfig_Click(object sender, EventArgs e)
         {
             new FormConfiguration().ShowDialog(this);
+        }
+
+        #endregion
+
+        #region Application exit cleanup
+
+        /// <summary>
+        /// Offers to remove the default export file (if still present on disk) when the application closes,
+        /// since it may contain sensitive log data that was written on demand for the text editor feature.
+        /// </summary>
+        private void FormLogScraper_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (ConfigAppState.Instance.GenericConfig?.Value?.CheckForExternalViewingFilesOnExit == true)
+            {
+                OpenLogInTextEditor.AskToRemoveTemporaryFile();
+            }
         }
 
         #endregion

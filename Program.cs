@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.UserData;
 
 namespace LogScraper
 {
@@ -19,6 +20,7 @@ namespace LogScraper
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
 
             ConfigurationManager.Initialize();
+            UserDataManager.Initialize();
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();

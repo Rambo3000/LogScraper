@@ -28,22 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveLogControl));
-            BtnSave = new System.Windows.Forms.Button();
+            BtnSave = new LogScraper.Controls.Generic.SplitButton();
+            RecentFilesMenu = new System.Windows.Forms.ContextMenuStrip(components);
             toolTip1 = new System.Windows.Forms.ToolTip();
             SuspendLayout();
             // 
             // BtnSave
             // 
-            BtnSave.Image = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
+            BtnSave.DropDownMenu = RecentFilesMenu;
+            BtnSave.DropDownWidth = 15;
+            BtnSave.Icon = (System.Drawing.Image)resources.GetObject("BtnSave.Image");
             BtnSave.Location = new System.Drawing.Point(0, 0);
             BtnSave.Name = "BtnSave";
-            BtnSave.Size = new System.Drawing.Size(25, 25);
+            BtnSave.Size = new System.Drawing.Size(40, 25);
             BtnSave.TabIndex = 27;
             BtnSave.TabStop = false;
             toolTip1.SetToolTip(BtnSave, "Save log [CTRL-S]");
-            BtnSave.UseVisualStyleBackColor = true;
-            BtnSave.Click += BtnSave_Click;
+            BtnSave.ButtonClick += BtnSave_Click;
+            // 
+            // RecentFilesMenu
+            // 
+            RecentFilesMenu.Name = "RecentFilesMenu";
+            RecentFilesMenu.Size = new System.Drawing.Size(61, 4);
+            RecentFilesMenu.Opening += RecentFilesMenu_Opening;
             // 
             // toolTip1
             // 
@@ -57,13 +66,14 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(BtnSave);
             Name = "SaveLogControl";
-            Size = new System.Drawing.Size(25, 25);
+            Size = new System.Drawing.Size(40, 25);
             ResumeLayout(false);
         }
 
         #endregion
 
-        private System.Windows.Forms.Button BtnSave;
+        private LogScraper.Controls.Generic.SplitButton BtnSave;
+        private System.Windows.Forms.ContextMenuStrip RecentFilesMenu;
         private System.Windows.Forms.ToolTip toolTip1;
     }
 }

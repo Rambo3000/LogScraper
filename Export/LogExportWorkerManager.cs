@@ -1,135 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using System.Windows.Forms;
-using LogScraper.Configuration;
-using LogScraper.Utilities.Extensions;
+using System.Threading.Tasks;
 
 namespace LogScraper.Export
 {
     /// <summary>
-    /// Manages the execution of log export workers, ensuring that only one worker is processed at a time.
+    /// Coordinates on-demand export of the log to a user-chosen file, run on a background thread,
+    /// and notifies listeners (e.g. a status bar progress indicator) while the write is in progress.
     /// </summary>
-    internal class LogExportWorkerManager
+    internal static class LogExportWorkerManager
     {
-        // Singleton instance of the LogExportWorkerManager.
-        private static LogExportWorkerManager instance;
-
-        // Lock object to ensure thread-safe initialization of the singleton instance.
-        private static readonly Lock lockObject = new();
+        /// <summary>
+        /// Event triggered whenever an on-demand export starts (<c>true</c>) or finishes (<c>false</c>),
+        /// so the UI can show/hide a progress indicator.
+        /// </summary>
+        public static event Action<bool> IsWritingChanged;
 
         /// <summary>
-        /// Gets the singleton instance of the <see cref="LogExportWorkerManager"/>.
+        /// Writes the given log content to <paramref name="filePath"/> on a background thread.
         /// </summary>
-        public static LogExportWorkerManager Instance
+        /// <param name="log">The rendered log content to write.</param>
+        /// <param name="filePath">The destination file path, typically chosen by the user via a save dialog.</param>
+        /// <returns><c>true</c> if the file was written successfully; otherwise <c>false</c>.</returns>
+        public static async Task<bool> WriteToFileAsync(string log, string filePath)
         {
-            get
+            OnIsWritingChanged(true);
+            try
             {
-                // Check if an instance already exists.
-                if (instance == null)
-                {
-                    // Use a lock to ensure only one thread creates the instance.
-                    lock (lockObject)
-                    {
-                        instance ??= new LogExportWorkerManager();
-                    }
-                }
-                return instance;
+                LogExporterWorker logExporter = new(filePath);
+                bool success = false;
+                logExporter.StatusUpdate += (_, isSuccess) => success = isSuccess;
+
+                // Run the write on a background thread so the UI thread is never blocked.
+                await Task.Run(() => logExporter.DoWorkAsync(log)).ConfigureAwait(false);
+
+                return success;
+            }
+            finally
+            {
+                OnIsWritingChanged(false);
             }
         }
 
-        // Queue to hold workers and their associated data.
-        private readonly Queue<(LogExporterWorker, string)> workerQueue = new();
-
-        // Indicates whether the queue is currently being processed.
-        private bool isProcessingQueue = false;
-
-        /// <summary>
-        /// Event triggered to notify listeners of the current queue length.
-        /// </summary>
-        public event Action<int> QueueLengthUpdate;
-
-        /// <summary>
-        /// Adds a new worker to the queue and starts processing if not already in progress.
-        /// </summary>
-        /// <param name="worker">The log exporter worker to add.</param>
-        /// <param name="filterResult">The result of filtering log metadata.</param>
-        public void AddWorker(LogExporterWorker worker, string log)
+        private static void OnIsWritingChanged(bool isWriting)
         {
-            // Enqueue the worker and its associated data.
-            workerQueue.Enqueue((worker, log));
-
-            // Start processing the queue if not already in progress.
-            if (!isProcessingQueue)
-            {
-                StartNextWorker();
-            }
-        }
-
-        /// <summary>
-        /// Starts the next worker in the queue asynchronously.
-        /// </summary>
-        private async void StartNextWorker()
-        {
-            // Notify listeners of the updated queue length.
-            OnQueueLengthUpdate();
-
-            // If the queue is empty, stop processing.
-            if (workerQueue.Count == 0)
-            {
-                isProcessingQueue = false;
-                return;
-            }
-
-            isProcessingQueue = true;
-
-            // Dequeue and discard all workers except the last one.
-            while (workerQueue.Count > 1)
-            {
-                workerQueue.TryDequeue(out _);
-            }
-
-            // Dequeue the last worker and process it.
-            var (worker, log) = workerQueue.Dequeue();
-            await worker.DoWorkAsync(log);
-
-            // Start the next worker when the current one finishes.
-            StartNextWorker();
-        }
-
-        /// <summary>
-        /// Triggers the <see cref="QueueLengthUpdate"/> event to notify listeners of the current queue length.
-        /// </summary>
-        protected virtual void OnQueueLengthUpdate()
-        {
-            QueueLengthUpdate?.Invoke(workerQueue.Count);
-        }
-
-        /// <summary>
-        /// Writes the filtered log data to a file using the specified export settings.
-        /// </summary>
-        /// <param name="logMetadataFilterResult">The result of filtering log metadata.</param>
-        /// <param name="logExportSettings">The settings to use for exporting the log.</param>
-        internal static void WriteToFile(string log)
-        {
-            if (ConfigAppState.Instance.GenericConfig.Value.ExportToFile)
-            {
-                // Create a new log exporter worker and add it to the manager.
-                LogExporterWorker logExporter = new(GetExportFileName());
-                LogExportWorkerManager.Instance.AddWorker(logExporter, log);
-            }
-        }
-
-        /// <summary>
-        /// Gets the export file name based on the current configuration and whether the debugger is attached.
-        /// </summary>
-        /// <returns></returns>
-        public static string GetExportFileName()
-        {
-            // Determine the file name based on whether the debugger is attached.
-            return Debugger.IsAttached ? AppContext.BaseDirectory + "Log.log" : ConfigAppState.Instance.GenericConfig.Value.ExportFileName;
+            IsWritingChanged?.Invoke(isWriting);
         }
     }
 }

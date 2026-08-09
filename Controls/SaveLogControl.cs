@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
+using LogScraper.UserData;
 using LogScraper.Utilities;
 using LogScraper.Utilities.Extensions;
 
@@ -18,6 +20,11 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             ShortcutManager.Register(this, AppShortcut.SaveLog, () => BtnSave_Click(this, EventArgs.Empty));
+        }
+
+        private void RecentFilesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            RecentFilesMenuHelper.BuildMenu(RecentFilesMenu, RecentFileListType.Saved);
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
@@ -50,6 +57,7 @@ namespace LogScraper.Controls
                     try
                     {
                         File.WriteAllText(saveFileDialog.FileName, renderedLog);
+                        UserDataManager.AddRecentFile(RecentFileListType.Saved, saveFileDialog.FileName);
 
                         ProcessStartInfo processStartInfo = new()
                         {
