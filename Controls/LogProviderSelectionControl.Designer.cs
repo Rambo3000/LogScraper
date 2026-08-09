@@ -40,6 +40,7 @@ namespace LogScraper.Controls
             RuntimeProviderControl = new RuntimeProviderControl();
             FileProviderControl = new FileProviderControl();
             lblProviderDescription = new System.Windows.Forms.LinkLabel();
+            btnPin = new System.Windows.Forms.Button();
             imageListPins = new System.Windows.Forms.ImageList(components);
             imageListChevron = new System.Windows.Forms.ImageList(components);
             BtnCollapseExpand = new System.Windows.Forms.Button();
@@ -56,7 +57,7 @@ namespace LogScraper.Controls
             lblLogProvider.AutoSize = true;
             lblLogProvider.Location = new System.Drawing.Point(3, 58);
             lblLogProvider.Name = "lblLogProvider";
-            lblLogProvider.Size = new System.Drawing.Size(32, 15);
+            lblLogProvider.Size = new System.Drawing.Size(43, 15);
             lblLogProvider.TabIndex = 21;
             lblLogProvider.Text = "Source";
             // 
@@ -67,7 +68,7 @@ namespace LogScraper.Controls
             cboLogProvider.FormattingEnabled = true;
             cboLogProvider.Location = new System.Drawing.Point(52, 55);
             cboLogProvider.Name = "cboLogProvider";
-            cboLogProvider.Size = new System.Drawing.Size(101, 23);
+            cboLogProvider.Size = new System.Drawing.Size(127, 23);
             cboLogProvider.TabIndex = 18;
             cboLogProvider.SelectedIndexChanged += CboLogProvider_SelectedIndexChanged;
             // 
@@ -87,7 +88,7 @@ namespace LogScraper.Controls
             cboLogLayout.FormattingEnabled = true;
             cboLogLayout.Location = new System.Drawing.Point(52, 28);
             cboLogLayout.Name = "cboLogLayout";
-            cboLogLayout.Size = new System.Drawing.Size(101, 23);
+            cboLogLayout.Size = new System.Drawing.Size(127, 23);
             cboLogLayout.TabIndex = 30;
             cboLogLayout.SelectedIndexChanged += CboLogLayout_SelectedIndexChanged;
             // 
@@ -133,6 +134,22 @@ namespace LogScraper.Controls
             lblProviderDescription.MouseClick += LblProviderDescription_MouseClick;
             lblProviderDescription.MouseEnter += LblProviderDescription_MouseEnter;
             lblProviderDescription.MouseLeave += LblProviderDescription_MouseLeave;
+            // 
+            // btnPin
+            // 
+            btnPin.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            btnPin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            btnPin.FlatAppearance.BorderSize = 0;
+            btnPin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnPin.ImageIndex = 0;
+            btnPin.ImageList = imageListPins;
+            btnPin.Location = new System.Drawing.Point(157, 0);
+            btnPin.Name = "btnPin";
+            btnPin.Size = new System.Drawing.Size(24, 24);
+            btnPin.TabIndex = 27;
+            toolTip1.SetToolTip(btnPin, "Logbron altijd zichtbaar houden");
+            btnPin.UseVisualStyleBackColor = true;
+            btnPin.Click += BtnPin_Click;
             // 
             // imageListPins
             // 
@@ -212,6 +229,7 @@ namespace LogScraper.Controls
             Controls.Add(PnlSeparator1);
             Controls.Add(PnlLogProviders);
             Controls.Add(BtnCollapseExpand);
+            Controls.Add(btnPin);
             Controls.Add(cboLogLayout);
             Controls.Add(lblLogLayout);
             Controls.Add(cboLogProvider);
@@ -236,6 +254,7 @@ namespace LogScraper.Controls
         private KubernetesProviderControl KubernetesProviderControl;
         private FileProviderControl FileProviderControl;
         private System.Windows.Forms.LinkLabel lblProviderDescription;
+        private System.Windows.Forms.Button btnPin;
         private System.Windows.Forms.ImageList imageListPins;
         private System.Windows.Forms.ImageList imageListChevron;
         private System.Windows.Forms.Button BtnCollapseExpand;

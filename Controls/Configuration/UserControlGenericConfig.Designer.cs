@@ -45,6 +45,7 @@ namespace LogScraper.Controls.Configuration
             CboAutomaticReadTime = new System.Windows.Forms.ComboBox();
             LblAutomaticReadTimea = new System.Windows.Forms.Label();
             GrpGeneralSettings = new System.Windows.Forms.GroupBox();
+            ChkCheckForExternalViewingFilesOnExit = new System.Windows.Forms.CheckBox();
             ChkIsDebugModeEnabled = new System.Windows.Forms.CheckBox();
             ChkShowTimeLine = new System.Windows.Forms.CheckBox();
             ChkIncludePrereleaseUpdates = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,6 @@ namespace LogScraper.Controls.Configuration
             ChkShowErrorsInBeginAndEndFilters = new System.Windows.Forms.CheckBox();
             toolTip = new System.Windows.Forms.ToolTip(components);
             PnlUsedForScalingCompatiblity = new System.Windows.Forms.Panel();
-            ChkCheckForExternalViewingFilesOnExit = new System.Windows.Forms.CheckBox();
             GrpExportSettings.SuspendLayout();
             GrpGeneralSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -65,7 +65,7 @@ namespace LogScraper.Controls.Configuration
             // LblDefaultLogProviderType
             // 
             LblDefaultLogProviderType.AutoSize = true;
-            LblDefaultLogProviderType.Location = new System.Drawing.Point(6, 19);
+            LblDefaultLogProviderType.Location = new System.Drawing.Point(3, 19);
             LblDefaultLogProviderType.Name = "LblDefaultLogProviderType";
             LblDefaultLogProviderType.Size = new System.Drawing.Size(127, 15);
             LblDefaultLogProviderType.TabIndex = 0;
@@ -82,17 +82,17 @@ namespace LogScraper.Controls.Configuration
             GrpExportSettings.Controls.Add(TxtExportFileName);
             GrpExportSettings.Location = new System.Drawing.Point(6, 200);
             GrpExportSettings.Name = "GrpExportSettings";
-            GrpExportSettings.Size = new System.Drawing.Size(813, 82);
+            GrpExportSettings.Size = new System.Drawing.Size(571, 82);
             GrpExportSettings.TabIndex = 1;
             GrpExportSettings.TabStop = false;
-            GrpExportSettings.Text = "Text editor export settings";
+            GrpExportSettings.Text = "View log in external editor";
             // 
             // BtnBrowseEditor
             // 
             BtnBrowseEditor.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnBrowseEditor.Location = new System.Drawing.Point(778, 51);
+            BtnBrowseEditor.Location = new System.Drawing.Point(536, 26);
             BtnBrowseEditor.Name = "BtnBrowseEditor";
-            BtnBrowseEditor.Size = new System.Drawing.Size(29, 23);
+            BtnBrowseEditor.Size = new System.Drawing.Size(29, 20);
             BtnBrowseEditor.TabIndex = 11;
             BtnBrowseEditor.Text = "...";
             BtnBrowseEditor.UseVisualStyleBackColor = true;
@@ -101,7 +101,7 @@ namespace LogScraper.Controls.Configuration
             // BtnBrowseExportFIle
             // 
             BtnBrowseExportFIle.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            BtnBrowseExportFIle.Location = new System.Drawing.Point(778, 22);
+            BtnBrowseExportFIle.Location = new System.Drawing.Point(536, 49);
             BtnBrowseExportFIle.Name = "BtnBrowseExportFIle";
             BtnBrowseExportFIle.Size = new System.Drawing.Size(29, 23);
             BtnBrowseExportFIle.TabIndex = 10;
@@ -112,20 +112,20 @@ namespace LogScraper.Controls.Configuration
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(6, 54);
+            label3.Location = new System.Drawing.Point(6, 26);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(62, 15);
+            label3.Size = new System.Drawing.Size(141, 15);
             label3.TabIndex = 9;
-            label3.Text = "Text editor";
+            label3.Text = "External editor executable";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(6, 25);
+            label2.Location = new System.Drawing.Point(6, 52);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(97, 15);
+            label2.Size = new System.Drawing.Size(251, 15);
             label2.TabIndex = 8;
-            label2.Text = "Default file name";
+            label2.Text = "Default temporary file name for external editor";
             // 
             // TxtEditorLocation
             // 
@@ -133,19 +133,20 @@ namespace LogScraper.Controls.Configuration
             TxtEditorLocation.BackColor = System.Drawing.Color.MistyRose;
             TxtEditorLocation.IsRequired = true;
             TxtEditorLocation.IsWhiteSpaceAllowed = false;
-            TxtEditorLocation.Location = new System.Drawing.Point(154, 51);
+            TxtEditorLocation.Location = new System.Drawing.Point(263, 23);
             TxtEditorLocation.Name = "TxtEditorLocation";
-            TxtEditorLocation.Size = new System.Drawing.Size(618, 23);
+            TxtEditorLocation.Size = new System.Drawing.Size(267, 23);
             TxtEditorLocation.TabIndex = 7;
             // 
             // TxtExportFileName
             // 
             TxtExportFileName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            TxtExportFileName.BackColor = System.Drawing.Color.MistyRose;
             TxtExportFileName.IsRequired = true;
             TxtExportFileName.IsWhiteSpaceAllowed = false;
-            TxtExportFileName.Location = new System.Drawing.Point(154, 22);
+            TxtExportFileName.Location = new System.Drawing.Point(263, 49);
             TxtExportFileName.Name = "TxtExportFileName";
-            TxtExportFileName.Size = new System.Drawing.Size(618, 23);
+            TxtExportFileName.Size = new System.Drawing.Size(267, 23);
             TxtExportFileName.TabIndex = 5;
             // 
             // CboLogProviderType
@@ -188,7 +189,7 @@ namespace LogScraper.Controls.Configuration
             // LblAutomaticReadTimea
             // 
             LblAutomaticReadTimea.AutoSize = true;
-            LblAutomaticReadTimea.Location = new System.Drawing.Point(6, 48);
+            LblAutomaticReadTimea.Location = new System.Drawing.Point(3, 48);
             LblAutomaticReadTimea.Name = "LblAutomaticReadTimea";
             LblAutomaticReadTimea.Size = new System.Drawing.Size(138, 15);
             LblAutomaticReadTimea.TabIndex = 6;
@@ -196,7 +197,6 @@ namespace LogScraper.Controls.Configuration
             // 
             // GrpGeneralSettings
             // 
-            GrpGeneralSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             GrpGeneralSettings.Controls.Add(ChkCheckForExternalViewingFilesOnExit);
             GrpGeneralSettings.Controls.Add(ChkIsDebugModeEnabled);
             GrpGeneralSettings.Controls.Add(ChkShowTimeLine);
@@ -212,12 +212,23 @@ namespace LogScraper.Controls.Configuration
             GrpGeneralSettings.Controls.Add(CboLogProviderType);
             GrpGeneralSettings.Controls.Add(LblTimeout);
             GrpGeneralSettings.Controls.Add(TxtTimeOut);
+            GrpGeneralSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             GrpGeneralSettings.Location = new System.Drawing.Point(0, 0);
             GrpGeneralSettings.Name = "GrpGeneralSettings";
-            GrpGeneralSettings.Size = new System.Drawing.Size(848, 349);
+            GrpGeneralSettings.Size = new System.Drawing.Size(606, 349);
             GrpGeneralSettings.TabIndex = 8;
             GrpGeneralSettings.TabStop = false;
             GrpGeneralSettings.Text = "General settings";
+            // 
+            // ChkCheckForExternalViewingFilesOnExit
+            // 
+            ChkCheckForExternalViewingFilesOnExit.AutoSize = true;
+            ChkCheckForExternalViewingFilesOnExit.Location = new System.Drawing.Point(6, 175);
+            ChkCheckForExternalViewingFilesOnExit.Name = "ChkCheckForExternalViewingFilesOnExit";
+            ChkCheckForExternalViewingFilesOnExit.Size = new System.Drawing.Size(284, 19);
+            ChkCheckForExternalViewingFilesOnExit.TabIndex = 44;
+            ChkCheckForExternalViewingFilesOnExit.Text = "Check for external viewing files to remove on exit";
+            ChkCheckForExternalViewingFilesOnExit.UseVisualStyleBackColor = true;
             // 
             // ChkIsDebugModeEnabled
             // 
@@ -301,18 +312,8 @@ namespace LogScraper.Controls.Configuration
             PnlUsedForScalingCompatiblity.Dock = System.Windows.Forms.DockStyle.Fill;
             PnlUsedForScalingCompatiblity.Location = new System.Drawing.Point(0, 0);
             PnlUsedForScalingCompatiblity.Name = "PnlUsedForScalingCompatiblity";
-            PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(848, 349);
+            PnlUsedForScalingCompatiblity.Size = new System.Drawing.Size(606, 349);
             PnlUsedForScalingCompatiblity.TabIndex = 9;
-            // 
-            // ChkCheckForExternalViewingFilesOnExit
-            // 
-            ChkCheckForExternalViewingFilesOnExit.AutoSize = true;
-            ChkCheckForExternalViewingFilesOnExit.Location = new System.Drawing.Point(6, 175);
-            ChkCheckForExternalViewingFilesOnExit.Name = "ChkCheckForExternalViewingFilesOnExit";
-            ChkCheckForExternalViewingFilesOnExit.Size = new System.Drawing.Size(284, 19);
-            ChkCheckForExternalViewingFilesOnExit.TabIndex = 44;
-            ChkCheckForExternalViewingFilesOnExit.Text = "Check for external viewing files to remove on exit";
-            ChkCheckForExternalViewingFilesOnExit.UseVisualStyleBackColor = true;
             // 
             // UserControlGenericConfig
             // 
@@ -320,7 +321,7 @@ namespace LogScraper.Controls.Configuration
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             Controls.Add(PnlUsedForScalingCompatiblity);
             Name = "UserControlGenericConfig";
-            Size = new System.Drawing.Size(848, 349);
+            Size = new System.Drawing.Size(606, 349);
             GrpExportSettings.ResumeLayout(false);
             GrpExportSettings.PerformLayout();
             GrpGeneralSettings.ResumeLayout(false);

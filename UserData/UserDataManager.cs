@@ -128,29 +128,6 @@ namespace LogScraper.UserData
             return [.. GetList(userData, listType)];
         }
 
-        /// <summary>
-        /// Gets whether the "open in text editor" action should silently overwrite the
-        /// previously selected file instead of showing the save dialog again.
-        /// </summary>
-        public static bool GetOverwritePreviousEditorFileWithoutPrompt()
-        {
-            return State.Value?.OverwritePreviousEditorFileWithoutPrompt ?? false;
-        }
-
-        /// <summary>
-        /// Sets whether the "open in text editor" action should silently overwrite the
-        /// previously selected file instead of showing the save dialog again, persists the
-        /// change, and notifies subscribers.
-        /// </summary>
-        public static void SetOverwritePreviousEditorFileWithoutPrompt(bool value)
-        {
-            UserData userData = State.Value ?? new UserData();
-            if (userData.OverwritePreviousEditorFileWithoutPrompt == value) return;
-
-            userData.OverwritePreviousEditorFileWithoutPrompt = value;
-            Save(userData);
-        }
-
         private static List<RecentFileEntry> GetList(UserData userData, RecentFileListType listType)
         {
             return listType switch

@@ -28,6 +28,7 @@ namespace LogScraper.Controls
             set
             {
                 _isPinned = value;
+                UpdatePinButtonImage();
             }
         }
         public bool IsCollapsed => _isCollapsed;
@@ -95,7 +96,7 @@ namespace LogScraper.Controls
             AttachEventHandlers();
         }
 
-        private void AttachEventHandlers()  
+        private void AttachEventHandlers()
         {
             KubernetesProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
             KubernetesProviderControl.StatusUpdate += HandleStatusUpdate;
@@ -329,6 +330,7 @@ namespace LogScraper.Controls
             cboLogLayout.Visible = false;
             PnlLogProviders.Visible = false;
             BtnCollapseExpand.ImageIndex = 1;
+            btnPin.Visible = false;
             _isCollapsed = true;
             UpdateProviderDescription();
             Height = CollapsedHeight;
@@ -343,6 +345,7 @@ namespace LogScraper.Controls
             cboLogLayout.Visible = true;
             PnlLogProviders.Visible = true;
             BtnCollapseExpand.ImageIndex = 0;
+            btnPin.Visible = true;
             _isCollapsed = false;
             Height = ExpandedHeight;
             CollapseStateChanged?.Invoke(this, EventArgs.Empty);
@@ -361,6 +364,12 @@ namespace LogScraper.Controls
         private void TogglePinButton()
         {
             _isPinned = !_isPinned;
+            UpdatePinButtonImage();
+        }
+
+        private void UpdatePinButtonImage()
+        {
+            btnPin.ImageIndex = _isPinned ? 1 : 0;
         }
 
         private void LogProviderSelectionControl_Leave(object sender, EventArgs e)
@@ -391,6 +400,7 @@ namespace LogScraper.Controls
                 ExpandProvider();
             else if (IsSourceValid)
                 CollapseProvider();
+            btnPin.Visible = !_isCollapsed;
         }
 
         private void LblProviderDescription_MouseClick(object sender, MouseEventArgs e)

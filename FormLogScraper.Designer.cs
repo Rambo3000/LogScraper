@@ -259,7 +259,7 @@ namespace LogScraper
             // SaveLogControl
             // 
             SaveLogControl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            SaveLogControl.Location = new System.Drawing.Point(569, 1);
+            SaveLogControl.Location = new System.Drawing.Point(578, 0);
             SaveLogControl.Name = "SaveLogControl";
             SaveLogControl.Size = new System.Drawing.Size(40, 25);
             SaveLogControl.TabIndex = 44;
@@ -275,7 +275,7 @@ namespace LogScraper
             // 
             // OpenLogInTextEditor
             // 
-            OpenLogInTextEditor.Location = new System.Drawing.Point(0, 0);
+            OpenLogInTextEditor.Location = new System.Drawing.Point(11, 0);
             OpenLogInTextEditor.Name = "OpenLogInTextEditor";
             OpenLogInTextEditor.Size = new System.Drawing.Size(40, 25);
             OpenLogInTextEditor.TabIndex = 45;

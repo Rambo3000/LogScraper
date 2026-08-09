@@ -20,6 +20,11 @@ namespace LogScraper.Controls
         {
             InitializeComponent();
             ShortcutManager.Register(this, AppShortcut.SaveLog, () => BtnSave_Click(this, EventArgs.Empty));
+
+            // Pre-populate the dropdown menu so it isn't empty before the first "Opening" event.
+            // A ContextMenuStrip that has never had any items assigned before it is first shown
+            // does not display correctly on that first show, requiring a second click.
+            RecentFilesMenu_Opening(this, new System.ComponentModel.CancelEventArgs());
         }
 
         private void RecentFilesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)

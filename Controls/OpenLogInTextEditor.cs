@@ -19,13 +19,6 @@ namespace LogScraper.Controls
     public partial class OpenLogInTextEditor : UserControl
     {
         /// <summary>
-        /// Tracks the file path chosen via the save dialog during the current application
-        /// session. Reset on application restart, so the save dialog is always shown at
-        /// least once per session.
-        /// </summary>
-        private static string _sessionExportFilePath;
-
-        /// <summary>
         /// Offers to remove any files still on disk from the recent "saved" and "editor" files
         /// lists, since they may contain sensitive log data that was written on demand.
         /// Called on application exit.
@@ -90,6 +83,11 @@ namespace LogScraper.Controls
             InitializeComponent();
             LogAppState.Instance.MetadataFilterResult.Changed += (s, e) => UpdateButtons();
             ShortcutManager.Register(this, AppShortcut.OpenLogInEditor, OpenFileInExternalEditor);
+
+            // Pre-populate the dropdown menu so it isn't empty before the first "Opening" event.
+            // A ContextMenuStrip that has never had any items assigned before it is first shown
+            // does not display correctly on that first show, requiring a second click.
+            RecentFilesMenu_Opening(this, new System.ComponentModel.CancelEventArgs());
         }
 
         private void OpenLogInTextEditor_Load(object sender, EventArgs e)
@@ -112,16 +110,6 @@ namespace LogScraper.Controls
         private void RecentFilesMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             RecentFilesMenuHelper.BuildMenu(RecentFilesMenu, RecentFileListType.Editor);
-
-            ToolStripMenuItem overwriteItem = new("Overwrite previously selected file without asking")
-            {
-                CheckOnClick = true,
-                Checked = UserDataManager.GetOverwritePreviousEditorFileWithoutPrompt()
-            };
-            overwriteItem.Click += (s, args) => UserDataManager.SetOverwritePreviousEditorFileWithoutPrompt(overwriteItem.Checked);
-
-            RecentFilesMenu.Items.Insert(0, overwriteItem);
-            RecentFilesMenu.Items.Insert(1, new ToolStripSeparator());
         }
 
         /// <summary>
@@ -143,54 +131,42 @@ namespace LogScraper.Controls
             string renderedLog = LogRenderer.RenderLogEntriesAsString(LogAppState.Instance.FilterResultWithRange.Value, logRenderSettings);
             if (string.IsNullOrEmpty(renderedLog)) return;
 
-            string filePath;
+            string defaultExportFileName = ConfigAppState.Instance.GenericConfig.Value.ExportFileName;
 
-            if (!string.IsNullOrWhiteSpace(_sessionExportFilePath) && UserDataManager.GetOverwritePreviousEditorFileWithoutPrompt())
+            using SaveFileDialog saveFileDialog = new()
             {
-                filePath = _sessionExportFilePath;
-            }
-            else
+                Title = "Select where to save the log to open it in the text editor",
+                Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
+                DefaultExt = "log",
+                AddExtension = true
+            };
+
+            if (!string.IsNullOrWhiteSpace(defaultExportFileName))
             {
-                string defaultExportFileName = !string.IsNullOrWhiteSpace(_sessionExportFilePath)
-                    ? _sessionExportFilePath
-                    : ConfigAppState.Instance.GenericConfig.Value.ExportFileName;
-
-                using SaveFileDialog saveFileDialog = new()
+                try
                 {
-                    Title = "Select where to save the log to open it in the text editor",
-                    Filter = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                    DefaultExt = "log",
-                    AddExtension = true
-                };
-
-                if (!string.IsNullOrWhiteSpace(defaultExportFileName))
-                {
-                    try
+                    string directory = Path.GetDirectoryName(defaultExportFileName);
+                    if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
                     {
-                        string directory = Path.GetDirectoryName(defaultExportFileName);
-                        if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
-                        {
-                            saveFileDialog.InitialDirectory = directory;
-                        }
-
-                        string fileName = Path.GetFileName(defaultExportFileName);
-                        if (!string.IsNullOrWhiteSpace(fileName))
-                        {
-                            saveFileDialog.FileName = fileName;
-                        }
+                        saveFileDialog.InitialDirectory = directory;
                     }
-                    catch (Exception ex)
+
+                    string fileName = Path.GetFileName(defaultExportFileName);
+                    if (!string.IsNullOrWhiteSpace(fileName))
                     {
-                        // The configured default path is invalid, fall back to the default behaviour.
-                        ex.LogStackTraceToFile("Error setting default export path in save dialog.");
+                        saveFileDialog.FileName = fileName;
                     }
                 }
-
-                if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
-
-                filePath = saveFileDialog.FileName;
-                _sessionExportFilePath = filePath;
+                catch (Exception ex)
+                {
+                    // The configured default path is invalid, fall back to the default behaviour.
+                    ex.LogStackTraceToFile("Error setting default export path in save dialog.");
+                }
             }
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            string filePath = saveFileDialog.FileName;
 
             btnOpenWithEditor.Enabled = false;
             try
