@@ -22,5 +22,13 @@ namespace LogScraper.UserData
         /// text editor, most recent first.
         /// </summary>
         public List<RecentFileEntry> RecentEditorFiles { get; set; } = [];
+
+        /// <summary>
+        /// Gets or sets whether the "open in text editor" action should silently overwrite
+        /// the previously selected file instead of showing the save dialog again. This only
+        /// applies to consecutive uses within the same application session; the save dialog
+        /// is always shown at least once after the application starts.
+        /// </summary>
+        public bool OverwritePreviousEditorFileWithoutPrompt { get; set; }
     }
 }
