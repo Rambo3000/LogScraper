@@ -5,7 +5,7 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Rendering;
-using LogScraper.LogPostProcessors;
+using LogScraper.Log.Rendering.PostProcessors;
 using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Log.LogAppState

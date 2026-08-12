@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using LogScraper.Controls.Generic;
 using LogScraper.Log.LogAppState;
-using LogScraper.LogPostProcessors;
+using LogScraper.Log.Rendering.PostProcessors;
 
 namespace LogScraper.Controls
 {

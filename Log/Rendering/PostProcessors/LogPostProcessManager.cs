@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using LogScraper.Log;
 using LogScraper.Log.Generic.Extensions;
 
-namespace LogScraper.LogPostProcessors
+namespace LogScraper.Log.Rendering.PostProcessors
 {
     public sealed class LogPostProcessManager
     {

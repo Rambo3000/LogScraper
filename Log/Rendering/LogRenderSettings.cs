@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
-using LogScraper.LogPostProcessors;
+using LogScraper.Log.Rendering.PostProcessors;
 
 namespace LogScraper.Log.Rendering
 {

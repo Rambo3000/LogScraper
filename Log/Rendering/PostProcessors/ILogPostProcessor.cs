@@ -1,6 +1,4 @@
-﻿using LogScraper.Log;
-
-namespace LogScraper.LogPostProcessors
+﻿namespace LogScraper.Log.Rendering.PostProcessors
 {
     /// <summary>
     /// Defines methods for determining whether a log entry can be processed and for processing log entries to produce

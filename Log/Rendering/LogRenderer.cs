@@ -6,7 +6,7 @@ using LogScraper.Log.Filtering;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Metadata;
-using LogScraper.LogPostProcessors;
+using LogScraper.Log.Rendering.PostProcessors;
 
 namespace LogScraper.Log.Rendering
 {

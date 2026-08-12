@@ -1,4 +1,4 @@
-﻿namespace LogScraper.LogPostProcessors
+﻿namespace LogScraper.Log.Rendering.PostProcessors
 {
     /// <summary>
     /// Identifies the available post-processors that can be applied to a log entry.

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace LogScraper.LogPostProcessors
+namespace LogScraper.Log.Rendering.PostProcessors
 {
     /// <summary>
     /// Provides data for an event that signals the completion of a post-processing operation.

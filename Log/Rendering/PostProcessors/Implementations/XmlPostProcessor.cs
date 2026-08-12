@@ -2,9 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Xml;
-using LogScraper.Log;
 
-namespace LogScraper.LogPostProcessors.Implementations
+namespace LogScraper.Log.Rendering.PostProcessors.Implementations
 {
     /// <summary>
     /// Provides functionality to detect and pretty-print XML content within log entries.

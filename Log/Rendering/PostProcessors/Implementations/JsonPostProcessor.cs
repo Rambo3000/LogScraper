@@ -2,9 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using LogScraper.Log;
 
-namespace LogScraper.LogPostProcessors.Implementations
+namespace LogScraper.Log.Rendering.PostProcessors.Implementations
 {
     /// <summary>
     /// Provides functionality to extract and pretty-print JSON content from log entries.

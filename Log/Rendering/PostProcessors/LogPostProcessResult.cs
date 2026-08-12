@@ -1,6 +1,6 @@
 ﻿using LogScraper.Log.Generic.Extensions;
 
-namespace LogScraper.LogPostProcessors
+namespace LogScraper.Log.Rendering.PostProcessors
 {
     /// <summary>
     /// Represents the result of post-processing a log entry, including the processor type and the processed log text.

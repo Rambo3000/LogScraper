@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace LogScraper.LogPostProcessors
+namespace LogScraper.Log.Rendering.PostProcessors
 {
     public sealed class LogPostProcessResults
     {
