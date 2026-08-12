@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using LogScraper.Log.Content;
+using LogScraper.Log.Generic.Extensions;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Metadata;
-using LogScraper.Utilities.Extensions;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log
 {

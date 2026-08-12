@@ -5,12 +5,12 @@ using System.Net.Http;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Credentials;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
 using LogScraper.LogProviders;
 using LogScraper.LogProviders.Kubernetes;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls.LogProviders
 {

@@ -1,4 +1,4 @@
-﻿namespace LogScraper.Utilities.Extensions
+﻿namespace LogScraper.Log.Generic.Extensions
 {
     internal static class StringExtensions
     {

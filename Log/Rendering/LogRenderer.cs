@@ -4,9 +4,9 @@ using System.Text;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.FlowTree;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Metadata;
 using LogScraper.LogPostProcessors;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Rendering
 {

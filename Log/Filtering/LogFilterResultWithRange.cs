@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using LogScraper.Log.Content;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Rendering;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Filtering
 {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
-using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {

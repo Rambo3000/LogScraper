@@ -6,9 +6,9 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
 using LogScraper.LogTransformers;
-using LogScraper.Utilities.Extensions;
-using LogScraper.Utilities.IndexDictionary;
 using System.Text.Json;
+using LogScraper.Log.Generic.IndexDictionary;
+using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.Configuration
 {

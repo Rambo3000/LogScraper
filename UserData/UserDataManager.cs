@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using LogScraper.Configuration;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.UserData
 {

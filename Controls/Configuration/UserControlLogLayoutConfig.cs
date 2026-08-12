@@ -9,6 +9,8 @@ using LogScraper.Controls.Viewport;
 using LogScraper.Log;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.Generic.Extensions;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
@@ -16,8 +18,6 @@ using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Log.Rendering;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
-using LogScraper.Utilities.Extensions;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Controls.Configuration
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.LogAppState;
-using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {

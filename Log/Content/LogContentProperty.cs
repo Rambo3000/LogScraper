@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Filtering;
-using LogScraper.Utilities.IndexDictionary;
+using LogScraper.Log.Generic.IndexDictionary;
 
 namespace LogScraper.Log.Content
 {

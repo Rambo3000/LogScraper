@@ -1,4 +1,4 @@
-﻿namespace LogScraper.Utilities.IndexDictionary
+﻿namespace LogScraper.Log.Generic.IndexDictionary
 {
     /// <summary>
     /// Interface for objects that have an index. This is used in combination with the <see cref="IndexDictionary{TKey,TValue}"/> class.

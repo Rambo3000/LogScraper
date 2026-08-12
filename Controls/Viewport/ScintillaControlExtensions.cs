@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Content;
-using LogScraper.Utilities.IndexDictionary;
+using LogScraper.Log.Generic.IndexDictionary;
 using ScintillaNET;
 
 namespace LogScraper.Controls.Viewport

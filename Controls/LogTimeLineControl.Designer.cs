@@ -1,4 +1,6 @@
-﻿namespace LogScraper.Controls
+﻿using LogScraper.Controls.Generic;
+
+namespace LogScraper.Controls
 {
     partial class LogTimeLineControl
     {
@@ -16,7 +18,7 @@
             if (disposing)
             {
                 if (components != null) components.Dispose();
-                LogScraper.Utilities.ShortcutManager.UnregisterAll(this);
+                ShortcutManager.UnregisterAll(this);
             }
             base.Dispose(disposing);
         }

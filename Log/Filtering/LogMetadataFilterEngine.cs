@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using LogScraper.Log.Content;
 using LogScraper.Log.FlowTree;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Filtering
 {

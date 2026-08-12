@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LogScraper.Configuration;
-using LogScraper.Utilities.Extensions;
+using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.Utilities
 {

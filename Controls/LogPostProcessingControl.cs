@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
 using LogScraper.Log.LogAppState;
 using LogScraper.LogPostProcessors;
-using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {

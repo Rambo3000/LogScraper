@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Linq;
 using LogScraper.Log.Content;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Layout;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.FlowTree
 {

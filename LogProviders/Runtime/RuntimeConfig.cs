@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders.Kubernetes;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.LogProviders.Runtime
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Numerics;
 
-namespace LogScraper.Utilities.Extensions
+namespace LogScraper.Log.Generic.Extensions
 {
     public static class BitArrayExtensions
     {

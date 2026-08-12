@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LogScraper.Utilities.IndexDictionary
+namespace LogScraper.Log.Generic.IndexDictionary
 {
     /// <summary>
     /// Interface for objects that have an integer index. This is used to ensure that keys in the IndexDictionary can provide a unique index for fast access.

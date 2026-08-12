@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace LogScraper.Utilities
+namespace LogScraper.Controls.Generic
 {
     public static class LogScraperBrushes
     {

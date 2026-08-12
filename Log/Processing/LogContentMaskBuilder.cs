@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using LogScraper.Log.Content;
-using LogScraper.Utilities.IndexDictionary;
+using LogScraper.Log.Generic.IndexDictionary;
 
 namespace LogScraper.Log.Processing
 {

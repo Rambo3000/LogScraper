@@ -7,7 +7,7 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
-using LogScraper.Utilities.IndexDictionary;
+using LogScraper.Log.Generic.IndexDictionary;
 
 namespace LogScraper.Log.Processing
 {

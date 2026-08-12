@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace LogScraper.Utilities
+namespace LogScraper.Controls.Generic
 {
     /// <summary>
     /// Named application shortcuts. Decoupled from key bindings to allow future configurability.

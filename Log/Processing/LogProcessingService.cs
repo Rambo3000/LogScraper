@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using LogScraper.Configuration;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Layout;
 using LogScraper.Log.Processing.RawLogParsing;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Workers;
-using LogScraper.Utilities.Extensions;
 using AppState = LogScraper.Log.LogAppState.LogAppState;
 
 namespace LogScraper.Log.Processing

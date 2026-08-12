@@ -4,12 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Controls.Generic;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
-using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Log.FlowTree;
 using LogScraper.Log.Layout;
-using LogScraper.Utilities;
 using LogScraper.Controls.Generic;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Content;

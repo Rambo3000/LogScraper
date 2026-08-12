@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Metadata;
 using LogScraper.LogTransformers;
 using LogScraper.LogTransformers.Implementations;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Log.Layout
 {

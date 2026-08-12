@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
 using LogScraper.Sources.Adapters;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Sources.Workers
 {

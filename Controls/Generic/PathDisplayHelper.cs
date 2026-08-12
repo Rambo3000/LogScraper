@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace LogScraper.Utilities
+namespace LogScraper.Controls.Generic
 {
     /// <summary>
     /// Helper for producing a shortened, display-friendly version of a full file path,

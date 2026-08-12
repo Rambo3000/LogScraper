@@ -10,7 +10,7 @@ using LogScraper.Configuration;
 using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Layout;
 using System.Net.Http;
-using LogScraper.Utilities.Extensions;
+using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {

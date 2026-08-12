@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace LogScraper.Utilities.Extensions
+namespace LogScraper.Log.Generic.Extensions
 {
     /// <summary>
     /// Provides extension methods for object comparison.

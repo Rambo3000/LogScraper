@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Metadata;
-using LogScraper.Utilities.IndexDictionary;
 
 namespace LogScraper.Log.Processing
 {

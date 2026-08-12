@@ -1,4 +1,4 @@
-﻿using LogScraper.Utilities.Extensions;
+﻿using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {

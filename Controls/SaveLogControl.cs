@@ -6,11 +6,10 @@ using System.Windows.Forms;
 using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.Filtering;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
 using LogScraper.UserData;
-using LogScraper.Utilities;
-using LogScraper.Utilities.Extensions;
 
 namespace LogScraper.Controls
 {

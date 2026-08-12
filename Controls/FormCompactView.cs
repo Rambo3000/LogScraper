@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
+using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Processing;
-using LogScraper.Utilities;
-using LogScraper.Utilities.Extensions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LogScraper.Controls

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using LogScraper.Utilities.Extensions;
+using LogScraper.Log.Generic.Extensions;
+
 namespace LogScraper.Log.Layout
 {
     /// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using LogScraper.Utilities.Extensions;
+using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.LogProviders.Kubernetes
 {

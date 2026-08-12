@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using LogScraper.Utilities.Extensions;
+using LogScraper.Log.Generic.Extensions;
 
 namespace LogScraper.Export
 {

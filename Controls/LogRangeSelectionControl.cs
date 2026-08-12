@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
+using LogScraper.Controls.Generic;
 using LogScraper.Log;
 using LogScraper.Log.LogAppState;
 using LogScraper.Log.Rendering;
-using LogScraper.Utilities;
 
 namespace LogScraper.Controls
 {
