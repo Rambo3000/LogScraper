@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace LogScraper.LogTransformers.Implementations
+namespace LogScraper.Log.Processing.RawLogParsing.Transformers.Implementations
 {
     /// <summary>
     /// A log transformer that extracts values from JSON log entries using a specified JSON path.

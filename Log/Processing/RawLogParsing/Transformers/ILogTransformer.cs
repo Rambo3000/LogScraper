@@ -1,4 +1,4 @@
-﻿namespace LogScraper.LogTransformers
+﻿namespace LogScraper.Log.Processing.RawLogParsing.Transformers
 {
     /// <summary>
     /// Defines a contract for transforming log entries.

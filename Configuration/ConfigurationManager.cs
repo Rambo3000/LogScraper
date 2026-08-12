@@ -5,10 +5,10 @@ using System.Text;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
 using LogScraper.LogProviders;
-using LogScraper.LogTransformers;
 using System.Text.Json;
 using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Generic.Extensions;
+using LogScraper.Log.Processing.RawLogParsing.Transformers;
 
 namespace LogScraper.Configuration
 {

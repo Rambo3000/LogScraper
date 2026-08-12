@@ -1,4 +1,4 @@
-﻿namespace LogScraper.LogTransformers
+﻿namespace LogScraper.Log.Processing.RawLogParsing.Transformers
 {
     /// <summary>
     /// Represents the configuration for a log transformer.

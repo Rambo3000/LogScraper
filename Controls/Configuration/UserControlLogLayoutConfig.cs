@@ -15,9 +15,9 @@ using LogScraper.Log.Layout;
 using LogScraper.Log.Metadata;
 using LogScraper.Log.Processing;
 using LogScraper.Log.Processing.RawLogParsing;
+using LogScraper.Log.Processing.RawLogParsing.Transformers;
+using LogScraper.Log.Processing.RawLogParsing.Transformers.Implementations;
 using LogScraper.Log.Rendering;
-using LogScraper.LogTransformers;
-using LogScraper.LogTransformers.Implementations;
 
 namespace LogScraper.Controls.Configuration
 {

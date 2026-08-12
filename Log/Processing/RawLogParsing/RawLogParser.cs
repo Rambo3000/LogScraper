@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using LogScraper.Log.Layout;
-using LogScraper.LogTransformers;
+using LogScraper.Log.Processing.RawLogParsing.Transformers;
 
 namespace LogScraper.Log.Processing.RawLogParsing
 {

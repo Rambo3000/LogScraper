@@ -5,8 +5,8 @@ using LogScraper.Log.Content;
 using LogScraper.Log.Filtering;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Metadata;
-using LogScraper.LogTransformers;
-using LogScraper.LogTransformers.Implementations;
+using LogScraper.Log.Processing.RawLogParsing.Transformers;
+using LogScraper.Log.Processing.RawLogParsing.Transformers.Implementations;
 
 namespace LogScraper.Log.Layout
 {

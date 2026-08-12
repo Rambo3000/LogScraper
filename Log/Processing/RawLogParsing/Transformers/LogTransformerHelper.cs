@@ -1,8 +1,7 @@
 ﻿using System;
-using HtmlAgilityPack;
-using LogScraper.LogTransformers.Implementations;
+using LogScraper.Log.Processing.RawLogParsing.Transformers.Implementations;
 
-namespace LogScraper.LogTransformers
+namespace LogScraper.Log.Processing.RawLogParsing.Transformers
 {
     /// <summary>
     /// Provides helper methods for creating and configuring log transformers.
