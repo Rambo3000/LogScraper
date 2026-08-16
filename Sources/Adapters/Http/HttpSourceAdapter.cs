@@ -2,8 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LogScraper.Controls.Generic;
-using LogScraper.Sources.Adapters.Http.Authenticators;
+using LogScraper.Sources.Adapters.Http.Authentication;
 
 namespace LogScraper.Sources.Adapters.Http
 {
@@ -20,13 +19,18 @@ namespace LogScraper.Sources.Adapters.Http
     /// <param name="httpAuthenticationSettings"></param>
     /// <param name="timeoutSeconds"></param>
     /// <param name="trailType"></param>
+    /// <param name="credentialsPrompt">
+    /// Used to ask the user for credentials when authentication fails. This keeps this adapter free of any
+    /// dependency on a specific UI technology; the caller supplies a concrete implementation.
+    /// </param>
     /// <param name="lastLogTrailTime"></param>
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, DateTime? lastLogTrailTime = null) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, ICredentialsPrompt credentialsPrompt, DateTime? lastLogTrailTime = null) : ISourceAdapter
     {
         private readonly string apiUrl = apiUrl;
         private readonly string credentialManagerUri = credentialManagerUri;
         private readonly int timeoutSeconds = timeoutSeconds;
         private readonly TrailType trailType = trailType;
+        private readonly ICredentialsPrompt credentialsPrompt = credentialsPrompt;
         private DateTime? lastLogTrailTime = lastLogTrailTime;
         HttpClient client = null;
 
@@ -91,15 +95,11 @@ namespace LogScraper.Sources.Adapters.Http
                 }
 
                 if (httpResponseMessage != null) lastHttpStatusDescription = ConvertHttpStatusCodeToString(httpResponseMessage);
-                FormHttpCredentials form = new()
-                {
-                    HttpAuthenticationData = AuthenticationData,
-                    Url = apiUrl
-                };
 
-                form.ShowDialog();
-                if (form.CustomDialogResult != System.Windows.Forms.DialogResult.OK) break;
-                AuthenticationData = form.HttpAuthenticationData;
+                if (credentialsPrompt == null) break;
+                HttpAuthenticationData promptedData = credentialsPrompt.PromptForCredentials(AuthenticationData, apiUrl);
+                if (promptedData == null) break;
+                AuthenticationData = promptedData;
             }
 
             errorMessage = string.IsNullOrEmpty(lastHttpStatusDescription) ? "Failed to connect. No HttpResponseMessage" : lastHttpStatusDescription;

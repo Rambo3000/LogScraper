@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace LogScraper.Sources.Adapters.Http.Authenticators
+namespace LogScraper.Sources.Adapters.Http.Authentication.Authenticators
 {
     /// <summary>
     /// Provides functionality for authenticating users via a CSRF-protected form login process.

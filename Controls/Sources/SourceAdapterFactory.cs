@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Net.Http;
+using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.File;
 using LogScraper.Sources.Adapters.Http;
+using LogScraper.Sources.Adapters.Http.Authentication;
 
-namespace LogScraper.Sources.Adapters
+namespace LogScraper.Controls.Sources
 {
     /// <summary>
     /// A factory class for creating instances of source adapters.
@@ -22,10 +24,15 @@ namespace LogScraper.Sources.Adapters
         /// <param name="timeoutSeconds">The timeout duration for HTTP requests, in seconds.</param>
         /// <param name="trailType">The type of trailing log query to use (e.g., Kubernetes).</param>
         /// <param name="lastTrailTime">The timestamp of the last log trail, if applicable.</param>
+        /// <param name="credentialsPrompt">
+        /// Used to ask the user for credentials when authentication fails. Defaults to a Windows Forms based
+        /// prompt (<see cref="WinFormsCredentialsPrompt"/>) when not specified.
+        /// </param>
         /// <returns>An instance of <see cref="HttpSourceAdapter"/>.</returns>
-        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null, bool authenticate = true)
+        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null, bool authenticate = true, ICredentialsPrompt credentialsPrompt = null)
         {
-            HttpSourceAdapter httpSourceAdapter = new(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, lastTrailTime);
+            credentialsPrompt ??= new WinFormsCredentialsPrompt();
+            HttpSourceAdapter httpSourceAdapter = new(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, credentialsPrompt, lastTrailTime);
             if (authenticate) httpSourceAdapter.TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string _);
             return httpSourceAdapter;
         }

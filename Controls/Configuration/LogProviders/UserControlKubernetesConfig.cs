@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Controls.Sources;
 using LogScraper.Credentials;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Layout;

@@ -11,6 +11,7 @@ using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Layout;
 using System.Net.Http;
 using LogScraper.Log.Generic.Extensions;
+using LogScraper.Controls.Sources;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {

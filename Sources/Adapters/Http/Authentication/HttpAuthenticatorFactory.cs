@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogScraper.Sources.Adapters.Http.Authentication.Authenticators;
 
-namespace LogScraper.Sources.Adapters.Http.Authenticators
+namespace LogScraper.Sources.Adapters.Http.Authentication
 {
     /// <summary>
     /// Provides a factory for creating HTTP client authenticators based on the specified authentication type.

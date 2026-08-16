@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using LogScraper.Configuration;
+using LogScraper.Controls.Sources;
 using LogScraper.Credentials;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;

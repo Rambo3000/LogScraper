@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace LogScraper.Sources.Adapters.Http.Authenticators
+namespace LogScraper.Sources.Adapters.Http.Authentication
 {
     /// <summary>
     /// Defines methods for configuring and authenticating an <see cref="HttpClient"/> instance.

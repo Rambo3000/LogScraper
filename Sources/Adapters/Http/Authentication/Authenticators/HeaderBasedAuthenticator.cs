@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogScraper.Sources.Adapters.Http.Authenticators
+namespace LogScraper.Sources.Adapters.Http.Authentication.Authenticators
 {
     /// <summary>
     /// Provides authentication functionality for HTTP clients based on header-based authentication schemes.

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using LogScraper.Controls.Sources;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
