@@ -1,7 +1,7 @@
 ﻿using System;
 using LogScraper.Sources.Adapters;
 
-namespace LogScraper.LogProviders
+namespace LogScraper.Controls.LogProviders
 {
     /// <summary>
     /// Represents the interface for user controls that interact with log providers.

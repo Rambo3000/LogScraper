@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows.Forms;
 using LogScraper.Controls.Sources;
 using LogScraper.Log.Generic.Extensions;
-using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Controls.LogProviders
