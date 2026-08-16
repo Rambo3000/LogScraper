@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Net;
-using LogScraper.Credentials;
+using LogScraper.Sources.Adapters.Http.Authentication;
 
 namespace LogScraper.Sources.Adapters.Http
 {
     /// <summary>
     /// Provides helper methods for managing HTTP authentication data using the credential store.
     /// </summary>
-    internal class HttpAuthenticationHelper
+    internal class HttpAuthenticationHelper(ICredentialStore credentialStore)
     {
         // Addendum used to store the authentication type in the credential store.
         private const string AuhtenticationTypeAddendumUri = "AuthenticationType";
+        private readonly ICredentialStore credentialStore = credentialStore;
 
         /// <summary>
         /// Retrieves authentication data from the credential store for the specified URI.
         /// </summary>
         /// <param name="credentialManagerUri">The URI used to identify the credentials in the credential store.</param>
         /// <returns>An <see cref="HttpAuthenticationData"/> object containing the retrieved authentication data.</returns>
-        public static HttpAuthenticationData GetAuthenticationDataFromCredentialStore(string credentialManagerUri)
+        public HttpAuthenticationData GetAuthenticationDataFromCredentialStore(string credentialManagerUri)
         {
             // Initialize the authentication data with the type retrieved from the credential store.
             HttpAuthenticationData authenticationData = new()
@@ -29,7 +30,7 @@ namespace LogScraper.Sources.Adapters.Http
             if (authenticationData.Type == HttpAuthenticationType.None) return authenticationData;
 
             // Retrieve the credentials from the credential store.
-            NetworkCredential existingToken = CredentialManager.GetCredentials(credentialManagerUri);
+            NetworkCredential existingToken = credentialStore.GetCredentials(credentialManagerUri);
             if (existingToken == null) return authenticationData;
 
             // Populate the authentication data based on the retrieved credentials and authentication type.
@@ -61,10 +62,10 @@ namespace LogScraper.Sources.Adapters.Http
         /// </summary>
         /// <param name="credentialManagerUri">The URI used to identify the credentials in the credential store.</param>
         /// <returns>The <see cref="HttpAuthenticationType"/> retrieved from the credential store.</returns>
-        private static HttpAuthenticationType GetCredentialTypeFromCredentialStore(string credentialManagerUri)
+        private HttpAuthenticationType GetCredentialTypeFromCredentialStore(string credentialManagerUri)
         {
             // Retrieve the credentials for the authentication type addendum.
-            NetworkCredential existingToken = CredentialManager.GetCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri);
+            NetworkCredential existingToken = credentialStore.GetCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri);
             if (existingToken == null) return HttpAuthenticationType.None;
 
             // Convert the retrieved string to an authentication type.
@@ -76,25 +77,25 @@ namespace LogScraper.Sources.Adapters.Http
         /// </summary>
         /// <param name="authenticationData">The authentication data to save.</param>
         /// <param name="credentialManagerUri">The URI used to identify the credentials in the credential store.</param>
-        public static void SaveAuthenticationDataToCredentialStore(HttpAuthenticationData authenticationData, string credentialManagerUri)
+        public void SaveAuthenticationDataToCredentialStore(HttpAuthenticationData authenticationData, string credentialManagerUri)
         {
             // Save the authentication type to the credential store.
-            CredentialManager.SaveCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri, ConvertHttpAuthenticationTypeToString(authenticationData.Type), string.Empty);
+            credentialStore.SaveCredentials(credentialManagerUri + ":" + AuhtenticationTypeAddendumUri, ConvertHttpAuthenticationTypeToString(authenticationData.Type), string.Empty);
 
             // Save the authentication data based on the specified authentication type.
             switch (authenticationData.Type)
             {
                 case HttpAuthenticationType.ApiKey:
-                    CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.Key, authenticationData.Secret);
+                    credentialStore.SaveCredentials(credentialManagerUri, authenticationData.Key, authenticationData.Secret);
                     break;
                 case HttpAuthenticationType.BearerToken:
-                    CredentialManager.SaveCredentials(credentialManagerUri, string.Empty, authenticationData.BearerToken);
+                    credentialStore.SaveCredentials(credentialManagerUri, string.Empty, authenticationData.BearerToken);
                     break;
                 case HttpAuthenticationType.BasicAuthentication:
-                    CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
+                    credentialStore.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
                     break;
                 case HttpAuthenticationType.FormLoginWithCsrf:
-                    CredentialManager.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
+                    credentialStore.SaveCredentials(credentialManagerUri, authenticationData.UserName, authenticationData.Password);
                     break;
                 default:
                     break;

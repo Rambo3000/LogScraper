@@ -23,14 +23,19 @@ namespace LogScraper.Sources.Adapters.Http
     /// Used to ask the user for credentials when authentication fails. This keeps this adapter free of any
     /// dependency on a specific UI technology; the caller supplies a concrete implementation.
     /// </param>
+    /// <param name="credentialStore">
+    /// Used to persist and retrieve authentication credentials. This keeps this adapter free of any
+    /// dependency on a specific credential storage mechanism; the caller supplies a concrete implementation.
+    /// </param>
     /// <param name="lastLogTrailTime"></param>
-    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, ICredentialsPrompt credentialsPrompt, DateTime? lastLogTrailTime = null) : ISourceAdapter
+    internal class HttpSourceAdapter(string apiUrl, string credentialManagerUri, HttpAuthenticationSettings httpAuthenticationSettings, int timeoutSeconds, TrailType trailType, ICredentialsPrompt credentialsPrompt, ICredentialStore credentialStore, DateTime? lastLogTrailTime = null) : ISourceAdapter
     {
         private readonly string apiUrl = apiUrl;
         private readonly string credentialManagerUri = credentialManagerUri;
         private readonly int timeoutSeconds = timeoutSeconds;
         private readonly TrailType trailType = trailType;
         private readonly ICredentialsPrompt credentialsPrompt = credentialsPrompt;
+        private readonly HttpAuthenticationHelper authenticationHelper = new(credentialStore);
         private DateTime? lastLogTrailTime = lastLogTrailTime;
         HttpClient client = null;
 
@@ -59,7 +64,7 @@ namespace LogScraper.Sources.Adapters.Http
             string lastHttpStatusDescription = string.Empty;
             for (int attempt = 0; attempt < 3; attempt++)
             {
-                AuthenticationData ??= HttpAuthenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
+                AuthenticationData ??= authenticationHelper.GetAuthenticationDataFromCredentialStore(credentialManagerUri);
                 if (httpAuthenticationSettings != null && httpAuthenticationSettings.EnforcedAuthenticationType == HttpAuthenticationType.FormLoginWithCsrf)
                 {
                     AuthenticationData.Type = httpAuthenticationSettings.EnforcedAuthenticationType;
@@ -89,7 +94,7 @@ namespace LogScraper.Sources.Adapters.Http
                 {
                     if (AuthenticationData.Type != HttpAuthenticationType.None)
                     {
-                        HttpAuthenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
+                        authenticationHelper.SaveAuthenticationDataToCredentialStore(AuthenticationData, credentialManagerUri);
                     }
                     return true;
                 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using LogScraper.Credentials;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.File;
 using LogScraper.Sources.Adapters.Http;
@@ -28,11 +29,16 @@ namespace LogScraper.Controls.Sources
         /// Used to ask the user for credentials when authentication fails. Defaults to a Windows Forms based
         /// prompt (<see cref="WinFormsCredentialsPrompt"/>) when not specified.
         /// </param>
+        /// <param name="credentialStore">
+        /// Used to persist and retrieve authentication credentials. Defaults to a Windows Credential Manager
+        /// based store (<see cref="WindowsCredentialStore"/>) when not specified.
+        /// </param>
         /// <returns>An instance of <see cref="HttpSourceAdapter"/>.</returns>
-        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null, bool authenticate = true, ICredentialsPrompt credentialsPrompt = null)
+        public static ISourceAdapter CreateHttpSourceAdapter(string apiUrl, string credentialManagerUri, int timeoutSeconds, HttpAuthenticationSettings httpAuthenticationSettings, TrailType trailType, DateTime? lastTrailTime = null, bool authenticate = true, ICredentialsPrompt credentialsPrompt = null, ICredentialStore credentialStore = null)
         {
             credentialsPrompt ??= new WinFormsCredentialsPrompt();
-            HttpSourceAdapter httpSourceAdapter = new(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, credentialsPrompt, lastTrailTime);
+            credentialStore ??= new WindowsCredentialStore();
+            HttpSourceAdapter httpSourceAdapter = new(apiUrl, credentialManagerUri, httpAuthenticationSettings, timeoutSeconds, trailType, credentialsPrompt, credentialStore, lastTrailTime);
             if (authenticate) httpSourceAdapter.TryInitiateClientAndAuthenticate(out HttpResponseMessage _, out string _);
             return httpSourceAdapter;
         }
