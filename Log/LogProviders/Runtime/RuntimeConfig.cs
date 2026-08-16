@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Layout;
-using LogScraper.LogProviders.Kubernetes;
 
-namespace LogScraper.LogProviders.Runtime
+namespace LogScraper.Log.LogProviders.Runtime
 {
     /// <summary>
     /// Represents the configuration for a runtime log provider.

@@ -1,4 +1,4 @@
-﻿namespace LogScraper.LogProviders.Kubernetes
+﻿namespace LogScraper.Log.LogProviders.Kubernetes
 {
     internal class KubernetesPod
     {

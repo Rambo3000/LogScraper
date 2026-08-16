@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LogScraper.Sources.Adapters.Http;
 
-namespace LogScraper.LogProviders.Runtime
+namespace LogScraper.Log.LogProviders.Runtime
 {
     /// <summary>
     /// Represents a configuration for downloading logs directly from a specific URL.

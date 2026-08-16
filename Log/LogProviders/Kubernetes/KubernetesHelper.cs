@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using LogScraper.Log.Generic.Extensions;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log.LogProviders.Kubernetes
 {
     /// <summary>
     /// Provides helper methods for interacting with Kubernetes clusters, namespaces, and pods.

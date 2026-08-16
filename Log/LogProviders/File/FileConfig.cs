@@ -2,8 +2,9 @@
 using LogScraper.Log.Layout;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Generic.Extensions;
+using LogScraper.Log.LogProviders;
 
-namespace LogScraper.LogProviders.File
+namespace LogScraper.Log.LogProviders.File
 {
     /// <summary>
     /// Represents the configuration for a file-based log provider.

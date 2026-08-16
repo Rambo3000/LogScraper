@@ -1,8 +1,8 @@
-﻿using LogScraper.LogProviders.File;
-using LogScraper.LogProviders.Kubernetes;
-using LogScraper.LogProviders.Runtime;
+﻿using LogScraper.Log.LogProviders.File;
+using LogScraper.Log.LogProviders.Kubernetes;
+using LogScraper.Log.LogProviders.Runtime;
 
-namespace LogScraper.LogProviders
+namespace LogScraper.Log.LogProviders
 {
     /// <summary>
     /// Represents the configuration for all supported log providers.

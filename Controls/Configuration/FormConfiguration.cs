@@ -4,10 +4,10 @@ using System.Windows.Forms;
 using LogScraper.Controls.Configuration;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
-using LogScraper.LogProviders;
-using LogScraper.LogProviders.File;
-using LogScraper.LogProviders.Kubernetes;
-using LogScraper.LogProviders.Runtime;
+using LogScraper.Log.LogProviders;
+using LogScraper.Log.LogProviders.File;
+using LogScraper.Log.LogProviders.Kubernetes;
+using LogScraper.Log.LogProviders.Runtime;
 
 namespace LogScraper.Configuration
 {

@@ -4,11 +4,11 @@ using System.IO;
 using System.Text;
 using LogScraper.Log.Content;
 using LogScraper.Log.Layout;
-using LogScraper.LogProviders;
 using System.Text.Json;
 using LogScraper.Log.Generic.IndexDictionary;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.Processing.RawLogParsing.Transformers;
+using LogScraper.Log.LogProviders;
 
 namespace LogScraper.Configuration
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log.LogProviders.Kubernetes
 {
     /// <summary>
     /// Represents a namespace within a Kubernetes cluster.

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using LogScraper.Log.Layout;
 
-namespace LogScraper.LogProviders
+namespace LogScraper.Log.LogProviders
 {
     /// <summary>
     /// Represents the configuration interface for a log provider.

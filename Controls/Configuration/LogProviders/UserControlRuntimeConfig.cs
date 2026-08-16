@@ -7,11 +7,11 @@ using LogScraper.Credentials;
 using LogScraper.Sources.Adapters.Http;
 using LogScraper.Sources.Adapters;
 using LogScraper.Configuration;
-using LogScraper.LogProviders.Runtime;
 using LogScraper.Log.Layout;
 using System.Net.Http;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Controls.Sources;
+using LogScraper.Log.LogProviders.Runtime;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {

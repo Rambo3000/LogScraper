@@ -1,5 +1,5 @@
 ﻿using LogScraper.Log.Layout;
-using LogScraper.LogProviders;
+using LogScraper.Log.LogProviders;
 
 namespace LogScraper.Configuration
 {

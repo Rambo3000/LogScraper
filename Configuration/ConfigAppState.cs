@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
-using LogScraper.LogProviders;
+using LogScraper.Log.LogProviders;
 
 namespace LogScraper.Configuration
 {

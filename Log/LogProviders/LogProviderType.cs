@@ -1,4 +1,4 @@
-﻿namespace LogScraper.LogProviders
+﻿namespace LogScraper.Log.LogProviders
 {
     /// <summary>
     /// Represents the types of log providers supported by the application.

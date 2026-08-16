@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Generic.Extensions;
-using LogScraper.LogProviders;
+using LogScraper.Log.LogProviders;
 
 namespace LogScraper.Configuration
 {

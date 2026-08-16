@@ -12,7 +12,7 @@ using LogScraper.Configuration;
 using LogScraper.Controls.Sources;
 using LogScraper.Credentials;
 using LogScraper.Log.Generic.Extensions;
-using LogScraper.LogProviders.Runtime;
+using LogScraper.Log.LogProviders.Runtime;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
 

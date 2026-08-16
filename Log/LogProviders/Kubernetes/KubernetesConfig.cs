@@ -4,7 +4,7 @@ using LogScraper.Log.Layout;
 using System.Text.Json.Serialization;
 using LogScraper.Log.Generic.Extensions;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log.LogProviders.Kubernetes
 {
     /// <summary>
     /// Represents the configuration for a Kubernetes log provider.

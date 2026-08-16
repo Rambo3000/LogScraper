@@ -7,8 +7,8 @@ using LogScraper.Configuration;
 using LogScraper.Controls.Generic;
 using LogScraper.Log.Layout;
 using LogScraper.Log.LogAppState;
+using LogScraper.Log.LogProviders;
 using LogScraper.Log.Processing;
-using LogScraper.LogProviders;
 using LogScraper.Sources.Adapters;
 
 namespace LogScraper.Controls

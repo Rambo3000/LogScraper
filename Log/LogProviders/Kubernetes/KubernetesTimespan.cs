@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log.LogProviders.Kubernetes
 {
     /// <summary>
     /// Represents the timespan options for fetching logs from a Kubernetes cluster.

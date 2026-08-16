@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Linq;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
-namespace LogScraper.LogProviders.Kubernetes
+namespace LogScraper.Log.LogProviders.Kubernetes
 {
     /// <summary>
     /// Represents a Kubernetes cluster configuration.

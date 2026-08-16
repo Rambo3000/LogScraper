@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using LogScraper.Configuration;
 using LogScraper.Log.Generic.Extensions;
-using LogScraper.LogProviders;
+using LogScraper.Log.LogProviders;
 
 namespace LogScraper.Controls.Configuration
 {

@@ -8,7 +8,7 @@ using LogScraper.Controls.Sources;
 using LogScraper.Credentials;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Log.LogAppState;
-using LogScraper.LogProviders.Kubernetes;
+using LogScraper.Log.LogProviders.Kubernetes;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
 

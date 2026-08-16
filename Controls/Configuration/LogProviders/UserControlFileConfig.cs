@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using LogScraper.Log.Layout;
-using LogScraper.LogProviders.File;
+using LogScraper.Log.LogProviders.File;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {
