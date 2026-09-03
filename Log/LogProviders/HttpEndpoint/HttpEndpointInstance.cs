@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LogScraper.Sources.Adapters.Http;
 
-namespace LogScraper.Log.LogProviders.Runtime
+namespace LogScraper.Log.LogProviders.HttpEndpoint
 {
     /// <summary>
-    /// Represents a configuration for downloading logs directly from a specific URL.
+    /// Represents a configuration for downloading logs directly from a specific HTTP endpoint (URL).
     /// </summary>
-    public class RuntimeInstance
+    public class HttpEndpointInstance
     {
         /// <summary>
         /// Gets or sets the description of the endpoint.
@@ -15,7 +15,7 @@ namespace LogScraper.Log.LogProviders.Runtime
         public string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL for accessing the runtime logs of this instance.
+        /// Gets or sets the URL for accessing the logs of this instance.
         /// </summary>
         public string UrlRuntimeLog { get; set; }
 

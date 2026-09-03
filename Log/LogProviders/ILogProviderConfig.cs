@@ -23,7 +23,7 @@ namespace LogScraper.Log.LogProviders
         public LogLayout DefaultLogLayout { get; set; }
 
         /// <summary>
-        /// Gets the type of the log provider (e.g., Kubernetes, Runtime, File).
+        /// Gets the type of the log provider (e.g., Kubernetes, HttpEndpoint, File).
         /// This property is read-only and identifies the specific type of log provider.
         /// </summary>
         public LogProviderType LogProviderType { get; }

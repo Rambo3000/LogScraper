@@ -36,7 +36,7 @@ namespace LogScraper
 
             FormCompactView.Instance.ReturnToMainFormRequested += (s, e) => WindowState = FormWindowState.Normal;
 
-            LogProviderSelectionControl.UriChanged += UsrRuntime_UriChanged;
+            LogProviderSelectionControl.UriChanged += UsrLogProviderSelection_UriChanged;
             LogProviderSelectionControl.CollapseStateChanged += UsrLogProviderSelection_CollapseStateChanged;
             LogProviderSelectionControl.SizeChanged += (s, e) => AutoSizeLogProviderSelection();
 
@@ -129,7 +129,7 @@ namespace LogScraper
             SplitContainerSourceControlAndMetadata.ResumeLayout(true);
         }
 
-        private void UsrRuntime_UriChanged(object sender, string e)
+        private void UsrLogProviderSelection_UriChanged(object sender, string e)
         {
             string title = "LogScraper";
             if (!string.IsNullOrWhiteSpace(e)) title += $" - {e}";

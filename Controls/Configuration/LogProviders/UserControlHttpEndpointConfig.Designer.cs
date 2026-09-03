@@ -2,7 +2,7 @@
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {
-    partial class UserControlRuntimeConfig
+    partial class UserControlHttpEndpointConfig
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlRuntimeConfig));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlHttpEndpointConfig));
             LstUrls = new System.Windows.Forms.ListBox();
             BtnAddUrl = new System.Windows.Forms.Button();
             BtnRemoveUrl = new System.Windows.Forms.Button();

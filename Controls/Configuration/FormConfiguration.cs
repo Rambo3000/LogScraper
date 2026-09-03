@@ -7,14 +7,14 @@ using LogScraper.Log.LogAppState;
 using LogScraper.Log.LogProviders;
 using LogScraper.Log.LogProviders.File;
 using LogScraper.Log.LogProviders.Kubernetes;
-using LogScraper.Log.LogProviders.Runtime;
+using LogScraper.Log.LogProviders.HttpEndpoint;
 
 namespace LogScraper.Configuration
 {
     public partial class FormConfiguration : Form
     {
         private readonly KubernetesConfig oldKubernetesConfig = ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig;
-        private readonly RuntimeConfig oldRuntimeConfig = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig;
+        private readonly HttpEndpointConfig oldHttpEndpointConfig = ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig;
         private readonly FileConfig oldFileConfig = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig;
         private readonly GenericConfig oldGenericConfig = ConfigAppState.Instance.GenericConfig.Value;
         private readonly LogLayoutsConfig logLayoutsConfig = ConfigAppState.Instance.LogLayoutsConfig.Value;
@@ -27,7 +27,7 @@ namespace LogScraper.Configuration
         private void FormConfiguration_Load(object sender, EventArgs e)
         {
             userControlKubernetesConfig.SetKubernetesConfig(ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
-            userControlRuntimeConfig.SetRuntimeConfig(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
+            userControlHttpEndpointConfig.SetHttpEndpointConfig(ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
             userControlFileConfig.SetFileConfig(ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig, ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
             userControlGenericConfig.SetGenericConfig(ConfigAppState.Instance.GenericConfig.Value);
             userControlLogLayoutConfig.SetLogLayoutsConfig(ConfigAppState.Instance.LogLayoutsConfig.Value.layouts);
@@ -43,7 +43,7 @@ namespace LogScraper.Configuration
 
             // Refresh all provider controls with the updated layouts
             userControlKubernetesConfig.RefreshLayouts(currentLayouts);
-            userControlRuntimeConfig.RefreshLayouts(currentLayouts);
+            userControlHttpEndpointConfig.RefreshLayouts(currentLayouts);
             userControlFileConfig.RefreshLayouts(currentLayouts);
         }
 
@@ -56,7 +56,7 @@ namespace LogScraper.Configuration
         private void BtnOk_Click(object sender, EventArgs e)
         {
             if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
-            if (!userControlRuntimeConfig.TryGetConfiguration(out RuntimeConfig runtimeConfig)) return;
+            if (!userControlHttpEndpointConfig.TryGetConfiguration(out HttpEndpointConfig httpEndpointConfig)) return;
             if (!userControlFileConfig.TryGetConfiguration(out FileConfig fileConfig)) return;
             if (!userControlGenericConfig.TryGetGenericConfig(out GenericConfig config)) return;
             if (!userControlLogLayoutConfig.TryGetLogLayoutsConfig(out LogLayoutsConfig logLayoutsConfig)) return;
@@ -65,7 +65,7 @@ namespace LogScraper.Configuration
             bool genericConfigChanged = !oldGenericConfig.Equals(config);
             bool logLayoutsChanged = !this.logLayoutsConfig.Equals(logLayoutsConfig);
             bool kubernetesChanged = !oldKubernetesConfig.Equals(kubernetesConfig);
-            bool runtimeChanged = !oldRuntimeConfig.Equals(runtimeConfig);
+            bool runtimeChanged = !oldHttpEndpointConfig.Equals(httpEndpointConfig);
             bool fileChanged = !oldFileConfig.Equals(fileConfig);
 
             bool providerConfigChanged = kubernetesChanged || runtimeChanged || fileChanged;
@@ -99,7 +99,7 @@ namespace LogScraper.Configuration
             {
                 LogProvidersConfig providersConfig = ConfigAppState.Instance.LogProvidersConfig.Value;
                 providersConfig.KubernetesConfig = kubernetesConfig;
-                providersConfig.RuntimeConfig = runtimeConfig;
+                providersConfig.HttpEndpointConfig = httpEndpointConfig;
                 providersConfig.FileConfig = fileConfig;
                 ConfigAppState.Instance.LogProvidersConfig.ForceSet(providersConfig);
             }
@@ -147,10 +147,10 @@ namespace LogScraper.Configuration
                     userControlKubernetesConfig.Clear();
                     userControlKubernetesConfig.SetKubernetesConfig(importConfig.LogProvidersConfig.KubernetesConfig, referencingLogLayouts);
                 }
-                if (importConfig.LogProvidersConfig.RuntimeConfig != null)
+                if (importConfig.LogProvidersConfig.HttpEndpointConfig != null)
                 {
-                    userControlRuntimeConfig.Clear();
-                    userControlRuntimeConfig.SetRuntimeConfig(importConfig.LogProvidersConfig.RuntimeConfig, referencingLogLayouts);
+                    userControlHttpEndpointConfig.Clear();
+                    userControlHttpEndpointConfig.SetHttpEndpointConfig(importConfig.LogProvidersConfig.HttpEndpointConfig, referencingLogLayouts);
                 }
                 if (importConfig.LogProvidersConfig.FileConfig != null)
                 {
@@ -163,17 +163,18 @@ namespace LogScraper.Configuration
 
         private void BtnExport_Click(object sender, EventArgs e)
         {
-            ConfigurationExport exportObject = new();
-
-            exportObject.GenericConfig = userControlGenericConfig.GetLogScraperConfig();
+            ConfigurationExport exportObject = new()
+            {
+                GenericConfig = userControlGenericConfig.GetLogScraperConfig()
+            };
 
             if (!userControlLogLayoutConfig.TryGetLogLayoutsConfig(out LogLayoutsConfig logLayoutsConfig)) return;
             exportObject.LogLayoutsConfig = logLayoutsConfig;
 
             if (!userControlKubernetesConfig.TryGetConfiguration(out KubernetesConfig kubernetesConfig)) return;
-            if (!userControlRuntimeConfig.TryGetConfiguration(out RuntimeConfig runtimeConfig)) return;
+            if (!userControlHttpEndpointConfig.TryGetConfiguration(out HttpEndpointConfig httpEndpointConfig)) return;
             if (!userControlFileConfig.TryGetConfiguration(out FileConfig fileConfig)) return;
-            exportObject.LogProvidersConfig = new() { KubernetesConfig = kubernetesConfig, RuntimeConfig = runtimeConfig, FileConfig = fileConfig };
+            exportObject.LogProvidersConfig = new() { KubernetesConfig = kubernetesConfig, HttpEndpointConfig = httpEndpointConfig, FileConfig = fileConfig };
 
             using FormConfigImportExport form = new(exportObject);
             form.ShowDialog(this);

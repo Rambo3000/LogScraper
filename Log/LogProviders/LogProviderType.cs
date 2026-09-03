@@ -12,9 +12,9 @@
         Kubernetes,
 
         /// <summary>
-        /// Log provider based on urls
+        /// Log provider based on a directly reachable HTTP endpoint (URL).
         /// </summary>
-        Runtime,
+        HttpEndpoint,
 
         /// <summary>
         /// Log provider for file-based logs.

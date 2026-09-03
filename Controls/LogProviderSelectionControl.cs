@@ -103,10 +103,10 @@ namespace LogScraper.Controls
             KubernetesProviderControl.UriChanged += HandleUriChanged;
             KubernetesProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
 
-            RuntimeProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
-            RuntimeProviderControl.StatusUpdate += HandleStatusUpdate;
-            RuntimeProviderControl.UriChanged += HandleUriChanged;
-            RuntimeProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
+            HttpEndpointProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
+            HttpEndpointProviderControl.StatusUpdate += HandleStatusUpdate;
+            HttpEndpointProviderControl.UriChanged += HandleUriChanged;
+            HttpEndpointProviderControl.IsSourceValidChanged += HandleIsSourceValidChanged;
 
             FileProviderControl.SourceSelectionChanged += HandleSourceSelectionChanged;
             FileProviderControl.StatusUpdate += HandleStatusUpdate;
@@ -152,12 +152,12 @@ namespace LogScraper.Controls
                     cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig;
             }
 
-            if (ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig != null)
+            if (ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig != null)
             {
-                RuntimeProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.Instances);
-                cboLogProvider.Items.Add(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig);
-                if (ConfigAppState.Instance.GenericConfig.Value.LogProviderTypeDefault == LogProviderType.Runtime)
-                    cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig;
+                HttpEndpointProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig.Instances);
+                cboLogProvider.Items.Add(ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig);
+                if (ConfigAppState.Instance.GenericConfig.Value.LogProviderTypeDefault == LogProviderType.HttpEndpoint)
+                    cboLogProvider.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig;
             }
 
             if (ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig != null)
@@ -197,7 +197,7 @@ namespace LogScraper.Controls
                         {
                             layoutToSelect = logProviderConfig.LogProviderType switch
                             {
-                                LogProviderType.Runtime => ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout,
+                                LogProviderType.HttpEndpoint => ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig.DefaultLogLayout,
                                 LogProviderType.Kubernetes => ConfigAppState.Instance.LogProvidersConfig.Value.KubernetesConfig.DefaultLogLayout,
                                 LogProviderType.File => ConfigAppState.Instance.LogProvidersConfig.Value.FileConfig.DefaultLogLayout,
                                 _ => null
@@ -228,7 +228,7 @@ namespace LogScraper.Controls
             LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem).LogProviderType;
             return logProviderType switch
             {
-                LogProviderType.Runtime => RuntimeProviderControl.GetSourceAdapter(),
+                LogProviderType.HttpEndpoint => HttpEndpointProviderControl.GetSourceAdapter(),
                 LogProviderType.Kubernetes => KubernetesProviderControl.GetSourceAdapter(null, lastTrailTime),
                 LogProviderType.File => FileProviderControl.GetSourceAdapter(),
                 _ => throw new NotImplementedException()
@@ -251,15 +251,15 @@ namespace LogScraper.Controls
             ILogProviderConfig logProviderConfig = (ILogProviderConfig)cboLogProvider.SelectedItem;
             if (logProviderConfig == null) return;
 
-            RuntimeProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.Runtime;
+            HttpEndpointProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.HttpEndpoint;
             KubernetesProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.Kubernetes;
             FileProviderControl.Visible = logProviderConfig.LogProviderType == LogProviderType.File;
 
             switch (logProviderConfig.LogProviderType)
             {
-                case LogProviderType.Runtime:
-                    RuntimeProviderControl.UpdateAfterProviderSelected();
-                    cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.DefaultLogLayout;
+                case LogProviderType.HttpEndpoint:
+                    HttpEndpointProviderControl.UpdateAfterProviderSelected();
+                    cboLogLayout.SelectedItem = ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig.DefaultLogLayout;
                     break;
                 case LogProviderType.Kubernetes:
                     KubernetesProviderControl.UpdateAfterProviderSelected();
@@ -295,9 +295,9 @@ namespace LogScraper.Controls
 
             switch (logProviderConfig.LogProviderType)
             {
-                case LogProviderType.Runtime:
-                    RuntimeProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.RuntimeConfig.Instances);
-                    RuntimeProviderControl.UpdateAfterProviderSelected();
+                case LogProviderType.HttpEndpoint:
+                    HttpEndpointProviderControl.UpdateRuntimeInstances(ConfigAppState.Instance.LogProvidersConfig.Value.HttpEndpointConfig.Instances);
+                    HttpEndpointProviderControl.UpdateAfterProviderSelected();
                     break;
                 case LogProviderType.Kubernetes:
                     KubernetesProviderControl.UpdateAfterProviderSelected();
@@ -315,7 +315,7 @@ namespace LogScraper.Controls
                 LogProviderType logProviderType = ((ILogProviderConfig)cboLogProvider.SelectedItem)?.LogProviderType ?? LogProviderType.File;
                 return logProviderType switch
                 {
-                    LogProviderType.Runtime => RuntimeProviderControl.IsSourceValid,
+                    LogProviderType.HttpEndpoint => HttpEndpointProviderControl.IsSourceValid,
                     LogProviderType.Kubernetes => KubernetesProviderControl.IsSourceValid,
                     LogProviderType.File => FileProviderControl.IsSourceValid,
                     _ => false

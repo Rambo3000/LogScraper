@@ -36,7 +36,7 @@ namespace LogScraper.Configuration
             tabKubernetes = new System.Windows.Forms.TabPage();
             userControlKubernetesConfig = new UserControlKubernetesConfig();
             tabUrl = new System.Windows.Forms.TabPage();
-            userControlRuntimeConfig = new UserControlRuntimeConfig();
+            userControlHttpEndpointConfig = new UserControlHttpEndpointConfig();
             tabFile = new System.Windows.Forms.TabPage();
             userControlFileConfig = new UserControlFileConfig();
             btnOk = new System.Windows.Forms.Button();
@@ -100,7 +100,7 @@ namespace LogScraper.Configuration
             // 
             // tabUrl
             // 
-            tabUrl.Controls.Add(userControlRuntimeConfig);
+            tabUrl.Controls.Add(userControlHttpEndpointConfig);
             tabUrl.Location = new System.Drawing.Point(4, 24);
             tabUrl.Name = "tabUrl";
             tabUrl.Size = new System.Drawing.Size(1025, 548);
@@ -108,14 +108,14 @@ namespace LogScraper.Configuration
             tabUrl.Text = "HTTP API";
             tabUrl.UseVisualStyleBackColor = true;
             // 
-            // userControlRuntimeConfig
+            // userControlHttpEndpointConfig
             // 
-            userControlRuntimeConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            userControlRuntimeConfig.Location = new System.Drawing.Point(0, 0);
-            userControlRuntimeConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            userControlRuntimeConfig.Name = "userControlRuntimeConfig";
-            userControlRuntimeConfig.Size = new System.Drawing.Size(1025, 548);
-            userControlRuntimeConfig.TabIndex = 0;
+            userControlHttpEndpointConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            userControlHttpEndpointConfig.Location = new System.Drawing.Point(0, 0);
+            userControlHttpEndpointConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            userControlHttpEndpointConfig.Name = "userControlHttpEndpointConfig";
+            userControlHttpEndpointConfig.Size = new System.Drawing.Size(1025, 548);
+            userControlHttpEndpointConfig.TabIndex = 0;
             // 
             // tabFile
             // 
@@ -322,7 +322,7 @@ namespace LogScraper.Configuration
         private System.Windows.Forms.Button btnCancel;
         private UserControlKubernetesConfig userControlKubernetesConfig;
         private System.Windows.Forms.TabPage tabUrl;
-        private UserControlRuntimeConfig userControlRuntimeConfig;
+        private UserControlHttpEndpointConfig userControlHttpEndpointConfig;
         private System.Windows.Forms.TabPage tabFile;
         private UserControlFileConfig userControlFileConfig;
         private System.Windows.Forms.TabControl tabMain;

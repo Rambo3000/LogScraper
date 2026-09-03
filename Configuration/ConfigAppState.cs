@@ -39,8 +39,8 @@ namespace LogScraper.Configuration
             // Re-link each provider config to the new layout objects
             if (providersConfig.FileConfig != null)
                 ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.FileConfig, layoutsConfig.layouts);
-            if (providersConfig.RuntimeConfig != null)
-                ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.RuntimeConfig, layoutsConfig.layouts);
+            if (providersConfig.HttpEndpointConfig != null)
+                ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.HttpEndpointConfig, layoutsConfig.layouts);
             if (providersConfig.KubernetesConfig != null)
                 ConfigurationManager.SetDefaultLogLayoutsForLogProvider(providersConfig.KubernetesConfig, layoutsConfig.layouts);
 

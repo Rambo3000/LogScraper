@@ -1,6 +1,6 @@
 ﻿namespace LogScraper.Controls.LogProviders
 {
-    partial class RuntimeProviderControl
+    partial class HttpEndpointProviderControl
     {
         /// <summary> 
         /// Required designer variable.

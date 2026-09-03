@@ -13,9 +13,9 @@ namespace LogScraper.Configuration
     {
         /// <summary>
         /// Gets or sets the default log provider type for the application.
-        /// This determines which log provider (e.g., Kubernetes, Runtime, File) is used by default.
+        /// This determines which log provider (e.g., Kubernetes, HttpEndpoint, File) is used by default.
         /// </summary>
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonConverter(typeof(LogProviderTypeJsonConverter))]
         public LogProviderType LogProviderTypeDefault { get; set; }
 
         /// <summary>

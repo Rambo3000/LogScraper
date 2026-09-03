@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,15 +11,15 @@ using LogScraper.Log.Layout;
 using System.Net.Http;
 using LogScraper.Log.Generic.Extensions;
 using LogScraper.Controls.Sources;
-using LogScraper.Log.LogProviders.Runtime;
+using LogScraper.Log.LogProviders.HttpEndpoint;
 
 namespace LogScraper.Controls.Configuration.LogProviders
 {
-    public partial class UserControlRuntimeConfig : UserControl
+    public partial class UserControlHttpEndpointConfig : UserControl
     {
-        private readonly BindingList<RuntimeInstance> _instances = [];
+        private readonly BindingList<HttpEndpointInstance> _instances = [];
 
-        public UserControlRuntimeConfig()
+        public UserControlHttpEndpointConfig()
         {
             InitializeComponent();
         }
@@ -28,7 +28,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             LstUrls.SelectedIndex = -1;
             _instances.Clear();
         }
-        internal void SetRuntimeConfig(RuntimeConfig config, List<LogLayout> logLayouts)
+        internal void SetHttpEndpointConfig(HttpEndpointConfig config, List<LogLayout> logLayouts)
         {
             CboLogLayout.Items.Clear();
             foreach (var layout in logLayouts)
@@ -48,7 +48,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             {
                 foreach (var runtime in config.Instances)
                 {
-                    RuntimeInstance runtimeNew = new()
+                    HttpEndpointInstance runtimeNew = new()
                     {
                         Description = runtime.Description,
                         UrlRuntimeLog = runtime.UrlRuntimeLog,
@@ -114,7 +114,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 CboLogLayout.SelectedIndex = 0;
             }
         }
-        internal bool TryGetConfiguration(out RuntimeConfig config)
+        internal bool TryGetConfiguration(out HttpEndpointConfig config)
         {
             List<string> errorMessages = [];
 
@@ -123,7 +123,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 errorMessages.Add($"The default layout for Directly Url must be selected.");
             }
 
-            foreach (RuntimeInstance instance in _instances)
+            foreach (HttpEndpointInstance instance in _instances)
             {
                 if (string.IsNullOrWhiteSpace(instance.Description) ||
                     string.IsNullOrWhiteSpace(instance.UrlRuntimeLog))
@@ -150,7 +150,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 return false;
             }
 
-            config = new RuntimeConfig
+            config = new HttpEndpointConfig
             {
                 Instances = [.. _instances],
                 DefaultLogLayout = CboLogLayout.SelectedItem as LogLayout,
@@ -162,7 +162,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
         private void BtnAddUrl_Click(object sender, EventArgs e)
         {
-            RuntimeInstance instance = new()
+            HttpEndpointInstance instance = new()
             {
                 Description = "New runtime",
                 UrlRuntimeLog = string.Empty
@@ -174,7 +174,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
         private void BtnRemoveUrl_Click(object sender, EventArgs e)
         {
-            if (LstUrls.SelectedItem is RuntimeInstance instance)
+            if (LstUrls.SelectedItem is HttpEndpointInstance instance)
             {
                 _instances.Remove(instance);
             }
@@ -198,7 +198,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
         private void BtnUrlUp_Click(object sender, EventArgs e)
         {
-            if (LstUrls.SelectedItem is not RuntimeInstance selected) return;
+            if (LstUrls.SelectedItem is not HttpEndpointInstance selected) return;
 
             int index = _instances.IndexOf(selected);
             if (index > 0)
@@ -212,7 +212,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
         private void BtnUrlDown_Click(object sender, EventArgs e)
         {
-            if (LstUrls.SelectedItem is not RuntimeInstance selected) return;
+            if (LstUrls.SelectedItem is not HttpEndpointInstance selected) return;
 
             int index = _instances.IndexOf(selected);
             if (index < _instances.Count - 1)
@@ -228,7 +228,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         private bool UpdatingUrlInformation = false;
         private void LstUrls_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 UpdatingUrlInformation = true;
                 TxtDescription.Text = selected.Description;
@@ -252,7 +252,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected) selected.Description = TxtDescription.Text;
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected) selected.Description = TxtDescription.Text;
 
             LstUrls.DisplayMember = string.Empty; // Force update
             LstUrls.DisplayMember = "Description";
@@ -262,7 +262,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected) selected.UrlRuntimeLog = TxtUrl.Text;
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected) selected.UrlRuntimeLog = TxtUrl.Text;
             UpdateButtonTest();
         }
 
@@ -275,7 +275,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
                 BtnTest.Enabled = false;
                 url = TxtUrl.Text;
                 HttpAuthenticationSettings httpAuthenticationSettings = null;
-                if (LstUrls.SelectedItem is RuntimeInstance selected)
+                if (LstUrls.SelectedItem is HttpEndpointInstance selected)
                 {
                     httpAuthenticationSettings = selected.HttpAuthenticationSettings;
                 }
@@ -313,7 +313,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
 
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 if (ChkWebFormLogin.Checked)
                 {
@@ -337,7 +337,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.HttpAuthenticationSettings?.LoginPageUrl = TxtLoginPageUrl.Text;
             }
@@ -347,7 +347,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.HttpAuthenticationSettings?.UserFieldName = TxtUserFieldName.Text;
             }
@@ -357,7 +357,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.HttpAuthenticationSettings?.PasswordFieldName = TxtPasswordFieldName.Text;
             }
@@ -367,7 +367,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.HttpAuthenticationSettings?.CsrfFieldName = TxtCsrfFieldName.Text;
             }
@@ -377,7 +377,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.IsUrlLinkToHtmlFileList = ChkUrlLinksToHtmlFileList.Checked;
                 if (selected.IsUrlLinkToHtmlFileList)
@@ -392,7 +392,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.IsUrlLinkToHtmlFolderList = ChkUrlLinksToHtmlFolderList.Checked;
                 if (selected.IsUrlLinkToHtmlFolderList)
@@ -408,7 +408,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
             TxtFilterUrlName.Enabled = ChkFilterUrlName.Checked;
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected)
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected)
             {
                 selected.FilterUrlName = ChkFilterUrlName.Checked;
             }
@@ -418,7 +418,7 @@ namespace LogScraper.Controls.Configuration.LogProviders
         {
             if (UpdatingUrlInformation) return;
 
-            if (LstUrls.SelectedItem is RuntimeInstance selected) selected.FilterUrlNameValues = [.. TxtFilterUrlName.Text.Split(' ')];
+            if (LstUrls.SelectedItem is HttpEndpointInstance selected) selected.FilterUrlNameValues = [.. TxtFilterUrlName.Text.Split(' ')];
         }
     }
 }

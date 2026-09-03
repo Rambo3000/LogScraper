@@ -37,7 +37,7 @@ namespace LogScraper.Controls
             lblLogLayout = new System.Windows.Forms.Label();
             cboLogLayout = new System.Windows.Forms.ComboBox();
             KubernetesProviderControl = new KubernetesProviderControl();
-            RuntimeProviderControl = new RuntimeProviderControl();
+            HttpEndpointProviderControl = new HttpEndpointProviderControl();
             FileProviderControl = new FileProviderControl();
             lblProviderDescription = new System.Windows.Forms.LinkLabel();
             btnPin = new System.Windows.Forms.Button();
@@ -100,13 +100,13 @@ namespace LogScraper.Controls
             KubernetesProviderControl.Size = new System.Drawing.Size(184, 119);
             KubernetesProviderControl.TabIndex = 8;
             // 
-            // RuntimeProviderControl
+            // HttpEndpointProviderControl
             // 
-            RuntimeProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            RuntimeProviderControl.Location = new System.Drawing.Point(0, 0);
-            RuntimeProviderControl.Name = "RuntimeProviderControl";
-            RuntimeProviderControl.Size = new System.Drawing.Size(184, 119);
-            RuntimeProviderControl.TabIndex = 0;
+            HttpEndpointProviderControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            HttpEndpointProviderControl.Location = new System.Drawing.Point(0, 0);
+            HttpEndpointProviderControl.Name = "HttpEndpointProviderControl";
+            HttpEndpointProviderControl.Size = new System.Drawing.Size(184, 119);
+            HttpEndpointProviderControl.TabIndex = 0;
             // 
             // FileProviderControl
             // 
@@ -197,7 +197,7 @@ namespace LogScraper.Controls
             PnlLogProviders.Controls.Add(PnlSeparator2);
             PnlLogProviders.Controls.Add(KubernetesProviderControl);
             PnlLogProviders.Controls.Add(FileProviderControl);
-            PnlLogProviders.Controls.Add(RuntimeProviderControl);
+            PnlLogProviders.Controls.Add(HttpEndpointProviderControl);
             PnlLogProviders.Location = new System.Drawing.Point(0, 85);
             PnlLogProviders.Name = "PnlLogProviders";
             PnlLogProviders.Size = new System.Drawing.Size(184, 119);
@@ -250,7 +250,7 @@ namespace LogScraper.Controls
         private System.Windows.Forms.ComboBox cboLogProvider;
         private System.Windows.Forms.Label lblLogLayout;
         private System.Windows.Forms.ComboBox cboLogLayout;
-        private RuntimeProviderControl RuntimeProviderControl;
+        private HttpEndpointProviderControl HttpEndpointProviderControl;
         private KubernetesProviderControl KubernetesProviderControl;
         private FileProviderControl FileProviderControl;
         private System.Windows.Forms.LinkLabel lblProviderDescription;

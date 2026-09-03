@@ -77,7 +77,7 @@
     <Compile Update="Controls\Configuration\LogProviders\UserControlFileConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\Configuration\LogProviders\UserControlRuntimeConfig.cs">
+    <Compile Update="Controls\Configuration\LogProviders\UserControlHttpEndpointConfig.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Controls\FlowTreeControl.cs">
@@ -91,7 +91,7 @@
     <EmbeddedResource Update="Controls\Configuration\LogProviders\UserControlFileConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Controls\Configuration\LogProviders\UserControlRuntimeConfig.resx">
+    <EmbeddedResource Update="Controls\Configuration\LogProviders\UserControlHttpEndpointConfig.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Controls\Configuration\UserControlLogLayoutConfig.resx">

@@ -82,7 +82,7 @@ namespace LogScraper.Configuration
         {
             // Set default log layouts for each log provider
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.FileConfig, logLayouts);
-            SetDefaultLogLayoutsForLogProvider(logProvidersConfig.RuntimeConfig, logLayouts);
+            SetDefaultLogLayoutsForLogProvider(logProvidersConfig.HttpEndpointConfig, logLayouts);
             SetDefaultLogLayoutsForLogProvider(logProvidersConfig.KubernetesConfig, logLayouts);
         }
 

@@ -12,13 +12,13 @@ using LogScraper.Configuration;
 using LogScraper.Controls.Sources;
 using LogScraper.Credentials;
 using LogScraper.Log.Generic.Extensions;
-using LogScraper.Log.LogProviders.Runtime;
+using LogScraper.Log.LogProviders.HttpEndpoint;
 using LogScraper.Sources.Adapters;
 using LogScraper.Sources.Adapters.Http;
 
 namespace LogScraper.Controls.LogProviders
 {
-    public partial class RuntimeProviderControl : UserControl, ILogProviderUserControl
+    public partial class HttpEndpointProviderControl : UserControl, ILogProviderUserControl
     {
         private class HtmlLink : IEquatable<HtmlLink>
         {
@@ -65,7 +65,7 @@ namespace LogScraper.Controls.LogProviders
         public event EventHandler<string> UriChanged;
         public event EventHandler<bool> IsSourceValidChanged;
 
-        private List<RuntimeInstance> RuntimeInstances { get; set; }
+        private List<HttpEndpointInstance> RuntimeInstances { get; set; }
 
         public bool IsSourceValid
         {
@@ -100,12 +100,12 @@ namespace LogScraper.Controls.LogProviders
             IsSourceValidChanged?.Invoke(this, IsSourceValid);
         }
 
-        public RuntimeProviderControl()
+        public HttpEndpointProviderControl()
         {
             InitializeComponent();
         }
 
-        public void UpdateRuntimeInstances(List<RuntimeInstance> runtimeInstance)
+        public void UpdateRuntimeInstances(List<HttpEndpointInstance> runtimeInstance)
         {
             RuntimeInstances = runtimeInstance;
 
@@ -124,7 +124,7 @@ namespace LogScraper.Controls.LogProviders
             return GetSourceAdapterWithSpecificUrl(SelectedRuntimeInstance, SelectedRuntimeInstance.UrlRuntimeLog);
         }
 
-        private ISourceAdapter GetSourceAdapterWithSpecificUrl(RuntimeInstance runtimeInstance, string url = null, bool authenticate = true)
+        private ISourceAdapter GetSourceAdapterWithSpecificUrl(HttpEndpointInstance runtimeInstance, string url = null, bool authenticate = true)
         {
             if (SelectedRuntimeInstance == null) throw new Exception("The HTTP API is required");
 
@@ -151,14 +151,14 @@ namespace LogScraper.Controls.LogProviders
 
             if (Debugger.IsAttached)
             {
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub1", UrlRuntimeLog = "Stubs/Runtime1.txt" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub2", UrlRuntimeLog = "Stubs/Runtime2.txt" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "Stub3", UrlRuntimeLog = "Stubs/Runtime3.txt" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "StubJSONInvertedExample", UrlRuntimeLog = "Stubs/JSONInvertedExample.log" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP Folders", UrlRuntimeLog = "https://sharprconsultancy.nl/Folders/", IsUrlLinkToHtmlFolderList = true });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP Files", UrlRuntimeLog = "https://sharprconsultancy.nl/Files/", IsUrlLinkToHtmlFileList = true });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP Basic Authentication (authorized/password001)", UrlRuntimeLog = "https://testpages.eviltester.com/styled/auth/basic-auth-results.html" });
-                cboRuntimeInstances.Items.Add(new RuntimeInstance() { Description = "HTTP no such host", UrlRuntimeLog = "http://nonexistinghost/" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "Stub1", UrlRuntimeLog = "Stubs/Runtime1.txt" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "Stub2", UrlRuntimeLog = "Stubs/Runtime2.txt" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "Stub3", UrlRuntimeLog = "Stubs/Runtime3.txt" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "StubJSONInvertedExample", UrlRuntimeLog = "Stubs/JSONInvertedExample.log" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "HTTP Folders", UrlRuntimeLog = "https://sharprconsultancy.nl/Folders/", IsUrlLinkToHtmlFolderList = true });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "HTTP Files", UrlRuntimeLog = "https://sharprconsultancy.nl/Files/", IsUrlLinkToHtmlFileList = true });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "HTTP Basic Authentication (authorized/password001)", UrlRuntimeLog = "https://testpages.eviltester.com/styled/auth/basic-auth-results.html" });
+                cboRuntimeInstances.Items.Add(new HttpEndpointInstance() { Description = "HTTP no such host", UrlRuntimeLog = "http://nonexistinghost/" });
             }
             else
             {
@@ -179,7 +179,7 @@ namespace LogScraper.Controls.LogProviders
 
         private void CboRuntimeInstances_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RuntimeInstance runtimeInstance = SelectedRuntimeInstance;
+            HttpEndpointInstance runtimeInstance = SelectedRuntimeInstance;
 
             if (!runtimeInstance.IsUrlLinkToHtmlFolderList && !SelectedRuntimeInstance.IsUrlLinkToHtmlFileList) txtUrl.Text = runtimeInstance.UrlRuntimeLog;
 
@@ -287,13 +287,13 @@ namespace LogScraper.Controls.LogProviders
         {
             StatusUpdate?.Invoke(message, isSucces);
         }
-        private RuntimeInstance SelectedRuntimeInstance
+        private HttpEndpointInstance SelectedRuntimeInstance
         {
             get
             {
                 if (cboRuntimeInstances.SelectedIndex == -1) return null;
 
-                return ((RuntimeInstance)cboRuntimeInstances.SelectedItem);
+                return ((HttpEndpointInstance)cboRuntimeInstances.SelectedItem);
 
             }
         }
