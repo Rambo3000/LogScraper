@@ -2,24 +2,27 @@
 
 **Investigate application flows through the noise.**
 
-LogScraper is a desktop log analysis tool for investigating application flows in large and distributed logs. It retrieves logs directly from their source, filters the noise, and provides a compact set of tools to help you understand what happened.
+LogScraper is a fast desktop log analysis tool for investigating application flows in large and distributed logs. It retrieves logs directly from their source, processes them locally, filters noise almost instantly, and helps you trace what happened across thousands or millions of log lines.
 
-Centralized observability platforms such as Splunk, ELK, and Grafana are great for finding and aggregating logs. LogScraper focuses on what comes next: **understanding what actually happened.**
+Centralized observability platforms such as Splunk, ELK, and Grafana are great for collecting, aggregating, and searching logs. LogScraper focuses on what comes next: **understanding what actually happened**.
+
+No centralized logging platform is required. LogScraper can work directly with logs from HTTP endpoints, Kubernetes and local files.
 
 <img width="1515" height="819" alt="image" src="https://github.com/user-attachments/assets/d7a5eb8c-f447-4705-88ff-b0f507198d9e" />
 
 ## Built for log investigation
-- **Filter** large logs quickly using metadata fields
-- **Navigate** through logs with content filters and begin/end markers
-- **Find** problem areas quickly with the timeline and error indicators
-- **Follow** related log lines in a hierarchical flow view
-- **Highlight** log lines based on their content, using custom colors to emphasize important events or gray to de-emphasize noise
-- **Monitor** logs live with continuous reading
-- **Inspect** JSON and XML directly within log lines using pretty print
-- **Extract** values from raw JSON logs using JSON path extraction
-- **Configure** custom log layouts with metadata and content rules
+- Filter large logs almost instantly using metadata and log content
+- Trace application flows through hierarchical log relationships
+- Jump to relevant events using the timeline, markers, navigation, and search
+- Spot problems quickly with error indicators and content-based highlighting
+- Reduce noise by styling or de-emphasizing irrelevant log lines
+- Monitor logs live while an application is running
+- Inspect embedded JSON and XML directly within log lines
+- Extract log content from JSON using JSONPath
+- Adapt LogScraper to your logs with configurable layouts, metadata, and parsing rules
 
 ## Designed for everyday use
+- Process large amounts of log data quickly while keeping filtering and navigation highly responsive, within the performance limits of the system and log source.
 - Read logs directly from HTTP endpoints, Kubernetes, and local files
 - Use Mini Controls for compact, always-on-top log access
 - Run as a standalone application or install it without a separate .NET runtime
@@ -92,7 +95,6 @@ You can configure:
 - Metadata is hidden by default. Enable it in the **Metadata** section or change the default in Settings
 - Keep logs readable by selectively showing metadata values inline  
 - Ensure the correct **log layout** is selected to avoid parsing issues  
-- Memory usage depends on log size. As a guideline, keep logs under **100,000 lines** to avoid performance issues  
 
 ## Feedback
 
