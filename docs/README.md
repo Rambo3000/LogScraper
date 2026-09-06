@@ -2,7 +2,7 @@
 
 **Investigate application flows through the noise.**
 
-LogScraper is a fast desktop log analysis tool for investigating application flows in large and distributed logs. It retrieves logs directly from their source, processes them locally, filters noise almost instantly, and helps you trace what happened across thousands or millions of log lines.
+LogScraper is a fast desktop log analysis tool for investigating application flows in large logs. It retrieves logs directly from their source, processes them locally, filters noise almost instantly, and helps you trace what happened across thousands or millions of log lines.
 
 Centralized observability platforms such as Splunk, ELK, and Grafana are great for collecting, aggregating, and searching logs. LogScraper focuses on what comes next: **understanding what actually happened**.
 
