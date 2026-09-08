@@ -83,6 +83,8 @@ You can configure:
 This tool has initially been developed for the low code Blueriq platform. If you are using Blueriq you can import the follwing log layout settings:
 [LogScraperSettings_LogLayouts_Blueriq_17.json](https://github.com/user-attachments/files/31946357/LogScraperSettings_LogLayouts_Blueriq_17.json)
 
+Note: possibly metadata fields are named differently for your environment so please correct these after importing
+
 ## Using the Application
 
 1. Select a log source (HTTP, Kubernetes, or file system), then choose the specific source details such as a filename or Kubernetes pod
