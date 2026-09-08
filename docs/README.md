@@ -61,7 +61,7 @@ If the installer does not work for your setup, you can update manually using the
 You can **keep your existing configuration files**  
 (`LogScraperConfig.json`, `LogScraperLogLayouts.json`, `LogScraperLogProviders.json`) — there is no need to change or reconfigure them unless specified in the release notes.
 
-## 🛠️ Configuration
+## Configuration
 
 Open the **Settings** window via the ⚙️ icon.
 
@@ -77,6 +77,11 @@ You can configure:
 - **Content-based styling** to color log lines per content filter
 - **Transformers** that extract values from raw JSON logs
 - The **timestamp format** used for parsing (Optional)
+
+## Configuration for Blueriq
+
+This tool has initially been developed for the low code Blueriq platform. If you are using Blueriq you can import the follwing log layout settings:
+[LogScraperSettings_LogLayouts_Blueriq_17.json](https://github.com/user-attachments/files/31946357/LogScraperSettings_LogLayouts_Blueriq_17.json)
 
 ## Using the Application
 
